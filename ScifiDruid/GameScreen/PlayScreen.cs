@@ -17,12 +17,20 @@ namespace ScifiDruid.GameScreen
 {
     class PlayScreen : _GameScreen
     {
+        
+        protected Player player;
+
         //all all texture
         protected Texture2D blackTex, whiteTex, greenTex;
         protected Texture2D arrowLeftBGPic, arrowRightBGPic, arrowLeftSFXPic, arrowRightSFXPic;//sound setting pic
         protected Texture2D pausePopUpPic, continueButtonPic, restartButtonPic, exitButtonPic, continueButtonPic2, restartButtonPic2, exitButtonPic2;//for pause setting hovering
         protected Texture2D restartWLPic, nextButtonPic, backWLPic, DefeatSignPic, VictorySignPic;//win or lose
         protected Texture2D confirmExitPopUpPic, noConfirmPic1, yesConfirmPic1, noConfirmPic2, yesConfirmPic2;//for confirm
+
+        protected Texture2D testTexture;
+        private FrameCounter _frameCounter = new FrameCounter();
+        private float deltaTime;
+        private string fps;
 
         //all button
         //button at pause screen
@@ -66,6 +74,8 @@ namespace ScifiDruid.GameScreen
         protected float masterBGM = Singleton.Instance.bgMusicVolume;
         protected float masterSFX = Singleton.Instance.soundMasterVolume;
 
+
+
         protected enum GameState 
         { 
             START, PLAY, WIN, LOSE, PAUSE, EXIT
@@ -96,6 +106,16 @@ namespace ScifiDruid.GameScreen
             //confirm exit button
             yesConfirmButton = new Button(yesConfirmPic1, new Vector2(495, 390), new Vector2(120, 60));
             noConfirmButton = new Button(noConfirmPic1, new Vector2(710, 390), new Vector2(70, 60));
+
+            player = new Player(testTexture, 99, 164)
+            {
+                name = "Player Character",
+                position = new Vector2(300, 300),
+                size = new Vector2(50, 100),
+                speed = 10f,
+            };
+
+            player.Initial();
 
         }
         public override void LoadContent()
@@ -144,6 +164,8 @@ namespace ScifiDruid.GameScreen
             bigfonts = content.Load<SpriteFont>("Fonts/font60");
             mediumfonts = content.Load<SpriteFont>("Fonts/font30");
 
+            testTexture = content.Load<Texture2D>("Pictures/Hermes anim");
+
             Initial();
         }
         public override void UnloadContent()
@@ -183,6 +205,9 @@ namespace ScifiDruid.GameScreen
                         }
                         break;
                     case GameState.PLAY:
+                        //if want to pause
+                        player.Walking();
+
                         //if want to pause
                         if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                         {
@@ -441,6 +466,12 @@ namespace ScifiDruid.GameScreen
                     break;
             }
 
+            deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            _frameCounter.Update(deltaTime);
+
+            fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
+
             base.Update(gameTime);
         }
         public override void Draw(SpriteBatch spriteBatch)
@@ -459,6 +490,9 @@ namespace ScifiDruid.GameScreen
                         }
                         break;
                     case GameState.PLAY:
+                        spriteBatch.DrawString(mediumfonts, fps, new Vector2(1, 1), Color.Black);
+
+                        player.Draw(spriteBatch);
                         break;
                 }
             }

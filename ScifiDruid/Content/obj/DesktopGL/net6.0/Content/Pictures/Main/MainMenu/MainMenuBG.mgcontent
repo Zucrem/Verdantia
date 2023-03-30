@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/acer/Desktop/javaprojection/ScifiDruid/ScifiDruid/ScifiDruid/Content/Pictures/Main/MainMenu/MainMenuBG.jpg</SourceFile>
-  <SourceTime>2023-03-03T15:38:17.8416911+07:00</SourceTime>
-  <DestFile>C:/Users/acer/Desktop/javaprojection/ScifiDruid/ScifiDruid/ScifiDruid/Content/bin/DesktopGL/Content/Pictures/Main/MainMenu/MainMenuBG.xnb</DestFile>
-  <DestTime>2023-03-31T00:03:23.2070944+07:00</DestTime>
+  <SourceFile>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Main/MainMenu/MainMenuBG.jpg</SourceFile>
+  <SourceTime>2023-03-03T15:38:18+07:00</SourceTime>
+  <DestFile>D:/Code/ScifiDruid/ScifiDruid/Content/bin/DesktopGL/Content/Pictures/Main/MainMenu/MainMenuBG.xnb</DestFile>
+  <DestTime>2023-03-31T00:22:58.579854+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

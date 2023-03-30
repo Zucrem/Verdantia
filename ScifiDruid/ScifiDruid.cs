@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ScifiDruid.Managers;
+using System;
 
 namespace ScifiDruid
 {
@@ -26,6 +27,9 @@ namespace ScifiDruid
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            IsFixedTimeStep = true;
+            double temp = (1000d / (double)144) * 10000d;
+            TargetElapsedTime = new TimeSpan((long)temp);
 
             base.Initialize();
         }

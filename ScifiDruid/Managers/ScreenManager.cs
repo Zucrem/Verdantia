@@ -40,13 +40,13 @@ namespace ScifiDruid.Managers
                     switch (Singleton.Instance.levelState)
                     {
                         case LevelState.FOREST:
-                            currentScreen = new PlayScreen();
+                            currentScreen = new Stage1Screen();
                             break;
                         case LevelState.CITY:
-                            currentScreen = new PlayScreen();
+                            currentScreen = new Stage2Screen();
                             break;
                         case LevelState.LAB:
-                            currentScreen = new PlayScreen();
+                            currentScreen = new Stage3Screen();
                             break;
                     }
                     break;

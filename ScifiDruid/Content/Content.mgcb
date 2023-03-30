@@ -17,19 +17,37 @@
 /copy:Fonts/alagard.ttf
 
 #begin Fonts/font20.spritefont
-/importer:
-/processor:
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
 /build:Fonts/font20.spritefont
 
 #begin Fonts/font30.spritefont
-/importer:
-/processor:
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
 /build:Fonts/font30.spritefont
 
 #begin Fonts/font60.spritefont
-/importer:
-/processor:
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
 /build:Fonts/font60.spritefont
+
+#begin Pictures/Hermes anim.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Hermes anim.png
 
 #begin Pictures/Main/ConfirmExit/ConfirmQuitPopUp.png
 /importer:TextureImporter

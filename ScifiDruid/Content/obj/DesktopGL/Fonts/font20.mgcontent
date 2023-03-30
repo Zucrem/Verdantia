@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/acer/Desktop/javaprojection/ScifiDruid/ScifiDruid/ScifiDruid/Content/Fonts/font20.spritefont</SourceFile>
-  <SourceTime>2023-03-03T15:38:17.8324104+07:00</SourceTime>
-  <DestFile>C:/Users/acer/Desktop/javaprojection/ScifiDruid/ScifiDruid/ScifiDruid/Content/bin/DesktopGL/Fonts/font20.xnb</DestFile>
-  <DestTime>2023-03-31T00:05:09.8867513+07:00</DestTime>
+  <SourceFile>D:/Code/ScifiDruid/ScifiDruid/Content/Fonts/font20.spritefont</SourceFile>
+  <SourceTime>2023-03-03T15:38:18+07:00</SourceTime>
+  <DestFile>D:/Code/ScifiDruid/ScifiDruid/Content/bin/DesktopGL/Fonts/font20.xnb</DestFile>
+  <DestTime>2023-03-31T00:46:38.7846759+07:00</DestTime>
   <Importer>FontDescriptionImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>FontDescriptionProcessor</Processor>
   <ProcessorTime>2022-07-26T18:44:56+07:00</ProcessorTime>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Compressed</Value>
+  </Parameters>
   <Dependencies />
   <BuildAsset />
   <BuildOutput />

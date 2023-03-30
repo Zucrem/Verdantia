@@ -13,32 +13,36 @@ namespace ScifiDruid.GameObjects
         protected Texture2D _texture;//รูป
         protected Texture2D[] _allTextures;
 
-        public Vector2 Position;
-        public float Rotation;
-        public Vector2 Scale;
+        public Vector2 position;
+        public float rotation;
+        public Vector2 size;
         public Color color;
-        public Vector2 Velocity;
+        public Vector2 origin;
+        public SpriteEffects charDirection;
+        public float speed;
 
-        public string Name;
+        public string name;
 
-        public bool IsActive;
+        public bool isAlive;
 
-        public Rectangle Rectangle
+        public Rectangle rectangle
         {
             get
             {
-                return new Rectangle((int)Position.X, (int)Position.Y, _texture.Width, _texture.Height);
+                return new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
             }
         }
 
         public _GameObject(Texture2D texture)
         {
             _texture = texture;
-            Position = Vector2.Zero;
-            Scale = Vector2.One;
-            Rotation = 0f;
-            IsActive = true;
+            position = Vector2.Zero;
+            rotation = 0f;
+            isAlive = true;
         }
+
+        public virtual void Initial() { }
+
         public virtual void Update(GameTime gameTime) { }
 
         public virtual void Draw(SpriteBatch spriteBatch) { }
