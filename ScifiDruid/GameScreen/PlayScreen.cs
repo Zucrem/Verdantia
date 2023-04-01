@@ -230,7 +230,9 @@ namespace ScifiDruid.GameScreen
                             if (nextButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
                                 MediaPlayer.Stop();
-                                //ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.MenuScreen);
+                                //unlock another stage
+                                //Singleton.Instance.stageunlock++;
+                                ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
                             }
                             //Restart
                             if (restartButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
@@ -241,6 +243,7 @@ namespace ScifiDruid.GameScreen
                             if (exitWLButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
                                 confirmExit = true;
+                                Singleton.Instance.levelState = LevelState.NULL;
                             }
 
 
@@ -265,6 +268,7 @@ namespace ScifiDruid.GameScreen
                             if (exitWLButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
                                 confirmExit = true;
+                                Singleton.Instance.levelState = LevelState.NULL;
                             }
 
                             //Restart Screen
@@ -467,11 +471,10 @@ namespace ScifiDruid.GameScreen
             }
 
             deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            _frameCounter.Update(deltaTime);
-
+            //fps show
             fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
 
+            _frameCounter.Update(deltaTime);
             base.Update(gameTime);
         }
         public override void Draw(SpriteBatch spriteBatch)
@@ -480,9 +483,25 @@ namespace ScifiDruid.GameScreen
             spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
             if (play)
             {
+                //all draw on screen here
+                if (gamestate == GameState.START || gamestate == GameState.PLAY)
+                {
+                    if (gamestate == GameState.START)
+                    {
+                        fps = "FPS: 0";
+                    }
+                    spriteBatch.DrawString(mediumfonts, fps, new Vector2(1, 1), Color.Black);
+
+                    player.Draw(spriteBatch);
+
+
+
+
+                }
                 //game state
                 switch (gamestate)
                 {
+                    //both for fade only
                     case GameState.START:
                         if (!fadeFinish)
                         {
@@ -490,9 +509,6 @@ namespace ScifiDruid.GameScreen
                         }
                         break;
                     case GameState.PLAY:
-                        spriteBatch.DrawString(mediumfonts, fps, new Vector2(1, 1), Color.Black);
-
-                        player.Draw(spriteBatch);
                         break;
                 }
             }

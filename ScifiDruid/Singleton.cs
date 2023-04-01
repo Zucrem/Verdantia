@@ -26,8 +26,7 @@ namespace ScifiDruid
 
         //Level State
         public LevelState levelState = LevelState.NULL;
-        //unlock level stage
-        public UnlockStage unlockstage = UnlockStage.FOREST;
+        public int stageunlock = 1;
 
         //Mouse State
         public MouseState MousePrevious, MouseCurrent;
@@ -43,13 +42,6 @@ namespace ScifiDruid
         public enum LevelState
         {
             NULL,
-            FOREST,
-            CITY,
-            LAB
-        }
-
-        public enum UnlockStage
-        {
             FOREST,
             CITY,
             LAB

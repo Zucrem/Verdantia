@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Main/ConfirmExit/ConfirmQuitPopUp.png</SourceFile>
-  <SourceTime>2023-03-14T22:26:46+07:00</SourceTime>
-  <DestFile>D:/Code/ScifiDruid/ScifiDruid/Content/bin/DesktopGL/Content/Pictures/Main/ConfirmExit/ConfirmQuitPopUp.xnb</DestFile>
-  <DestTime>2023-03-31T00:22:57.9819689+07:00</DestTime>
+  <SourceFile>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Pictures/Main/ConfirmExit/ConfirmQuitPopUp.png</SourceFile>
+  <SourceTime>2023-04-01T10:46:55.5235584+07:00</SourceTime>
+  <DestFile>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/bin/DesktopGL/Content/Pictures/Main/ConfirmExit/ConfirmQuitPopUp.xnb</DestFile>
+  <DestTime>2023-04-01T10:48:21.5958653+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
