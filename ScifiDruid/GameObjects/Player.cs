@@ -18,8 +18,8 @@ namespace ScifiDruid.GameObjects
     public class Player : _GameObject
     {
         private Texture2D texture;
-        Rectangle characterDestRec;
-        Rectangle characterSouceRec;
+        public Rectangle characterDestRec;
+        public Rectangle characterSouceRec;
 
         public Player(Texture2D texture ,int sizeX , int sizeY) : base(texture)
         {
@@ -33,10 +33,14 @@ namespace ScifiDruid.GameObjects
             base.Initial();
         }
 
+        public void Update()
+        {
+            characterDestRec.X = (int)position.X;
+            characterDestRec.Y = (int)position.Y;
+        }
+
         public void Walking()
         {
-
-            
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
                 position.X -= 0.1f * speed;
@@ -47,11 +51,13 @@ namespace ScifiDruid.GameObjects
                 position.X += 0.1f * speed;
                 charDirection = SpriteEffects.None;
             }
+        }
 
-            Debug.WriteLine(charDirection);
+        public void Jump()
+        {
+            Vector2 jumpPosition = position + new Vector2(0, -50);
 
-            characterDestRec.X = (int)position.X;
-            characterDestRec.Y = (int)position.Y;
+
         }
 
         public override void Draw(SpriteBatch spriteBatch)
