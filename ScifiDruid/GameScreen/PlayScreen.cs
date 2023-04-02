@@ -31,6 +31,11 @@ namespace ScifiDruid.GameScreen
         private FrameCounter _frameCounter = new FrameCounter();
         private float deltaTime;
         private string fps;
+        private bool isJumpPress = false;
+        float jumpTimer = 0f;
+        float jumpPosition;
+        bool gravityActive = false;
+        Vector2 firstPosition;
 
         //all button
         //button at pause screen
@@ -205,8 +210,39 @@ namespace ScifiDruid.GameScreen
                         }
                         break;
                     case GameState.PLAY:
-                        //if want to pause
+                        
                         player.Walking();
+
+                        if (!isJumpPress && Keyboard.GetState().IsKeyDown(Keys.Space))
+                        {
+                            isJumpPress = true;
+                            jumpPosition = player.position.Y - 100f;
+                        }
+
+                        if (isJumpPress && !gravityActive)
+                        {
+                            player.position.Y -= 300f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        }
+
+                        if (!gravityActive && jumpPosition >= player.position.Y)
+                        {
+                            jumpPosition = firstPosition.Y;
+                            isJumpPress = false;
+                            gravityActive = true;
+                        }
+
+                        //if (gravityActive)
+                        //{
+                        //    Debug.WriteLine("S");
+                        //    player.position.Y += 300f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        //}
+
+                        //if (gravityActive && jumpPosition <= player.position.Y)
+                        //{
+                        //    Debug.WriteLine("D");
+                        //    isJumpPress = false;
+                        //    gravityActive = false;
+                        //}
 
                         //if want to pause
                         if (Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -215,6 +251,8 @@ namespace ScifiDruid.GameScreen
                             gamestate = GameState.PAUSE;
                             //MediaPlayer.Pause();
                         }
+
+                        player.Update();
                         break;
                 }
             }
@@ -480,6 +518,7 @@ namespace ScifiDruid.GameScreen
             spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
             if (play)
             {
+                player.Draw(spriteBatch);
                 //game state
                 switch (gamestate)
                 {
@@ -492,7 +531,6 @@ namespace ScifiDruid.GameScreen
                     case GameState.PLAY:
                         spriteBatch.DrawString(mediumfonts, fps, new Vector2(1, 1), Color.Black);
 
-                        player.Draw(spriteBatch);
                         break;
                 }
             }
