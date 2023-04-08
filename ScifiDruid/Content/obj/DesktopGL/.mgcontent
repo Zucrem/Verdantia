@@ -7,6 +7,7 @@
     <File>D:/Code/ScifiDruid/ScifiDruid/Content/Fonts/font20.spritefont</File>
     <File>D:/Code/ScifiDruid/ScifiDruid/Content/Fonts/font30.spritefont</File>
     <File>D:/Code/ScifiDruid/ScifiDruid/Content/Fonts/font60.spritefont</File>
+    <File>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/clipart613994.png</File>
     <File>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Hermes anim.png</File>
     <File>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Main/ConfirmExit/ConfirmQuitPopUp.png</File>
     <File>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Main/ConfirmExit/No.png</File>
@@ -49,6 +50,7 @@
     <File>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Splash/SplashScreen/GameLogo.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

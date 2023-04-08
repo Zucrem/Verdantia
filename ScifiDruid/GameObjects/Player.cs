@@ -12,34 +12,75 @@ using System.Threading.Tasks;
 using Microsoft.VisualBasic.FileIO;
 using System.Diagnostics;
 using System.Xml;
+using System.Collections;
 
 namespace ScifiDruid.GameObjects
 {
     public class Player : _GameObject
     {
         private Texture2D texture;
+        private Texture2D bulletTexture;
         public Rectangle characterDestRec;
         public Rectangle characterSouceRec;
+        public int jumpCount = 0;
+        
+        private bool isJumpPress = false;
+        private float jumpPosition;
+        private bool gravityActive = false;
+        private Vector2 firstPosition;
+        private GameTime gameTime;
 
-        public Player(Texture2D texture ,int sizeX , int sizeY) : base(texture)
+        private int jumpTime;
+        private int jumpDelay;
+
+        private int skillTime;
+        private int skillDelay;
+
+        private int dashTime;
+        private int dashDelay;
+
+        private int attackTime;
+        private int attackDelay;
+
+
+        public bool isAttack = false;
+        public Vector2 bulletPosition;
+        public SpriteEffects bulletDirection;
+        public List<Bullet> bullet;
+
+        public Player(Texture2D texture ,Texture2D bulletTexture,int sizeX , int sizeY) : base(texture)
         {
             this.texture = texture;
+            this.bulletTexture = bulletTexture;
             characterSouceRec = new Rectangle(0, 0, sizeX, sizeY);
         }
 
         public override void Initial()
         {
             characterDestRec = rectangle;
+            bullet = new List<Bullet>();
             base.Initial();
         }
 
-        public void Update()
+
+
+        public override void Update(GameTime gameTime)
         {
+            this.gameTime = gameTime;
             characterDestRec.X = (int)position.X;
             characterDestRec.Y = (int)position.Y;
         }
 
-        public void Walking()
+        public void Action()
+        {
+            Walking();
+            Jump();
+            Attack();
+            Skill();
+            Dash();
+        }
+
+        private void Walking()
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
@@ -52,17 +93,145 @@ namespace ScifiDruid.GameObjects
                 charDirection = SpriteEffects.None;
             }
         }
-
-        public void Jump()
+        private void Jump()
         {
-            Vector2 jumpPosition = position + new Vector2(0, -50);
+            jumpTime = (int)gameTime.TotalGameTime.TotalMilliseconds - jumpDelay;
 
+            if (jumpCount < 2 && jumpTime > 200 && (Keyboard.GetState().IsKeyDown(Keys.Space)))
+            {
+                isJumpPress = true;
+                gravityActive = false;
+                if (jumpCount == 0)
+                {
+                    firstPosition = position;
+                }
+                jumpDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
+                jumpPosition = position.Y - 100f;
+                jumpCount++;
+            }
 
+            if (isJumpPress && !gravityActive)
+            {
+                position.Y -= 300f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+            if (!gravityActive && jumpPosition >= position.Y)
+            {
+                gravityActive = true;
+            }
+
+            if (gravityActive)
+            {
+                position.Y += 300f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+            if (gravityActive && firstPosition.Y <= position.Y)
+            {
+                isJumpPress = false;
+                gravityActive = false;
+                jumpCount = 0;
+            }
+
+        }
+
+        /*public void Attack()
+        {
+            if (elapsedMs > 200 && Keyboard.GetState().IsKeyDown(Keys.X))
+            {
+                isAttack = true;
+                
+                bulletPosition.Y = position.Y + 10;
+                bulletDirection = charDirection;
+                switch (bulletDirection)
+                {
+                    case SpriteEffects.None:
+                        bulletPosition.X = position.X + 30;
+                        break;
+                    case SpriteEffects.FlipHorizontally:
+                        bulletPosition.X = position.X - 30;
+                        break;
+                    case SpriteEffects.FlipVertically:
+                        break;
+                }
+            }
+            
+            if (isAttack)
+            {
+                switch (bulletDirection)
+                {
+                    case SpriteEffects.None:
+                        bulletPosition.X += 2;
+                        break;
+                    case SpriteEffects.FlipHorizontally:
+                        bulletPosition.X -= 2;
+                        break;
+                }
+            }
+        }*/
+
+        public void Attack()
+        {
+            attackTime = (int)gameTime.TotalGameTime.TotalMilliseconds - attackDelay;
+
+            if (attackTime > 1000 && Keyboard.GetState().IsKeyDown(Keys.X))
+            {
+                isAttack = true;
+                bullet.Add(new Bullet(bulletTexture, bulletPosition, charDirection));
+                bullet[^1].Shoot(position, charDirection);
+                attackDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
+            }
+
+            if (bullet.Count > 0)
+            {
+                foreach (Bullet bulletE in bullet)
+                {
+                    if (bulletE.bulletPosition.X > 1280 || bulletE.bulletPosition.X < 0)
+                    {
+                        bullet.Remove(bulletE);
+                        break;
+                    }
+                }
+            }
+
+            if (isAttack)
+            {
+                foreach (Bullet bulletE in bullet)
+                {
+                    bulletE.Update();
+                }
+            }
+        }
+
+        public void Skill()
+        {
+            if (skillDelay > 200)
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.Z) && Keyboard.GetState().IsKeyDown(Keys.Up))
+                {
+
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.Z) && Keyboard.GetState().IsKeyDown(Keys.Down))
+                {
+
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.Z))
+                {
+
+                }
+            }
+            
+        }
+        public void Dash()
+        {
+            if (dashDelay > 200 && Keyboard.GetState().IsKeyDown(Keys.C))
+            {
+
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, characterDestRec, characterSouceRec, Color.White, rotation, origin, charDirection,0);
+            spriteBatch.Draw(texture, characterDestRec, characterSouceRec, Microsoft.Xna.Framework.Color.White, rotation, new Vector2(size.X/2,size.Y/2), charDirection,0);
             //spriteBatch.Draw(texture, characterDestRec, characterSouceRec, Color.White);
 
             base.Draw(spriteBatch);

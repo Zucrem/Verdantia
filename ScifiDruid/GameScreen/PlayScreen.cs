@@ -12,6 +12,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static ScifiDruid.Singleton;
+using Box2D.NetStandard.Dynamics.World;
+using Color = Microsoft.Xna.Framework.Color;
+using Box2D.NetStandard.Dynamics.Bodies;
 
 namespace ScifiDruid.GameScreen
 {
@@ -31,11 +34,7 @@ namespace ScifiDruid.GameScreen
         private FrameCounter _frameCounter = new FrameCounter();
         private float deltaTime;
         private string fps;
-        private bool isJumpPress = false;
-        float jumpTimer = 0f;
-        float jumpPosition;
-        bool gravityActive = false;
-        Vector2 firstPosition;
+        private Texture2D bullet;
 
         //all button
         //button at pause screen
@@ -112,7 +111,7 @@ namespace ScifiDruid.GameScreen
             yesConfirmButton = new Button(yesConfirmPic1, new Vector2(495, 390), new Vector2(120, 60));
             noConfirmButton = new Button(noConfirmPic1, new Vector2(710, 390), new Vector2(70, 60));
 
-            player = new Player(testTexture, 99, 164)
+            player = new Player(testTexture ,bullet, 99, 164)
             {
                 name = "Player Character",
                 position = new Vector2(300, 300),
@@ -170,6 +169,7 @@ namespace ScifiDruid.GameScreen
             mediumfonts = content.Load<SpriteFont>("Fonts/font30");
 
             testTexture = content.Load<Texture2D>("Pictures/Hermes anim");
+            bullet = content.Load<Texture2D>("Pictures/clipart613994");
 
             Initial();
         }
@@ -211,38 +211,8 @@ namespace ScifiDruid.GameScreen
                         break;
                     case GameState.PLAY:
                         
-                        player.Walking();
-
-                        if (!isJumpPress && Keyboard.GetState().IsKeyDown(Keys.Space))
-                        {
-                            isJumpPress = true;
-                            jumpPosition = player.position.Y - 100f;
-                        }
-
-                        if (isJumpPress && !gravityActive)
-                        {
-                            player.position.Y -= 300f * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                        }
-
-                        if (!gravityActive && jumpPosition >= player.position.Y)
-                        {
-                            jumpPosition = firstPosition.Y;
-                            isJumpPress = false;
-                            gravityActive = true;
-                        }
-
-                        //if (gravityActive)
-                        //{
-                        //    Debug.WriteLine("S");
-                        //    player.position.Y += 300f * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                        //}
-
-                        //if (gravityActive && jumpPosition <= player.position.Y)
-                        //{
-                        //    Debug.WriteLine("D");
-                        //    isJumpPress = false;
-                        //    gravityActive = false;
-                        //}
+                        player.Update(gameTime);
+                        player.Action();
 
                         //if want to pause
                         if (Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -252,7 +222,6 @@ namespace ScifiDruid.GameScreen
                             //MediaPlayer.Pause();
                         }
 
-                        player.Update();
                         break;
                 }
             }
@@ -531,10 +500,6 @@ namespace ScifiDruid.GameScreen
                     spriteBatch.DrawString(mediumfonts, fps, new Vector2(1, 1), Color.Black);
 
                     player.Draw(spriteBatch);
-
-
-
-
                 }
                 //game state
                 switch (gamestate)
@@ -548,7 +513,13 @@ namespace ScifiDruid.GameScreen
                         break;
                     case GameState.PLAY:
                         spriteBatch.DrawString(mediumfonts, fps, new Vector2(1, 1), Color.Black);
-
+                        if (player.isAttack)
+                        {
+                            foreach (Bullet bullet in player.bullet)
+                            {
+                                bullet.Draw(spriteBatch);
+                            }
+                        }
                         break;
                 }
             }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using ScifiDruid.Managers;
 using System;
 
@@ -13,13 +14,16 @@ namespace ScifiDruid
         public ScifiDruid()
         {
             _graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
+
             _graphics.PreferredBackBufferWidth = (int)Singleton.Instance.Dimensions.X;
             _graphics.PreferredBackBufferHeight = (int)Singleton.Instance.Dimensions.Y;
             _graphics.SynchronizeWithVerticalRetrace = false;
             IsFixedTimeStep = false;
             IsMouseVisible = true;
-            Content.RootDirectory = "Content";
-            Window.IsBorderless = false;// make window borderless
+            _graphics.IsFullScreen = false;
+            //Window.AllowUserResizing = true;
+            //Window.IsBorderless = false;// make window borderless
 
             _graphics.ApplyChanges();
         }
@@ -48,7 +52,12 @@ namespace ScifiDruid
         protected override void Update(GameTime gameTime)
         {
             ScreenManager.Instance.Update(gameTime);
-
+            if (Keyboard.GetState().IsKeyDown(Keys.I))
+            {
+                _graphics.PreferredBackBufferHeight = 1080;
+                _graphics.PreferredBackBufferWidth = 1920;
+                _graphics.ApplyChanges();
+            }
             if (Singleton.Instance.cmdExit)
             {
                 Exit();
