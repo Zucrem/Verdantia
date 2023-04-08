@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Pictures/Play/PlayScreen/White.png</SourceFile>
-  <SourceTime>2023-04-01T10:46:55.5591481+07:00</SourceTime>
-  <DestFile>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/bin/DesktopGL/Content/Pictures/Play/PlayScreen/White.xnb</DestFile>
-  <DestTime>2023-04-01T10:48:23.1112475+07:00</DestTime>
+  <SourceFile>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Play/PlayScreen/White.png</SourceFile>
+  <SourceTime>2023-03-17T21:28:22+07:00</SourceTime>
+  <DestFile>D:/Code/ScifiDruid/ScifiDruid/Content/bin/DesktopGL/Content/Pictures/Play/PlayScreen/White.xnb</DestFile>
+  <DestTime>2023-04-08T18:10:32.4009955+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

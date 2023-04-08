@@ -213,3 +213,6 @@ C:\Users\acer\Desktop\javaprojection\GameFinal\ScifiDruid\obj\Debug\net6.0\refin
 C:\Users\acer\Desktop\javaprojection\GameFinal\ScifiDruid\obj\Debug\net6.0\ScifiDruid.pdb
 C:\Users\acer\Desktop\javaprojection\GameFinal\ScifiDruid\obj\Debug\net6.0\ScifiDruid.genruntimeconfig.cache
 C:\Users\acer\Desktop\javaprojection\GameFinal\ScifiDruid\obj\Debug\net6.0\ref\ScifiDruid.dll
+D:\Code\ScifiDruid\ScifiDruid\bin\Debug\net6.0\Content\Pictures\clipart613994.xnb
+D:\Code\ScifiDruid\ScifiDruid\bin\Debug\net6.0\Box2D.NetStandard.dll
+D:\Code\ScifiDruid\ScifiDruid\bin\Debug\net6.0\Box2D.NetStandard.pdb

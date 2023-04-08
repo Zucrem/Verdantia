@@ -55,6 +55,7 @@ namespace ScifiDruid.GameScreen
             if (Keyboard.GetState().IsKeyDown(Keys.Space) || Singleton.Instance.MouseCurrent.LeftButton == ButtonState.Pressed)
             {
                 ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.MenuScreen);
+                Singleton.Instance.lastClickTime = (int)gameTime.TotalGameTime.TotalMilliseconds;
             }
             // Add elapsed time to _timer
             timer += (float)gameTime.ElapsedGameTime.Ticks / TimeSpan.TicksPerSecond;

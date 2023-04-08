@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Pictures/Play/PlayScreen/WinLose/VictorySign.png</SourceFile>
-  <SourceTime>2023-04-01T10:46:55.5656578+07:00</SourceTime>
-  <DestFile>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/bin/DesktopGL/Content/Pictures/Play/PlayScreen/WinLose/VictorySign.xnb</DestFile>
-  <DestTime>2023-04-01T10:48:23.2218952+07:00</DestTime>
+  <SourceFile>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Play/PlayScreen/WinLose/VictorySign.png</SourceFile>
+  <SourceTime>2023-03-13T00:25:04+07:00</SourceTime>
+  <DestFile>D:/Code/ScifiDruid/ScifiDruid/Content/bin/DesktopGL/Content/Pictures/Play/PlayScreen/WinLose/VictorySign.xnb</DestFile>
+  <DestTime>2023-04-08T18:10:32.5218548+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
