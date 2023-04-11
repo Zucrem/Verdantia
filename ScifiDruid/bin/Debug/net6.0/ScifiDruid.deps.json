@@ -10,7 +10,7 @@
         "dependencies": {
           "MonoGame.Content.Builder.Task": "3.8.1.303",
           "MonoGame.Framework.DesktopGL": "3.8.1.303",
-          "Box2D.NetStandard": "2.4.7.0"
+          "Box2DNet": "1.0.0.0"
         },
         "runtime": {
           "ScifiDruid.dll": {}
@@ -67,11 +67,11 @@
           }
         }
       },
-      "Box2D.NetStandard/2.4.7.0": {
+      "Box2DNet/1.0.0.0": {
         "runtime": {
-          "Box2D.NetStandard.dll": {
-            "assemblyVersion": "2.4.7.0",
-            "fileVersion": "2.4.7.0"
+          "Box2DNet.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       }
@@ -97,7 +97,7 @@
       "path": "monogame.framework.desktopgl/3.8.1.303",
       "hashPath": "monogame.framework.desktopgl.3.8.1.303.nupkg.sha512"
     },
-    "Box2D.NetStandard/2.4.7.0": {
+    "Box2DNet/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/clipart613994.png</SourceFile>
-  <SourceTime>2023-04-08T18:13:30.6889084+07:00</SourceTime>
-  <DestFile>D:/Code/ScifiDruid/ScifiDruid/Content/bin/DesktopGL/Pictures/clipart613994.xnb</DestFile>
-  <DestTime>2023-04-09T23:02:35.181949+07:00</DestTime>
+  <SourceFile>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Play/PlayScreen/GroundSprite.png</SourceFile>
+  <SourceTime>2018-10-31T19:17:01+07:00</SourceTime>
+  <DestFile>D:/Code/ScifiDruid/ScifiDruid/Content/bin/DesktopGL/Content/Pictures/Play/PlayScreen/GroundSprite.xnb</DestFile>
+  <DestTime>2023-04-09T23:37:03.0038721+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

@@ -325,6 +325,18 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/PlayScreen/Green.jpg
 
+#begin Pictures/Play/PlayScreen/GroundSprite.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/PlayScreen/GroundSprite.png
+
 #begin Pictures/Play/PlayScreen/Pause/Continue.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -528,4 +540,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Pictures/Splash/SplashScreen/GameLogo.png
+
+#begin Pictures/Untitled-1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Untitled-1.png
 

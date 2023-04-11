@@ -13,6 +13,9 @@ using Microsoft.VisualBasic.FileIO;
 using System.Diagnostics;
 using System.Xml;
 using System.Collections;
+using Box2DNet.Dynamics;
+using Box2DNet.Factories;
+using Box2DNet;
 
 namespace ScifiDruid.GameObjects
 {
@@ -20,8 +23,15 @@ namespace ScifiDruid.GameObjects
     {
         private Texture2D texture;
         private Texture2D bulletTexture;
+
         public Rectangle characterDestRec;
         public Rectangle characterSouceRec;
+
+        private KeyboardState currentKeyState;
+        private KeyboardState oldKeyState;
+
+        public Body hitBox;
+
         public int jumpCount = 0;
         
         private bool isJumpPress = false;
@@ -42,6 +52,7 @@ namespace ScifiDruid.GameObjects
         private int attackTime;
         private int attackDelay;
 
+        public Vector2 playerOrigin;
 
         public bool isAttack = false;
         public Vector2 bulletPosition;
@@ -52,13 +63,19 @@ namespace ScifiDruid.GameObjects
         {
             this.texture = texture;
             this.bulletTexture = bulletTexture;
-            characterSouceRec = new Rectangle(0, 0, sizeX, sizeY);
+            //characterSouceRec = new Rectangle(0, 0, sizeX, sizeY);
         }
 
         public override void Initial()
         {
-            characterDestRec = rectangle;
+            //ConvertUnits.SetDisplayUnitToSimUnitRatio(64f);
+
+            //characterDestRec = rectangle;
             bullet = new List<Bullet>();
+            hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world,ConvertUnits.ToSimUnits(texture.Width),ConvertUnits.ToSimUnits(texture.Height),1f,ConvertUnits.ToSimUnits(new Vector2(500,100)),0,BodyType.Dynamic);
+            hitBox.FixedRotation = true;
+            hitBox.Friction = 1.0f;
+            playerOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
             base.Initial();
         }
 
@@ -67,8 +84,8 @@ namespace ScifiDruid.GameObjects
         public override void Update(GameTime gameTime)
         {
             this.gameTime = gameTime;
-            characterDestRec.X = (int)position.X;
-            characterDestRec.Y = (int)position.Y;
+            //characterDestRec.X = (int)hitBox.Position.X;
+            //characterDestRec.Y = (int)hitBox.Position.Y;
         }
 
         public void Action()
@@ -84,18 +101,35 @@ namespace ScifiDruid.GameObjects
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
-                position.X -= 0.1f * speed;
-                charDirection = SpriteEffects.FlipHorizontally;
+                hitBox.ApplyForce(new Vector2(-100 * speed, 0));
+                charDirection = SpriteEffects.None;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
-                position.X += 0.1f * speed;
-                charDirection = SpriteEffects.None;
+                hitBox.ApplyForce(new Vector2(100 * speed, 0));
+                charDirection = SpriteEffects.FlipHorizontally;
             }
         }
         private void Jump()
         {
-            jumpTime = (int)gameTime.TotalGameTime.TotalMilliseconds - jumpDelay;
+            currentKeyState = Keyboard.GetState();
+
+            if (currentKeyState.IsKeyDown(Keys.Space) && oldKeyState.IsKeyUp(Keys.Space))
+            {
+                hitBox.ApplyLinearImpulse(new Vector2(0, -5));
+                
+                //jumpCount++;
+            }
+            //Debug.WriteLine(hitBox.LinearVelocity);
+
+            /*
+            if (hitBox.LinearVelocity.Equals(Vector2.Zero))
+            {
+                jumpCount = 0;
+            }*/
+
+            oldKeyState = currentKeyState;
+            /*jumpTime = (int)gameTime.TotalGameTime.TotalMilliseconds - jumpDelay;
 
             if (jumpCount < 2 && jumpTime > 200 && (Keyboard.GetState().IsKeyDown(Keys.Space)))
             {
@@ -131,7 +165,7 @@ namespace ScifiDruid.GameObjects
                 gravityActive = false;
                 jumpCount = 0;
             }
-
+            */
         }
 
         /*public void Attack()
@@ -231,7 +265,9 @@ namespace ScifiDruid.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, characterDestRec, characterSouceRec, Microsoft.Xna.Framework.Color.White, rotation, new Vector2(size.X/2,size.Y/2), charDirection,0);
+            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(hitBox.Position), null, Color.White, 0, playerOrigin, 1f, charDirection, 0f);
+
+            //spriteBatch.Draw(texture, characterDestRec, characterSouceRec, Color.White, rotation, new Vector2(characterDestRec.Width / 2, characterDestRec.Height /2), charDirection,0);
             //spriteBatch.Draw(texture, characterDestRec, characterSouceRec, Color.White);
 
             base.Draw(spriteBatch);

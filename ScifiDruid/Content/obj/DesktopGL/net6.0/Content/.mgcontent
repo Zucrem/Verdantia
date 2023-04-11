@@ -31,6 +31,7 @@
     <File>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Play/PlayScreen/ConfirmExit/Yes.png</File>
     <File>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Play/PlayScreen/ConfirmExit/YesGlow.png</File>
     <File>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Play/PlayScreen/Green.jpg</File>
+    <File>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Play/PlayScreen/GroundSprite.png</File>
     <File>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Play/PlayScreen/Pause/Continue.png</File>
     <File>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Play/PlayScreen/Pause/ContinueGlow.png</File>
     <File>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Play/PlayScreen/Pause/Exit.png</File>
@@ -48,8 +49,11 @@
     <File>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Play/PlayScreen/WinLose/VictorySign.png</File>
     <File>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Splash/SplashScreen/Black.png</File>
     <File>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Splash/SplashScreen/GameLogo.png</File>
+    <File>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Untitled-1.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
