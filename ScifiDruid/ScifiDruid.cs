@@ -18,8 +18,9 @@ namespace ScifiDruid
 
             _graphics.PreferredBackBufferWidth = (int)Singleton.Instance.Dimensions.X;
             _graphics.PreferredBackBufferHeight = (int)Singleton.Instance.Dimensions.Y;
+            Singleton.Instance.CenterScreen = new Vector2(Singleton.Instance.Dimensions.X / 2, Singleton.Instance.Dimensions.Y / 2);
             _graphics.SynchronizeWithVerticalRetrace = false;
-            IsFixedTimeStep = false;
+            //IsFixedTimeStep = false;
             IsMouseVisible = true;
             _graphics.IsFullScreen = false;
             //Window.AllowUserResizing = true;
@@ -31,9 +32,9 @@ namespace ScifiDruid
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            IsFixedTimeStep = true;
-            double temp = (1000d / (double)144) * 10000d;
-            TargetElapsedTime = new TimeSpan((long)temp);
+            //IsFixedTimeStep = true;
+            //double temp = (1000d / (double)144) * 10000d;
+            //TargetElapsedTime = new TimeSpan((long)temp);
 
             base.Initialize();
         }

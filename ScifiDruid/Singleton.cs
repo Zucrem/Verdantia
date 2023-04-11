@@ -5,12 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Box2DNet.Dynamics;
 
 namespace ScifiDruid
 {
     internal class Singleton
     {
+        public World world = new World(new Vector2(0, 9.82f));
         public Vector2 Dimensions = new(1280, 720);
+        public Vector2 CenterScreen;
         public float bgMusicVolume = 1f;
         public float soundMasterVolume = 0.6f;
         public bool cmdExit = false;

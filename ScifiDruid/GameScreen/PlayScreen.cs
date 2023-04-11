@@ -12,9 +12,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static ScifiDruid.Singleton;
-using Box2D.NetStandard.Dynamics.World;
-using Color = Microsoft.Xna.Framework.Color;
-using Box2D.NetStandard.Dynamics.Bodies;
+using Box2DNet.Dynamics;
+using Box2DNet.Factories;
+using Box2DNet;
 
 namespace ScifiDruid.GameScreen
 {
@@ -35,6 +35,8 @@ namespace ScifiDruid.GameScreen
         private float deltaTime;
         private string fps;
         private Texture2D bullet;
+        private Body _groundBody;
+        //private Body playerBody;
 
         //all button
         //button at pause screen
@@ -77,8 +79,7 @@ namespace ScifiDruid.GameScreen
         //sound 
         protected float masterBGM = Singleton.Instance.bgMusicVolume;
         protected float masterSFX = Singleton.Instance.soundMasterVolume;
-
-
+        private Texture2D _groundSprite;
 
         protected enum GameState 
         { 
@@ -114,17 +115,23 @@ namespace ScifiDruid.GameScreen
             player = new Player(testTexture ,bullet, 99, 164)
             {
                 name = "Player Character",
-                position = new Vector2(300, 300),
-                size = new Vector2(50, 100),
-                speed = 10f,
+                //position = new Vector2(300, 300),
+                //size = new Vector2(50, 100),
+                speed = 0.1f,
             };
 
+
             player.Initial();
+
+            _groundBody.Friction = 0.3f;
+
+            //playerBody = player.hitBox;
 
         }
         public override void LoadContent()
         {
             base.LoadContent();
+            ConvertUnits.SetDisplayUnitToSimUnitRatio(64f);
 
             //stageBGPic picture add
             //fade in / out
@@ -168,9 +175,14 @@ namespace ScifiDruid.GameScreen
             bigfonts = content.Load<SpriteFont>("Fonts/font60");
             mediumfonts = content.Load<SpriteFont>("Fonts/font30");
 
-            testTexture = content.Load<Texture2D>("Pictures/Hermes anim");
+            testTexture = content.Load<Texture2D>("Pictures/Untitled-1");
             bullet = content.Load<Texture2D>("Pictures/clipart613994");
+            _groundSprite = content.Load<Texture2D>("Pictures/Play/PlayScreen/GroundSprite");
 
+            Vector2 groundPosition = ConvertUnits.ToSimUnits(Singleton.Instance.CenterScreen);
+
+            // Create the ground fixture
+            _groundBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(512f), ConvertUnits.ToSimUnits(54f), 1f, groundPosition);
             Initial();
         }
         public override void UnloadContent()
@@ -221,6 +233,11 @@ namespace ScifiDruid.GameScreen
                             gamestate = GameState.PAUSE;
                             //MediaPlayer.Pause();
                         }
+                        else
+                        {
+                            Singleton.Instance.world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
+                        }
+
 
                         break;
                 }
@@ -499,6 +516,8 @@ namespace ScifiDruid.GameScreen
                     }
                     spriteBatch.DrawString(mediumfonts, fps, new Vector2(1, 1), Color.Black);
 
+                    //spriteBatch.Draw(testTexture, ConvertUnits.ToDisplayUnits(playerBody.Position), null, Color.White, 0, player.playerOrigin, 1f, player.charDirection, 0f);
+
                     player.Draw(spriteBatch);
                 }
                 //game state
@@ -520,6 +539,8 @@ namespace ScifiDruid.GameScreen
                                 bullet.Draw(spriteBatch);
                             }
                         }
+                        spriteBatch.Draw(_groundSprite, ConvertUnits.ToDisplayUnits(_groundBody.Position), null, Color.White, 0f, new Vector2(_groundSprite.Width / 2, _groundSprite.Height / 2), 1f, SpriteEffects.None, 0f);
+                        
                         break;
                 }
             }
