@@ -15,6 +15,7 @@ using static ScifiDruid.Singleton;
 using Box2DNet.Dynamics;
 using Box2DNet.Factories;
 using Box2DNet;
+using TiledSharp;
 
 namespace ScifiDruid.GameScreen
 {
@@ -81,6 +82,19 @@ namespace ScifiDruid.GameScreen
         protected float masterSFX = Singleton.Instance.soundMasterVolume;
         private Texture2D _groundSprite;
 
+        //map
+        protected TmxMap map;
+        protected TileMapManager tilemapManager;
+        protected Rectangle startRect;
+        protected Rectangle endRect;
+
+        protected Texture2D tilesetStage1;
+
+        protected int tileWidth;
+        protected int tileHeight;
+        protected int tilesetTileWidth;
+        protected List<Rectangle> collisionRects;
+
         protected enum GameState 
         { 
             START, PLAY, WIN, LOSE, PAUSE, EXIT
@@ -121,9 +135,9 @@ namespace ScifiDruid.GameScreen
             };
 
 
-            player.Initial();
+            player.Initial(startRect);
 
-            _groundBody.Friction = 0.3f;
+            //_groundBody.Friction = 0.3f;
 
             //playerBody = player.hitBox;
 
@@ -182,7 +196,7 @@ namespace ScifiDruid.GameScreen
             Vector2 groundPosition = ConvertUnits.ToSimUnits(Singleton.Instance.CenterScreen);
 
             // Create the ground fixture
-            _groundBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(512f), ConvertUnits.ToSimUnits(54f), 1f, groundPosition);
+            //_groundBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(512f), ConvertUnits.ToSimUnits(54f), 1f, groundPosition);
             Initial();
         }
         public override void UnloadContent()
@@ -503,13 +517,14 @@ namespace ScifiDruid.GameScreen
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
-            //background
-            spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
             if (play)
             {
                 //all draw on screen here
                 if (gamestate == GameState.START || gamestate == GameState.PLAY)
                 {
+                    //background
+                    spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
+
                     if (gamestate == GameState.START)
                     {
                         fps = "FPS: 0";
@@ -520,28 +535,18 @@ namespace ScifiDruid.GameScreen
 
                     player.Draw(spriteBatch);
                 }
-                //game state
-                switch (gamestate)
+                //in PlayScreen only
+                if (gamestate == GameState.PLAY)
                 {
-                    //both for fade only
-                    case GameState.START:
-                        if (!fadeFinish)
+                    spriteBatch.DrawString(mediumfonts, fps, new Vector2(1, 1), Color.Black);
+                    if (player.isAttack)
+                    {
+                        foreach (Bullet bullet in player.bullet)
                         {
-                            spriteBatch.Draw(blackTex, Vector2.Zero, colorStart);
+                            bullet.Draw(spriteBatch);
                         }
-                        break;
-                    case GameState.PLAY:
-                        spriteBatch.DrawString(mediumfonts, fps, new Vector2(1, 1), Color.Black);
-                        if (player.isAttack)
-                        {
-                            foreach (Bullet bullet in player.bullet)
-                            {
-                                bullet.Draw(spriteBatch);
-                            }
-                        }
-                        spriteBatch.Draw(_groundSprite, ConvertUnits.ToDisplayUnits(_groundBody.Position), null, Color.White, 0f, new Vector2(_groundSprite.Width / 2, _groundSprite.Height / 2), 1f, SpriteEffects.None, 0f);
-                        
-                        break;
+                    }
+                    //spriteBatch.Draw(_groundSprite, ConvertUnits.ToDisplayUnits(_groundBody.Position), null, Color.White, 0f, new Vector2(_groundSprite.Width / 2, _groundSprite.Height / 2), 1f, SpriteEffects.None, 0f);
                 }
             }
             else
