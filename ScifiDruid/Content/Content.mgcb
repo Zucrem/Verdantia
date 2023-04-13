@@ -517,6 +517,18 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/PlayScreen/WinLose/VictorySign.png
 
+#begin Pictures/Play/StageScreen/Stage1Tileset/tileset1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/StageScreen/Stage1Tileset/tileset1.png
+
 #begin Pictures/Splash/SplashScreen/Black.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -552,4 +564,10 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Pictures/Untitled-1.png
+
+#begin stage1test.tmx
+/copy:stage1test.tmx
+
+#begin stage1test.tsx
+/copy:stage1test.tsx
 
