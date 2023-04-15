@@ -13,13 +13,16 @@ namespace ScifiDruid
 
         public ScifiDruid()
         {
-            _graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this)
+            {
+                PreferredBackBufferWidth = (int)Singleton.Instance.Dimensions.X,
+                PreferredBackBufferHeight = (int)Singleton.Instance.Dimensions.Y
+            };
             Content.RootDirectory = "Content";
 
-            _graphics.PreferredBackBufferWidth = (int)Singleton.Instance.Dimensions.X;
-            _graphics.PreferredBackBufferHeight = (int)Singleton.Instance.Dimensions.Y;
-            Singleton.Instance.CenterScreen = new Vector2(Singleton.Instance.Dimensions.X / 2, Singleton.Instance.Dimensions.Y / 2);
-            _graphics.SynchronizeWithVerticalRetrace = false;
+            //Singleton.Instance.CenterScreen = new Vector2(_graphics.PreferredBackBufferWidth / 2f, _graphics.PreferredBackBufferHeight / 2f);
+
+            //_graphics.SynchronizeWithVerticalRetrace = false;
             //IsFixedTimeStep = false;
             IsMouseVisible = true;
             _graphics.IsFullScreen = false;
@@ -35,6 +38,9 @@ namespace ScifiDruid
             //IsFixedTimeStep = true;
             //double temp = (1000d / (double)144) * 10000d;
             //TargetElapsedTime = new TimeSpan((long)temp);
+            Singleton.Instance.CenterScreen = new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2f, _graphics.GraphicsDevice.Viewport.Height / 2f);
+
+            Singleton.Instance._view = Matrix.CreateTranslation(Vector3.Zero);
 
             base.Initialize();
         }
@@ -69,8 +75,8 @@ namespace ScifiDruid
 
         protected override void Draw(GameTime gameTime)
         {
-            //GraphicsDevice.Clear(Color.White);
-            _spriteBatch.Begin();
+            GraphicsDevice.Clear(Color.White);
+            _spriteBatch.Begin(transformMatrix : Singleton.Instance._view);
             ScreenManager.Instance.Draw(_spriteBatch);
             _spriteBatch.End();
 

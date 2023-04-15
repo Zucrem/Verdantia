@@ -129,8 +129,6 @@ namespace ScifiDruid.GameScreen
             player = new Player(testTexture ,bullet, 99, 164)
             {
                 name = "Player Character",
-                //position = new Vector2(300, 300),
-                //size = new Vector2(50, 100),
                 speed = 0.1f,
             };
 
@@ -250,6 +248,10 @@ namespace ScifiDruid.GameScreen
                         else
                         {
                             Singleton.Instance.world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
+                            // v this for camera left of char 
+                            //Singleton.Instance._view = Matrix.CreateTranslation(new Vector3(player.position.X * -64, player.position.Y * -64, 0f)) * Matrix.CreateTranslation(new Vector3(79,Singleton.Instance.CenterScreen.Y + 40, 0f));
+                            Singleton.Instance._view = Matrix.CreateTranslation(new Vector3(player.position.X * -64, player.position.Y * -64, 0f)) * Matrix.CreateTranslation(new Vector3(Singleton.Instance.CenterScreen, 0f));
+                            // ^ this for camera center of char
                         }
 
 
@@ -258,6 +260,7 @@ namespace ScifiDruid.GameScreen
             }
             else
             {
+                Singleton.Instance._view = Matrix.CreateTranslation(Vector3.Zero);
                 //if not press Exit
                 if (!confirmExit)
                 {
@@ -524,7 +527,6 @@ namespace ScifiDruid.GameScreen
                 {
                     //background
                     spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
-
                     if (gamestate == GameState.START)
                     {
                         fps = "FPS: 0";

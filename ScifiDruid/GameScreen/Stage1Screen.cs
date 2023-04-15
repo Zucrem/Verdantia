@@ -60,6 +60,7 @@ namespace ScifiDruid.GameScreen
             {
                 Vector2 collisionPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
                 Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, collisionPosition);
+                body.Friction = 0.3f;
             }
         }
         public override void LoadContent()
