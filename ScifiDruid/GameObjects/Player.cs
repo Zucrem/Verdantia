@@ -27,6 +27,9 @@ namespace ScifiDruid.GameObjects
         public Rectangle characterDestRec;
         public Rectangle characterSouceRec;
 
+        //for camera detect
+        public Rectangle playerRect;
+
         private KeyboardState currentKeyState;
         private KeyboardState oldKeyState;
 
@@ -73,10 +76,12 @@ namespace ScifiDruid.GameObjects
             //characterDestRec = rectangle;
             bullet = new List<Bullet>();
             //hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world,ConvertUnits.ToSimUnits(texture.Width),ConvertUnits.ToSimUnits(texture.Height),1f,ConvertUnits.ToSimUnits(new Vector2(500,100)),0,BodyType.Dynamic);
-            hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(texture.Width), ConvertUnits.ToSimUnits(texture.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(startRect.X, startRect.Y)), 0, BodyType.Dynamic);
+            hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(texture.Width), ConvertUnits.ToSimUnits(texture.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(startRect.X, startRect.Y - 1)), 0, BodyType.Dynamic);
             hitBox.FixedRotation = true;
             hitBox.Friction = 1.0f;
             playerOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
+
+
             base.Initial();
         }
 
@@ -85,6 +90,8 @@ namespace ScifiDruid.GameObjects
         public override void Update(GameTime gameTime)
         {
             this.gameTime = gameTime;
+            position = hitBox.Position;
+            playerRect = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
             //characterDestRec.X = (int)hitBox.Position.X;
             //characterDestRec.Y = (int)hitBox.Position.Y;
         }

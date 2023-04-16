@@ -16,6 +16,7 @@ using Box2DNet.Dynamics;
 using Box2DNet.Factories;
 using Box2DNet;
 using TiledSharp;
+using System.ComponentModel.DataAnnotations;
 
 namespace ScifiDruid.GameScreen
 {
@@ -36,8 +37,10 @@ namespace ScifiDruid.GameScreen
         private float deltaTime;
         private string fps;
         private Texture2D bullet;
-        private Body _groundBody;
-        //private Body playerBody;
+        //private Body _groundBody;
+
+        //player body for camera
+        protected Rectangle playerBody;
 
         //all button
         //button at pause screen
@@ -95,6 +98,13 @@ namespace ScifiDruid.GameScreen
         protected int tilesetTileWidth;
         protected List<Rectangle> collisionRects;
 
+        protected float startmaptileX;
+        protected float endmaptileX;
+
+        //camera
+        protected Camera camera;
+        protected Matrix scaleMatrix;
+
         protected enum GameState 
         { 
             START, PLAY, WIN, LOSE, PAUSE, EXIT
@@ -135,12 +145,15 @@ namespace ScifiDruid.GameScreen
             };
 
 
-            player.Initial(startRect);
 
             //_groundBody.Friction = 0.3f;
 
-            //playerBody = player.hitBox;
 
+            //camera
+            camera = new Camera();
+
+
+            player.Initial(startRect);
         }
         public override void LoadContent()
         {
@@ -197,6 +210,8 @@ namespace ScifiDruid.GameScreen
 
             // Create the ground fixture
             //_groundBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(512f), ConvertUnits.ToSimUnits(54f), 1f, groundPosition);
+
+            
             Initial();
         }
         public override void UnloadContent()
@@ -240,6 +255,7 @@ namespace ScifiDruid.GameScreen
                         player.Update(gameTime);
                         player.Action();
 
+
                         //if want to pause
                         if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                         {
@@ -250,14 +266,17 @@ namespace ScifiDruid.GameScreen
                         else
                         {
                             Singleton.Instance.world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
+
+                            //camera update for scroll
+                            Singleton.Instance.tfMatrix = camera.Follow(player.position, startmaptileX, endmaptileX);
                         }
-
-
                         break;
                 }
             }
             else
             {
+                //change camera position
+                Singleton.Instance.tfMatrix = Matrix.CreateTranslation(Vector3.Zero);
                 //if not press Exit
                 if (!confirmExit)
                 {
@@ -331,8 +350,12 @@ namespace ScifiDruid.GameScreen
                             if (continueButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
                                 play = true;
-                                gamestate = GameState.PLAY; 
+                                gamestate = GameState.PLAY;
                                 //MediaPlayer.Resume();
+
+                                //camera update for scroll back to normal
+                                //block after image
+                                Singleton.Instance.tfMatrix = camera.Follow(player.position, startmaptileX, endmaptileX);
                             }
                             //Restart
                             if (restartButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
@@ -513,6 +536,8 @@ namespace ScifiDruid.GameScreen
             fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
 
             _frameCounter.Update(deltaTime);
+
+            
             base.Update(gameTime);
         }
         public override void Draw(SpriteBatch spriteBatch)
@@ -538,7 +563,6 @@ namespace ScifiDruid.GameScreen
                 //in PlayScreen only
                 if (gamestate == GameState.PLAY)
                 {
-                    spriteBatch.DrawString(mediumfonts, fps, new Vector2(1, 1), Color.Black);
                     if (player.isAttack)
                     {
                         foreach (Bullet bullet in player.bullet)

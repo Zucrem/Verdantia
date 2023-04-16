@@ -22,6 +22,8 @@ namespace ScifiDruid
         public int lastClickTime = 0;
         public bool firsttime = true;//first time playing this game
 
+        //camera
+        public Matrix tfMatrix;
 
         //Audio State
         public AudioState bgmState = AudioState.FULL;

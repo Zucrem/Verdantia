@@ -22,6 +22,8 @@ namespace ScifiDruid.GameScreen
         public override void Initial()
         {
             base.Initial();
+            startmaptileX = 10f;
+            endmaptileX = 350f;
 
             //create tileset for map1
             map = new TmxMap("Content/stage1test.tmx");
