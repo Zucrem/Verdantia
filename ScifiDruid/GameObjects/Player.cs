@@ -83,17 +83,18 @@ namespace ScifiDruid.GameObjects
         public override void Initial()
         {
             //ConvertUnits.SetDisplayUnitToSimUnitRatio(64f);
-
+            size = new Vector2(texture.Width, texture.Height);
             //characterDestRec = rectangle;
             bullet = new List<Bullet>();
             //hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world,ConvertUnits.ToSimUnits(textureWidth),ConvertUnits.ToSimUnits(textureHeight),1f,ConvertUnits.ToSimUnits(new Vector2(500,100)),0,BodyType.Dynamic);
             hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(startRect.X, startRect.Y - 1)), 0, BodyType.Dynamic);
             hitBox.FixedRotation = true;
             hitBox.Friction = 1.0f;
-            playerOrigin = new Vector2(textureWidth / 2, textureHeight / 2);
-
+            hitBox.AngularDamping = 2.0f;
+            hitBox.LinearDamping = 2.0f;
+            
+            playerOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
             playerAnimation.Initialize();
-
             base.Initial();
         }
 
