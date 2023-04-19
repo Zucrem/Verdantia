@@ -72,11 +72,6 @@ namespace ScifiDruid.Managers
         {
             currentScreen.Draw(spriteBatch);
         }
-        public void DrawFixScreen(SpriteBatch spriteBatch)
-        {
-            currentScreen.DrawFixScreen(spriteBatch);
-        }
-
         private static ScreenManager instance;
         public static ScreenManager Instance
         {
