@@ -59,27 +59,42 @@ namespace ScifiDruid.GameObjects
         public SpriteEffects bulletDirection;
         public List<Bullet> bullet;
 
-        public Player(Texture2D texture ,Texture2D bulletTexture,int sizeX , int sizeY) : base(texture)
+        //player real size for hitbox
+        public int textureWidth, textureHeight;
+
+        //start position and animation
+        private Rectangle startRect;
+
+        //animation
+        public PlayerAnimation playerAnimation;
+
+        public Player(Texture2D texture ,Texture2D bulletTexture, Rectangle startRect) : base(texture)
         {
             this.texture = texture;
+            this.textureWidth = 46;
+            this.textureHeight = 94;
             this.bulletTexture = bulletTexture;
+            this.startRect = startRect;
             //characterSouceRec = new Rectangle(0, 0, sizeX, sizeY);
+
+            playerAnimation = new PlayerAnimation(this.texture, new Vector2(startRect.X, startRect.Y));
         }
 
-        public void Initial(Rectangle startRect)
+        public override void Initial()
         {
             //ConvertUnits.SetDisplayUnitToSimUnitRatio(64f);
             size = new Vector2(texture.Width, texture.Height);
             //characterDestRec = rectangle;
             bullet = new List<Bullet>();
-            //hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world,ConvertUnits.ToSimUnits(texture.Width),ConvertUnits.ToSimUnits(texture.Height),1f,ConvertUnits.ToSimUnits(new Vector2(500,100)),0,BodyType.Dynamic);
-            hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(texture.Width), ConvertUnits.ToSimUnits(texture.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(startRect.X, startRect.Y - 1)), 0, BodyType.Dynamic);
+            //hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world,ConvertUnits.ToSimUnits(textureWidth),ConvertUnits.ToSimUnits(textureHeight),1f,ConvertUnits.ToSimUnits(new Vector2(500,100)),0,BodyType.Dynamic);
+            hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(startRect.X, startRect.Y - 1)), 0, BodyType.Dynamic);
             hitBox.FixedRotation = true;
             hitBox.Friction = 1.0f;
             hitBox.AngularDamping = 2.0f;
             hitBox.LinearDamping = 2.0f;
             
             playerOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
+            playerAnimation.Initialize();
             base.Initial();
         }
 
@@ -91,6 +106,7 @@ namespace ScifiDruid.GameObjects
             position = hitBox.Position;
             //characterDestRec.X = (int)hitBox.Position.X;
             //characterDestRec.Y = (int)hitBox.Position.Y;
+            playerAnimation.Update(gameTime, position);
         }
 
         public void Action()
@@ -270,10 +286,7 @@ namespace ScifiDruid.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(hitBox.Position), null, Color.White, 0, playerOrigin, 1f, charDirection, 0f);
-
-            //spriteBatch.Draw(texture, characterDestRec, characterSouceRec, Color.White, rotation, new Vector2(characterDestRec.Width / 2, characterDestRec.Height /2), charDirection,0);
-            //spriteBatch.Draw(texture, characterDestRec, characterSouceRec, Color.White);
+            playerAnimation.Draw(spriteBatch, playerOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
 
             base.Draw(spriteBatch);
         }
