@@ -242,7 +242,7 @@ namespace ScifiDruid.GameScreen
                         }
                         break;
                     case GameState.PLAY:
-                        player.Action();
+                        //player.Action();
 
                         //if want to pause
                         if (Keyboard.GetState().IsKeyDown(Keys.Escape))

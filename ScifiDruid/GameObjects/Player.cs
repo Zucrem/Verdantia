@@ -68,6 +68,25 @@ namespace ScifiDruid.GameObjects
         //animation
         public PlayerAnimation playerAnimation;
 
+        //player status
+        private PlayerStatus playerStatus;
+        public enum PlayerStatus
+        {
+            IDLE,
+            SHOOT,
+            RUN,
+            SHOOT_RUN,
+            SHOOT_UP,
+            SHOOT_UP_RUN,
+            JUMP,
+            SHOOT_AIR,
+            FALLING,
+            SKILL,
+            TAKE_DAMAGE,
+            DASH,
+            DEAD
+        }
+
         public Player(Texture2D texture ,Texture2D bulletTexture) : base(texture)
         {
             this.texture = texture;
@@ -95,6 +114,7 @@ namespace ScifiDruid.GameObjects
 
             playerOrigin = new Vector2(textureWidth / 2, textureHeight / 2);
 
+            playerStatus = PlayerStatus.IDLE;
             playerAnimation.Initialize();
 
             base.Initial();
@@ -108,7 +128,8 @@ namespace ScifiDruid.GameObjects
             position = hitBox.Position;
             //characterDestRec.X = (int)hitBox.Position.X;
             //characterDestRec.Y = (int)hitBox.Position.Y;
-            playerAnimation.Update(gameTime, position);
+            playerAnimation.Update(gameTime, playerStatus);
+            Action();
         }
 
         public void Action()

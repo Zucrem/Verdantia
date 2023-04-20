@@ -8,6 +8,7 @@ using Box2DNet.Dynamics;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Box2DNet;
+using static ScifiDruid.GameObjects.Player;
 
 namespace ScifiDruid.GameObjects
 {
@@ -18,7 +19,7 @@ namespace ScifiDruid.GameObjects
         private List <Vector2> spriteVector= new List<Vector2>();
         //time
         private float elapsed;
-        private float delay = 300f;
+        private float delay;
 
         //every player state sprite size
         //idle
@@ -43,6 +44,8 @@ namespace ScifiDruid.GameObjects
         private int skillSrcWidth, skillSrcHeight;
         //take damage
         private int takeDamageSrcWidth, takeDamageSrcHeight;
+        //take damage
+        private int dashSrcWidth, dashSrcHeight;
         //dead
         private int deadSrcWidth, deadSrcHeight;
 
@@ -60,9 +63,10 @@ namespace ScifiDruid.GameObjects
         private List<Vector2> fallingRectVector = new List<Vector2>();
         private List<Vector2> skillRectVector = new List<Vector2>();
         private List<Vector2> takeDamageRectVector = new List<Vector2>();
+        private List<Vector2> dashRectVector = new List<Vector2>();
         private List<Vector2> deadRectVector = new List<Vector2>();
 
-        private int idleFrames, shootFrames, runFrames, shootAndRunFrames, shootUpFrames, shootUpAndRunFrames, jumpFrames, shootOnAirFrames, fallingFrames, skillFrames, takeDamageFrames, deadFrames;
+        private int idleFrames, shootFrames, runFrames, shootAndRunFrames, shootUpFrames, shootUpAndRunFrames, jumpFrames, shootOnAirFrames, fallingFrames, skillFrames, takeDamageFrames, dashFrames, deadFrames;
 
         private int posX, posY;
         private int row = 0;
@@ -192,6 +196,11 @@ namespace ScifiDruid.GameObjects
 
             takeDamageFrames = takeDamageRectVector.Count();
 
+            //dash vector to list
+            //dashRectVector.Add(new Vector2(0, 0));
+
+            dashFrames = dashRectVector.Count();
+
             //dead vector to list
             deadRectVector.Add(new Vector2(0, 570));
             deadRectVector.Add(new Vector2(100, 570));
@@ -214,11 +223,10 @@ namespace ScifiDruid.GameObjects
         public void Initialize()
         {
         }
-        public void Update(GameTime gameTime, Vector2 position)
+        public void Update(GameTime gameTime, PlayerStatus playerStatus)
         {
-            spriteVector = idleRectVector;
-            spriteSize = new Vector2(idleSrcWidth, idleSrcHeight);
-            allframes = idleFrames;
+            PlayerStatus playerAnimateSprite = playerStatus;
+            changeAnimationStatus(playerAnimateSprite);
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
             if (elapsed >= delay)
@@ -239,6 +247,91 @@ namespace ScifiDruid.GameObjects
         public void Draw(SpriteBatch spriteBatch, Vector2 playerOrigin, SpriteEffects charDirection, Vector2 position)
         {
             spriteBatch.Draw(texture, position, sourceRect, Color.White, 0, playerOrigin, 1f, charDirection, 0f);
+        }
+
+        public void changeAnimationStatus(PlayerStatus playerStatus)
+        {
+            switch (playerStatus)
+            {
+                case PlayerStatus.IDLE:
+                    delay = 300f;
+                    spriteVector = idleRectVector;
+                    spriteSize = new Vector2(idleSrcWidth, idleSrcHeight);
+                    allframes = idleFrames;
+                    break;
+                case PlayerStatus.SHOOT:
+                    delay = 300f;
+                    spriteVector = shootRectVector;
+                    spriteSize = new Vector2(shootSrcWidth, shootSrcHeight);
+                    allframes = shootFrames;
+                    break;
+                case PlayerStatus.RUN:
+                    delay = 300f;
+                    spriteVector = runRectVector;
+                    spriteSize = new Vector2(runSrcWidth, runSrcHeight);
+                    allframes = runFrames;
+                    break;
+                case PlayerStatus.SHOOT_RUN:
+                    delay = 300f;
+                    spriteVector = shootAndRunRectVector;
+                    spriteSize = new Vector2(shootAndRunSrcWidth, shootAndRunSrcHeight);
+                    allframes = shootAndRunFrames;
+                    break;
+                case PlayerStatus.SHOOT_UP:
+                    delay = 300f;
+                    spriteVector = shootUpRectVector;
+                    spriteSize = new Vector2(shootUpSrcWidth, shootUpSrcHeight);
+                    allframes = shootUpFrames;
+                    break;
+                case PlayerStatus.SHOOT_UP_RUN:
+                    delay = 300f;
+                    spriteVector = shootUpAndRunRectVector;
+                    spriteSize = new Vector2(shootUpAndRunSrcWidth, shootUpAndRunSrcHeight);
+                    allframes = shootUpAndRunFrames;
+                    break;
+                case PlayerStatus.JUMP:
+                    delay = 300f;
+                    spriteVector = jumpRectVector;
+                    spriteSize = new Vector2(jumpSrcWidth, jumpSrcHeight);
+                    allframes = jumpFrames;
+                    break;
+                case PlayerStatus.SHOOT_AIR:
+                    delay = 300f;
+                    spriteVector = shootOnAirRectVector;
+                    spriteSize = new Vector2(shootOnAirSrcWidth, shootOnAirSrcHeight);
+                    allframes = shootOnAirFrames;
+                    break;
+                case PlayerStatus.FALLING:
+                    delay = 300f;
+                    spriteVector = fallingRectVector;
+                    spriteSize = new Vector2(fallingSrcWidth, fallingSrcHeight);
+                    allframes = fallingFrames;
+                    break;
+                case PlayerStatus.SKILL:
+                    delay = 300f;
+                    spriteVector = skillRectVector;
+                    spriteSize = new Vector2(skillSrcWidth, skillSrcHeight);
+                    allframes = skillFrames;
+                    break;
+                case PlayerStatus.TAKE_DAMAGE:
+                    delay = 300f;
+                    spriteVector = takeDamageRectVector;
+                    spriteSize = new Vector2(takeDamageSrcWidth, takeDamageSrcHeight);
+                    allframes = takeDamageFrames;
+                    break;
+                case PlayerStatus.DASH:
+                    delay = 300f;
+                    spriteVector = dashRectVector;
+                    spriteSize = new Vector2(dashSrcWidth, dashSrcHeight);
+                    allframes = dashFrames;
+                    break;
+                case PlayerStatus.DEAD:
+                    delay = 300f;
+                    spriteVector = deadRectVector;
+                    spriteSize = new Vector2(deadSrcWidth, deadSrcHeight);
+                    allframes = deadFrames;
+                    break;
+            }
         }
     }
 }
