@@ -44,7 +44,7 @@ namespace ScifiDruid
             //TargetElapsedTime = new TimeSpan((long)temp);
             Singleton.Instance.CenterScreen = new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2f, _graphics.GraphicsDevice.Viewport.Height / 2f);
 
-            Singleton.Instance._view = Matrix.CreateTranslation(Vector3.Zero);
+            Singleton.Instance.tfMatrix = Matrix.CreateTranslation(Vector3.Zero);
 
             base.Initialize();
         }

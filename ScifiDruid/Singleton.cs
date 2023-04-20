@@ -19,8 +19,6 @@ namespace ScifiDruid
         public bool cmdExit = false;
         public bool gameOver = false;
 
-        public Matrix _view;
-
         public int lastClickTime = 0;
         public bool firsttime = true;//first time playing this game
 
