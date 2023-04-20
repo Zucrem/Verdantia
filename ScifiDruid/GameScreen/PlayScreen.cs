@@ -106,6 +106,8 @@ namespace ScifiDruid.GameScreen
         protected Camera camera;
         protected Matrix scaleMatrix;
 
+        private bool worldReset = false;
+
         protected enum GameState 
         { 
             START, PLAY, WIN, LOSE, PAUSE, EXIT
@@ -137,23 +139,16 @@ namespace ScifiDruid.GameScreen
             yesConfirmButton = new Button(yesConfirmPic1, new Vector2(495, 390), new Vector2(120, 60));
             noConfirmButton = new Button(noConfirmPic1, new Vector2(710, 390), new Vector2(70, 60));
 
-            player = new Player(testTexture, bullet, startRect)
+            player = new Player(testTexture, bullet)
             {
                 name = "Player Character",
                 size = new Vector2(46, 94),
                 speed = 0.1f,
             };
 
-
-
-            //_groundBody.Friction = 0.3f;
-
-
             //camera
             camera = new Camera();
 
-
-            player.Initial();
         }
         public override void LoadContent()
         {
@@ -206,14 +201,8 @@ namespace ScifiDruid.GameScreen
             bullet = content.Load<Texture2D>("Pictures/clipart613994");
             _groundSprite = content.Load<Texture2D>("Pictures/Play/PlayScreen/GroundSprite");
 
-            Vector2 groundPosition = ConvertUnits.ToSimUnits(Singleton.Instance.CenterScreen);
-
-            // Create the ground fixture
-            //_groundBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(512f), ConvertUnits.ToSimUnits(54f), 1f, groundPosition);
-
-            
-            Initial();
         }
+
         public override void UnloadContent()
         {
             base.UnloadContent();
@@ -268,6 +257,9 @@ namespace ScifiDruid.GameScreen
 
                             //camera update for scroll
                             Singleton.Instance.tfMatrix = camera.Follow(player.position, startmaptileX, endmaptileX);
+
+                            //Debug.WriteLine(Singleton.Instance.world.BodyList.Count);
+
                         }
                         break;
                 }
@@ -293,6 +285,7 @@ namespace ScifiDruid.GameScreen
                             //Restart
                             if (restartButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
+                                resetWorld();
                                 changeScreen = true;
                             }
                             //Exit
@@ -318,6 +311,8 @@ namespace ScifiDruid.GameScreen
                             //Restart
                             if (restartButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
+                                resetWorld();
+
                                 changeScreen = true;
                             }
                             //Exit
@@ -359,6 +354,14 @@ namespace ScifiDruid.GameScreen
                             //Restart
                             if (restartButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
+                                if (!worldReset)
+                                {
+                                    //Debug.WriteLine("ss");
+                                    resetWorld();
+                                    worldReset = true;
+
+                                }
+
                                 changeScreen = true;
                             }
                             //Exit
@@ -538,6 +541,14 @@ namespace ScifiDruid.GameScreen
 
             
             base.Update(gameTime);
+        }
+
+        public void resetWorld()
+        {
+            foreach (Body item in Singleton.Instance.world.BodyList)
+            {
+                item.Dispose();
+            }
         }
 
         public override void DrawFixScreen(SpriteBatch spriteBatch)

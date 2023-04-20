@@ -19,6 +19,7 @@ namespace ScifiDruid.GameScreen
 {
     class Stage1Screen : PlayScreen
     {
+
         public override void Initial()
         {
             base.Initial();
@@ -55,15 +56,18 @@ namespace ScifiDruid.GameScreen
                     //
                 }
             }
-
-
+            
             //create collision for block in the world
             foreach (Rectangle rect in collisionRects)
             {
                 Vector2 collisionPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
+                //Singleton.Instance.world.Step(0.001f);
+
                 Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, collisionPosition);
                 body.Friction = 0.3f;
             }
+
+            player.Initial(startRect);
         }
         public override void LoadContent()
         {
@@ -99,6 +103,9 @@ namespace ScifiDruid.GameScreen
                     }
                 }
             }
+
+            
+            
         }
     }
 }
