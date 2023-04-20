@@ -71,9 +71,10 @@ namespace ScifiDruid.GameObjects
         private int posX, posY;
         private int row = 0;
         private int c = 0;
-        private int frames = 0;
+        public int frames = 0;
         private int allframes;
 
+        private PlayerStatus preStatus;
 
         public PlayerAnimation(Texture2D texture, Vector2 position) : base(texture)
         {
@@ -241,7 +242,7 @@ namespace ScifiDruid.GameObjects
                 }
                 elapsed = 0;
             }
-
+            Debug.WriteLine(spriteVector.Count);
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
         }
         public void Draw(SpriteBatch spriteBatch, Vector2 playerOrigin, SpriteEffects charDirection, Vector2 position)
@@ -266,7 +267,7 @@ namespace ScifiDruid.GameObjects
                     allframes = shootFrames;
                     break;
                 case PlayerStatus.RUN:
-                    delay = 300f;
+                    delay = 200f;
                     spriteVector = runRectVector;
                     spriteSize = new Vector2(runSrcWidth, runSrcHeight);
                     allframes = runFrames;

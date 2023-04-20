@@ -143,7 +143,7 @@ namespace ScifiDruid.GameScreen
             {
                 name = "Player Character",
                 size = new Vector2(46, 94),
-                speed = 0.1f,
+                speed = 0.125f,
             };
 
             //camera
@@ -572,14 +572,6 @@ namespace ScifiDruid.GameScreen
                 //all draw on screen here
                 if (gamestate == GameState.START || gamestate == GameState.PLAY)
                 {
-                    //background
-                    spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
-                    if (gamestate == GameState.START)
-                    {
-                        fps = "FPS: 0";
-                    }
-                    spriteBatch.DrawString(mediumfonts, fps, new Vector2(1, 1), Color.Black);
-
                     //spriteBatch.Draw(testTexture, ConvertUnits.ToDisplayUnits(playerBody.Position), null, Color.White, 0, player.playerOrigin, 1f, player.charDirection, 0f);
                     player.Draw(spriteBatch);
                 }

@@ -134,25 +134,42 @@ namespace ScifiDruid.GameObjects
 
         public void Action()
         {
+            currentKeyState = Keyboard.GetState();
+
+            playerStatus = PlayerStatus.IDLE;
             Walking();
             Jump();
             Attack();
-            Skill();
             Dash();
+            Skill();
+
+            oldKeyState = currentKeyState;
         }
 
         private void Walking()
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            if (currentKeyState.IsKeyDown(Keys.Left))
             {
                 hitBox.ApplyForce(new Vector2(-100 * speed, 0));
                 charDirection = SpriteEffects.None;
+                playerStatus = PlayerStatus.RUN;
+            } 
+            else if (oldKeyState.IsKeyDown(Keys.Left) && currentKeyState.IsKeyUp(Keys.Left))
+            {
+                playerAnimation.frames = 0;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            if (currentKeyState.IsKeyDown(Keys.Right))
             {
                 hitBox.ApplyForce(new Vector2(100 * speed, 0));
                 charDirection = SpriteEffects.FlipHorizontally;
+                playerStatus = PlayerStatus.RUN;
             }
+            else if (oldKeyState.IsKeyDown(Keys.Right) && currentKeyState.IsKeyUp(Keys.Right))
+            {
+                playerAnimation.frames = 0;
+            }
+
+
         }
         private void Jump()
         {
@@ -161,8 +178,14 @@ namespace ScifiDruid.GameObjects
             if (currentKeyState.IsKeyDown(Keys.Space) && oldKeyState.IsKeyUp(Keys.Space))
             {
                 hitBox.ApplyLinearImpulse(new Vector2(0, -5));
-                
+
+                playerStatus = PlayerStatus.JUMP;
+
                 //jumpCount++;
+            }
+            else if (oldKeyState.IsKeyDown(Keys.Space) && currentKeyState.IsKeyUp(Keys.Space))
+            {
+                playerAnimation.frames = 0;
             }
             //Debug.WriteLine(hitBox.LinearVelocity);
 
