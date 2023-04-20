@@ -1,8 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Box2DNet.Dynamics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ScifiDruid.Managers;
 using System;
+using System.Diagnostics;
 
 namespace ScifiDruid
 {
@@ -10,6 +12,8 @@ namespace ScifiDruid
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        private bool b = true;
 
         public ScifiDruid()
         {
@@ -76,6 +80,8 @@ namespace ScifiDruid
             _spriteBatch.Begin(transformMatrix : Singleton.Instance.tfMatrix);
             ScreenManager.Instance.Draw(_spriteBatch);
             _spriteBatch.End();
+
+            
 
             base.Draw(gameTime);
         }

@@ -68,21 +68,20 @@ namespace ScifiDruid.GameObjects
         //animation
         public PlayerAnimation playerAnimation;
 
-        public Player(Texture2D texture ,Texture2D bulletTexture, Rectangle startRect) : base(texture)
+        public Player(Texture2D texture ,Texture2D bulletTexture) : base(texture)
         {
             this.texture = texture;
             this.textureWidth = 46;
             this.textureHeight = 94;
             this.bulletTexture = bulletTexture;
-            this.startRect = startRect;
             //characterSouceRec = new Rectangle(0, 0, sizeX, sizeY);
 
-            playerAnimation = new PlayerAnimation(this.texture, new Vector2(startRect.X, startRect.Y));
         }
 
-        public override void Initial()
+        public void Initial(Rectangle startRect)
         {
             //ConvertUnits.SetDisplayUnitToSimUnitRatio(64f);
+            playerAnimation = new PlayerAnimation(this.texture, new Vector2(startRect.X, startRect.Y));
 
             //characterDestRec = rectangle;
             bullet = new List<Bullet>();
@@ -90,6 +89,10 @@ namespace ScifiDruid.GameObjects
             hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(startRect.X, startRect.Y - 1)), 0, BodyType.Dynamic);
             hitBox.FixedRotation = true;
             hitBox.Friction = 1.0f;
+            hitBox.AngularDamping = 2.0f;
+            hitBox.LinearDamping = 2.0f;
+
+
             playerOrigin = new Vector2(textureWidth / 2, textureHeight / 2);
 
             playerAnimation.Initialize();
