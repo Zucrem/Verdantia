@@ -359,11 +359,12 @@ namespace ScifiDruid.GameObjects
             {
                 Contact contactFixture = contactEdge.Contact;
                 // Check if the contact fixture is the ground
-                if (contactFixture.IsTouching && contactEdge.Contact.FixtureB.Body.UserData != null)
+                if (contactFixture.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals("ground"))
                 {
-                    Debug.WriteLine("yay");
-                    if (contactEdge.Contact.FixtureB.Body.UserData.Equals("ground"))
+                    Vector2 normal = contactFixture.Manifold.LocalNormal;
+                    if (normal.Y < 0f)
                     {
+                        Debug.WriteLine("SS");
                         return true;
                     }
                     // The character is on the ground
