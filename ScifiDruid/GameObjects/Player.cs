@@ -139,8 +139,9 @@ namespace ScifiDruid.GameObjects
             {
                 touchGround = isGround();
             }*/
-            isGround();
-            //Debug.WriteLine(isGround());
+
+            //isGround();
+            Debug.WriteLine(isGround());
 
             playerAnimation.Update(gameTime, playerStatus);
             Action();
@@ -352,25 +353,29 @@ namespace ScifiDruid.GameObjects
             }
         }
 
-        public bool isGround()
+        private bool isGround()
         {
             ContactEdge contactEdge = hitBox.ContactList;
             while (contactEdge != null)
             {
-                Contact contactFixture = contactEdge.Contact;
+                Contact contact = contactEdge.Contact;
+
                 // Check if the contact fixture is the ground
-                if (contactFixture.IsTouching && contactEdge.Contact.FixtureB.Body.UserData != null)
+                if (contact.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals("ground"))
                 {
-                    Debug.WriteLine("yay");
-                    if (contactEdge.Contact.FixtureB.Body.UserData.Equals("ground"))
+                    // Get the contact normal vector and check if it's approximately upwards
+                    Vector2 normal = contact.Manifold.LocalNormal;
+                    //Debug.WriteLine(normal.Y);
+                    if (normal.Y < 0f)
                     {
+                        //The character is standing on the ground
                         return true;
                     }
-                    // The character is on the ground
-
                 }
-                contactEdge = contactEdge.Next;
+
+                    contactEdge = contactEdge.Next;
             }
+
             return false;
         }
 
