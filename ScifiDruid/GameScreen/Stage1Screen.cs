@@ -37,6 +37,7 @@ namespace ScifiDruid.GameScreen
             tilemapManager = new TileMapManager(map, tilesetStage1, tilesetTileWidth, tileWidth, tileHeight);
 
             collisionRects = new List<Rectangle>();
+            deadBlockRects = new List<Rectangle>();
             foreach (var o in map.ObjectGroups["Collisions"].Objects)
             {
                 if (o.Name == "")
@@ -53,7 +54,7 @@ namespace ScifiDruid.GameScreen
                 }
                 if (o.Name == "water")
                 {
-                    //
+                    deadBlockRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
                 }
             }
             
@@ -64,6 +65,8 @@ namespace ScifiDruid.GameScreen
                 //Singleton.Instance.world.Step(0.001f);
 
                 Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, collisionPosition);
+                body.UserData = "ground";
+                body.Restitution = 0.0f;
                 body.Friction = 0.3f;
             }
 

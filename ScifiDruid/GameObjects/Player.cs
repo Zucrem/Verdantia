@@ -16,6 +16,7 @@ using System.Collections;
 using Box2DNet.Dynamics;
 using Box2DNet.Factories;
 using Box2DNet;
+using Box2DNet.Dynamics.Contacts;
 
 namespace ScifiDruid.GameObjects
 {
@@ -40,6 +41,11 @@ namespace ScifiDruid.GameObjects
         private Vector2 firstPosition;
         private GameTime gameTime;
 
+        //player status
+        private PlayerStatus playerStatus;
+
+        private bool touchGround;
+
         private int jumpTime;
         private int jumpDelay;
 
@@ -62,14 +68,9 @@ namespace ScifiDruid.GameObjects
         //player real size for hitbox
         public int textureWidth, textureHeight;
 
-        //start position and animation
-        private Rectangle startRect;
-
         //animation
         public PlayerAnimation playerAnimation;
 
-        //player status
-        private PlayerStatus playerStatus;
         public enum PlayerStatus
         {
             IDLE,
@@ -111,6 +112,10 @@ namespace ScifiDruid.GameObjects
             hitBox.AngularDamping = 2.0f;
             hitBox.LinearDamping = 2.0f;
 
+            /*if (isGround())
+            {
+                touchGround = isGround();
+            }*/
 
             playerOrigin = new Vector2(textureWidth / 2, textureHeight / 2);
 
@@ -128,6 +133,15 @@ namespace ScifiDruid.GameObjects
             position = hitBox.Position;
             //characterDestRec.X = (int)hitBox.Position.X;
             //characterDestRec.Y = (int)hitBox.Position.Y;
+
+            //check touch ground condition
+            /*if (isGround())
+            {
+                touchGround = isGround();
+            }*/
+            isGround();
+            //Debug.WriteLine(isGround());
+
             playerAnimation.Update(gameTime, playerStatus);
             Action();
         }
@@ -137,6 +151,10 @@ namespace ScifiDruid.GameObjects
             currentKeyState = Keyboard.GetState();
 
             playerStatus = PlayerStatus.IDLE;
+            /*if (touchGround)
+            {
+                playerStatus = PlayerStatus.IDLE;
+            }*/
             Walking();
             Jump();
             Attack();
@@ -153,20 +171,24 @@ namespace ScifiDruid.GameObjects
                 hitBox.ApplyForce(new Vector2(-100 * speed, 0));
                 charDirection = SpriteEffects.None;
                 playerStatus = PlayerStatus.RUN;
+                /*if (isGround())
+                {
+                    playerStatus = PlayerStatus.RUN;
+                }*/
             } 
-            else if (oldKeyState.IsKeyDown(Keys.Left) && currentKeyState.IsKeyUp(Keys.Left))
+            /*else if (oldKeyState.IsKeyDown(Keys.Left) && currentKeyState.IsKeyUp(Keys.Left))
             {
                 playerAnimation.frames = 0;
-            }
+            }*/
             if (currentKeyState.IsKeyDown(Keys.Right))
             {
                 hitBox.ApplyForce(new Vector2(100 * speed, 0));
                 charDirection = SpriteEffects.FlipHorizontally;
                 playerStatus = PlayerStatus.RUN;
-            }
-            else if (oldKeyState.IsKeyDown(Keys.Right) && currentKeyState.IsKeyUp(Keys.Right))
-            {
-                playerAnimation.frames = 0;
+                /*if (isGround())
+                {
+                    playerStatus = PlayerStatus.RUN;
+                }*/
             }
 
 
@@ -180,12 +202,12 @@ namespace ScifiDruid.GameObjects
                 hitBox.ApplyLinearImpulse(new Vector2(0, -5));
 
                 playerStatus = PlayerStatus.JUMP;
+                /*if (isGround())
+                {
+                    playerStatus = PlayerStatus.JUMP;
+                }*/
 
                 //jumpCount++;
-            }
-            else if (oldKeyState.IsKeyDown(Keys.Space) && currentKeyState.IsKeyUp(Keys.Space))
-            {
-                playerAnimation.frames = 0;
             }
             //Debug.WriteLine(hitBox.LinearVelocity);
 
@@ -328,6 +350,28 @@ namespace ScifiDruid.GameObjects
             {
 
             }
+        }
+
+        public bool isGround()
+        {
+            ContactEdge contactEdge = hitBox.ContactList;
+            while (contactEdge != null)
+            {
+                Contact contactFixture = contactEdge.Contact;
+                // Check if the contact fixture is the ground
+                if (contactFixture.IsTouching && contactEdge.Contact.FixtureB.Body.UserData != null)
+                {
+                    Debug.WriteLine("yay");
+                    if (contactEdge.Contact.FixtureB.Body.UserData.Equals("ground"))
+                    {
+                        return true;
+                    }
+                    // The character is on the ground
+
+                }
+                contactEdge = contactEdge.Next;
+            }
+            return false;
         }
 
         public override void Draw(SpriteBatch spriteBatch)

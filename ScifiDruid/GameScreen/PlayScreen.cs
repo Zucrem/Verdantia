@@ -33,7 +33,7 @@ namespace ScifiDruid.GameScreen
         protected Texture2D restartWLPic, nextButtonPic, backWLPic, DefeatSignPic, VictorySignPic;//win or lose
         protected Texture2D confirmExitPopUpPic, noConfirmPic1, yesConfirmPic1, noConfirmPic2, yesConfirmPic2;//for confirm
 
-        protected Texture2D testTexture;
+        protected Texture2D playerTex;
         private FrameCounter _frameCounter = new FrameCounter();
         private float deltaTime;
         private string fps;
@@ -97,7 +97,7 @@ namespace ScifiDruid.GameScreen
         protected int tileWidth;
         protected int tileHeight;
         protected int tilesetTileWidth;
-        protected List<Rectangle> collisionRects;
+        protected List<Rectangle> collisionRects, deadBlockRects;
 
         protected float startmaptileX;
         protected float endmaptileX;
@@ -139,7 +139,7 @@ namespace ScifiDruid.GameScreen
             yesConfirmButton = new Button(yesConfirmPic1, new Vector2(495, 390), new Vector2(120, 60));
             noConfirmButton = new Button(noConfirmPic1, new Vector2(710, 390), new Vector2(70, 60));
 
-            player = new Player(testTexture, bullet)
+            player = new Player(playerTex, bullet)
             {
                 name = "Player Character",
                 size = new Vector2(46, 94),
@@ -197,9 +197,8 @@ namespace ScifiDruid.GameScreen
             bigfonts = content.Load<SpriteFont>("Fonts/font60");
             mediumfonts = content.Load<SpriteFont>("Fonts/font30");
 
-            testTexture = content.Load<Texture2D>("Pictures/Play/Characters/Player/playerSheet");
-            bullet = content.Load<Texture2D>("Pictures/clipart613994");
-            _groundSprite = content.Load<Texture2D>("Pictures/Play/PlayScreen/GroundSprite");
+            playerTex = content.Load<Texture2D>("Pictures/Play/Characters/Player/playerSheet");
+            bullet = content.Load<Texture2D>("Pictures/Play/Skills/PlayerSkill");
 
         }
 
@@ -242,8 +241,6 @@ namespace ScifiDruid.GameScreen
                         }
                         break;
                     case GameState.PLAY:
-                        //player.Action();
-
                         //if want to pause
                         if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                         {
@@ -572,8 +569,8 @@ namespace ScifiDruid.GameScreen
                 //all draw on screen here
                 if (gamestate == GameState.START || gamestate == GameState.PLAY)
                 {
-                    //spriteBatch.Draw(testTexture, ConvertUnits.ToDisplayUnits(playerBody.Position), null, Color.White, 0, player.playerOrigin, 1f, player.charDirection, 0f);
-                    player.Draw(spriteBatch);
+                    //draw playeranimation
+                   player.Draw(spriteBatch);
                 }
                 //in PlayScreen only
                 if (gamestate == GameState.PLAY)
@@ -582,6 +579,7 @@ namespace ScifiDruid.GameScreen
                     {
                         foreach (Bullet bullet in player.bullet)
                         {
+
                             bullet.Draw(spriteBatch);
                         }
                     }
