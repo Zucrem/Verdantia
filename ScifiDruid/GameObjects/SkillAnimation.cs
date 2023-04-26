@@ -12,6 +12,7 @@ namespace ScifiDruid.GameObjects
 {
     public class SkillAnimation : _GameObject
     {
+        //player texture and spritesize
         private Texture2D texture;
         private Vector2 spriteSize;
         private List<Vector2> spriteVector = new List<Vector2>();
@@ -30,6 +31,7 @@ namespace ScifiDruid.GameObjects
         //all sprite position in spritesheet
         private Rectangle sourceRect;
 
+        //frames 
         public int frames = 0;
         private int allframes;
 
@@ -39,7 +41,7 @@ namespace ScifiDruid.GameObjects
 
         private int bulletFrames, bulletDeadFrames, skillFrames;
 
-        public SkillAnimation(Texture2D texture, Vector2 position) : base(texture)
+        public SkillAnimation(Texture2D texture) : base(texture)
         {
             this.texture = texture;
 
@@ -78,23 +80,36 @@ namespace ScifiDruid.GameObjects
         public void Initialize()
         {
         }
-        public void Update(GameTime gameTime, BulletStatus bulletStatus)
+        public void UpdateBullet(GameTime gameTime, BulletStatus bulletStatus)
         {
             changeBulletAnimationStatus(bulletStatus);
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
             if (elapsed >= delay)
             {
-                if (frames < allframes - 1)
+                if (bulletStatus == BulletStatus.BULLETALIVE)
                 {
-                    frames++;
+                    if (frames < allframes - 1)
+                    {
+                        frames++;
+                    }
+                }
+                else if (bulletStatus == BulletStatus.BULLETDEAD)
+                {
+                    if (frames < allframes - 1)
+                    {
+                        frames++;
+                    }
+                    else if (frames == allframes - 1)
+                    {
+                        return;
+                    }
                 }
                 elapsed = 0;
             }
-
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
         }
-        public void Update(GameTime gameTime)
+        public void UpdateSkill(GameTime gameTime)
         {
             changeSkillAnimationStatus();
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -110,9 +125,9 @@ namespace ScifiDruid.GameObjects
 
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
         }
-        public void Draw(SpriteBatch spriteBatch, Vector2 playerOrigin, SpriteEffects charDirection, Vector2 position)
+        public void Draw(SpriteBatch spriteBatch, Rectangle rect , SpriteEffects bulletDirection)
         {
-            spriteBatch.Draw(texture, position, sourceRect, Color.White, 0, playerOrigin, 1f, charDirection, 0f);
+            spriteBatch.Draw(texture, rect, null, Color.White, 0, Vector2.Zero, bulletDirection, 0);
         }
 
         public void changeBulletAnimationStatus(BulletStatus bulletStatus)

@@ -257,6 +257,11 @@ namespace ScifiDruid.GameScreen
 
                             //Debug.WriteLine(Singleton.Instance.world.BodyList.Count);
 
+                            if (player.playerStatus == Player.PlayerStatus.END)
+                            {
+                                play = false;
+                                gamestate = GameState.LOSE;
+                            }
                         }
                         break;
                 }
@@ -353,7 +358,7 @@ namespace ScifiDruid.GameScreen
                             {
                                 if (!worldReset)
                                 {
-                                    //Debug.WriteLine("ss");
+                                    Debug.WriteLine("Reset");
                                     resetWorld();
                                     worldReset = true;
 

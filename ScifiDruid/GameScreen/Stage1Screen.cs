@@ -64,10 +64,23 @@ namespace ScifiDruid.GameScreen
                 Vector2 collisionPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
                 //Singleton.Instance.world.Step(0.001f);
 
-                Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, collisionPosition);
-                body.UserData = "ground";
-                body.Restitution = 0.0f;
-                body.Friction = 0.3f;
+                Body body1 = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, collisionPosition);
+                body1.UserData = "ground";
+                body1.Restitution = 0.0f;
+                body1.Friction = 0.3f;
+            }
+
+
+            //create dead block for block in the world
+            foreach (Rectangle rect in deadBlockRects)
+            {
+                Vector2 deadBlockPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
+                //Singleton.Instance.world.Step(0.001f);
+
+                Body body2 = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, deadBlockPosition);
+                body2.UserData = "dead";
+                body2.Restitution = 0.0f;
+                body2.Friction = 0.3f;
             }
 
             player.Initial(startRect);
@@ -106,9 +119,6 @@ namespace ScifiDruid.GameScreen
                     }
                 }
             }
-
-            
-            
         }
     }
 }

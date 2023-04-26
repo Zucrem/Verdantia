@@ -43,16 +43,36 @@ namespace ScifiDruid.GameObjects
         }
         public void Initial(Rectangle position)
         {
-            //bulletAnimation = new PlayerAnimation(this.texture, new Vector2(startRect.X, startRect.Y));
+            bulletAnimation = new SkillAnimation(this.texture);
 
             bulletStatus = BulletStatus.BULLETALIVE;
-            //SkillAnimation.Initialize();
+
+
+            bulletAnimation.Initialize();
 
             base.Initial();
         }
+
+        public void UpdateBullet(GameTime gameTime, BulletStatus bulletState)
+        {
+            bulletStatus = bulletState;
+            switch (bulletDirection)
+            {
+                case SpriteEffects.None:
+                    bulletPosition.X += 2;
+                    break;
+                case SpriteEffects.FlipHorizontally:
+                    bulletPosition.X -= 2;
+                    break;
+            }
+
+
+            bulletAnimation.UpdateBullet(gameTime, bulletStatus);
+        }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, new Rectangle((int)bulletPosition.X, (int)bulletPosition.Y, 15, 10), null, Color.White, 0, Vector2.Zero, bulletDirection, 0);
+            bulletAnimation.Draw(spriteBatch, new Rectangle((int)bulletPosition.X, (int)bulletPosition.Y, 15, 10), bulletDirection);
             base.Draw(spriteBatch);
         }
 
@@ -67,19 +87,6 @@ namespace ScifiDruid.GameObjects
                     break;
                 case SpriteEffects.FlipHorizontally:
                     bulletPosition.X = position.X - 30;
-                    break;
-            }
-        }
-
-        public void Update()
-        {
-            switch (bulletDirection)
-            {
-                case SpriteEffects.None:
-                    bulletPosition.X += 2;
-                    break;
-                case SpriteEffects.FlipHorizontally:
-                    bulletPosition.X -= 2;
                     break;
             }
         }

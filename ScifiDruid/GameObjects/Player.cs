@@ -32,6 +32,7 @@ namespace ScifiDruid.GameObjects
         private KeyboardState oldKeyState;
 
         public Body hitBox;
+        public Body _bulletBody;
 
         public int jumpCount = 0;
         
@@ -42,7 +43,7 @@ namespace ScifiDruid.GameObjects
         private GameTime gameTime;
 
         //player status
-        private PlayerStatus playerStatus;
+        public PlayerStatus playerStatus;
 
         private bool touchGround;
 
@@ -70,6 +71,8 @@ namespace ScifiDruid.GameObjects
 
         //animation
         public PlayerAnimation playerAnimation;
+        //check if animation end or not
+        bool end;
 
         public enum PlayerStatus
         {
@@ -85,7 +88,8 @@ namespace ScifiDruid.GameObjects
             SKILL,
             TAKE_DAMAGE,
             DASH,
-            DEAD
+            DEAD,
+            END
         }
 
         public Player(Texture2D texture ,Texture2D bulletTexture) : base(texture)
@@ -112,10 +116,8 @@ namespace ScifiDruid.GameObjects
             hitBox.AngularDamping = 2.0f;
             hitBox.LinearDamping = 2.0f;
 
-            /*if (isGround())
-            {
-                touchGround = isGround();
-            }*/
+            //check touch ground condition
+            touchGround = true;
 
             playerOrigin = new Vector2(textureWidth / 2, textureHeight / 2);
 
@@ -135,12 +137,32 @@ namespace ScifiDruid.GameObjects
             //characterDestRec.Y = (int)hitBox.Position.Y;
 
             //check touch ground condition
-            /*if (isGround())
+            if (IsGround())
             {
-                touchGround = isGround();
-            }*/
-            isGround();
-            //Debug.WriteLine(isGround());
+                touchGround = true;
+            }
+            else
+            {
+                touchGround = false;
+            }
+
+            //all animation
+            //if step on dead block
+            if (IsStepDeadBlock())
+            {
+                hitBox.ApplyLinearImpulse(new Vector2(0, 0));
+                playerStatus = PlayerStatus.DEAD;
+            }
+            //if dead animation end
+            end = playerAnimation.GetAnimationDead();
+            if (end)
+            {
+                playerStatus = PlayerStatus.END;
+            }
+
+            Debug.WriteLine("touch ground = " + touchGround);
+            Debug.WriteLine("Vel x,y = " + hitBox.LinearVelocity);
+
 
             playerAnimation.Update(gameTime, playerStatus);
             Action();
@@ -150,11 +172,12 @@ namespace ScifiDruid.GameObjects
         {
             currentKeyState = Keyboard.GetState();
 
-            playerStatus = PlayerStatus.IDLE;
-            /*if (touchGround)
+            //check if player still on ground
+            if (touchGround)
             {
                 playerStatus = PlayerStatus.IDLE;
-            }*/
+            }
+            Falling();
             Walking();
             Jump();
             Attack();
@@ -170,11 +193,12 @@ namespace ScifiDruid.GameObjects
             {
                 hitBox.ApplyForce(new Vector2(-100 * speed, 0));
                 charDirection = SpriteEffects.None;
-                playerStatus = PlayerStatus.RUN;
-                /*if (isGround())
+
+                //check if player still on ground
+                if (touchGround)
                 {
                     playerStatus = PlayerStatus.RUN;
-                }*/
+                }
             } 
             /*else if (oldKeyState.IsKeyDown(Keys.Left) && currentKeyState.IsKeyUp(Keys.Left))
             {
@@ -184,11 +208,12 @@ namespace ScifiDruid.GameObjects
             {
                 hitBox.ApplyForce(new Vector2(100 * speed, 0));
                 charDirection = SpriteEffects.FlipHorizontally;
-                playerStatus = PlayerStatus.RUN;
-                /*if (isGround())
+
+                //check if player still on ground
+                if (touchGround)
                 {
                     playerStatus = PlayerStatus.RUN;
-                }*/
+                }
             }
 
 
@@ -201,11 +226,11 @@ namespace ScifiDruid.GameObjects
             {
                 hitBox.ApplyLinearImpulse(new Vector2(0, -5));
 
-                playerStatus = PlayerStatus.JUMP;
-                /*if (isGround())
+                //check if player still on ground
+                if (touchGround)
                 {
                     playerStatus = PlayerStatus.JUMP;
-                }*/
+                }
 
                 //jumpCount++;
             }
@@ -294,7 +319,7 @@ namespace ScifiDruid.GameObjects
 
         public void Attack()
         {
-            attackTime = (int)gameTime.TotalGameTime.TotalMilliseconds - attackDelay;
+            /*attackTime = (int)gameTime.TotalGameTime.TotalMilliseconds - attackDelay;
 
             if (attackTime > 1000 && Keyboard.GetState().IsKeyDown(Keys.X))
             {
@@ -320,9 +345,12 @@ namespace ScifiDruid.GameObjects
             {
                 foreach (Bullet bulletE in bullet)
                 {
-                    bulletE.Update();
+                    bulletE.Update(gameTime);
                 }
-            }
+            }*/
+
+            bullet.Add(new Bullet(bulletTexture, bulletPosition, charDirection));
+
         }
 
         public void Skill()
@@ -342,7 +370,18 @@ namespace ScifiDruid.GameObjects
 
                 }
             }
-            
+        }
+        public void Falling()
+        {
+            Vector2 velocity = hitBox.LinearVelocity;
+            if (!touchGround && (int)velocity.Y > 0)
+            {
+                playerStatus = PlayerStatus.FALLING;
+            }
+            else if (!touchGround && (int)velocity.Y < 0)
+            {
+                playerStatus = PlayerStatus.JUMP;
+            }
         }
         public void Dash()
         {
@@ -352,7 +391,7 @@ namespace ScifiDruid.GameObjects
             }
         }
 
-        public bool isGround()
+        public bool IsGround()
         {
             ContactEdge contactEdge = hitBox.ContactList;
             while (contactEdge != null)
@@ -364,7 +403,27 @@ namespace ScifiDruid.GameObjects
                     Vector2 normal = contactFixture.Manifold.LocalNormal;
                     if (normal.Y < 0f)
                     {
-                        Debug.WriteLine("SS");
+                        return true;
+                    }
+                    // The character is on the ground
+
+                }
+                contactEdge = contactEdge.Next;
+            }
+            return false;
+        }
+        public bool IsStepDeadBlock()
+        {
+            ContactEdge contactEdge = hitBox.ContactList;
+            while (contactEdge != null)
+            {
+                Contact contactFixture = contactEdge.Contact;
+                // Check if the contact fixture is the dead block
+                if (contactFixture.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals("dead"))
+                {
+                    Vector2 normal = contactFixture.Manifold.LocalNormal;
+                    if (normal.Y < 0f)
+                    {
                         return true;
                     }
                     // The character is on the ground
@@ -377,7 +436,17 @@ namespace ScifiDruid.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            playerAnimation.Draw(spriteBatch, playerOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
+            //draw player
+            if (!end)
+            {
+                playerAnimation.Draw(spriteBatch, playerOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
+            }
+
+            //if shoot
+            /*if (_bulletBody != null && !_bulletBody.IsDisposed)
+            {
+                bullet.Draw(spriteBatch);
+            }*/
 
             base.Draw(spriteBatch);
         }

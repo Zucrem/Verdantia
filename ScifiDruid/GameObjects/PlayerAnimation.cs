@@ -17,6 +17,10 @@ namespace ScifiDruid.GameObjects
         private Texture2D texture;
         private Vector2 spriteSize;
         private List <Vector2> spriteVector= new List<Vector2>();
+
+        //get animation state if dead
+        private bool animationDead = false;
+
         //time
         private float elapsed;
         private float delay;
@@ -228,7 +232,7 @@ namespace ScifiDruid.GameObjects
                 frames = 0;
             }
             PlayerStatus playerAnimateSprite = playerStatus;
-            changeAnimationStatus(playerAnimateSprite);
+            ChangeAnimationStatus(playerAnimateSprite);
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             switch (playerStatus)
             {
@@ -243,6 +247,19 @@ namespace ScifiDruid.GameObjects
                     }
                     break;
                 case PlayerStatus.DEAD:
+                    if (elapsed >= delay)
+                    {
+                        if (frames >= allframes - 1)
+                        {
+                            animationDead = true;
+                            return;
+                        }
+                        else
+                        {
+                            frames++;
+                        }
+                        elapsed = 0;
+                    }
                     break;
                 default:
                     if (elapsed >= delay)
@@ -267,7 +284,7 @@ namespace ScifiDruid.GameObjects
             spriteBatch.Draw(texture, position, sourceRect, Color.White, 0, playerOrigin, 1f, charDirection, 0f);
         }
 
-        public void changeAnimationStatus(PlayerStatus playerStatus)
+        public void ChangeAnimationStatus(PlayerStatus playerStatus)
         {
             switch (playerStatus)
             {
@@ -344,12 +361,17 @@ namespace ScifiDruid.GameObjects
                     allframes = dashFrames;
                     break;
                 case PlayerStatus.DEAD:
-                    delay = 300f;
+                    delay = 150f;
                     spriteVector = deadRectVector;
                     spriteSize = new Vector2(deadSrcWidth, deadSrcHeight);
                     allframes = deadFrames;
                     break;
             }
+        }
+
+        public bool GetAnimationDead()
+        {
+            return animationDead;
         }
     }
 }
