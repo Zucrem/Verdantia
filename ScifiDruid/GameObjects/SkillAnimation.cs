@@ -103,15 +103,17 @@ namespace ScifiDruid.GameObjects
                     {
                         frames++;
                     }
-                    else if (frames == allframes - 1)
+                    else if (frames >= allframes - 1)
                     {
                         return;
                     }
                 }
                 elapsed = 0;
             }
+
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
         }
+
         public void UpdateSkill(GameTime gameTime)
         {
             changeSkillAnimationStatus();
