@@ -17,6 +17,10 @@ namespace ScifiDruid.GameObjects
         private Texture2D texture;
         private Vector2 spriteSize;
         private List <Vector2> spriteVector= new List<Vector2>();
+
+        //get animation state if dead
+        private bool animationDead = false;
+
         //time
         private float elapsed;
         private float delay;
@@ -68,7 +72,6 @@ namespace ScifiDruid.GameObjects
 
         private int idleFrames, shootFrames, runFrames, shootAndRunFrames, shootUpFrames, shootUpAndRunFrames, jumpFrames, shootOnAirFrames, fallingFrames, skillFrames, takeDamageFrames, dashFrames, deadFrames;
 
-        private int posX, posY;
         private int row = 0;
         private int c = 0;
         public int frames = 0;
@@ -134,7 +137,8 @@ namespace ScifiDruid.GameObjects
             //run vector to list
             runRectVector.Add(new Vector2(0, 148));
             runRectVector.Add(new Vector2(68, 148));
-            runRectVector.Add(new Vector2(216, 148));
+            runRectVector.Add(new Vector2(136, 148));
+            runRectVector.Add(new Vector2(204, 148));
             runRectVector.Add(new Vector2(272, 148));
             runRectVector.Add(new Vector2(340, 148));
             runRectVector.Add(new Vector2(408, 148));
@@ -215,42 +219,72 @@ namespace ScifiDruid.GameObjects
 
             deadFrames = deadRectVector.Count();
 
-            //get start position
-            this.posX = (int)position.X;
-            this.posY = (int)position.Y;
-
         }
 
         public void Initialize()
         {
+            preStatus = PlayerStatus.IDLE;
         }
         public void Update(GameTime gameTime, PlayerStatus playerStatus)
         {
-            PlayerStatus playerAnimateSprite = playerStatus;
-            changeAnimationStatus(playerAnimateSprite);
-            elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-
-            if (elapsed >= delay)
+            if (preStatus != playerStatus)
             {
-                if (frames >= allframes - 1)
-                {
-                    frames = 0;
-                }
-                else
-                {
-                    frames++;
-                }
-                elapsed = 0;
+                frames = 0;
             }
-            Debug.WriteLine(spriteVector.Count);
+            PlayerStatus playerAnimateSprite = playerStatus;
+            ChangeAnimationStatus(playerAnimateSprite);
+            elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            switch (playerStatus)
+            {
+                case PlayerStatus.SHOOT:
+                    if (elapsed >= delay)
+                    {
+                        if (frames < allframes - 1)
+                        {
+                            frames++;
+                        }
+                        elapsed = 0;
+                    }
+                    break;
+                case PlayerStatus.DEAD:
+                    if (elapsed >= delay)
+                    {
+                        if (frames >= allframes - 1)
+                        {
+                            animationDead = true;
+                            return;
+                        }
+                        else
+                        {
+                            frames++;
+                        }
+                        elapsed = 0;
+                    }
+                    break;
+                default:
+                    if (elapsed >= delay)
+                    {
+                        if (frames >= allframes - 1)
+                        {
+                            frames = 0;
+                        }
+                        else
+                        {
+                            frames++;
+                        }
+                        elapsed = 0;
+                    }
+                    break;
+            }
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
+            preStatus = playerStatus;
         }
         public void Draw(SpriteBatch spriteBatch, Vector2 playerOrigin, SpriteEffects charDirection, Vector2 position)
         {
             spriteBatch.Draw(texture, position, sourceRect, Color.White, 0, playerOrigin, 1f, charDirection, 0f);
         }
 
-        public void changeAnimationStatus(PlayerStatus playerStatus)
+        public void ChangeAnimationStatus(PlayerStatus playerStatus)
         {
             switch (playerStatus)
             {
@@ -327,12 +361,17 @@ namespace ScifiDruid.GameObjects
                     allframes = dashFrames;
                     break;
                 case PlayerStatus.DEAD:
-                    delay = 300f;
+                    delay = 150f;
                     spriteVector = deadRectVector;
                     spriteSize = new Vector2(deadSrcWidth, deadSrcHeight);
                     allframes = deadFrames;
                     break;
             }
+        }
+
+        public bool GetAnimationDead()
+        {
+            return animationDead;
         }
     }
 }

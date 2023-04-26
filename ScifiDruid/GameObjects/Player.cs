@@ -16,6 +16,7 @@ using System.Collections;
 using Box2DNet.Dynamics;
 using Box2DNet.Factories;
 using Box2DNet;
+using Box2DNet.Dynamics.Contacts;
 
 namespace ScifiDruid.GameObjects
 {
@@ -31,6 +32,7 @@ namespace ScifiDruid.GameObjects
         private KeyboardState oldKeyState;
 
         public Body hitBox;
+        public Body _bulletBody;
 
         public int jumpCount = 0;
         
@@ -39,6 +41,11 @@ namespace ScifiDruid.GameObjects
         private bool gravityActive = false;
         private Vector2 firstPosition;
         private GameTime gameTime;
+
+        //player status
+        public PlayerStatus playerStatus;
+
+        private bool touchGround;
 
         private int jumpTime;
         private int jumpDelay;
@@ -62,14 +69,11 @@ namespace ScifiDruid.GameObjects
         //player real size for hitbox
         public int textureWidth, textureHeight;
 
-        //start position and animation
-        private Rectangle startRect;
-
         //animation
         public PlayerAnimation playerAnimation;
+        //check if animation end or not
+        bool end;
 
-        //player status
-        private PlayerStatus playerStatus;
         public enum PlayerStatus
         {
             IDLE,
@@ -84,7 +88,8 @@ namespace ScifiDruid.GameObjects
             SKILL,
             TAKE_DAMAGE,
             DASH,
-            DEAD
+            DEAD,
+            END
         }
 
         public Player(Texture2D texture ,Texture2D bulletTexture) : base(texture)
@@ -111,6 +116,8 @@ namespace ScifiDruid.GameObjects
             hitBox.AngularDamping = 2.0f;
             hitBox.LinearDamping = 2.0f;
 
+            //check touch ground condition
+            touchGround = true;
 
             playerOrigin = new Vector2(textureWidth / 2, textureHeight / 2);
 
@@ -128,6 +135,35 @@ namespace ScifiDruid.GameObjects
             position = hitBox.Position;
             //characterDestRec.X = (int)hitBox.Position.X;
             //characterDestRec.Y = (int)hitBox.Position.Y;
+
+            //check touch ground condition
+            if (IsGround())
+            {
+                touchGround = true;
+            }
+            else
+            {
+                touchGround = false;
+            }
+
+            //all animation
+            //if step on dead block
+            if (IsStepDeadBlock())
+            {
+                hitBox.ApplyLinearImpulse(new Vector2(0, 0));
+                playerStatus = PlayerStatus.DEAD;
+            }
+            //if dead animation end
+            end = playerAnimation.GetAnimationDead();
+            if (end)
+            {
+                playerStatus = PlayerStatus.END;
+            }
+
+            Debug.WriteLine("touch ground = " + touchGround);
+            Debug.WriteLine("Vel x,y = " + hitBox.LinearVelocity);
+
+
             playerAnimation.Update(gameTime, playerStatus);
             Action();
         }
@@ -136,7 +172,12 @@ namespace ScifiDruid.GameObjects
         {
             currentKeyState = Keyboard.GetState();
 
-            playerStatus = PlayerStatus.IDLE;
+            //check if player still on ground
+            if (touchGround)
+            {
+                playerStatus = PlayerStatus.IDLE;
+            }
+            Falling();
             Walking();
             Jump();
             Attack();
@@ -152,21 +193,27 @@ namespace ScifiDruid.GameObjects
             {
                 hitBox.ApplyForce(new Vector2(-100 * speed, 0));
                 charDirection = SpriteEffects.None;
-                playerStatus = PlayerStatus.RUN;
+
+                //check if player still on ground
+                if (touchGround)
+                {
+                    playerStatus = PlayerStatus.RUN;
+                }
             } 
-            else if (oldKeyState.IsKeyDown(Keys.Left) && currentKeyState.IsKeyUp(Keys.Left))
+            /*else if (oldKeyState.IsKeyDown(Keys.Left) && currentKeyState.IsKeyUp(Keys.Left))
             {
                 playerAnimation.frames = 0;
-            }
+            }*/
             if (currentKeyState.IsKeyDown(Keys.Right))
             {
                 hitBox.ApplyForce(new Vector2(100 * speed, 0));
                 charDirection = SpriteEffects.FlipHorizontally;
-                playerStatus = PlayerStatus.RUN;
-            }
-            else if (oldKeyState.IsKeyDown(Keys.Right) && currentKeyState.IsKeyUp(Keys.Right))
-            {
-                playerAnimation.frames = 0;
+
+                //check if player still on ground
+                if (touchGround)
+                {
+                    playerStatus = PlayerStatus.RUN;
+                }
             }
 
 
@@ -179,13 +226,13 @@ namespace ScifiDruid.GameObjects
             {
                 hitBox.ApplyLinearImpulse(new Vector2(0, -5));
 
-                playerStatus = PlayerStatus.JUMP;
+                //check if player still on ground
+                if (touchGround)
+                {
+                    playerStatus = PlayerStatus.JUMP;
+                }
 
                 //jumpCount++;
-            }
-            else if (oldKeyState.IsKeyDown(Keys.Space) && currentKeyState.IsKeyUp(Keys.Space))
-            {
-                playerAnimation.frames = 0;
             }
             //Debug.WriteLine(hitBox.LinearVelocity);
 
@@ -272,7 +319,7 @@ namespace ScifiDruid.GameObjects
 
         public void Attack()
         {
-            attackTime = (int)gameTime.TotalGameTime.TotalMilliseconds - attackDelay;
+            /*attackTime = (int)gameTime.TotalGameTime.TotalMilliseconds - attackDelay;
 
             if (attackTime > 1000 && Keyboard.GetState().IsKeyDown(Keys.X))
             {
@@ -298,9 +345,12 @@ namespace ScifiDruid.GameObjects
             {
                 foreach (Bullet bulletE in bullet)
                 {
-                    bulletE.Update();
+                    bulletE.Update(gameTime);
                 }
-            }
+            }*/
+
+            bullet.Add(new Bullet(bulletTexture, bulletPosition, charDirection));
+
         }
 
         public void Skill()
@@ -320,7 +370,18 @@ namespace ScifiDruid.GameObjects
 
                 }
             }
-            
+        }
+        public void Falling()
+        {
+            Vector2 velocity = hitBox.LinearVelocity;
+            if (!touchGround && (int)velocity.Y > 0)
+            {
+                playerStatus = PlayerStatus.FALLING;
+            }
+            else if (!touchGround && (int)velocity.Y < 0)
+            {
+                playerStatus = PlayerStatus.JUMP;
+            }
         }
         public void Dash()
         {
@@ -330,9 +391,62 @@ namespace ScifiDruid.GameObjects
             }
         }
 
+        public bool IsGround()
+        {
+            ContactEdge contactEdge = hitBox.ContactList;
+            while (contactEdge != null)
+            {
+                Contact contactFixture = contactEdge.Contact;
+                // Check if the contact fixture is the ground
+                if (contactFixture.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals("ground"))
+                {
+                    Vector2 normal = contactFixture.Manifold.LocalNormal;
+                    if (normal.Y < 0f)
+                    {
+                        return true;
+                    }
+                    // The character is on the ground
+
+                }
+                contactEdge = contactEdge.Next;
+            }
+            return false;
+        }
+        public bool IsStepDeadBlock()
+        {
+            ContactEdge contactEdge = hitBox.ContactList;
+            while (contactEdge != null)
+            {
+                Contact contactFixture = contactEdge.Contact;
+                // Check if the contact fixture is the dead block
+                if (contactFixture.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals("dead"))
+                {
+                    Vector2 normal = contactFixture.Manifold.LocalNormal;
+                    if (normal.Y < 0f)
+                    {
+                        return true;
+                    }
+                    // The character is on the ground
+
+                }
+                contactEdge = contactEdge.Next;
+            }
+            return false;
+        }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
-            playerAnimation.Draw(spriteBatch, playerOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
+            //draw player
+            if (!end)
+            {
+                playerAnimation.Draw(spriteBatch, playerOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
+            }
+
+            //if shoot
+            /*if (_bulletBody != null && !_bulletBody.IsDisposed)
+            {
+                bullet.Draw(spriteBatch);
+            }*/
 
             base.Draw(spriteBatch);
         }

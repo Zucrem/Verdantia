@@ -37,30 +37,6 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/font60.spritefont
 
-#begin Pictures/clipart613994.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Pictures/clipart613994.png
-
-#begin Pictures/Hermes anim.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Pictures/Hermes anim.png
-
 #begin Pictures/Main/ConfirmExit/ConfirmQuitPopUp.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -529,6 +505,18 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/PlayScreen/WinLose/VictorySign.png
 
+#begin Pictures/Play/Skills/PlayerSkill.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Skills/PlayerSkill.png
+
 #begin Pictures/Play/StageScreen/Stage1Tileset/tileset1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -564,18 +552,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Pictures/Splash/SplashScreen/GameLogo.png
-
-#begin Pictures/Untitled-1.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Pictures/Untitled-1.png
 
 #begin stage1test.tmx
 /copy:stage1test.tmx

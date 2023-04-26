@@ -37,6 +37,7 @@ namespace ScifiDruid.GameScreen
             tilemapManager = new TileMapManager(map, tilesetStage1, tilesetTileWidth, tileWidth, tileHeight);
 
             collisionRects = new List<Rectangle>();
+            deadBlockRects = new List<Rectangle>();
             foreach (var o in map.ObjectGroups["Collisions"].Objects)
             {
                 if (o.Name == "")
@@ -53,7 +54,7 @@ namespace ScifiDruid.GameScreen
                 }
                 if (o.Name == "water")
                 {
-                    //
+                    deadBlockRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
                 }
             }
             
@@ -63,8 +64,23 @@ namespace ScifiDruid.GameScreen
                 Vector2 collisionPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
                 //Singleton.Instance.world.Step(0.001f);
 
-                Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, collisionPosition);
-                body.Friction = 0.3f;
+                Body body1 = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, collisionPosition);
+                body1.UserData = "ground";
+                body1.Restitution = 0.0f;
+                body1.Friction = 0.3f;
+            }
+
+
+            //create dead block for block in the world
+            foreach (Rectangle rect in deadBlockRects)
+            {
+                Vector2 deadBlockPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
+                //Singleton.Instance.world.Step(0.001f);
+
+                Body body2 = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, deadBlockPosition);
+                body2.UserData = "dead";
+                body2.Restitution = 0.0f;
+                body2.Friction = 0.3f;
             }
 
             player.Initial(startRect);
@@ -103,9 +119,6 @@ namespace ScifiDruid.GameScreen
                     }
                 }
             }
-
-            
-            
         }
     }
 }
