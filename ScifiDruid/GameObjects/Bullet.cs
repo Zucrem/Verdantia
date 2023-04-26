@@ -13,28 +13,119 @@ using Microsoft.VisualBasic.FileIO;
 using System.Diagnostics;
 using System.Xml;
 using static ScifiDruid.GameObjects.Player;
+using Box2DNet.Dynamics;
+using Box2DNet.Factories;
+using Box2DNet;
+using Box2DNet.Dynamics.Contacts;
 
 namespace ScifiDruid.GameObjects
 {
     public class Bullet : _GameObject
     {
         private Texture2D texture;
-        public int jumpCount = 0;
-        public bool isAttack = false;
-        public Vector2 bulletPosition;
-        public SpriteEffects bulletDirection;
+        private Vector2 bulletPosition;
+        private SpriteEffects bulletDirection;
+
+        private Vector2 bulletOrigin;
 
         //bullet state
-        public BulletStatus bulletStatus;
+        private BulletStatus bulletStatus;
 
         //animation
-        public SkillAnimation bulletAnimation;
+        private SkillAnimation bulletAnimation;
+
+        private Body bulletBody;
+
+        private int bulletSizeX;
+        private int bulletSizeY;
+
         public enum BulletStatus
         {
             BULLETALIVE,
             BULLETDEAD
         }
+      
+        public Bullet(Texture2D texture , Vector2 position,Body playerBody,SpriteEffects charDirection) : base(texture)
+        {
+            this.texture = texture;
+            this.charDirection = charDirection;
+            bulletSizeX = 40;
+            bulletSizeY = 8;
 
+            bulletAnimation = new SkillAnimation(this.texture, position);
+            bulletBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bulletSizeX), ConvertUnits.ToSimUnits(bulletSizeY),0,position,0,BodyType.Dynamic,"bullet");
+            bulletBody.IgnoreGravity = true;
+            bulletBody.IgnoreCollisionWith(playerBody);
+
+            switch (charDirection)
+            {
+                case SpriteEffects.None:
+                    bulletBody.Position += new Vector2(-0.5f,0);
+                    break;
+                case SpriteEffects.FlipHorizontally:
+                    bulletBody.Position += new Vector2(0.5f, 0);
+                    break;
+            }
+
+            bulletOrigin = new Vector2(bulletSizeX / 2,bulletSizeY / 2);
+        }
+
+        public void Shoot(GameTime gameTime)
+        {
+            switch (charDirection)
+            {
+                case SpriteEffects.None:
+                    bulletBody.ApplyForce(new Vector2(-100, 0));
+                    bulletStatus = BulletStatus.BULLETALIVE;
+                    break;
+                case SpriteEffects.FlipHorizontally:
+                    bulletBody.ApplyForce(new Vector2(100, 0));
+                    bulletStatus = BulletStatus.BULLETALIVE;
+                    break;
+            }
+
+            bulletAnimation.Update(gameTime, bulletStatus);
+        }
+
+        public bool isContractEnemy()
+        {
+            ContactEdge contactEdge = bulletBody.ContactList;
+            while (contactEdge != null)
+            {
+                Contact contactFixture = contactEdge.Contact;
+
+                // Check if the contact fixture is the ground
+                if (contactEdge.Contact.FixtureA.Body.UserData != null)
+                {
+                    return true;
+                    // The character is on the ground
+
+                }
+                contactEdge = contactEdge.Next;
+            }
+            return false;
+        }
+
+        public void BulletDispose()
+        {
+            bulletBody.Dispose();
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+
+            //spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(bulletBody.Position), Color.White);
+            
+            bulletAnimation.Draw(spriteBatch, bulletOrigin, charDirection, ConvertUnits.ToDisplayUnits(bulletBody.Position));
+
+            base.Draw(spriteBatch);
+        }
+
+    }
+}
+
+
+        /*
         public Bullet(Texture2D texture , Vector2 bulletPosition, SpriteEffects bulletDirection) : base(texture)
         {
             this.texture = texture;
@@ -82,6 +173,5 @@ namespace ScifiDruid.GameObjects
                     bulletPosition.X -= 2;
                     break;
             }
-        }
-    }
-}
+        }*/
+

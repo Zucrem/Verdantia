@@ -78,6 +78,7 @@ namespace ScifiDruid.GameObjects
         public void Initialize()
         {
         }
+
         public void Update(GameTime gameTime, BulletStatus bulletStatus)
         {
             changeBulletAnimationStatus(bulletStatus);
