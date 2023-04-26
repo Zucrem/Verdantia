@@ -205,7 +205,7 @@ namespace ScifiDruid.GameScreen
 
             playerTex = content.Load<Texture2D>("Pictures/Play/Characters/Player/playerSheet");
             bullet = content.Load<Texture2D>("Pictures/Play/Skills/PlayerSkill");
-            //bullet = content.Load<Texture2D>("Pictures/clipart613994");
+            //bullet = content.Load<Texture2D>("ss");
 
         }
 

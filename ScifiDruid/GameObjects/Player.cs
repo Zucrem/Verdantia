@@ -259,8 +259,10 @@ namespace ScifiDruid.GameObjects
             {
                 foreach (Bullet bullet in bulletList)
                 {
+                    //bullet.Update(gameTime);
                     if (bullet.isContact() || bullet.isOutRange())
                     {
+                        bullet.bulletStatus = Bullet.BulletStatus.BULLETDEAD;
                         bulletList.Remove(bullet);
                         break;
                     }

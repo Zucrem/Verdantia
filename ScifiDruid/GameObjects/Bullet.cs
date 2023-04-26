@@ -29,7 +29,7 @@ namespace ScifiDruid.GameObjects
         private Vector2 bulletOrigin;
 
         //bullet state
-        private BulletStatus bulletStatus;
+        public BulletStatus bulletStatus;
 
         //animation
         private SkillAnimation bulletAnimation;
@@ -92,6 +92,12 @@ namespace ScifiDruid.GameObjects
             }
 
             bulletAnimation.UpdateBullet(gameTime, bulletStatus);
+
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            //bulletAnimation.UpdateBullet(gameTime, bulletStatus);
         }
 
         public bool isContact()
@@ -102,7 +108,7 @@ namespace ScifiDruid.GameObjects
                 Contact contactFixture = contactEdge.Contact;
 
                 // Check if the contact fixture is the ground
-                if (contactEdge.Contact.FixtureB.Body.UserData != null)
+                if (contactFixture.IsTouching)
                 {
                     // The Bullet was contact anything
                     bulletBody.Dispose();
@@ -122,7 +128,6 @@ namespace ScifiDruid.GameObjects
                 bulletBody.IgnoreGravity = false;
                 // The Bullet was Out of range
                 bulletBody.Dispose();
-                //bulletBody.Position
                 return true;
             }
 
