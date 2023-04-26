@@ -108,6 +108,9 @@ namespace ScifiDruid.GameScreen
 
         private bool worldReset = false;
 
+        private bool worldResetDD;
+
+
         protected enum GameState 
         { 
             START, PLAY, WIN, LOSE, PAUSE, EXIT
@@ -116,6 +119,9 @@ namespace ScifiDruid.GameScreen
 
         public virtual void Initial()
         {
+
+            worldResetDD = false;
+
             gamestate = GameState.START;
 
             //create button on pause
@@ -199,6 +205,7 @@ namespace ScifiDruid.GameScreen
 
             playerTex = content.Load<Texture2D>("Pictures/Play/Characters/Player/playerSheet");
             bullet = content.Load<Texture2D>("Pictures/Play/Skills/PlayerSkill");
+            //bullet = content.Load<Texture2D>("Pictures/clipart613994");
 
         }
 
@@ -254,6 +261,16 @@ namespace ScifiDruid.GameScreen
 
                             //camera update for scroll
                             Singleton.Instance.tfMatrix = camera.Follow(player.position, startmaptileX, endmaptileX);
+
+                            if (!worldResetDD)
+                            {
+                                foreach (var item in Singleton.Instance.world.BodyList)
+                                {
+                                    Debug.WriteLine(item.UserData);
+                                }
+                                worldResetDD = true;
+                            }
+                            
 
                             //Debug.WriteLine(Singleton.Instance.world.BodyList.Count);
 
@@ -582,9 +599,8 @@ namespace ScifiDruid.GameScreen
                 {
                     if (player.isAttack)
                     {
-                        foreach (Bullet bullet in player.bullet)
+                        foreach (Bullet bullet in player.bulletList)
                         {
-
                             bullet.Draw(spriteBatch);
                         }
                     }

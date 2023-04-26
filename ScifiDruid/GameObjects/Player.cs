@@ -64,7 +64,7 @@ namespace ScifiDruid.GameObjects
         public bool isAttack = false;
         public Vector2 bulletPosition;
         public SpriteEffects bulletDirection;
-        public List<Bullet> bullet;
+        public List<Bullet> bulletList;
 
         //player real size for hitbox
         public int textureWidth, textureHeight;
@@ -108,7 +108,7 @@ namespace ScifiDruid.GameObjects
             playerAnimation = new PlayerAnimation(this.texture, new Vector2(startRect.X, startRect.Y));
 
             //characterDestRec = rectangle;
-            bullet = new List<Bullet>();
+            bulletList = new List<Bullet>();
             //hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world,ConvertUnits.ToSimUnits(textureWidth),ConvertUnits.ToSimUnits(textureHeight),1f,ConvertUnits.ToSimUnits(new Vector2(500,100)),0,BodyType.Dynamic);
             hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(startRect.X, startRect.Y - 1)), 0, BodyType.Dynamic);
             hitBox.FixedRotation = true;
@@ -165,10 +165,10 @@ namespace ScifiDruid.GameObjects
 
 
             playerAnimation.Update(gameTime, playerStatus);
-            Action();
+            Action(gameTime);
         }
 
-        public void Action()
+        public void Action(GameTime gameTime)
         {
             currentKeyState = Keyboard.GetState();
 
@@ -180,10 +180,11 @@ namespace ScifiDruid.GameObjects
             Falling();
             Walking();
             Jump();
-            Attack();
+            Attack(gameTime);
             Dash();
             Skill();
 
+            
             oldKeyState = currentKeyState;
         }
 
@@ -220,8 +221,6 @@ namespace ScifiDruid.GameObjects
         }
         private void Jump()
         {
-            currentKeyState = Keyboard.GetState();
-
             if (currentKeyState.IsKeyDown(Keys.Space) && oldKeyState.IsKeyUp(Keys.Space))
             {
                 hitBox.ApplyLinearImpulse(new Vector2(0, -5));
@@ -234,123 +233,64 @@ namespace ScifiDruid.GameObjects
 
                 //jumpCount++;
             }
-            //Debug.WriteLine(hitBox.LinearVelocity);
-
-            /*
-            if (hitBox.LinearVelocity.Equals(Vector2.Zero))
-            {
-                jumpCount = 0;
-            }*/
-
-            oldKeyState = currentKeyState;
-            /*jumpTime = (int)gameTime.TotalGameTime.TotalMilliseconds - jumpDelay;
-
-            if (jumpCount < 2 && jumpTime > 200 && (Keyboard.GetState().IsKeyDown(Keys.Space)))
-            {
-                isJumpPress = true;
-                gravityActive = false;
-                if (jumpCount == 0)
-                {
-                    firstPosition = position;
-                }
-                jumpDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
-                jumpPosition = position.Y - 100f;
-                jumpCount++;
-            }
-
-            if (isJumpPress && !gravityActive)
-            {
-                position.Y -= 300f * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
-
-            if (!gravityActive && jumpPosition >= position.Y)
-            {
-                gravityActive = true;
-            }
-
-            if (gravityActive)
-            {
-                position.Y += 300f * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
-
-            if (gravityActive && firstPosition.Y <= position.Y)
-            {
-                isJumpPress = false;
-                gravityActive = false;
-                jumpCount = 0;
-            }
-            */
         }
 
-        /*public void Attack()
+
+        public void Attack(GameTime gameTime)
         {
-            if (elapsedMs > 200 && Keyboard.GetState().IsKeyDown(Keys.X))
+            if (currentKeyState.IsKeyDown(Keys.K) && oldKeyState.IsKeyUp(Keys.K))
             {
+                bulletList.Add(new Bullet(bulletTexture, hitBox.Position,hitBox,charDirection));
                 isAttack = true;
-                
-                bulletPosition.Y = position.Y + 10;
-                bulletDirection = charDirection;
-                switch (bulletDirection)
-                {
-                    case SpriteEffects.None:
-                        bulletPosition.X = position.X + 30;
-                        break;
-                    case SpriteEffects.FlipHorizontally:
-                        bulletPosition.X = position.X - 30;
-                        break;
-                    case SpriteEffects.FlipVertically:
-                        break;
-                }
+                //if (_bulletBody != null)
+                //{
+                //    _bulletBody.Dispose();
+                //}
+
+                //switch (charDirection)
+                //{
+                //    case SpriteEffects.None:
+                //        _bulletBody = BodyFactory.CreateRectangle(_world, ConvertUnits.ToSimUnits(54), ConvertUnits.ToSimUnits(54f), 0, _bulletPosition, 0, BodyType.Dynamic);
+                //        _bulletBody.IsBullet = true;
+                //        _bulletBody.IgnoreGravity = true;
+                //        _bulletBody.IgnoreCollisionWith(_circleBody);
+                //        _bulletBody.ApplyForce(new Vector2(-400, 0));
+                //        break;
+                //    case SpriteEffects.FlipHorizontally:
+                //        _bulletBody = BodyFactory.CreateRectangle(_world, ConvertUnits.ToSimUnits(54), ConvertUnits.ToSimUnits(54f), 0, _bulletPosition, 0, BodyType.Dynamic);
+                //        _bulletBody.IsBullet = true;
+                //        _bulletBody.IgnoreGravity = true;
+                //        _bulletBody.IgnoreCollisionWith(_circleBody);
+                //        _bulletBody.ApplyForce(new Vector2(400, 0));
+                //        break;
+                //}
+                //shoot = true;
             }
-            
+
             if (isAttack)
             {
-                switch (bulletDirection)
+                foreach (Bullet bullet in bulletList)
                 {
-                    case SpriteEffects.None:
-                        bulletPosition.X += 2;
-                        break;
-                    case SpriteEffects.FlipHorizontally:
-                        bulletPosition.X -= 2;
-                        break;
+                    bullet.Shoot(gameTime);
                 }
             }
-        }*/
 
-        public void Attack()
-        {
-            /*attackTime = (int)gameTime.TotalGameTime.TotalMilliseconds - attackDelay;
-
-            if (attackTime > 1000 && Keyboard.GetState().IsKeyDown(Keys.X))
+            if (bulletList.Count == 0)
             {
-                isAttack = true;
-                bullet.Add(new Bullet(bulletTexture, bulletPosition, charDirection));
-                bullet[^1].Shoot(position, charDirection);
-                attackDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
+                isAttack = false;
             }
-
-            if (bullet.Count > 0)
+            else if (bulletList.Count > 0)
             {
-                foreach (Bullet bulletE in bullet)
+                foreach (Bullet bullet in bulletList)
                 {
-                    if (bulletE.bulletPosition.X > 1280 || bulletE.bulletPosition.X < 0)
+                    if (bullet.isContractEnemy())
                     {
-                        bullet.Remove(bulletE);
+                        bullet.BulletDispose();
+                        bulletList.Remove(bullet);
                         break;
                     }
                 }
             }
-
-            if (isAttack)
-            {
-                foreach (Bullet bulletE in bullet)
-                {
-                    bulletE.Update(gameTime);
-                }
-            }*/
-
-            bullet.Add(new Bullet(bulletTexture, bulletPosition, charDirection));
-
         }
 
         public void Skill()
@@ -397,32 +337,14 @@ namespace ScifiDruid.GameObjects
             while (contactEdge != null)
             {
                 Contact contactFixture = contactEdge.Contact;
-                // Check if the contact fixture is the ground
-                if (contactFixture.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals("ground"))
-                {
-                    Vector2 normal = contactFixture.Manifold.LocalNormal;
-                    if (normal.Y < 0f)
-                    {
-                        return true;
-                    }
-                    // The character is on the ground
 
-                }
-                contactEdge = contactEdge.Next;
-            }
-            return false;
-        }
-        public bool IsStepDeadBlock()
-        {
-            ContactEdge contactEdge = hitBox.ContactList;
-            while (contactEdge != null)
-            {
-                Contact contactFixture = contactEdge.Contact;
-                // Check if the contact fixture is the dead block
-                if (contactFixture.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals("dead"))
+                //Vector2 normal = contactFixture.Manifold.LocalNormal;
+                //Debug.WriteLine(normal.Y);
+                // Check if the contact fixture is the ground
+                if (contactFixture.IsTouching)
                 {
                     Vector2 normal = contactFixture.Manifold.LocalNormal;
-                    if (normal.Y < 0f)
+                    if (normal.Y < 0f || normal.Y > 0f)
                     {
                         return true;
                     }
