@@ -95,6 +95,8 @@ namespace ScifiDruid.GameScreen
         protected int tilesetTileWidth;
         protected List<Rectangle> collisionRects;
 
+        protected Enemy enemy;
+
         protected enum GameState 
         { 
             START, PLAY, WIN, LOSE, PAUSE, EXIT
@@ -126,14 +128,22 @@ namespace ScifiDruid.GameScreen
             yesConfirmButton = new Button(yesConfirmPic1, new Vector2(495, 390), new Vector2(120, 60));
             noConfirmButton = new Button(noConfirmPic1, new Vector2(710, 390), new Vector2(70, 60));
 
-            player = new Player(testTexture ,bullet, 99, 164)
+           /*player = new Player(testTexture ,bullet, 99, 164)
             {
                 name = "Player Character",
                 speed = 0.1f,
+            };*/
+
+            enemy = new Enemy(testTexture)
+            {
+                health = 5,
+                textureWidth= 46,
+                textureHeight= 94,
             };
 
+            //player.Initial(startRect);
 
-            player.Initial(startRect);
+            enemy.Initial(startRect);
 
             //_groundBody.Friction = 0.3f;
 
@@ -234,9 +244,11 @@ namespace ScifiDruid.GameScreen
                         }
                         break;
                     case GameState.PLAY:
+
+                        //player.Update(gameTime);
+                        //player.Action();
+
                         
-                        player.Update(gameTime);
-                        player.Action();
 
                         //if want to pause
                         if (Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -250,7 +262,7 @@ namespace ScifiDruid.GameScreen
                             Singleton.Instance.world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
                             // v this for camera left of char 
                             //Singleton.Instance._view = Matrix.CreateTranslation(new Vector3(player.position.X * -64, player.position.Y * -64, 0f)) * Matrix.CreateTranslation(new Vector3(79,Singleton.Instance.CenterScreen.Y + 40, 0f));
-                            Singleton.Instance._view = Matrix.CreateTranslation(new Vector3(player.position.X * -64, player.position.Y * -64, 0f)) * Matrix.CreateTranslation(new Vector3(Singleton.Instance.CenterScreen, 0f));
+                            Singleton.Instance._view = Matrix.CreateTranslation(new Vector3(enemy.enemyHitBox.Position.X * -64, enemy.enemyHitBox.Position.Y * -64, 0f)) * Matrix.CreateTranslation(new Vector3(Singleton.Instance.CenterScreen, 0f));
                             // ^ this for camera center of char
                         }
 
@@ -535,19 +547,22 @@ namespace ScifiDruid.GameScreen
 
                     //spriteBatch.Draw(testTexture, ConvertUnits.ToDisplayUnits(playerBody.Position), null, Color.White, 0, player.playerOrigin, 1f, player.charDirection, 0f);
 
-                    player.Draw(spriteBatch);
+                    //player.Draw(spriteBatch);
+
+                    enemy.Draw(spriteBatch);
+                    
                 }
                 //in PlayScreen only
                 if (gamestate == GameState.PLAY)
                 {
                     spriteBatch.DrawString(mediumfonts, fps, new Vector2(1, 1), Color.Black);
-                    if (player.isAttack)
+                    /*if (player.isAttack)
                     {
                         foreach (Bullet bullet in player.bullet)
                         {
                             bullet.Draw(spriteBatch);
                         }
-                    }
+                    }*/
                     //spriteBatch.Draw(_groundSprite, ConvertUnits.ToDisplayUnits(_groundBody.Position), null, Color.White, 0f, new Vector2(_groundSprite.Width / 2, _groundSprite.Height / 2), 1f, SpriteEffects.None, 0f);
                 }
             }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Untitled-1.png</SourceFile>
-  <SourceTime>2023-04-11T16:36:34.6867679+07:00</SourceTime>
-  <DestFile>D:/Code/ScifiDruid/ScifiDruid/Content/bin/DesktopGL/Content/Pictures/Untitled-1.xnb</DestFile>
-  <DestTime>2023-04-13T23:20:47.0805791+07:00</DestTime>
+  <SourceFile>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Untitled-1.png</SourceFile>
+  <SourceTime>2023-04-19T21:58:49.7306788+07:00</SourceTime>
+  <DestFile>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/bin/DesktopGL/Content/Pictures/Untitled-1.xnb</DestFile>
+  <DestTime>2023-04-19T21:59:12.2316945+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
