@@ -39,6 +39,9 @@ namespace ScifiDruid.GameObjects
         private int bulletSizeX;
         private int bulletSizeY;
 
+        private int bulletSpd;
+        private int bulletDistance;
+
         public enum BulletStatus
         {
             BULLETALIVE,
@@ -49,10 +52,14 @@ namespace ScifiDruid.GameObjects
         {
             this.texture = texture;
             this.charDirection = charDirection;
+            this.position = position;
+
+            bulletSpd = 400;
             bulletSizeX = 40;
             bulletSizeY = 8;
+            bulletDistance = 10;
 
-            bulletAnimation = new SkillAnimation(this.texture, position);
+            bulletAnimation = new SkillAnimation(this.texture);
             bulletBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bulletSizeX), ConvertUnits.ToSimUnits(bulletSizeY),0,position,0,BodyType.Dynamic,"bullet");
             bulletBody.IgnoreGravity = true;
             bulletBody.IgnoreCollisionWith(playerBody);
@@ -75,19 +82,19 @@ namespace ScifiDruid.GameObjects
             switch (charDirection)
             {
                 case SpriteEffects.None:
-                    bulletBody.ApplyForce(new Vector2(-100, 0));
+                    bulletBody.ApplyForce(new Vector2(-bulletSpd, 0));
                     bulletStatus = BulletStatus.BULLETALIVE;
                     break;
                 case SpriteEffects.FlipHorizontally:
-                    bulletBody.ApplyForce(new Vector2(100, 0));
+                    bulletBody.ApplyForce(new Vector2(bulletSpd, 0));
                     bulletStatus = BulletStatus.BULLETALIVE;
                     break;
             }
 
-            bulletAnimation.Update(gameTime, bulletStatus);
+            bulletAnimation.UpdateBullet(gameTime, bulletStatus);
         }
 
-        public bool isContractEnemy()
+        public bool isContact()
         {
             ContactEdge contactEdge = bulletBody.ContactList;
             while (contactEdge != null)
@@ -95,20 +102,31 @@ namespace ScifiDruid.GameObjects
                 Contact contactFixture = contactEdge.Contact;
 
                 // Check if the contact fixture is the ground
-                if (contactEdge.Contact.FixtureA.Body.UserData != null)
+                if (contactEdge.Contact.FixtureB.Body.UserData != null)
                 {
+                    // The Bullet was contact anything
+                    bulletBody.Dispose();
                     return true;
-                    // The character is on the ground
-
                 }
                 contactEdge = contactEdge.Next;
             }
             return false;
         }
 
-        public void BulletDispose()
+        public bool isOutRange()
         {
-            bulletBody.Dispose();
+
+            if (position.X - bulletBody.Position.X < -bulletDistance || position.X - bulletBody.Position.X > bulletDistance)
+            {
+                //bulletBody.IsStatic = true;
+                bulletBody.IgnoreGravity = false;
+                // The Bullet was Out of range
+                bulletBody.Dispose();
+                //bulletBody.Position
+                return true;
+            }
+
+            return false;
         }
 
         public override void Draw(SpriteBatch spriteBatch)

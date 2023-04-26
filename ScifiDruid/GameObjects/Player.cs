@@ -124,6 +124,8 @@ namespace ScifiDruid.GameObjects
             playerStatus = PlayerStatus.IDLE;
             playerAnimation.Initialize();
 
+            charDirection = SpriteEffects.FlipHorizontally;
+
             base.Initial();
         }
 
@@ -148,11 +150,13 @@ namespace ScifiDruid.GameObjects
 
             //all animation
             //if step on dead block
+
             if (IsStepDeadBlock())
             {
-                hitBox.ApplyLinearImpulse(new Vector2(0, 0));
+                isAlive = false;
                 playerStatus = PlayerStatus.DEAD;
             }
+
             //if dead animation end
             end = playerAnimation.GetAnimationDead();
             if (end)
@@ -160,30 +164,31 @@ namespace ScifiDruid.GameObjects
                 playerStatus = PlayerStatus.END;
             }
 
-            Debug.WriteLine("touch ground = " + touchGround);
-            Debug.WriteLine("Vel x,y = " + hitBox.LinearVelocity);
+            //Debug.WriteLine("touch ground = " + touchGround);
+            //Debug.WriteLine("Vel x,y = " + hitBox.LinearVelocity);
 
 
             playerAnimation.Update(gameTime, playerStatus);
-            Action(gameTime);
         }
 
         public void Action(GameTime gameTime)
         {
             currentKeyState = Keyboard.GetState();
 
-            //check if player still on ground
-            if (touchGround)
+            if (isAlive)
             {
-                playerStatus = PlayerStatus.IDLE;
+                //check if player still on ground
+                if (touchGround)
+                {
+                    playerStatus = PlayerStatus.IDLE;
+                }
+                Falling();
+                Walking();
+                Jump();
+                Attack(gameTime);
+                Dash();
+                Skill();
             }
-            Falling();
-            Walking();
-            Jump();
-            Attack(gameTime);
-            Dash();
-            Skill();
-
             
             oldKeyState = currentKeyState;
         }
@@ -242,37 +247,8 @@ namespace ScifiDruid.GameObjects
             {
                 bulletList.Add(new Bullet(bulletTexture, hitBox.Position,hitBox,charDirection));
                 isAttack = true;
-                //if (_bulletBody != null)
-                //{
-                //    _bulletBody.Dispose();
-                //}
 
-                //switch (charDirection)
-                //{
-                //    case SpriteEffects.None:
-                //        _bulletBody = BodyFactory.CreateRectangle(_world, ConvertUnits.ToSimUnits(54), ConvertUnits.ToSimUnits(54f), 0, _bulletPosition, 0, BodyType.Dynamic);
-                //        _bulletBody.IsBullet = true;
-                //        _bulletBody.IgnoreGravity = true;
-                //        _bulletBody.IgnoreCollisionWith(_circleBody);
-                //        _bulletBody.ApplyForce(new Vector2(-400, 0));
-                //        break;
-                //    case SpriteEffects.FlipHorizontally:
-                //        _bulletBody = BodyFactory.CreateRectangle(_world, ConvertUnits.ToSimUnits(54), ConvertUnits.ToSimUnits(54f), 0, _bulletPosition, 0, BodyType.Dynamic);
-                //        _bulletBody.IsBullet = true;
-                //        _bulletBody.IgnoreGravity = true;
-                //        _bulletBody.IgnoreCollisionWith(_circleBody);
-                //        _bulletBody.ApplyForce(new Vector2(400, 0));
-                //        break;
-                //}
-                //shoot = true;
-            }
-
-            if (isAttack)
-            {
-                foreach (Bullet bullet in bulletList)
-                {
-                    bullet.Shoot(gameTime);
-                }
+                bulletList[bulletList.Count - 1].Shoot(gameTime);
             }
 
             if (bulletList.Count == 0)
@@ -283,14 +259,16 @@ namespace ScifiDruid.GameObjects
             {
                 foreach (Bullet bullet in bulletList)
                 {
-                    if (bullet.isContractEnemy())
+                    if (bullet.isContact() || bullet.isOutRange())
                     {
-                        bullet.BulletDispose();
                         bulletList.Remove(bullet);
                         break;
                     }
                 }
             }
+
+            Debug.WriteLine(Singleton.Instance.world.BodyList.Count);
+
         }
 
         public void Skill()
@@ -311,6 +289,7 @@ namespace ScifiDruid.GameObjects
                 }
             }
         }
+
         public void Falling()
         {
             Vector2 velocity = hitBox.LinearVelocity;
@@ -323,6 +302,7 @@ namespace ScifiDruid.GameObjects
                 playerStatus = PlayerStatus.JUMP;
             }
         }
+
         public void Dash()
         {
             if (dashDelay > 200 && Keyboard.GetState().IsKeyDown(Keys.C))
@@ -338,13 +318,33 @@ namespace ScifiDruid.GameObjects
             {
                 Contact contactFixture = contactEdge.Contact;
 
-                //Vector2 normal = contactFixture.Manifold.LocalNormal;
-                //Debug.WriteLine(normal.Y);
                 // Check if the contact fixture is the ground
                 if (contactFixture.IsTouching)
                 {
                     Vector2 normal = contactFixture.Manifold.LocalNormal;
                     if (normal.Y < 0f || normal.Y > 0f)
+                    {
+                        return true;
+                    }
+                    // The character is on the ground
+
+                }
+                contactEdge = contactEdge.Next;
+            }
+            return false;
+        }
+
+        public bool IsStepDeadBlock()
+        {
+            ContactEdge contactEdge = hitBox.ContactList;
+            while (contactEdge != null)
+            {
+                Contact contactFixture = contactEdge.Contact;
+                // Check if the contact fixture is the dead block
+                if (contactFixture.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals("dead"))
+                {
+                    Vector2 normal = contactFixture.Manifold.LocalNormal;
+                    if (normal.Y < 0f)
                     {
                         return true;
                     }

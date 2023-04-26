@@ -262,17 +262,7 @@ namespace ScifiDruid.GameScreen
                             //camera update for scroll
                             Singleton.Instance.tfMatrix = camera.Follow(player.position, startmaptileX, endmaptileX);
 
-                            if (!worldResetDD)
-                            {
-                                foreach (var item in Singleton.Instance.world.BodyList)
-                                {
-                                    Debug.WriteLine(item.UserData);
-                                }
-                                worldResetDD = true;
-                            }
-                            
-
-                            //Debug.WriteLine(Singleton.Instance.world.BodyList.Count);
+                            player.Action(gameTime);
 
                             if (player.playerStatus == Player.PlayerStatus.END)
                             {

@@ -77,9 +77,12 @@ namespace ScifiDruid.GameObjects
 
             skillFrames = skillRectVector.Count();
         }
+
         public void Initialize()
         {
+
         }
+
         public void UpdateBullet(GameTime gameTime, BulletStatus bulletStatus)
         {
             changeBulletAnimationStatus(bulletStatus);
@@ -125,9 +128,12 @@ namespace ScifiDruid.GameObjects
 
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
         }
-        public void Draw(SpriteBatch spriteBatch, Rectangle rect , SpriteEffects bulletDirection)
+
+        public void Draw(SpriteBatch spriteBatch, Vector2 bullletOrigin, SpriteEffects charDirection, Vector2 position)
         {
-            spriteBatch.Draw(texture, rect, null, Color.White, 0, Vector2.Zero, bulletDirection, 0);
+            //spriteBatch.Draw(texture, rect, null, Color.White, 0, Vector2.Zero, bulletDirection, 0);
+
+            spriteBatch.Draw(texture, position, sourceRect, Color.White, 0, bullletOrigin, 1f, charDirection, 0f);
         }
 
         public void changeBulletAnimationStatus(BulletStatus bulletStatus)
