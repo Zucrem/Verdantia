@@ -111,7 +111,7 @@ namespace ScifiDruid.GameObjects
             }
         }
 
-        public bool isContact()
+        public bool IsContact()
         {
             ContactEdge contactEdge = bulletBody.ContactList;
             while (contactEdge != null)
@@ -129,7 +129,7 @@ namespace ScifiDruid.GameObjects
             return false;
         }
 
-        public bool isOutRange()
+        public bool IsOutRange()
         {
 
             if (position.X - bulletBody.Position.X < -bulletDistance || position.X - bulletBody.Position.X > bulletDistance)
@@ -143,6 +143,7 @@ namespace ScifiDruid.GameObjects
         }
 
 
+        
         public override void Draw(SpriteBatch spriteBatch)
         {
 

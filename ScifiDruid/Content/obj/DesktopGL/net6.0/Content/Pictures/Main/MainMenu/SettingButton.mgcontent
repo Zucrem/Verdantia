@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Code/ScifiDruid/ScifiDruid/Content/Pictures/Main/MainMenu/SettingButton.png</SourceFile>
-  <SourceTime>2023-03-03T15:38:18+07:00</SourceTime>
-  <DestFile>D:/Code/ScifiDruid/ScifiDruid/Content/bin/DesktopGL/Content/Pictures/Main/MainMenu/SettingButton.xnb</DestFile>
-  <DestTime>2023-04-28T01:21:31.9763046+07:00</DestTime>
+  <SourceFile>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Pictures/Main/MainMenu/SettingButton.png</SourceFile>
+  <SourceTime>2023-04-13T00:01:41.1530729+07:00</SourceTime>
+  <DestFile>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/bin/DesktopGL/Content/Pictures/Main/MainMenu/SettingButton.xnb</DestFile>
+  <DestTime>2023-04-27T21:10:53.8030769+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

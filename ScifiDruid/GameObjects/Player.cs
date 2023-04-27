@@ -260,7 +260,7 @@ namespace ScifiDruid.GameObjects
                 foreach (Bullet bullet in bulletList)
                 {
                     bullet.Update(gameTime);
-                    if (bullet.isContact() || bullet.isOutRange())
+                    if (bullet.IsContact() || bullet.IsOutRange())
                     {
                         if (bullet.bulletStatus != Bullet.BulletStatus.BULLETEND)
                         {

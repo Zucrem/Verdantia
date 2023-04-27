@@ -553,9 +553,9 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Splash/SplashScreen/GameLogo.png
 
-#begin stage1test.tmx
-/copy:stage1test.tmx
+#begin Stage1.tmx
+/copy:Stage1.tmx
 
-#begin stage1test.tsx
-/copy:stage1test.tsx
+#begin Stage1.tsx
+/copy:Stage1.tsx
 

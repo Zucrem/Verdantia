@@ -16,8 +16,8 @@ using Box2DNet.Dynamics;
 using Box2DNet.Factories;
 using Box2DNet;
 using TiledSharp;
-using ScifiDruid.GameObjects;
 using System.ComponentModel.DataAnnotations;
+using Box2DNet.Content;
 
 namespace ScifiDruid.GameScreen
 {
@@ -97,7 +97,8 @@ namespace ScifiDruid.GameScreen
         protected int tileWidth;
         protected int tileHeight;
         protected int tilesetTileWidth;
-        protected List<Rectangle> collisionRects, deadBlockRects;
+        protected List<Rectangle> collisionRects, deadBlockRects, blockRects, playerRects, mechanicRects, groundMonsterRects, flyMonsterRects, bossRects;
+        protected Dictionary<Polygon, Vector2> polygon;
 
         protected float startmaptileX;
         protected float endmaptileX;
@@ -221,7 +222,7 @@ namespace ScifiDruid.GameScreen
             if (play)
             {
                 player.Update(gameTime);
-
+                Debug.WriteLine(player.position);
                 switch (gamestate)
                 {
                     case GameState.START:
