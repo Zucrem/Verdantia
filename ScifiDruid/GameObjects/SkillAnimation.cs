@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static ScifiDruid.GameObjects.Player;
 using static ScifiDruid.GameObjects.Bullet;
+using System.Diagnostics;
 
 namespace ScifiDruid.GameObjects
 {
@@ -41,6 +42,11 @@ namespace ScifiDruid.GameObjects
 
         private int bulletFrames, bulletDeadFrames, skillFrames;
 
+        //previous bullet animation
+        private BulletStatus preStatus;
+
+        //get animation state if dead
+        public bool bulletAnimationDead = false;
         public SkillAnimation(Texture2D texture) : base(texture)
         {
             this.texture = texture;
@@ -80,11 +86,16 @@ namespace ScifiDruid.GameObjects
 
         public void Initialize()
         {
-
+            preStatus = BulletStatus.BULLETALIVE;
         }
 
         public void UpdateBullet(GameTime gameTime, BulletStatus bulletStatus)
         {
+            if (preStatus != bulletStatus)
+            {
+                frames = 0;
+            }
+
             changeBulletAnimationStatus(bulletStatus);
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
@@ -105,6 +116,8 @@ namespace ScifiDruid.GameObjects
                     }
                     else if (frames >= allframes - 1)
                     {
+                        Debug.WriteLine("true");
+                        bulletAnimationDead = true;
                         return;
                     }
                 }
@@ -112,6 +125,7 @@ namespace ScifiDruid.GameObjects
             }
 
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
+            preStatus = bulletStatus;
         }
 
         public void UpdateSkill(GameTime gameTime)
@@ -143,13 +157,13 @@ namespace ScifiDruid.GameObjects
             switch (bulletStatus)
             {
                 case BulletStatus.BULLETALIVE:
-                    delay = 300f;
+                    delay = 150f;
                     spriteVector = bulletRectVector;
                     spriteSize = new Vector2(bulletSrcWidth, bulletSrcHeight);
                     allframes = bulletFrames;
                     break;
                 case BulletStatus.BULLETDEAD:
-                    delay = 300f;
+                    delay = 150f;
                     spriteVector = bulletDeadRectVector;
                     spriteSize = new Vector2(bulletDeadSrcWidth, bulletDeadSrcHeight);
                     allframes = bulletDeadFrames;

@@ -71,8 +71,8 @@ namespace ScifiDruid.GameObjects
 
         //animation
         public PlayerAnimation playerAnimation;
-        //check if animation end or not
-        bool end;
+        //check if animation animationEnd or not
+        private bool animationEnd;
 
         public enum PlayerStatus
         {
@@ -157,9 +157,9 @@ namespace ScifiDruid.GameObjects
                 playerStatus = PlayerStatus.DEAD;
             }
 
-            //if dead animation end
-            end = playerAnimation.GetAnimationDead();
-            if (end)
+            //if dead animation animationEnd
+            animationEnd = playerAnimation.GetAnimationDead();
+            if (animationEnd)
             {
                 playerStatus = PlayerStatus.END;
             }
@@ -175,6 +175,10 @@ namespace ScifiDruid.GameObjects
         {
             currentKeyState = Keyboard.GetState();
 
+            if (bulletList.Count > 0)
+            {
+                Debug.WriteLine(bulletList[0].bulletStatus);
+            }
             if (isAlive)
             {
                 //check if player still on ground
@@ -205,11 +209,7 @@ namespace ScifiDruid.GameObjects
                 {
                     playerStatus = PlayerStatus.RUN;
                 }
-            } 
-            /*else if (oldKeyState.IsKeyDown(Keys.Left) && currentKeyState.IsKeyUp(Keys.Left))
-            {
-                playerAnimation.frames = 0;
-            }*/
+            }
             if (currentKeyState.IsKeyDown(Keys.Right))
             {
                 hitBox.ApplyForce(new Vector2(100 * speed, 0));
@@ -259,10 +259,18 @@ namespace ScifiDruid.GameObjects
             {
                 foreach (Bullet bullet in bulletList)
                 {
-                    //bullet.Update(gameTime);
+                    bullet.Update(gameTime);
                     if (bullet.isContact() || bullet.isOutRange())
                     {
-                        bullet.bulletStatus = Bullet.BulletStatus.BULLETDEAD;
+                        if (bullet.bulletStatus != Bullet.BulletStatus.BULLETEND)
+                        {
+                            bullet.bulletStatus = Bullet.BulletStatus.BULLETDEAD;
+                        }
+                    }
+                    //if animation end
+                    if (bullet.bulletStatus == Bullet.BulletStatus.BULLETEND)
+                    {
+                        bullet.BulletDispose();
                         bulletList.Remove(bullet);
                         break;
                     }
@@ -361,7 +369,7 @@ namespace ScifiDruid.GameObjects
         public override void Draw(SpriteBatch spriteBatch)
         {
             //draw player
-            if (!end)
+            if (!animationEnd)
             {
                 playerAnimation.Draw(spriteBatch, playerOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
             }

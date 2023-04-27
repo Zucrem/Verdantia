@@ -42,10 +42,14 @@ namespace ScifiDruid.GameObjects
         private int bulletSpd;
         private int bulletDistance;
 
+        //check if animation end or not
+        private bool end;
+
         public enum BulletStatus
         {
             BULLETALIVE,
-            BULLETDEAD
+            BULLETDEAD,
+            BULLETEND
         }
       
         public Bullet(Texture2D texture , Vector2 position,Body playerBody,SpriteEffects charDirection) : base(texture)
@@ -91,13 +95,21 @@ namespace ScifiDruid.GameObjects
                     break;
             }
 
-            bulletAnimation.UpdateBullet(gameTime, bulletStatus);
+            //bulletAnimation.UpdateBullet(gameTime, bulletStatus);
 
         }
 
         public override void Update(GameTime gameTime)
         {
-            //bulletAnimation.UpdateBullet(gameTime, bulletStatus);
+            bulletAnimation.UpdateBullet(gameTime, bulletStatus);
+
+            end = bulletAnimation.bulletAnimationDead;
+            //if dead animation end
+            if (end)
+            {
+                //Debug.WriteLine("yay");
+                bulletStatus = BulletStatus.BULLETEND;
+            }
         }
 
         public bool isContact()
@@ -110,8 +122,6 @@ namespace ScifiDruid.GameObjects
                 // Check if the contact fixture is the ground
                 if (contactFixture.IsTouching)
                 {
-                    // The Bullet was contact anything
-                    bulletBody.Dispose();
                     return true;
                 }
                 contactEdge = contactEdge.Next;
@@ -124,22 +134,26 @@ namespace ScifiDruid.GameObjects
 
             if (position.X - bulletBody.Position.X < -bulletDistance || position.X - bulletBody.Position.X > bulletDistance)
             {
-                //bulletBody.IsStatic = true;
-                bulletBody.IgnoreGravity = false;
-                // The Bullet was Out of range
-                bulletBody.Dispose();
                 return true;
             }
 
             return false;
         }
 
+        //clear bullet
+        public void BulletDispose()
+        {
+            bulletBody.Dispose();
+        }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
 
             //spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(bulletBody.Position), Color.White);
-            
-            bulletAnimation.Draw(spriteBatch, bulletOrigin, charDirection, ConvertUnits.ToDisplayUnits(bulletBody.Position));
+            if (!end)
+            {
+                bulletAnimation.Draw(spriteBatch, bulletOrigin, charDirection, ConvertUnits.ToDisplayUnits(bulletBody.Position));
+            }
 
             base.Draw(spriteBatch);
         }
