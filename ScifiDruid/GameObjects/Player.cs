@@ -40,26 +40,31 @@ namespace ScifiDruid.GameObjects
         private bool touchGround;
 
         private int jumpCount = 0;
+        private bool wasJumped;
 
         private int jumpTime;
         private int jumpDelay;
-
-        private int skillTime;
-        private int skillDelay;
-
-        private int dashTime;
-        private int dashDelay;
 
         private int attackTime;
         private int attackDelay;
         private int attackMaxTime;
 
+        //static for change in shop and apply to all Stage
         public static int health;
         public static int mana;
         public static int money;
 
+        //Count cooldown of action
         private float skill1Cooldown;
         private float skill2Cooldown;
+        private float skill3Cooldown;
+        private float dashCooldown;
+
+        //Cooldown time make to static for change in shop and apply to all Stage
+        public static int skill1CoolTime;
+        public static int skill2CoolTime;
+        public static int skill3CoolTime;
+        public static int dashCoolTime;
 
         private Vector2 playerOrigin;
 
@@ -70,6 +75,10 @@ namespace ScifiDruid.GameObjects
         private bool animationEnd;
 
         private bool press = false;
+
+        private bool startCool = false;
+
+        public int jumpHigh;
 
         private SpriteEffects bulletDirection;
         public List<Bullet> bulletList;
@@ -102,14 +111,16 @@ namespace ScifiDruid.GameObjects
         public Player(Texture2D texture ,Texture2D bulletTexture) : base(texture)
         {
             this.texture = texture;
-            this.textureWidth = 46;
-            this.textureHeight = 94;
             this.bulletTexture = bulletTexture;
 
+            
         }
 
         public void Initial(Rectangle startRect)
         {
+            textureWidth = (int)size.X;
+            textureHeight = (int)size.Y;
+
             playerAnimation = new PlayerAnimation(this.texture, new Vector2(startRect.X, startRect.Y));
 
             bulletList = new List<Bullet>();
@@ -131,6 +142,26 @@ namespace ScifiDruid.GameObjects
             charDirection = SpriteEffects.FlipHorizontally;
 
             attackMaxTime = 500;
+
+            if (skill1CoolTime == 0)
+            {
+                skill1CoolTime = 60;
+            }
+
+            if (skill2CoolTime == 0)
+            {
+                skill2CoolTime = 60;
+            }
+
+            if (skill3CoolTime == 0)
+            {
+                skill3CoolTime = 60;
+            }
+
+            if (dashCoolTime == 0)
+            {
+                dashCoolTime = 5;
+            }
 
             base.Initial();
         }
@@ -185,8 +216,8 @@ namespace ScifiDruid.GameObjects
                 Walking();
                 Jump();
                 Attack(gameTime);
-                Dash();
-                Skill();
+                Dash(gameTime);
+                Skill(gameTime);
             }
             
             oldKeyState = currentKeyState;
@@ -221,17 +252,27 @@ namespace ScifiDruid.GameObjects
         }
         private void Jump()
         {
-            if (currentKeyState.IsKeyDown(Keys.Space) && oldKeyState.IsKeyUp(Keys.Space))
+            if (currentKeyState.IsKeyDown(Keys.Space) && oldKeyState.IsKeyUp(Keys.Space) && !wasJumped)
             {
-                hitBox.ApplyLinearImpulse(new Vector2(0, -5));
+                hitBox.ApplyLinearImpulse(new Vector2(0, -jumpHigh));
 
                 //check if player still on ground
                 if (touchGround)
                 {
                     playerStatus = PlayerStatus.JUMP;
                 }
+                else 
+                {
+                    wasJumped = true;
+                }
 
             }
+            
+            if (wasJumped && touchGround)
+            {
+                wasJumped = false;
+            }
+
         }
 
 
@@ -277,28 +318,52 @@ namespace ScifiDruid.GameObjects
             }
         }
 
-        public void Skill()
+        public void Skill(GameTime gameTime)
         {
-            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press)
+            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press && skill1Cooldown <= 0)
             {
                 Player.health++;
+                skill1Cooldown = skill1CoolTime;
                 press = true;
             }
-            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Down) && !press)
+            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Down) && !press && skill2Cooldown <= 0)
             {
                 Player.health--;
+                skill2Cooldown = skill2CoolTime;
                 press = true;
             }
-            if (currentKeyState.IsKeyDown(Keys.Z) && !press)
+            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyUp(Keys.Down) && currentKeyState.IsKeyUp(Keys.Up) && !press)
             {
-                Debug.WriteLine("CC");
+                skill3Cooldown = skill3CoolTime;
+
                 press = true;
             }   
 
+            if (press)
+            {
+                startCool = true;
+            }
+
+            if (startCool)
+            {
+                if (skill1Cooldown > 0)
+                {
+                    skill1Cooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+
+                if (skill2Cooldown > 0)
+                {
+                    skill2Cooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+
+                if (skill3Cooldown > 0)
+                {
+                    skill3Cooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+            }
 
             if (currentKeyState.IsKeyUp(Keys.Z) && press)
             {
-                Debug.WriteLine("DD");
                 press = false;
             }
         }
@@ -316,11 +381,28 @@ namespace ScifiDruid.GameObjects
             }
         }
 
-        public void Dash()
+        public void Dash(GameTime gameTime)
         {
-            if (dashDelay > 200 && Keyboard.GetState().IsKeyDown(Keys.C))
+            if (currentKeyState.IsKeyDown(Keys.C) && oldKeyState.IsKeyUp(Keys.C) && dashCooldown <= 0)
             {
+                switch (charDirection)
+                {
+                    case SpriteEffects.None:
+                        hitBox.ApplyLinearImpulse(new Vector2(-5, 0));
 
+                        break;
+                    case SpriteEffects.FlipHorizontally:
+                        hitBox.ApplyLinearImpulse(new Vector2(5, 0));
+
+                        break;
+                }
+
+                dashCooldown = dashCoolTime;
+            }
+
+            if (dashCooldown > 0)
+            {
+                dashCooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
         }
 
