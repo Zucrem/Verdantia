@@ -107,7 +107,6 @@ namespace ScifiDruid.GameObjects
             //if dead animation end
             if (end)
             {
-                //Debug.WriteLine("yay");
                 bulletStatus = BulletStatus.BULLETEND;
             }
         }
@@ -122,6 +121,7 @@ namespace ScifiDruid.GameObjects
                 // Check if the contact fixture is the ground
                 if (contactFixture.IsTouching)
                 {
+                    bulletBody.Dispose();
                     return true;
                 }
                 contactEdge = contactEdge.Next;
@@ -134,17 +134,14 @@ namespace ScifiDruid.GameObjects
 
             if (position.X - bulletBody.Position.X < -bulletDistance || position.X - bulletBody.Position.X > bulletDistance)
             {
+                // The Bullet was Out of range
+                bulletBody.Dispose();
                 return true;
             }
 
             return false;
         }
 
-        //clear bullet
-        public void BulletDispose()
-        {
-            bulletBody.Dispose();
-        }
 
         public override void Draw(SpriteBatch spriteBatch)
         {

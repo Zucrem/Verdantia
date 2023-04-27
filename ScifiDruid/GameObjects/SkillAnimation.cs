@@ -96,7 +96,7 @@ namespace ScifiDruid.GameObjects
                 frames = 0;
             }
 
-            changeBulletAnimationStatus(bulletStatus);
+            ChangeBulletAnimationStatus(bulletStatus);
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
             if (elapsed >= delay)
@@ -116,7 +116,6 @@ namespace ScifiDruid.GameObjects
                     }
                     else if (frames >= allframes - 1)
                     {
-                        Debug.WriteLine("true");
                         bulletAnimationDead = true;
                         return;
                     }
@@ -130,7 +129,7 @@ namespace ScifiDruid.GameObjects
 
         public void UpdateSkill(GameTime gameTime)
         {
-            changeSkillAnimationStatus();
+            ChangeSkillAnimationStatus();
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
             if (elapsed >= delay)
@@ -152,7 +151,7 @@ namespace ScifiDruid.GameObjects
             spriteBatch.Draw(texture, position, sourceRect, Color.White, 0, bullletOrigin, 1f, charDirection, 0f);
         }
 
-        public void changeBulletAnimationStatus(BulletStatus bulletStatus)
+        public void ChangeBulletAnimationStatus(BulletStatus bulletStatus)
         {
             switch (bulletStatus)
             {
@@ -170,7 +169,7 @@ namespace ScifiDruid.GameObjects
                     break;
             }
         }
-        public void changeSkillAnimationStatus()
+        public void ChangeSkillAnimationStatus()
         {
             delay = 300f;
             spriteVector = skillRectVector;

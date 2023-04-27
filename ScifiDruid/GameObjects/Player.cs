@@ -25,27 +25,21 @@ namespace ScifiDruid.GameObjects
         private Texture2D texture;
         private Texture2D bulletTexture;
 
-        public Rectangle characterDestRec;
-        public Rectangle characterSouceRec;
+        private Rectangle characterDestRec;
+        private Rectangle characterSouceRec;
 
         private KeyboardState currentKeyState;
         private KeyboardState oldKeyState;
 
-        public Body hitBox;
-        public Body _bulletBody;
-
-        public int jumpCount = 0;
-        
-        private bool isJumpPress = false;
-        private float jumpPosition;
-        private bool gravityActive = false;
-        private Vector2 firstPosition;
-        private GameTime gameTime;
+        private Body hitBox;
+        private Body _bulletBody;
 
         //player status
         public PlayerStatus playerStatus;
 
         private bool touchGround;
+
+        private int jumpCount = 0;
 
         private int jumpTime;
         private int jumpDelay;
@@ -58,21 +52,34 @@ namespace ScifiDruid.GameObjects
 
         private int attackTime;
         private int attackDelay;
+        private int attackMaxTime;
 
-        public Vector2 playerOrigin;
+        public static int health;
+        public static int mana;
+        public static int money;
+
+        private float skill1Cooldown;
+        private float skill2Cooldown;
+
+        private Vector2 playerOrigin;
+
+        private Vector2 bulletPosition;
 
         public bool isAttack = false;
-        public Vector2 bulletPosition;
-        public SpriteEffects bulletDirection;
+
+        private bool animationEnd;
+
+        private bool press = false;
+
+        private SpriteEffects bulletDirection;
         public List<Bullet> bulletList;
 
         //player real size for hitbox
-        public int textureWidth, textureHeight;
+        private int textureWidth, textureHeight;
 
         //animation
-        public PlayerAnimation playerAnimation;
+        private PlayerAnimation playerAnimation;
         //check if animation animationEnd or not
-        private bool animationEnd;
 
         public enum PlayerStatus
         {
@@ -98,18 +105,15 @@ namespace ScifiDruid.GameObjects
             this.textureWidth = 46;
             this.textureHeight = 94;
             this.bulletTexture = bulletTexture;
-            //characterSouceRec = new Rectangle(0, 0, sizeX, sizeY);
 
         }
 
         public void Initial(Rectangle startRect)
         {
-            //ConvertUnits.SetDisplayUnitToSimUnitRatio(64f);
             playerAnimation = new PlayerAnimation(this.texture, new Vector2(startRect.X, startRect.Y));
 
-            //characterDestRec = rectangle;
             bulletList = new List<Bullet>();
-            //hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world,ConvertUnits.ToSimUnits(textureWidth),ConvertUnits.ToSimUnits(textureHeight),1f,ConvertUnits.ToSimUnits(new Vector2(500,100)),0,BodyType.Dynamic);
+
             hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(startRect.X, startRect.Y - 1)), 0, BodyType.Dynamic);
             hitBox.FixedRotation = true;
             hitBox.Friction = 1.0f;
@@ -126,6 +130,8 @@ namespace ScifiDruid.GameObjects
 
             charDirection = SpriteEffects.FlipHorizontally;
 
+            attackMaxTime = 500;
+
             base.Initial();
         }
 
@@ -133,10 +139,7 @@ namespace ScifiDruid.GameObjects
 
         public override void Update(GameTime gameTime)
         {
-            this.gameTime = gameTime;
             position = hitBox.Position;
-            //characterDestRec.X = (int)hitBox.Position.X;
-            //characterDestRec.Y = (int)hitBox.Position.Y;
 
             //check touch ground condition
             if (IsGround())
@@ -164,10 +167,6 @@ namespace ScifiDruid.GameObjects
                 playerStatus = PlayerStatus.END;
             }
 
-            //Debug.WriteLine("touch ground = " + touchGround);
-            //Debug.WriteLine("Vel x,y = " + hitBox.LinearVelocity);
-
-
             playerAnimation.Update(gameTime, playerStatus);
         }
 
@@ -175,10 +174,6 @@ namespace ScifiDruid.GameObjects
         {
             currentKeyState = Keyboard.GetState();
 
-            if (bulletList.Count > 0)
-            {
-                Debug.WriteLine(bulletList[0].bulletStatus);
-            }
             if (isAlive)
             {
                 //check if player still on ground
@@ -236,25 +231,30 @@ namespace ScifiDruid.GameObjects
                     playerStatus = PlayerStatus.JUMP;
                 }
 
-                //jumpCount++;
             }
         }
 
 
         public void Attack(GameTime gameTime)
         {
-            if (currentKeyState.IsKeyDown(Keys.K) && oldKeyState.IsKeyUp(Keys.K))
+            attackDelay = (int)gameTime.TotalGameTime.TotalMilliseconds - attackTime;
+
+            if (currentKeyState.IsKeyDown(Keys.X) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && Player.mana > 0)
             {
                 bulletList.Add(new Bullet(bulletTexture, hitBox.Position,hitBox,charDirection));
                 isAttack = true;
-
+                attackTime = (int)gameTime.TotalGameTime.TotalMilliseconds;
                 bulletList[bulletList.Count - 1].Shoot(gameTime);
+                Player.mana -= 5;
             }
 
+
+            
             if (bulletList.Count == 0)
             {
                 isAttack = false;
             }
+
             else if (bulletList.Count > 0)
             {
                 foreach (Bullet bullet in bulletList)
@@ -270,33 +270,36 @@ namespace ScifiDruid.GameObjects
                     //if animation end
                     if (bullet.bulletStatus == Bullet.BulletStatus.BULLETEND)
                     {
-                        bullet.BulletDispose();
                         bulletList.Remove(bullet);
                         break;
                     }
                 }
             }
-
-            Debug.WriteLine(Singleton.Instance.world.BodyList.Count);
-
         }
 
         public void Skill()
         {
-            if (skillDelay > 200)
+            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.Z) && Keyboard.GetState().IsKeyDown(Keys.Up))
-                {
+                Player.health++;
+                press = true;
+            }
+            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Down) && !press)
+            {
+                Player.health--;
+                press = true;
+            }
+            if (currentKeyState.IsKeyDown(Keys.Z) && !press)
+            {
+                Debug.WriteLine("CC");
+                press = true;
+            }   
 
-                }
-                else if (Keyboard.GetState().IsKeyDown(Keys.Z) && Keyboard.GetState().IsKeyDown(Keys.Down))
-                {
 
-                }
-                else if (Keyboard.GetState().IsKeyDown(Keys.Z))
-                {
-
-                }
+            if (currentKeyState.IsKeyUp(Keys.Z) && press)
+            {
+                Debug.WriteLine("DD");
+                press = false;
             }
         }
 

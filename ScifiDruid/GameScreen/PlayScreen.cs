@@ -116,7 +116,6 @@ namespace ScifiDruid.GameScreen
             START, PLAY, WIN, LOSE, PAUSE, EXIT
         }
 
-
         public virtual void Initial()
         {
 
@@ -365,7 +364,6 @@ namespace ScifiDruid.GameScreen
                             {
                                 if (!worldReset)
                                 {
-                                    Debug.WriteLine("Reset");
                                     resetWorld();
                                     worldReset = true;
 
@@ -571,8 +569,11 @@ namespace ScifiDruid.GameScreen
                 {
                     fps = "FPS: 0";
                 }
-                spriteBatch.DrawString(mediumfonts, fps, new Vector2(1, 1), Color.Black);
-            } 
+
+                spriteBatch.DrawString(mediumfonts, Player.health.ToString(), new Vector2(1, 1), Color.Black);
+                spriteBatch.DrawString(mediumfonts, Player.mana.ToString(), new Vector2(1, 65), Color.Black);
+
+            }
         }
         public override void Draw(SpriteBatch spriteBatch)
         {

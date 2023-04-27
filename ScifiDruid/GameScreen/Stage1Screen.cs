@@ -26,6 +26,9 @@ namespace ScifiDruid.GameScreen
             startmaptileX = 10f;
             endmaptileX = 350f;
 
+            Player.health = 5;
+            Player.mana = 100;
+
             //create tileset for map1
             map = new TmxMap("Content/stage1test.tmx");
             tilesetStage1 = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage1Tileset/" + map.Tilesets[0].Name.ToString());
