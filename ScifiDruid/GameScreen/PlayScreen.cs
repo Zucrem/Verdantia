@@ -150,6 +150,7 @@ namespace ScifiDruid.GameScreen
                 name = "Player Character",
                 size = new Vector2(46, 94),
                 speed = 0.125f,
+                jumpHigh = 10,
             };
 
             //camera
@@ -222,7 +223,6 @@ namespace ScifiDruid.GameScreen
             if (play)
             {
                 player.Update(gameTime);
-                Debug.WriteLine(player.position);
                 switch (gamestate)
                 {
                     case GameState.START:
