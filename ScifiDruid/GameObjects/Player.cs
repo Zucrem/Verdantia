@@ -177,7 +177,7 @@ namespace ScifiDruid.GameObjects
 
             if (bulletList.Count > 0)
             {
-                Debug.WriteLine(bulletList[0].bulletStatus);
+               // Debug.WriteLine(bulletList[0].bulletStatus);
             }
             if (isAlive)
             {
@@ -260,7 +260,7 @@ namespace ScifiDruid.GameObjects
                 foreach (Bullet bullet in bulletList)
                 {
                     bullet.Update(gameTime);
-                    if (bullet.isContact() || bullet.isOutRange())
+                    if (bullet.IsContact() || bullet.IsOutRange())
                     {
                         if (bullet.bulletStatus != Bullet.BulletStatus.BULLETEND)
                         {
@@ -270,14 +270,13 @@ namespace ScifiDruid.GameObjects
                     //if animation end
                     if (bullet.bulletStatus == Bullet.BulletStatus.BULLETEND)
                     {
-                        bullet.BulletDispose();
                         bulletList.Remove(bullet);
                         break;
                     }
                 }
             }
 
-            Debug.WriteLine(Singleton.Instance.world.BodyList.Count);
+            //Debug.WriteLine(Singleton.Instance.world.BodyList.Count);
 
         }
 

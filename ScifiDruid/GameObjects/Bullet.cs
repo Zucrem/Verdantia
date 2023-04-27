@@ -112,7 +112,7 @@ namespace ScifiDruid.GameObjects
             }
         }
 
-        public bool isContact()
+        public bool IsContact()
         {
             ContactEdge contactEdge = bulletBody.ContactList;
             while (contactEdge != null)
@@ -122,6 +122,7 @@ namespace ScifiDruid.GameObjects
                 // Check if the contact fixture is the ground
                 if (contactFixture.IsTouching)
                 {
+                    bulletBody.Dispose();
                     return true;
                 }
                 contactEdge = contactEdge.Next;
@@ -129,21 +130,16 @@ namespace ScifiDruid.GameObjects
             return false;
         }
 
-        public bool isOutRange()
+        public bool IsOutRange()
         {
 
             if (position.X - bulletBody.Position.X < -bulletDistance || position.X - bulletBody.Position.X > bulletDistance)
             {
+                bulletBody.Dispose();
                 return true;
             }
 
             return false;
-        }
-
-        //clear bullet
-        public void BulletDispose()
-        {
-            bulletBody.Dispose();
         }
 
         public override void Draw(SpriteBatch spriteBatch)
