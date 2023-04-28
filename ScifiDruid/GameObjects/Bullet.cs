@@ -74,7 +74,7 @@ namespace ScifiDruid.GameObjects
                     bulletBody.Position += new Vector2(-0.5f,0);
                     break;
                 case SpriteEffects.FlipHorizontally:
-                    bulletBody.Position += new Vector2(0.5f, 0);
+                    bulletBody.Position += new Vector2(1f, 0);
                     break;
             }
 

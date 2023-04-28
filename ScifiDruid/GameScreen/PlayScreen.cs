@@ -149,8 +149,8 @@ namespace ScifiDruid.GameScreen
             {
                 name = "Player Character",
                 size = new Vector2(46, 94),
-                speed = 0.125f,
-                jumpHigh = 10,
+                speed = 0.15f,
+                jumpHigh = 12,
             };
 
             //camera
@@ -262,7 +262,7 @@ namespace ScifiDruid.GameScreen
                             //camera update for scroll
                             Singleton.Instance.tfMatrix = camera.Follow(player.position, startmaptileX, endmaptileX);
 
-                            player.Action(gameTime);
+                            player.Action();
 
                             if (player.playerStatus == Player.PlayerStatus.END)
                             {
@@ -553,10 +553,7 @@ namespace ScifiDruid.GameScreen
 
         public void resetWorld()
         {
-            foreach (Body item in Singleton.Instance.world.BodyList)
-            {
-                item.Dispose();
-            }
+            Singleton.Instance.world.Clear();
         }
 
         public override void DrawFixScreen(SpriteBatch spriteBatch)
@@ -580,12 +577,6 @@ namespace ScifiDruid.GameScreen
         {
             if (play)
             {
-                //all draw on screen here
-                if (gamestate == GameState.START || gamestate == GameState.PLAY)
-                {
-                    //draw playeranimation
-                   player.Draw(spriteBatch);
-                }
                 //in PlayScreen only
                 if (gamestate == GameState.PLAY)
                 {
@@ -598,6 +589,14 @@ namespace ScifiDruid.GameScreen
                     }
                     //spriteBatch.Draw(_groundSprite, ConvertUnits.ToDisplayUnits(_groundBody.Position), null, Color.White, 0f, new Vector2(_groundSprite.Width / 2, _groundSprite.Height / 2), 1f, SpriteEffects.None, 0f);
                 }
+
+                //all draw on screen here
+                if (gamestate == GameState.START || gamestate == GameState.PLAY)
+                {
+                    //draw playeranimation
+                   player.Draw(spriteBatch);
+                }
+                
             }
             else
             {

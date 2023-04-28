@@ -60,6 +60,8 @@ namespace ScifiDruid.GameObjects
         private float skill3Cooldown;
         private float dashCooldown;
 
+        private float attackAnimationTime;
+
         //Cooldown time make to static for change in shop and apply to all Stage
         public static int skill1CoolTime;
         public static int skill2CoolTime;
@@ -82,6 +84,8 @@ namespace ScifiDruid.GameObjects
 
         private SpriteEffects bulletDirection;
         public List<Bullet> bulletList;
+
+        private GameTime gameTime;
 
         //player real size for hitbox
         private int textureWidth, textureHeight;
@@ -171,7 +175,7 @@ namespace ScifiDruid.GameObjects
         public override void Update(GameTime gameTime)
         {
             position = hitBox.Position;
-
+            this.gameTime = gameTime;
             //check touch ground condition
             if (IsGround())
             {
@@ -198,10 +202,20 @@ namespace ScifiDruid.GameObjects
                 playerStatus = PlayerStatus.END;
             }
 
+            if (!touchGround)
+            {
+                hitBox.LinearVelocity = new Vector2(hitBox.LinearVelocity.X * 0.97f, hitBox.LinearVelocity.Y);
+                hitBox.GravityScale = 2;
+            }
+            else
+            {
+                hitBox.GravityScale = 1;
+            }
+
             playerAnimation.Update(gameTime, playerStatus);
         }
 
-        public void Action(GameTime gameTime)
+        public void Action()
         {
             currentKeyState = Keyboard.GetState();
 
@@ -215,9 +229,9 @@ namespace ScifiDruid.GameObjects
                 Falling();
                 Walking();
                 Jump();
-                Attack(gameTime);
-                Dash(gameTime);
-                Skill(gameTime);
+                Attack();
+                Dash();
+                Skill();
             }
             
             oldKeyState = currentKeyState;
@@ -254,7 +268,6 @@ namespace ScifiDruid.GameObjects
         {
             if (currentKeyState.IsKeyDown(Keys.Space) && oldKeyState.IsKeyUp(Keys.Space) && !wasJumped)
             {
-                hitBox.ApplyLinearImpulse(new Vector2(0, -jumpHigh));
 
                 //check if player still on ground
                 if (touchGround)
@@ -263,11 +276,16 @@ namespace ScifiDruid.GameObjects
                 }
                 else 
                 {
+                    hitBox.LinearVelocity = new Vector2(hitBox.LinearVelocity.X,0f);
                     wasJumped = true;
                 }
-
+                
+                if (playerStatus != PlayerStatus.RUN)
+                {
+                    hitBox.ApplyLinearImpulse(new Vector2(0, -jumpHigh));
+                }
             }
-            
+
             if (wasJumped && touchGround)
             {
                 wasJumped = false;
@@ -276,19 +294,35 @@ namespace ScifiDruid.GameObjects
         }
 
 
-        public void Attack(GameTime gameTime)
+        public void Attack()
         {
             attackDelay = (int)gameTime.TotalGameTime.TotalMilliseconds - attackTime;
 
             if (currentKeyState.IsKeyDown(Keys.X) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && Player.mana > 0)
             {
-                bulletList.Add(new Bullet(bulletTexture, hitBox.Position,hitBox,charDirection));
+                bulletList.Add(new Bullet(bulletTexture, hitBox.Position + new Vector2(0,-0.12f),hitBox,charDirection));
                 isAttack = true;
+                attackAnimationTime = 0.3f;
                 attackTime = (int)gameTime.TotalGameTime.TotalMilliseconds;
                 bulletList[bulletList.Count - 1].Shoot(gameTime);
                 Player.mana -= 5;
             }
 
+            if (attackAnimationTime > 0)
+            {
+                attackAnimationTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                switch (playerStatus)
+                {
+                    case PlayerStatus.IDLE:
+                        playerStatus = PlayerStatus.SHOOT;
+
+                        break;
+                    case PlayerStatus.RUN:
+                        playerStatus = PlayerStatus.SHOOT_RUN;
+                        break;
+                }
+            }
 
             
             if (bulletList.Count == 0)
@@ -318,7 +352,7 @@ namespace ScifiDruid.GameObjects
             }
         }
 
-        public void Skill(GameTime gameTime)
+        public void Skill()
         {
             if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press && skill1Cooldown <= 0)
             {
@@ -381,7 +415,7 @@ namespace ScifiDruid.GameObjects
             }
         }
 
-        public void Dash(GameTime gameTime)
+        public void Dash()
         {
             if (currentKeyState.IsKeyDown(Keys.C) && oldKeyState.IsKeyUp(Keys.C) && dashCooldown <= 0)
             {
@@ -417,7 +451,7 @@ namespace ScifiDruid.GameObjects
                 if (contactFixture.IsTouching)
                 {
                     Vector2 normal = contactFixture.Manifold.LocalNormal;
-                    if (normal.Y < 0f || normal.Y > 0f)
+                    if (normal.Y < 0f)
                     {
                         return true;
                     }
@@ -438,13 +472,7 @@ namespace ScifiDruid.GameObjects
                 // Check if the contact fixture is the dead block
                 if (contactFixture.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals("dead"))
                 {
-                    Vector2 normal = contactFixture.Manifold.LocalNormal;
-                    if (normal.Y < 0f)
-                    {
-                        return true;
-                    }
-                    // The character is on the ground
-
+                    return true;
                 }
                 contactEdge = contactEdge.Next;
             }
