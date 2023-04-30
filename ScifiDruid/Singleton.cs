@@ -19,11 +19,11 @@ namespace ScifiDruid
         public bool cmdExit = false;
         public bool gameOver = false;
 
-        public Matrix _view;
-
         public int lastClickTime = 0;
         public bool firsttime = true;//first time playing this game
 
+        //camera
+        public Matrix tfMatrix;
 
         //Audio State
         public AudioState bgmState = AudioState.FULL;
@@ -61,6 +61,7 @@ namespace ScifiDruid
                 }
                 return instance;
             }
+            set { instance = value; }
         }
     }
 }

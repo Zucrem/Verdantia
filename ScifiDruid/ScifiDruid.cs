@@ -1,8 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Box2DNet.Dynamics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ScifiDruid.Managers;
 using System;
+using System.Diagnostics;
 
 namespace ScifiDruid
 {
@@ -10,6 +12,8 @@ namespace ScifiDruid
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        private bool b = true;
 
         public ScifiDruid()
         {
@@ -40,7 +44,7 @@ namespace ScifiDruid
             //TargetElapsedTime = new TimeSpan((long)temp);
             Singleton.Instance.CenterScreen = new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2f, _graphics.GraphicsDevice.Viewport.Height / 2f);
 
-            Singleton.Instance._view = Matrix.CreateTranslation(Vector3.Zero);
+            Singleton.Instance.tfMatrix = Matrix.CreateTranslation(Vector3.Zero);
 
             base.Initialize();
         }
@@ -75,10 +79,15 @@ namespace ScifiDruid
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
-            _spriteBatch.Begin(transformMatrix : Singleton.Instance._view);
+            _spriteBatch.Begin();
+            ScreenManager.Instance.DrawFixScreen(_spriteBatch);
+            _spriteBatch.End();
+
+            _spriteBatch.Begin(transformMatrix : Singleton.Instance.tfMatrix);
             ScreenManager.Instance.Draw(_spriteBatch);
             _spriteBatch.End();
+
+            
 
             base.Draw(gameTime);
         }

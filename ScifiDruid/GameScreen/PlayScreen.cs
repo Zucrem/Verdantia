@@ -16,6 +16,8 @@ using Box2DNet.Dynamics;
 using Box2DNet.Factories;
 using Box2DNet;
 using TiledSharp;
+using System.ComponentModel.DataAnnotations;
+using Box2DNet.Content;
 
 namespace ScifiDruid.GameScreen
 {
@@ -31,13 +33,15 @@ namespace ScifiDruid.GameScreen
         protected Texture2D restartWLPic, nextButtonPic, backWLPic, DefeatSignPic, VictorySignPic;//win or lose
         protected Texture2D confirmExitPopUpPic, noConfirmPic1, yesConfirmPic1, noConfirmPic2, yesConfirmPic2;//for confirm
 
-        protected Texture2D testTexture;
+        protected Texture2D playerTex;
         private FrameCounter _frameCounter = new FrameCounter();
         private float deltaTime;
         private string fps;
         private Texture2D bullet;
-        private Body _groundBody;
-        //private Body playerBody;
+        //private Body _groundBody;
+
+        //player animation
+        protected PlayerAnimation playerAnimation;
 
         //all button
         //button at pause screen
@@ -93,18 +97,31 @@ namespace ScifiDruid.GameScreen
         protected int tileWidth;
         protected int tileHeight;
         protected int tilesetTileWidth;
-        protected List<Rectangle> collisionRects;
+        protected List<Rectangle> collisionRects, deadBlockRects, blockRects, playerRects, mechanicRects, groundMonsterRects, flyMonsterRects, bossRects;
+        protected Dictionary<Polygon, Vector2> polygon;
 
-        protected Enemy enemy;
+        protected float startmaptileX;
+        protected float endmaptileX;
+
+        //camera
+        protected Camera camera;
+        protected Matrix scaleMatrix;
+
+        private bool worldReset = false;
+
+        private bool worldResetDD;
+
 
         protected enum GameState 
         { 
             START, PLAY, WIN, LOSE, PAUSE, EXIT
         }
 
-
         public virtual void Initial()
         {
+
+            worldResetDD = false;
+
             gamestate = GameState.START;
 
             //create button on pause
@@ -128,26 +145,16 @@ namespace ScifiDruid.GameScreen
             yesConfirmButton = new Button(yesConfirmPic1, new Vector2(495, 390), new Vector2(120, 60));
             noConfirmButton = new Button(noConfirmPic1, new Vector2(710, 390), new Vector2(70, 60));
 
-           /*player = new Player(testTexture ,bullet, 99, 164)
+            player = new Player(playerTex, bullet)
             {
                 name = "Player Character",
-                speed = 0.1f,
-            };*/
-
-            enemy = new Enemy(testTexture)
-            {
-                health = 5,
-                textureWidth= 46,
-                textureHeight= 94,
+                size = new Vector2(46, 94),
+                speed = 0.15f,
+                jumpHigh = 12,
             };
 
-            //player.Initial(startRect);
-
-            enemy.Initial(startRect);
-
-            //_groundBody.Friction = 0.3f;
-
-            //playerBody = player.hitBox;
+            //camera
+            camera = new Camera();
 
         }
         public override void LoadContent()
@@ -197,16 +204,12 @@ namespace ScifiDruid.GameScreen
             bigfonts = content.Load<SpriteFont>("Fonts/font60");
             mediumfonts = content.Load<SpriteFont>("Fonts/font30");
 
-            testTexture = content.Load<Texture2D>("Pictures/Untitled-1");
-            bullet = content.Load<Texture2D>("Pictures/clipart613994");
-            _groundSprite = content.Load<Texture2D>("Pictures/Play/PlayScreen/GroundSprite");
+            playerTex = content.Load<Texture2D>("Pictures/Play/Characters/Player/playerSheet");
+            bullet = content.Load<Texture2D>("Pictures/Play/Skills/PlayerSkill");
+            //bullet = content.Load<Texture2D>("ss");
 
-            Vector2 groundPosition = ConvertUnits.ToSimUnits(Singleton.Instance.CenterScreen);
-
-            // Create the ground fixture
-            //_groundBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(512f), ConvertUnits.ToSimUnits(54f), 1f, groundPosition);
-            Initial();
         }
+
         public override void UnloadContent()
         {
             base.UnloadContent();
@@ -219,6 +222,7 @@ namespace ScifiDruid.GameScreen
 
             if (play)
             {
+                player.Update(gameTime);
                 switch (gamestate)
                 {
                     case GameState.START:
@@ -244,12 +248,6 @@ namespace ScifiDruid.GameScreen
                         }
                         break;
                     case GameState.PLAY:
-
-                        //player.Update(gameTime);
-                        //player.Action();
-
-                        
-
                         //if want to pause
                         if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                         {
@@ -260,19 +258,25 @@ namespace ScifiDruid.GameScreen
                         else
                         {
                             Singleton.Instance.world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
-                            // v this for camera left of char 
-                            //Singleton.Instance._view = Matrix.CreateTranslation(new Vector3(player.position.X * -64, player.position.Y * -64, 0f)) * Matrix.CreateTranslation(new Vector3(79,Singleton.Instance.CenterScreen.Y + 40, 0f));
-                            Singleton.Instance._view = Matrix.CreateTranslation(new Vector3(enemy.enemyHitBox.Position.X * -64, enemy.enemyHitBox.Position.Y * -64, 0f)) * Matrix.CreateTranslation(new Vector3(Singleton.Instance.CenterScreen, 0f));
-                            // ^ this for camera center of char
+
+                            //camera update for scroll
+                            Singleton.Instance.tfMatrix = camera.Follow(player.position, startmaptileX, endmaptileX);
+
+                            player.Action();
+
+                            if (player.playerStatus == Player.PlayerStatus.END)
+                            {
+                                play = false;
+                                gamestate = GameState.LOSE;
+                            }
                         }
-
-
                         break;
                 }
             }
             else
             {
-                Singleton.Instance._view = Matrix.CreateTranslation(Vector3.Zero);
+                //change camera position
+                Singleton.Instance.tfMatrix = Matrix.CreateTranslation(Vector3.Zero);
                 //if not press Exit
                 if (!confirmExit)
                 {
@@ -290,6 +294,7 @@ namespace ScifiDruid.GameScreen
                             //Restart
                             if (restartButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
+                                resetWorld();
                                 changeScreen = true;
                             }
                             //Exit
@@ -315,6 +320,8 @@ namespace ScifiDruid.GameScreen
                             //Restart
                             if (restartButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
+                                resetWorld();
+
                                 changeScreen = true;
                             }
                             //Exit
@@ -346,12 +353,23 @@ namespace ScifiDruid.GameScreen
                             if (continueButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
                                 play = true;
-                                gamestate = GameState.PLAY; 
+                                gamestate = GameState.PLAY;
                                 //MediaPlayer.Resume();
+
+                                //camera update for scroll back to normal
+                                //block after image
+                                Singleton.Instance.tfMatrix = camera.Follow(player.position, startmaptileX, endmaptileX);
                             }
                             //Restart
                             if (restartButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
+                                if (!worldReset)
+                                {
+                                    resetWorld();
+                                    worldReset = true;
+
+                                }
+
                                 changeScreen = true;
                             }
                             //Exit
@@ -528,43 +546,57 @@ namespace ScifiDruid.GameScreen
             fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
 
             _frameCounter.Update(deltaTime);
+
+            
             base.Update(gameTime);
+        }
+
+        public void resetWorld()
+        {
+            Singleton.Instance.world.Clear();
+        }
+
+        public override void DrawFixScreen(SpriteBatch spriteBatch)
+        {
+            if (play)
+            {
+                //background
+                spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
+
+                if (gamestate == GameState.START)
+                {
+                    fps = "FPS: 0";
+                }
+
+                spriteBatch.DrawString(mediumfonts, Player.health.ToString(), new Vector2(1, 1), Color.Black);
+                spriteBatch.DrawString(mediumfonts, Player.mana.ToString(), new Vector2(1, 65), Color.Black);
+
+            }
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (play)
             {
-                //all draw on screen here
-                if (gamestate == GameState.START || gamestate == GameState.PLAY)
-                {
-                    //background
-                    spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
-                    if (gamestate == GameState.START)
-                    {
-                        fps = "FPS: 0";
-                    }
-                    spriteBatch.DrawString(mediumfonts, fps, new Vector2(1, 1), Color.Black);
-
-                    //spriteBatch.Draw(testTexture, ConvertUnits.ToDisplayUnits(playerBody.Position), null, Color.White, 0, player.playerOrigin, 1f, player.charDirection, 0f);
-
-                    //player.Draw(spriteBatch);
-
-                    enemy.Draw(spriteBatch);
-                    
-                }
                 //in PlayScreen only
                 if (gamestate == GameState.PLAY)
                 {
-                    spriteBatch.DrawString(mediumfonts, fps, new Vector2(1, 1), Color.Black);
-                    /*if (player.isAttack)
+                    if (player.isAttack)
                     {
-                        foreach (Bullet bullet in player.bullet)
+                        foreach (Bullet bullet in player.bulletList)
                         {
                             bullet.Draw(spriteBatch);
                         }
-                    }*/
+                    }
                     //spriteBatch.Draw(_groundSprite, ConvertUnits.ToDisplayUnits(_groundBody.Position), null, Color.White, 0f, new Vector2(_groundSprite.Width / 2, _groundSprite.Height / 2), 1f, SpriteEffects.None, 0f);
                 }
+
+                //all draw on screen here
+                if (gamestate == GameState.START || gamestate == GameState.PLAY)
+                {
+                    //draw playeranimation
+                   player.Draw(spriteBatch);
+                }
+                
             }
             else
             {

@@ -16,6 +16,7 @@ using System.Collections;
 using Box2DNet.Dynamics;
 using Box2DNet.Factories;
 using Box2DNet;
+using Box2DNet.Dynamics.Contacts;
 
 namespace ScifiDruid.GameObjects
 {
@@ -24,62 +25,148 @@ namespace ScifiDruid.GameObjects
         private Texture2D texture;
         private Texture2D bulletTexture;
 
-        public Rectangle characterDestRec;
-        public Rectangle characterSouceRec;
+        private Rectangle characterDestRec;
+        private Rectangle characterSouceRec;
 
         private KeyboardState currentKeyState;
         private KeyboardState oldKeyState;
 
-        public Body hitBox;
+        private Body hitBox;
+        private Body _bulletBody;
 
-        public int jumpCount = 0;
-        
-        private bool isJumpPress = false;
-        private float jumpPosition;
-        private bool gravityActive = false;
-        private Vector2 firstPosition;
-        private GameTime gameTime;
+        //player status
+        public PlayerStatus playerStatus;
+
+        private bool touchGround;
+
+        private int jumpCount = 0;
+        private bool wasJumped;
 
         private int jumpTime;
         private int jumpDelay;
 
-        private int skillTime;
-        private int skillDelay;
-
-        private int dashTime;
-        private int dashDelay;
-
         private int attackTime;
         private int attackDelay;
+        private int attackMaxTime;
 
-        public Vector2 playerOrigin;
+        //static for change in shop and apply to all Stage
+        public static int health;
+        public static int mana;
+        public static int money;
+
+        //Count cooldown of action
+        private float skill1Cooldown;
+        private float skill2Cooldown;
+        private float skill3Cooldown;
+        private float dashCooldown;
+
+        private float attackAnimationTime;
+
+        //Cooldown time make to static for change in shop and apply to all Stage
+        public static int skill1CoolTime;
+        public static int skill2CoolTime;
+        public static int skill3CoolTime;
+        public static int dashCoolTime;
+
+        private Vector2 playerOrigin;
+
+        private Vector2 bulletPosition;
 
         public bool isAttack = false;
-        public Vector2 bulletPosition;
-        public SpriteEffects bulletDirection;
-        public List<Bullet> bullet;
 
-        public Player(Texture2D texture ,Texture2D bulletTexture,int sizeX , int sizeY) : base(texture)
+        private bool animationEnd;
+
+        private bool press = false;
+
+        private bool startCool = false;
+
+        public int jumpHigh;
+
+        private SpriteEffects bulletDirection;
+        public List<Bullet> bulletList;
+
+        private GameTime gameTime;
+
+        //player real size for hitbox
+        private int textureWidth, textureHeight;
+
+        //animation
+        private PlayerAnimation playerAnimation;
+        //check if animation animationEnd or not
+
+        public enum PlayerStatus
+        {
+            IDLE,
+            SHOOT,
+            RUN,
+            SHOOT_RUN,
+            SHOOT_UP,
+            SHOOT_UP_RUN,
+            JUMP,
+            SHOOT_AIR,
+            FALLING,
+            SKILL,
+            TAKE_DAMAGE,
+            DASH,
+            DEAD,
+            END
+        }
+
+        public Player(Texture2D texture ,Texture2D bulletTexture) : base(texture)
         {
             this.texture = texture;
             this.bulletTexture = bulletTexture;
-            //characterSouceRec = new Rectangle(0, 0, sizeX, sizeY);
+
+            
         }
 
         public void Initial(Rectangle startRect)
         {
-            //ConvertUnits.SetDisplayUnitToSimUnitRatio(64f);
-            size = new Vector2(texture.Width, texture.Height);
-            //characterDestRec = rectangle;
-            bullet = new List<Bullet>();
-            //hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world,ConvertUnits.ToSimUnits(texture.Width),ConvertUnits.ToSimUnits(texture.Height),1f,ConvertUnits.ToSimUnits(new Vector2(500,100)),0,BodyType.Dynamic);
-            hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(texture.Width), ConvertUnits.ToSimUnits(texture.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(startRect.X, startRect.Y - 1)), 0, BodyType.Dynamic);
+            textureWidth = (int)size.X;
+            textureHeight = (int)size.Y;
+
+            playerAnimation = new PlayerAnimation(this.texture, new Vector2(startRect.X, startRect.Y));
+
+            bulletList = new List<Bullet>();
+
+            hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(startRect.X, startRect.Y - 1)), 0, BodyType.Dynamic);
             hitBox.FixedRotation = true;
             hitBox.Friction = 1.0f;
             hitBox.AngularDamping = 2.0f;
             hitBox.LinearDamping = 2.0f;
-            
-            playerOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
+
+            //check touch ground condition
+            touchGround = true;
+
+            playerOrigin = new Vector2(textureWidth / 2, textureHeight / 2);
+
+            playerStatus = PlayerStatus.IDLE;
+            playerAnimation.Initialize();
+
+            charDirection = SpriteEffects.FlipHorizontally;
+
+            attackMaxTime = 500;
+
+            if (skill1CoolTime == 0)
+            {
+                skill1CoolTime = 60;
+            }
+
+            if (skill2CoolTime == 0)
+            {
+                skill2CoolTime = 60;
+            }
+
+            if (skill3CoolTime == 0)
+            {
+                skill3CoolTime = 60;
+            }
+
+            if (dashCoolTime == 0)
+            {
+                dashCoolTime = 5;
+            }
+
             base.Initial();
         }
 
@@ -87,193 +174,324 @@ namespace ScifiDruid.GameObjects
 
         public override void Update(GameTime gameTime)
         {
-            this.gameTime = gameTime;
             position = hitBox.Position;
-            //characterDestRec.X = (int)hitBox.Position.X;
-            //characterDestRec.Y = (int)hitBox.Position.Y;
+            this.gameTime = gameTime;
+            //check touch ground condition
+            if (IsGround())
+            {
+                touchGround = true;
+            }
+            else
+            {
+                touchGround = false;
+            }
+
+            //all animation
+            //if step on dead block
+
+            if (IsStepDeadBlock())
+            {
+                isAlive = false;
+                playerStatus = PlayerStatus.DEAD;
+            }
+
+            //if dead animation animationEnd
+            animationEnd = playerAnimation.GetAnimationDead();
+            if (animationEnd)
+            {
+                playerStatus = PlayerStatus.END;
+            }
+
+            if (!touchGround)
+            {
+                hitBox.LinearVelocity = new Vector2(hitBox.LinearVelocity.X * 0.97f, hitBox.LinearVelocity.Y);
+                hitBox.GravityScale = 2;
+            }
+            else
+            {
+                hitBox.GravityScale = 1;
+            }
+
+            playerAnimation.Update(gameTime, playerStatus);
         }
 
         public void Action()
         {
-            Walking();
-            Jump();
-            Attack();
-            Skill();
-            Dash();
+            currentKeyState = Keyboard.GetState();
+
+            if (isAlive)
+            {
+                //check if player still on ground
+                if (touchGround)
+                {
+                    playerStatus = PlayerStatus.IDLE;
+                }
+                Falling();
+                Walking();
+                Jump();
+                Attack();
+                Dash();
+                Skill();
+            }
+            
+            oldKeyState = currentKeyState;
         }
 
         private void Walking()
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            if (currentKeyState.IsKeyDown(Keys.Left))
             {
                 hitBox.ApplyForce(new Vector2(-100 * speed, 0));
                 charDirection = SpriteEffects.None;
+
+                //check if player still on ground
+                if (touchGround)
+                {
+                    playerStatus = PlayerStatus.RUN;
+                }
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            if (currentKeyState.IsKeyDown(Keys.Right))
             {
                 hitBox.ApplyForce(new Vector2(100 * speed, 0));
                 charDirection = SpriteEffects.FlipHorizontally;
+
+                //check if player still on ground
+                if (touchGround)
+                {
+                    playerStatus = PlayerStatus.RUN;
+                }
             }
+
+
         }
         private void Jump()
         {
-            currentKeyState = Keyboard.GetState();
-
-            if (currentKeyState.IsKeyDown(Keys.Space) && oldKeyState.IsKeyUp(Keys.Space))
+            if (currentKeyState.IsKeyDown(Keys.Space) && oldKeyState.IsKeyUp(Keys.Space) && !wasJumped)
             {
-                hitBox.ApplyLinearImpulse(new Vector2(0, -5));
-                
-                //jumpCount++;
-            }
-            //Debug.WriteLine(hitBox.LinearVelocity);
 
-            /*
-            if (hitBox.LinearVelocity.Equals(Vector2.Zero))
-            {
-                jumpCount = 0;
-            }*/
-
-            oldKeyState = currentKeyState;
-            /*jumpTime = (int)gameTime.TotalGameTime.TotalMilliseconds - jumpDelay;
-
-            if (jumpCount < 2 && jumpTime > 200 && (Keyboard.GetState().IsKeyDown(Keys.Space)))
-            {
-                isJumpPress = true;
-                gravityActive = false;
-                if (jumpCount == 0)
+                //check if player still on ground
+                if (touchGround)
                 {
-                    firstPosition = position;
+                    playerStatus = PlayerStatus.JUMP;
                 }
-                jumpDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
-                jumpPosition = position.Y - 100f;
-                jumpCount++;
+                else 
+                {
+                    hitBox.LinearVelocity = new Vector2(hitBox.LinearVelocity.X,0f);
+                    wasJumped = true;
+                }
+                
+                if (playerStatus != PlayerStatus.RUN)
+                {
+                    hitBox.ApplyLinearImpulse(new Vector2(0, -jumpHigh));
+                }
             }
 
-            if (isJumpPress && !gravityActive)
+            if (wasJumped && touchGround)
             {
-                position.Y -= 300f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                wasJumped = false;
             }
 
-            if (!gravityActive && jumpPosition >= position.Y)
-            {
-                gravityActive = true;
-            }
-
-            if (gravityActive)
-            {
-                position.Y += 300f * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
-
-            if (gravityActive && firstPosition.Y <= position.Y)
-            {
-                isJumpPress = false;
-                gravityActive = false;
-                jumpCount = 0;
-            }
-            */
         }
 
-        /*public void Attack()
-        {
-            if (elapsedMs > 200 && Keyboard.GetState().IsKeyDown(Keys.X))
-            {
-                isAttack = true;
-                
-                bulletPosition.Y = position.Y + 10;
-                bulletDirection = charDirection;
-                switch (bulletDirection)
-                {
-                    case SpriteEffects.None:
-                        bulletPosition.X = position.X + 30;
-                        break;
-                    case SpriteEffects.FlipHorizontally:
-                        bulletPosition.X = position.X - 30;
-                        break;
-                    case SpriteEffects.FlipVertically:
-                        break;
-                }
-            }
-            
-            if (isAttack)
-            {
-                switch (bulletDirection)
-                {
-                    case SpriteEffects.None:
-                        bulletPosition.X += 2;
-                        break;
-                    case SpriteEffects.FlipHorizontally:
-                        bulletPosition.X -= 2;
-                        break;
-                }
-            }
-        }*/
 
         public void Attack()
         {
-            attackTime = (int)gameTime.TotalGameTime.TotalMilliseconds - attackDelay;
+            attackDelay = (int)gameTime.TotalGameTime.TotalMilliseconds - attackTime;
 
-            if (attackTime > 1000 && Keyboard.GetState().IsKeyDown(Keys.X))
+            if (currentKeyState.IsKeyDown(Keys.X) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && Player.mana > 0)
             {
+                bulletList.Add(new Bullet(bulletTexture, hitBox.Position + new Vector2(0,-0.12f),hitBox,charDirection));
                 isAttack = true;
-                bullet.Add(new Bullet(bulletTexture, bulletPosition, charDirection));
-                bullet[^1].Shoot(position, charDirection);
-                attackDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
+                attackAnimationTime = 0.3f;
+                attackTime = (int)gameTime.TotalGameTime.TotalMilliseconds;
+                bulletList[bulletList.Count - 1].Shoot(gameTime);
+                Player.mana -= 5;
             }
 
-            if (bullet.Count > 0)
+            if (attackAnimationTime > 0)
             {
-                foreach (Bullet bulletE in bullet)
+                attackAnimationTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                switch (playerStatus)
                 {
-                    if (bulletE.bulletPosition.X > 1280 || bulletE.bulletPosition.X < 0)
-                    {
-                        bullet.Remove(bulletE);
+                    case PlayerStatus.IDLE:
+                        playerStatus = PlayerStatus.SHOOT;
+
                         break;
-                    }
+                    case PlayerStatus.RUN:
+                        playerStatus = PlayerStatus.SHOOT_RUN;
+                        break;
                 }
             }
 
-            if (isAttack)
+            
+            if (bulletList.Count == 0)
             {
-                foreach (Bullet bulletE in bullet)
+                isAttack = false;
+            }
+
+            else if (bulletList.Count > 0)
+            {
+                foreach (Bullet bullet in bulletList)
                 {
-                    bulletE.Update();
+                    bullet.Update(gameTime);
+                    if (bullet.IsContact() || bullet.IsOutRange())
+                    {
+                        if (bullet.bulletStatus != Bullet.BulletStatus.BULLETEND)
+                        {
+                            bullet.bulletStatus = Bullet.BulletStatus.BULLETDEAD;
+                        }
+                    }
+                    //if animation end
+                    if (bullet.bulletStatus == Bullet.BulletStatus.BULLETEND)
+                    {
+                        bulletList.Remove(bullet);
+                        break;
+                    }
                 }
             }
         }
 
         public void Skill()
         {
-            if (skillDelay > 200)
+            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press && skill1Cooldown <= 0)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.Z) && Keyboard.GetState().IsKeyDown(Keys.Up))
-                {
+                Player.health++;
+                skill1Cooldown = skill1CoolTime;
+                press = true;
+            }
+            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Down) && !press && skill2Cooldown <= 0)
+            {
+                Player.health--;
+                skill2Cooldown = skill2CoolTime;
+                press = true;
+            }
+            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyUp(Keys.Down) && currentKeyState.IsKeyUp(Keys.Up) && !press)
+            {
+                skill3Cooldown = skill3CoolTime;
 
+                press = true;
+            }   
+
+            if (press)
+            {
+                startCool = true;
+            }
+
+            if (startCool)
+            {
+                if (skill1Cooldown > 0)
+                {
+                    skill1Cooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
-                else if (Keyboard.GetState().IsKeyDown(Keys.Z) && Keyboard.GetState().IsKeyDown(Keys.Down))
-                {
 
+                if (skill2Cooldown > 0)
+                {
+                    skill2Cooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
-                else if (Keyboard.GetState().IsKeyDown(Keys.Z))
-                {
 
+                if (skill3Cooldown > 0)
+                {
+                    skill3Cooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
             }
-            
+
+            if (currentKeyState.IsKeyUp(Keys.Z) && press)
+            {
+                press = false;
+            }
         }
+
+        public void Falling()
+        {
+            Vector2 velocity = hitBox.LinearVelocity;
+            if (!touchGround && (int)velocity.Y > 0)
+            {
+                playerStatus = PlayerStatus.FALLING;
+            }
+            else if (!touchGround && (int)velocity.Y < 0)
+            {
+                playerStatus = PlayerStatus.JUMP;
+            }
+        }
+
         public void Dash()
         {
-            if (dashDelay > 200 && Keyboard.GetState().IsKeyDown(Keys.C))
+            if (currentKeyState.IsKeyDown(Keys.C) && oldKeyState.IsKeyUp(Keys.C) && dashCooldown <= 0)
             {
+                switch (charDirection)
+                {
+                    case SpriteEffects.None:
+                        hitBox.ApplyLinearImpulse(new Vector2(-5, 0));
 
+                        break;
+                    case SpriteEffects.FlipHorizontally:
+                        hitBox.ApplyLinearImpulse(new Vector2(5, 0));
+
+                        break;
+                }
+
+                dashCooldown = dashCoolTime;
             }
+
+            if (dashCooldown > 0)
+            {
+                dashCooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+        }
+
+        public bool IsGround()
+        {
+            ContactEdge contactEdge = hitBox.ContactList;
+            while (contactEdge != null)
+            {
+                Contact contactFixture = contactEdge.Contact;
+
+                // Check if the contact fixture is the ground
+                if (contactFixture.IsTouching)
+                {
+                    Vector2 normal = contactFixture.Manifold.LocalNormal;
+                    if (normal.Y < 0f)
+                    {
+                        return true;
+                    }
+                    // The character is on the ground
+
+                }
+                contactEdge = contactEdge.Next;
+            }
+            return false;
+        }
+
+        public bool IsStepDeadBlock()
+        {
+            ContactEdge contactEdge = hitBox.ContactList;
+            while (contactEdge != null)
+            {
+                Contact contactFixture = contactEdge.Contact;
+                // Check if the contact fixture is the dead block
+                if (contactFixture.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals("dead"))
+                {
+                    return true;
+                }
+                contactEdge = contactEdge.Next;
+            }
+            return false;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(hitBox.Position), null, Color.White, 0, playerOrigin, 1f, charDirection, 0f);
+            //draw player
+            if (!animationEnd)
+            {
+                playerAnimation.Draw(spriteBatch, playerOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
+            }
 
-            //spriteBatch.Draw(texture, characterDestRec, characterSouceRec, Color.White, rotation, new Vector2(characterDestRec.Width / 2, characterDestRec.Height /2), charDirection,0);
-            //spriteBatch.Draw(texture, characterDestRec, characterSouceRec, Color.White);
+            //if shoot
+            /*if (_bulletBody != null && !_bulletBody.IsDisposed)
+            {
+                bullet.Draw(spriteBatch);
+            }*/
 
             base.Draw(spriteBatch);
         }
