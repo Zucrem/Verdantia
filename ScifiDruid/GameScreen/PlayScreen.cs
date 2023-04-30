@@ -25,6 +25,7 @@ namespace ScifiDruid.GameScreen
     {
         
         protected Player player;
+        protected Enemy enemy;
 
         //all all texture
         protected Texture2D blackTex, whiteTex, greenTex;
@@ -153,6 +154,13 @@ namespace ScifiDruid.GameScreen
                 jumpHigh = 12,
             };
 
+            enemy = new Enemy(playerTex)
+            {
+                size = new Vector2(46,94),
+                health= 10,
+                speed= 0.1f,
+            };
+            
             //camera
             camera = new Camera();
 
@@ -261,7 +269,8 @@ namespace ScifiDruid.GameScreen
 
                             //camera update for scroll
                             Singleton.Instance.tfMatrix = camera.Follow(player.position, startmaptileX, endmaptileX);
-
+                            enemy.Update(gameTime);
+                            enemy.EnemyAction();
                             player.Action();
 
                             if (player.playerStatus == Player.PlayerStatus.END)
@@ -595,6 +604,7 @@ namespace ScifiDruid.GameScreen
                 {
                     //draw playeranimation
                    player.Draw(spriteBatch);
+                    enemy.Draw(spriteBatch);
                 }
                 
             }
