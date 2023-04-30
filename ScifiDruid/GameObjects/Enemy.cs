@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Timers;
 
 namespace ScifiDruid.GameObjects
 {
@@ -30,6 +30,11 @@ namespace ScifiDruid.GameObjects
         public int textureWidth;
         public int textureHeight;
 
+        private GameTime gameTime;
+
+        //attribute using for moving of enemy
+        private float timeElapsed;
+        private bool isMovingLeft;
 
         public Enemy(Texture2D texture) : base(texture)
         {
@@ -50,13 +55,13 @@ namespace ScifiDruid.GameObjects
             enemyOrigin = new Vector2(textureWidth/2,textureHeight/2);  //draw in the middle
         }
 
-       /* public override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             this.gameTime = gameTime;
-            position = hitBox.Position;
+            position = enemyHitBox.Position;
             //characterDestRec.X = (int)hitBox.Position.X;
             //characterDestRec.Y = (int)hitBox.Position.Y;
-        }*/
+        }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -76,11 +81,46 @@ namespace ScifiDruid.GameObjects
         private void EnemyWalking()
         {
             //do normal walking left and right
+            timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            
+
+            while (health > 0)
+            {
+                if (timeElapsed >= 5f)
+                {
+                    timeElapsed = 0f;
+                    isMovingLeft= !isMovingLeft;
+                }
+
+                if(isMovingLeft)
+                {
+                    enemyHitBox.ApplyForce(new Vector2(-10*speed,0));
+                }
+                else
+                {
+                    enemyHitBox.ApplyForce(new Vector2(10 * speed, 0));
+                }
+              
+            }
+            
+
+        }
+
+        private void Timer_Elapsed(Object sender, System.Timers.ElapsedEventArgs e)
+        {
+
         }
 
         private void EnemyAlertWalking()
         {
-            //do alert condition follow Player and Track Player down to death like shit
+
+            //player on (right ,mid,left)
+            //got to that direction of player
+            //stop when player go out of detect area
+
+
+            //do alert condition follow Player and Track Player down to death
         }
     }
 }
