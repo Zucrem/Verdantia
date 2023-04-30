@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Code\\ScifiDruid\\ScifiDruid\\ScifiDruid.csproj": {}
+    "C:\\Users\\Chayodom\\Desktop\\comgameFinal\\FinalGame\\ScifiDruid\\ScifiDruid.csproj": {}
   },
   "projects": {
-    "D:\\Code\\ScifiDruid\\ScifiDruid\\ScifiDruid.csproj": {
+    "C:\\Users\\Chayodom\\Desktop\\comgameFinal\\FinalGame\\ScifiDruid\\ScifiDruid.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Code\\ScifiDruid\\ScifiDruid\\ScifiDruid.csproj",
+        "projectUniqueName": "C:\\Users\\Chayodom\\Desktop\\comgameFinal\\FinalGame\\ScifiDruid\\ScifiDruid.csproj",
         "projectName": "ScifiDruid",
-        "projectPath": "D:\\Code\\ScifiDruid\\ScifiDruid\\ScifiDruid.csproj",
-        "packagesPath": "C:\\Users\\zucre\\.nuget\\packages\\",
-        "outputPath": "D:\\Code\\ScifiDruid\\ScifiDruid\\obj\\",
+        "projectPath": "C:\\Users\\Chayodom\\Desktop\\comgameFinal\\FinalGame\\ScifiDruid\\ScifiDruid.csproj",
+        "packagesPath": "C:\\Users\\Chayodom\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Chayodom\\Desktop\\comgameFinal\\FinalGame\\ScifiDruid\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\zucre\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Chayodom\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -69,7 +70,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
         }
       }
     }
