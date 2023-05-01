@@ -149,7 +149,7 @@ namespace ScifiDruid.GameScreen
             {
                 name = "Player Character",
                 size = new Vector2(46, 94),
-                speed = 0.15f,
+                speed = 0.125f,
                 jumpHigh = 12,
             };
 
@@ -450,18 +450,7 @@ namespace ScifiDruid.GameScreen
                             //Restart Screen
                             if (nextScreen)
                             {
-                                switch (Singleton.Instance.levelState)
-                                {
-                                    case LevelState.FOREST:
-                                        ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
-                                        break;
-                                    case LevelState.CITY:
-                                        ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
-                                        break;
-                                    case LevelState.LAB:
-                                        ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
-                                        break;
-                                }
+                                ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
                             }
                             break;
                     }

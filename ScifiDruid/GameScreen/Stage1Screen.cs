@@ -111,10 +111,10 @@ namespace ScifiDruid.GameScreen
                 Vector2 collisionPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
                 //Singleton.Instance.world.Step(0.001f);
 
-                Body body1 = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, collisionPosition);
-                body1.UserData = "ground";
-                body1.Restitution = 0.0f;
-                body1.Friction = 0.3f;
+                Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, collisionPosition);
+                body.UserData = "ground";
+                body.Restitution = 0.0f;
+                body.Friction = 0.3f;
             }
 
             foreach (var poly in polygon)
@@ -122,10 +122,10 @@ namespace ScifiDruid.GameScreen
                 Vector2 collisionPosition = ConvertUnits.ToSimUnits(poly.Value);
                 //Singleton.Instance.world.Step(0.001f);
 
-                Body body1 = BodyFactory.CreatePolygon(Singleton.Instance.world, poly.Key.Vertices, 1f, collisionPosition);
-                body1.UserData = "ground";
-                body1.Restitution = 0.0f;
-                body1.Friction = 0.0f;
+                Body body = BodyFactory.CreatePolygon(Singleton.Instance.world, poly.Key.Vertices, 1f, collisionPosition);
+                body.UserData = "ground";
+                body.Restitution = 0.0f;
+                body.Friction = 0.0f;
             }
             //create dead block for block in the world
             foreach (Rectangle rect in deadBlockRects)
@@ -133,10 +133,10 @@ namespace ScifiDruid.GameScreen
                 Vector2 deadBlockPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
                 //Singleton.Instance.world.Step(0.001f);
 
-                Body body2 = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, deadBlockPosition);
-                body2.UserData = "dead";
-                body2.Restitution = 0.0f;
-                body2.Friction = 0.3f;
+                Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, deadBlockPosition);
+                body.UserData = "dead";
+                body.Restitution = 0.0f;
+                body.Friction = 0.3f;
             }
 
             player.Initial(startRect);

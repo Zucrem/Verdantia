@@ -261,8 +261,6 @@ namespace ScifiDruid.GameObjects
                     playerStatus = PlayerStatus.RUN;
                 }
             }
-
-
         }
         private void Jump()
         {

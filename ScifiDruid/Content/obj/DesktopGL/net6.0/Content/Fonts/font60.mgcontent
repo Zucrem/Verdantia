@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Code/ScifiDruid/ScifiDruid/Content/Fonts/font60.spritefont</SourceFile>
-  <SourceTime>2023-03-04T21:45:58+07:00</SourceTime>
-  <DestFile>D:/Code/ScifiDruid/ScifiDruid/Content/bin/DesktopGL/Content/Fonts/font60.xnb</DestFile>
-  <DestTime>2023-04-28T02:35:18.3411541+07:00</DestTime>
+  <SourceFile>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Fonts/font60.spritefont</SourceFile>
+  <SourceTime>2023-04-13T00:01:41.1415375+07:00</SourceTime>
+  <DestFile>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/bin/DesktopGL/Content/Fonts/font60.xnb</DestFile>
+  <DestTime>2023-04-29T16:37:14.3380691+07:00</DestTime>
   <Importer>FontDescriptionImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>FontDescriptionProcessor</Processor>
