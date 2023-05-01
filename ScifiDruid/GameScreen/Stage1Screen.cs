@@ -140,6 +140,7 @@ namespace ScifiDruid.GameScreen
             }
 
             player.Initial(startRect);
+            enemy.Initial(startRect);
         }
         public override void LoadContent()
         {

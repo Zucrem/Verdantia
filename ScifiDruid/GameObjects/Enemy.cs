@@ -3,11 +3,15 @@ using Box2DNet.Dynamics;
 using Box2DNet.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Timers;
+using static ScifiDruid.GameObjects.Player;
 
 namespace ScifiDruid.GameObjects
 {
@@ -35,6 +39,12 @@ namespace ScifiDruid.GameObjects
         //attribute using for moving of enemy
         private float timeElapsed;
         private bool isMovingLeft;
+        
+
+        private PlayerAnimation playerAnimation;
+        private Vector2 playerOrigin;
+
+        private KeyboardState currentKeyState;
 
         public Enemy(Texture2D texture) : base(texture)
         {
@@ -44,49 +54,58 @@ namespace ScifiDruid.GameObjects
 
         public void Initial(Rectangle startRect)
         {
-            size = new Vector2(textureWidth, textureHeight);
+            textureHeight = (int)size.Y;
+            textureWidth= (int)size.X;
 
             enemyHitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(startRect.X, startRect.Y - 1)), 0, BodyType.Dynamic,"Enemy");
             enemyHitBox.FixedRotation = true;
-            enemyHitBox.Friction = 1f;
-            enemyHitBox.AngularDamping = 2f;
-            enemyHitBox.LinearDamping = 2f;
+            enemyHitBox.Friction = 1.0f;
+            enemyHitBox.AngularDamping = 2.0f;
+            enemyHitBox.LinearDamping = 2.0f;
+
+            charDirection = SpriteEffects.FlipHorizontally;  // heading direction
 
             enemyOrigin = new Vector2(textureWidth/2,textureHeight/2);  //draw in the middle
+
+            playerAnimation = new PlayerAnimation(texture, new Vector2(startRect.X, startRect.Y));
+
+            playerAnimation.Initialize();
+
+
+
         }
 
         public override void Update(GameTime gameTime)
         {
             this.gameTime = gameTime;
             position = enemyHitBox.Position;
+            Debug.WriteLine("Enemy position"+position);
             //characterDestRec.X = (int)hitBox.Position.X;
             //characterDestRec.Y = (int)hitBox.Position.Y;
+            playerAnimation.Update(gameTime, Player.PlayerStatus.IDLE);
+            
+          
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(enemyHitBox.Position), null, Color.White, 0, enemyOrigin, 1f, SpriteEffects.None, 0f);
-
-            //spriteBatch.Draw(texture, characterDestRec, characterSouceRec, Color.White, rotation, new Vector2(characterDestRec.Width / 2, characterDestRec.Height /2), charDirection,0);
-            //spriteBatch.Draw(texture, characterDestRec, characterSouceRec, Color.White);
-
-            base.Draw(spriteBatch);
-        }
+        
         public void EnemyAction()
         {
+            currentKeyState = Keyboard.GetState();
             EnemyWalking();
-            EnemyAlertWalking();
+            //EnemyAlertWalking();
         }
 
         private void EnemyWalking()
         {
+            
+            
             //do normal walking left and right
             timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
             
 
-            while (health > 0)
-            {
+            int pokemon = 0;
+            if(health > 0)
+            { Debug.WriteLine("this is timeElapsed"+timeElapsed);
                 if (timeElapsed >= 5f)
                 {
                     timeElapsed = 0f;
@@ -95,22 +114,19 @@ namespace ScifiDruid.GameObjects
 
                 if(isMovingLeft)
                 {
-                    enemyHitBox.ApplyForce(new Vector2(-10*speed,0));
+                    enemyHitBox.ApplyForce(new Vector2(-100*speed,0));
                 }
                 else
                 {
-                    enemyHitBox.ApplyForce(new Vector2(10 * speed, 0));
+                    enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
                 }
               
             }
-            
+
 
         }
 
-        private void Timer_Elapsed(Object sender, System.Timers.ElapsedEventArgs e)
-        {
-
-        }
+        
 
         private void EnemyAlertWalking()
         {
@@ -121,6 +137,19 @@ namespace ScifiDruid.GameObjects
 
 
             //do alert condition follow Player and Track Player down to death
+        }
+        
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            playerAnimation.Draw(spriteBatch, enemyOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
+
+            //if shoot
+            /*if (_bulletBody != null && !_bulletBody.IsDisposed)
+            {
+                bullet.Draw(spriteBatch);
+            }*/
+
+            base.Draw(spriteBatch);
         }
     }
 }
