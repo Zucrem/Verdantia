@@ -8,4 +8,8 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = ScifiDruid
+<<<<<<< HEAD
 build_property.ProjectDir = C:\Users\Chayodom\Desktop\comgameFinal\FinalGame\ScifiDruid\
+=======
+build_property.ProjectDir = C:\Users\acer\Desktop\javaprojection\GameFinal\ScifiDruid\
+>>>>>>> 5664175541f166e8f5e918f23e0d502e3cf71020

@@ -1,11 +1,20 @@
 {
   "version": 2,
+<<<<<<< HEAD
   "dgSpecHash": "5rn2TtAjYoMEpLUmc02IlKvTLicIsUeKUjQeA95x/Qldns8LBq8gWweYAL9wF4wxD9ywwLizBVg+TP2Ny+Y5wA==",
   "success": true,
   "projectFilePath": "C:\\Users\\Chayodom\\Desktop\\comgameFinal\\FinalGame\\ScifiDruid\\ScifiDruid.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Chayodom\\.nuget\\packages\\monogame.content.builder.task\\3.8.1.303\\monogame.content.builder.task.3.8.1.303.nupkg.sha512",
     "C:\\Users\\Chayodom\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.1.303\\monogame.framework.desktopgl.3.8.1.303.nupkg.sha512"
+=======
+  "dgSpecHash": "ufJmL/oUf+pW8fhUL+BVACYP/DC5YmbKdIWQspkU+u+ayufaU+8nDDC8ODNt8JU/K3VV92c8PykZfLGkzOCjLQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\acer\\Desktop\\javaprojection\\GameFinal\\ScifiDruid\\ScifiDruid.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\acer\\.nuget\\packages\\monogame.content.builder.task\\3.8.1.303\\monogame.content.builder.task.3.8.1.303.nupkg.sha512",
+    "C:\\Users\\acer\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.1.303\\monogame.framework.desktopgl.3.8.1.303.nupkg.sha512"
+>>>>>>> 5664175541f166e8f5e918f23e0d502e3cf71020
   ],
   "logs": []
 }
