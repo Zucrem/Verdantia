@@ -48,7 +48,7 @@ namespace ScifiDruid.GameScreen
             blockRects = new List<Rectangle>();
             playerRects = new List<Rectangle>();
             mechanicRects = new List<Rectangle>();
-            groundMonsterRects = new List<Rectangle>();
+            ground1MonsterRects = new List<Rectangle>();
             flyMonsterRects = new List<Rectangle>();
             bossRects = new List<Rectangle>();
 
