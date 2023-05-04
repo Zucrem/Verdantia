@@ -35,6 +35,14 @@ namespace ScifiDruid.GameScreen
         protected Texture2D confirmExitPopUpPic, noConfirmPic1, yesConfirmPic1, noConfirmPic2, yesConfirmPic2;//for confirm
 
         protected Texture2D playerTex;
+
+        //all stage enemy and shoot texture
+        //stage 1
+        protected Texture2D flameMechTex, chainsawMechTex, fly1MechTex, lucasBossTex;
+        //stage 2
+        //stage 3
+
+
         private FrameCounter _frameCounter = new FrameCounter();
         private float deltaTime;
         private string fps;
@@ -62,7 +70,6 @@ namespace ScifiDruid.GameScreen
         protected float Timer = 0f;
         protected float timerPerUpdate = 0.05f;
         protected float tickPerUpdate = 30f;
-
 
         //Game state
         protected bool play = true;
@@ -98,7 +105,7 @@ namespace ScifiDruid.GameScreen
         protected int tileWidth;
         protected int tileHeight;
         protected int tilesetTileWidth;
-        protected List<Rectangle> collisionRects, deadBlockRects, blockRects, playerRects, mechanicRects, groundMonsterRects, flyMonsterRects, bossRects;
+        protected List<Rectangle> collisionRects, deadBlockRects, blockRects, playerRects, mechanicRects, ground1MonsterRects, flyMonsterRects, bossRects;
         protected Dictionary<Polygon, Vector2> polygon;
 
         protected float startmaptileX;
@@ -154,13 +161,15 @@ namespace ScifiDruid.GameScreen
                 jumpHigh = 12,
             };
 
-            enemy = new Enemy(playerTex)
+            enemy = new Enemy(flameMechTex)
             {
-                size = new Vector2(46,94),
-                health= 10,
-                speed= 0.1f,
+                size = new Vector2(112, 86),
+                health = 10,
+                speed = 0.22f,
+                walkList = new List<Vector2>() { new Vector2(0, 0), new Vector2(112, 0)},
+                deadList = new List<Vector2>(){new Vector2(0,108), new Vector2(112,108)},
             };
-            
+
             //camera
             camera = new Camera();
 
@@ -212,9 +221,14 @@ namespace ScifiDruid.GameScreen
             bigfonts = content.Load<SpriteFont>("Fonts/font60");
             mediumfonts = content.Load<SpriteFont>("Fonts/font30");
 
-            playerTex = content.Load<Texture2D>("Pictures/Play/Characters/Player/playerSheet");
+            //player asset and bullet
+            playerTex = content.Load<Texture2D>("Pictures/Play/Characters/Player/keeperSheet");
             bullet = content.Load<Texture2D>("Pictures/Play/Skills/PlayerSkill");
             //bullet = content.Load<Texture2D>("ss");
+
+            //stage1 enemy and all shoot
+            flameMechTex = content.Load<Texture2D>("Pictures/Play/Characters/Enemy/flameMech");
+            chainsawMechTex = content.Load<Texture2D>("Pictures/Play/Characters/Enemy/chainsawMech");
 
         }
 
@@ -592,7 +606,7 @@ namespace ScifiDruid.GameScreen
                 if (gamestate == GameState.START || gamestate == GameState.PLAY)
                 {
                     //draw playeranimation
-                   player.Draw(spriteBatch);
+                    player.Draw(spriteBatch);
                     enemy.Draw(spriteBatch);
                 }
                 

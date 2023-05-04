@@ -72,14 +72,12 @@ namespace ScifiDruid.GameObjects
 
         private int idleFrames, shootFrames, runFrames, shootAndRunFrames, shootUpFrames, shootUpAndRunFrames, jumpFrames, shootOnAirFrames, fallingFrames, skillFrames, takeDamageFrames, dashFrames, deadFrames;
 
-        private int row = 0;
-        private int c = 0;
         public int frames = 0;
         private int allframes;
 
         private PlayerStatus preStatus;
 
-        public PlayerAnimation(Texture2D texture, Vector2 position) : base(texture)
+        public PlayerAnimation(Texture2D texture) : base(texture)
         {
             this.texture = texture;
 
@@ -114,6 +112,9 @@ namespace ScifiDruid.GameObjects
             //skill
             skillSrcWidth = 64;
             skillSrcHeight = 94;
+            //dash
+            dashSrcWidth = 72;
+            dashSrcHeight = 78;
             //take damage
             takeDamageSrcWidth = 54;
             takeDamageSrcHeight = 92;
@@ -202,7 +203,8 @@ namespace ScifiDruid.GameObjects
             takeDamageFrames = takeDamageRectVector.Count();
 
             //dash vector to list
-            //dashRectVector.Add(new Vector2(0, 0));
+            dashRectVector.Add(new Vector2(686, 162));
+            dashRectVector.Add(new Vector2(778, 162));
 
             dashFrames = dashRectVector.Count();
 
@@ -237,6 +239,16 @@ namespace ScifiDruid.GameObjects
             switch (playerStatus)
             {
                 case PlayerStatus.SHOOT:
+                    if (elapsed >= delay)
+                    {
+                        if (frames < allframes - 1)
+                        {
+                            frames++;
+                        }
+                        elapsed = 0;
+                    }
+                    break;
+                case PlayerStatus.DASH:
                     if (elapsed >= delay)
                     {
                         if (frames < allframes - 1)
@@ -355,7 +367,7 @@ namespace ScifiDruid.GameObjects
                     allframes = takeDamageFrames;
                     break;
                 case PlayerStatus.DASH:
-                    delay = 300f;
+                    delay = 150f;
                     spriteVector = dashRectVector;
                     spriteSize = new Vector2(dashSrcWidth, dashSrcHeight);
                     allframes = dashFrames;

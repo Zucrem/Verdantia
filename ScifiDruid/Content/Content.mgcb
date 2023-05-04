@@ -217,7 +217,7 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Main/Setting/SettingBG.jpg
 
-#begin Pictures/Play/Characters/Player/playerSheet.png
+#begin Pictures/Play/Characters/Enemy/chainsawMech.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -227,7 +227,31 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Play/Characters/Player/playerSheet.png
+/build:Pictures/Play/Characters/Enemy/chainsawMech.png
+
+#begin Pictures/Play/Characters/Enemy/flameMech.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Characters/Enemy/flameMech.png
+
+#begin Pictures/Play/Characters/Player/keeperSheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Characters/Player/keeperSheet.png
 
 #begin Pictures/Play/PlayScreen/Black.png
 /importer:TextureImporter
