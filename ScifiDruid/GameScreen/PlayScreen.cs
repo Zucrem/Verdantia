@@ -159,13 +159,6 @@ namespace ScifiDruid.GameScreen
                 jumpHigh = 12,
             };
 
-            enemy = new Enemy(playerTex)
-            {
-                size = new Vector2(46, 94),
-                health = 2,
-                speed = 0.1f,
-            };
-
             //camera
             camera = new Camera();
 
@@ -607,7 +600,6 @@ namespace ScifiDruid.GameScreen
                 {
                     //draw playeranimation
                     player.Draw(spriteBatch);
-                    enemy.Draw(spriteBatch);
                 }
                 
             }

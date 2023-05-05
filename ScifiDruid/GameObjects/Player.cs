@@ -186,31 +186,45 @@ namespace ScifiDruid.GameObjects
             position = hitBox.Position;
             this.gameTime = gameTime;
 
-            //check touch ground condition
-            if (IsGround())
+            if (isAlive)
             {
-                touchGround = true;
-            }
-            else
-            {
-                touchGround = false;
+                //check touch ground condition
+                if (IsGround())
+                {
+                    touchGround = true;
+                }
+                else
+                {
+                    touchGround = false;
+                }
+
+                if (IsContact("Enemy", "B"))
+                {
+                    GotHit();
+                }
+                else if (hitCooldown > 0)
+                {
+                    hitCooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+
+                if (!touchGround)
+                {
+                    hitBox.LinearVelocity = new Vector2(hitBox.LinearVelocity.X * 0.97f, hitBox.LinearVelocity.Y);
+                    hitBox.GravityScale = 2;
+                }
+                else
+                {
+                    hitBox.GravityScale = 1;
+                }
+
             }
 
             //all animation
             //if step on dead block
-            if (IsContact("dead","B") || (hitCooldown <= 1.7 && touchGround && Player.health == 0 ))
+            if (IsContact("dead", "A") || (hitCooldown <= 1.7 && touchGround && Player.health == 0))
             {
                 isAlive = false;
                 playerStatus = PlayerStatus.DEAD;
-            }
-
-            if (IsContact("Enemy","B"))
-            {
-                GotHit();
-            }
-            else if (hitCooldown > 0)
-            {
-                hitCooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             //if dead animation animationEnd
@@ -220,17 +234,8 @@ namespace ScifiDruid.GameObjects
                 playerStatus = PlayerStatus.END;
             }
 
-            if (!touchGround)
-            {
-                hitBox.LinearVelocity = new Vector2(hitBox.LinearVelocity.X * 0.97f, hitBox.LinearVelocity.Y);
-                hitBox.GravityScale = 2;
-            }
-            else
-            {
-                hitBox.GravityScale = 1;
-            }
-
             playerAnimation.Update(gameTime, playerStatus);
+
         }
 
         public void Action()
@@ -508,7 +513,7 @@ namespace ScifiDruid.GameObjects
 
                         break;
                 }
-                hitCooldown = 2;
+                hitCooldown = 0.5f;
             }
             
         }
