@@ -31,8 +31,7 @@ namespace ScifiDruid.GameObjects
         private KeyboardState currentKeyState;
         private KeyboardState oldKeyState;
 
-        private Body hitBox;
-        private Body _bulletBody;
+        public Body hitBox;
 
         //player status
         public PlayerStatus playerStatus;
@@ -46,16 +45,19 @@ namespace ScifiDruid.GameObjects
         private int jumpTime;
         private int jumpDelay;
 
-        private int attackTime;
+        private int attackTimeDelay;
         private int attackDelay;
         private int attackMaxTime;
 
+        private float attackTime;
         private int dashTime;
 
         //static for change in shop and apply to all Stage
         public static int health;
-        public static int mana;
+        public static float mana;
         public static int money;
+        public static int maxHealth;
+        public static int maxMana;
 
         //Count cooldown of action
         private float skill1Cooldown;
@@ -73,12 +75,14 @@ namespace ScifiDruid.GameObjects
         public static int skill3CoolTime;
         public static int dashCoolTime;
 
+        public float hitCooldown;
+
         private Vector2 playerOrigin;
 
         private Vector2 bulletPosition;
 
-        public bool isAttack = false;
-
+        public static bool isAttack = false;
+        
         private bool animationEnd;
 
         private bool press = false;
@@ -154,7 +158,7 @@ namespace ScifiDruid.GameObjects
 
             if (skill1CoolTime == 0)
             {
-                skill1CoolTime = 60;
+                skill1CoolTime = 5;
             }
 
             if (skill2CoolTime == 0)
@@ -194,11 +198,19 @@ namespace ScifiDruid.GameObjects
 
             //all animation
             //if step on dead block
-
-            if (IsStepDeadBlock())
+            if (IsContact("dead","B") || (hitCooldown <= 1.7 && touchGround && Player.health == 0 ))
             {
                 isAlive = false;
                 playerStatus = PlayerStatus.DEAD;
+            }
+
+            if (IsContact("Enemy","B"))
+            {
+                GotHit();
+            }
+            else if (hitCooldown > 0)
+            {
+                hitCooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             //if dead animation animationEnd
@@ -225,7 +237,7 @@ namespace ScifiDruid.GameObjects
         {
             currentKeyState = Keyboard.GetState();
 
-            if (isAlive)
+            if (isAlive && Player.health > 0)
             {
                 //check if player still on ground
                 if (touchGround)
@@ -238,6 +250,11 @@ namespace ScifiDruid.GameObjects
                 Attack();
                 Dash();
                 Skill();
+
+                if (currentKeyState.IsKeyDown(Keys.K) && oldKeyState.IsKeyUp(Keys.K))
+                {
+                    GotHit();
+                }
             }
             
             oldKeyState = currentKeyState;
@@ -283,11 +300,8 @@ namespace ScifiDruid.GameObjects
                     hitBox.LinearVelocity = new Vector2(hitBox.LinearVelocity.X,0f);
                     wasJumped = true;
                 }
-                
-                if (playerStatus != PlayerStatus.RUN)
-                {
-                    hitBox.ApplyLinearImpulse(new Vector2(0, -jumpHigh));
-                }
+
+                hitBox.ApplyLinearImpulse(new Vector2(0, -jumpHigh));
             }
 
             if (wasJumped && touchGround)
@@ -296,20 +310,29 @@ namespace ScifiDruid.GameObjects
             }
 
         }
-
-
         public void Attack()
         {
-            attackDelay = (int)gameTime.TotalGameTime.TotalMilliseconds - attackTime;
+            attackDelay = (int)gameTime.TotalGameTime.TotalMilliseconds - attackTimeDelay;
 
             if (currentKeyState.IsKeyDown(Keys.X) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && Player.mana > 0)
             {
                 bulletList.Add(new Bullet(bulletTexture, hitBox.Position + new Vector2(0,-0.12f),hitBox,charDirection));
-                isAttack = true;
+                Player.isAttack = true;
                 attackAnimationTime = 0.3f;
-                attackTime = (int)gameTime.TotalGameTime.TotalMilliseconds;
+                attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
+                attackTime = 5;
                 bulletList[bulletList.Count - 1].Shoot(gameTime);
                 Player.mana -= 5;
+            }
+            
+            if (attackTime > 0)
+            {
+                attackTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            else if (attackTime <= 0 && Player.mana < Player.maxMana)
+            {
+                attackTime = 0;
+                Player.mana += (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             if (attackAnimationTime > 0)
@@ -331,7 +354,7 @@ namespace ScifiDruid.GameObjects
             
             if (bulletList.Count == 0)
             {
-                isAttack = false;
+                Player.isAttack = false;
             }
 
             else if (bulletList.Count > 0)
@@ -355,26 +378,22 @@ namespace ScifiDruid.GameObjects
                 }
             }
         }
-
         public void Skill()
         {
             if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press && skill1Cooldown <= 0)
             {
-                Player.health++;
-                skill1Cooldown = skill1CoolTime;
-                press = true;
+                if (Player.health < Player.maxHealth)
+                {
+                    RegenSkill();
+                }
             }
             if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Down) && !press && skill2Cooldown <= 0)
             {
-                Player.health--;
-                skill2Cooldown = skill2CoolTime;
-                press = true;
+                CrocodileSkill();
             }
             if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyUp(Keys.Down) && currentKeyState.IsKeyUp(Keys.Up) && !press)
             {
-                skill3Cooldown = skill3CoolTime;
-
-                press = true;
+                LionSkill();
             }   
 
             if (press)
@@ -405,7 +424,6 @@ namespace ScifiDruid.GameObjects
                 press = false;
             }
         }
-
         public void Falling()
         {
             Vector2 velocity = hitBox.LinearVelocity;
@@ -418,7 +436,6 @@ namespace ScifiDruid.GameObjects
                 playerStatus = PlayerStatus.JUMP;
             }
         }
-
         public void Dash()
         {
             if (currentKeyState.IsKeyDown(Keys.C) && oldKeyState.IsKeyUp(Keys.C) && dashCooldown <= 0)
@@ -453,6 +470,80 @@ namespace ScifiDruid.GameObjects
             }
         }
 
+        public void RegenSkill()
+        {
+            skill1Cooldown = skill1CoolTime;
+            
+            Player.health++;
+            
+            press = true;
+        }
+
+        public void LionSkill()
+        {
+            skill3Cooldown = skill3CoolTime;
+            
+            press = true;
+        }
+
+        public void CrocodileSkill()
+        {
+            skill2Cooldown = skill2CoolTime;
+            press = true;
+        }
+
+        public void GotHit()
+        {
+            if (hitCooldown <= 0)
+            {
+                Player.health--;
+                switch (charDirection)
+                {
+                    case SpriteEffects.None:
+                        hitBox.ApplyLinearImpulse(new Vector2(10, -jumpHigh));
+
+                        break;
+                    case SpriteEffects.FlipHorizontally:
+                        hitBox.ApplyLinearImpulse(new Vector2(-10, -jumpHigh));
+
+                        break;
+                }
+                hitCooldown = 2;
+            }
+            
+        }
+
+        public bool IsContact(String contact,String fixture)
+        {
+            ContactEdge contactEdge = hitBox.ContactList;
+            while (contactEdge != null)
+            {
+                Contact contactFixture = contactEdge.Contact;
+                switch (fixture)
+                {
+                    case "A":
+                        // Check if the contact fixture is the ground
+                        if (contactFixture.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals(contact))
+                        {
+                            //if Contact thing in parameter it will return True
+                            return true;
+                        }
+                        break; 
+                    case "B":
+                        // Check if the contact fixture is the ground
+                        if (contactFixture.IsTouching && contactEdge.Contact.FixtureB.Body.UserData != null && contactEdge.Contact.FixtureB.Body.UserData.Equals(contact))
+                        {
+                            //if Contact thing in parameter it will return True
+                            return true;
+                        }
+                        break;
+                }
+                
+                contactEdge = contactEdge.Next;
+            }
+            return false;
+        }
+
         public bool IsGround()
         {
             ContactEdge contactEdge = hitBox.ContactList;
@@ -461,7 +552,7 @@ namespace ScifiDruid.GameObjects
                 Contact contactFixture = contactEdge.Contact;
 
                 // Check if the contact fixture is the ground
-                if (contactFixture.IsTouching)
+                if (contactFixture.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals("ground"))
                 {
                     Vector2 normal = contactFixture.Manifold.LocalNormal;
                     if (normal.Y < 0f)
@@ -470,22 +561,6 @@ namespace ScifiDruid.GameObjects
                     }
                     // The character is on the ground
 
-                }
-                contactEdge = contactEdge.Next;
-            }
-            return false;
-        }
-
-        public bool IsStepDeadBlock()
-        {
-            ContactEdge contactEdge = hitBox.ContactList;
-            while (contactEdge != null)
-            {
-                Contact contactFixture = contactEdge.Contact;
-                // Check if the contact fixture is the dead block
-                if (contactFixture.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals("dead"))
-                {
-                    return true;
                 }
                 contactEdge = contactEdge.Next;
             }

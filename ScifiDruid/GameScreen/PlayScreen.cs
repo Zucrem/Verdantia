@@ -159,6 +159,13 @@ namespace ScifiDruid.GameScreen
                 jumpHigh = 12,
             };
 
+            enemy = new Enemy(playerTex)
+            {
+                size = new Vector2(46, 94),
+                health = 2,
+                speed = 0.1f,
+            };
+
             //camera
             camera = new Camera();
 
@@ -553,6 +560,8 @@ namespace ScifiDruid.GameScreen
 
         public void resetWorld()
         {
+            Debug.WriteLine("Reset ! ");
+            Singleton.Instance.world.ClearForces();
             Singleton.Instance.world.Clear();
         }
 
@@ -568,8 +577,11 @@ namespace ScifiDruid.GameScreen
                     fps = "FPS: 0";
                 }
 
-                spriteBatch.DrawString(mediumfonts, Player.health.ToString(), new Vector2(1, 1), Color.Black);
-                spriteBatch.DrawString(mediumfonts, Player.mana.ToString(), new Vector2(1, 65), Color.Black);
+                int mana = (int)Player.mana;
+                int health = (int)Player.health;
+
+                spriteBatch.DrawString(mediumfonts, health.ToString(), new Vector2(1, 1), Color.Black);
+                spriteBatch.DrawString(mediumfonts, mana.ToString(), new Vector2(1, 65), Color.Black);
 
             }
         }
@@ -580,7 +592,7 @@ namespace ScifiDruid.GameScreen
                 //in PlayScreen only
                 if (gamestate == GameState.PLAY)
                 {
-                    if (player.isAttack)
+                    if (Player.isAttack)
                     {
                         foreach (Bullet bullet in player.bulletList)
                         {
@@ -593,8 +605,9 @@ namespace ScifiDruid.GameScreen
                 //all draw on screen here
                 if (gamestate == GameState.START || gamestate == GameState.PLAY)
                 {
-                    //draw player animation
+                    //draw playeranimation
                     player.Draw(spriteBatch);
+                    enemy.Draw(spriteBatch);
                 }
                 
             }

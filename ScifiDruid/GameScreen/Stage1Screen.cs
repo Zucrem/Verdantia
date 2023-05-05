@@ -44,6 +44,8 @@ namespace ScifiDruid.GameScreen
 
             Player.health = 5;
             Player.mana = 100;
+            Player.maxHealth = 5;
+            Player.maxMana = 100;
 
             //create tileset for map1
             //map = new TmxMap("Content/stage1test.tmx");
@@ -160,6 +162,7 @@ namespace ScifiDruid.GameScreen
                 body.Restitution = 0.0f;
                 body.Friction = 0.3f;
             }
+
 
             //create player on position
             player.Initial(startRect);

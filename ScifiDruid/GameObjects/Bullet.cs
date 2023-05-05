@@ -34,7 +34,7 @@ namespace ScifiDruid.GameObjects
         //animation
         private SkillAnimation bulletAnimation;
 
-        private Body bulletBody;
+        public Body bulletBody;
 
         private int bulletSizeX;
         private int bulletSizeY;
@@ -64,7 +64,7 @@ namespace ScifiDruid.GameObjects
             bulletDistance = 10;
 
             bulletAnimation = new SkillAnimation(this.texture);
-            bulletBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bulletSizeX), ConvertUnits.ToSimUnits(bulletSizeY),0,position,0,BodyType.Dynamic,"bullet");
+            bulletBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bulletSizeX), ConvertUnits.ToSimUnits(bulletSizeY),0,position,0,BodyType.Dynamic,"Bullet");
             bulletBody.IgnoreGravity = true;
             bulletBody.IgnoreCollisionWith(playerBody);
 
@@ -117,13 +117,13 @@ namespace ScifiDruid.GameObjects
             while (contactEdge != null)
             {
                 Contact contactFixture = contactEdge.Contact;
-
-                // Check if the contact fixture is the ground
                 if (contactFixture.IsTouching)
                 {
                     bulletBody.Dispose();
                     return true;
                 }
+                // Check if the contact fixture is the ground
+                
                 contactEdge = contactEdge.Next;
             }
             return false;
