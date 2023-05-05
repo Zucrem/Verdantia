@@ -1,5 +1,6 @@
 ﻿using Box2DNet;
 using Box2DNet.Dynamics;
+using Box2DNet.Dynamics.Contacts;
 using Box2DNet.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -63,6 +64,8 @@ namespace ScifiDruid.GameObjects
             enemyHitBox.AngularDamping = 2.0f;
             enemyHitBox.LinearDamping = 2.0f;
 
+            isAlive = true;
+
             charDirection = SpriteEffects.FlipHorizontally;  // heading direction
 
             enemyOrigin = new Vector2(textureWidth/2,textureHeight/2);  //draw in the middle
@@ -71,15 +74,23 @@ namespace ScifiDruid.GameObjects
 
             playerAnimation.Initialize();
 
-
-
+            
         }
 
         public override void Update(GameTime gameTime)
         {
             this.gameTime = gameTime;
             position = enemyHitBox.Position;
-            Debug.WriteLine("Enemy position"+position);
+            if (Player.isAttack && GotHit())
+            {
+                health--;
+            }
+
+            if (health <= 0 && !enemyHitBox.IsDisposed)
+            {
+                isAlive = false;
+                enemyHitBox.Dispose();
+            }
             //characterDestRec.X = (int)hitBox.Position.X;
             //characterDestRec.Y = (int)hitBox.Position.Y;
             playerAnimation.Update(gameTime, Player.PlayerStatus.IDLE);
@@ -87,11 +98,47 @@ namespace ScifiDruid.GameObjects
           
         }
 
-        
+        public bool GotHit()
+        {
+            ContactEdge contactEdge = enemyHitBox.ContactList;
+            while (contactEdge != null)
+            {
+                Contact contactFixture = contactEdge.Contact;
+
+                //if (contactEdge.Contact.FixtureB.Body.UserData.Equals("Bullet") || contactEdge.Contact.FixtureA.Body.UserData.Equals("Bullet"))
+                //{
+                //    Debug.WriteLine("Count " + Singleton.Instance.world.BodyList.Count);
+
+                //    Debug.WriteLine("A " + contactEdge.Contact.FixtureA.Body.UserData);
+
+                //    Debug.WriteLine("B " + contactEdge.Contact.FixtureB.Body.UserData);
+                //}
+
+                Body fixtureB_Body = contactEdge.Contact.FixtureB.Body;
+                Body fixtureA_Body = contactEdge.Contact.FixtureA.Body;
+
+                bool contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals("Bullet"));
+                bool contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals("Bullet"));
+
+                if (contactFixture.IsTouching && (contactB || contactA))
+                {
+                    Debug.WriteLine("SS");
+                    return true;
+                }
+                // Check if the contact fixture is the ground
+
+                contactEdge = contactEdge.Next;
+            }
+            return false;
+        }
+
         public void EnemyAction()
         {
             currentKeyState = Keyboard.GetState();
-            EnemyWalking();
+            if (isAlive)
+            {
+                EnemyWalking();
+            }
             //EnemyAlertWalking();
         }
 
@@ -105,7 +152,7 @@ namespace ScifiDruid.GameObjects
 
             int pokemon = 0;
             if(health > 0)
-            { Debug.WriteLine("this is timeElapsed"+timeElapsed);
+            { 
                 if (timeElapsed >= 5f)
                 {
                     timeElapsed = 0f;
@@ -141,7 +188,11 @@ namespace ScifiDruid.GameObjects
         
         public override void Draw(SpriteBatch spriteBatch)
         {
-            playerAnimation.Draw(spriteBatch, enemyOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
+            if (health > 0)
+            {
+                playerAnimation.Draw(spriteBatch, enemyOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
+            }
+
 
             //if shoot
             /*if (_bulletBody != null && !_bulletBody.IsDisposed)
