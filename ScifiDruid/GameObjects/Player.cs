@@ -24,6 +24,9 @@ namespace ScifiDruid.GameObjects
     {
         private Texture2D texture;
         private Texture2D bulletTexture;
+        private Texture2D regenTexture;
+        private Texture2D lionTexture;
+        private Texture2D crocodileTexture;
 
         private Rectangle characterDestRec;
         private Rectangle characterSouceRec;
@@ -451,11 +454,11 @@ namespace ScifiDruid.GameObjects
                 switch (charDirection)
                 {
                     case SpriteEffects.None:
-                        hitBox.ApplyLinearImpulse(new Vector2(-5, 0));
+                        hitBox.ApplyLinearImpulse(new Vector2(-10, 0));
 
                         break;
                     case SpriteEffects.FlipHorizontally:
-                        hitBox.ApplyLinearImpulse(new Vector2(5, 0));
+                        hitBox.ApplyLinearImpulse(new Vector2(10, 0));
 
                         break;
                 }
@@ -487,8 +490,10 @@ namespace ScifiDruid.GameObjects
         public void LionSkill()
         {
             skill3Cooldown = skill3CoolTime;
-            
             press = true;
+
+
+
         }
 
         public void CrocodileSkill()
@@ -501,7 +506,11 @@ namespace ScifiDruid.GameObjects
         {
             if (hitCooldown <= 0)
             {
-                Player.health--;
+                if (Player.health > 0)
+                {
+                    Player.health--;
+                }
+
                 switch (charDirection)
                 {
                     case SpriteEffects.None:
@@ -513,6 +522,7 @@ namespace ScifiDruid.GameObjects
 
                         break;
                 }
+
                 hitCooldown = 0.5f;
             }
             

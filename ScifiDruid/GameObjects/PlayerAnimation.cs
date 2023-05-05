@@ -373,7 +373,7 @@ namespace ScifiDruid.GameObjects
                     allframes = dashFrames;
                     break;
                 case PlayerStatus.DEAD:
-                    delay = 150f;
+                    delay = 80f;
                     spriteVector = deadRectVector;
                     spriteSize = new Vector2(deadSrcWidth, deadSrcHeight);
                     allframes = deadFrames;
