@@ -23,9 +23,8 @@ namespace ScifiDruid.GameScreen
 {
     class PlayScreen : _GameScreen
     {
-        
+        //create class player
         protected Player player;
-        protected Enemy enemy;
 
         //all all texture
         protected Texture2D blackTex, whiteTex, greenTex;
@@ -37,7 +36,6 @@ namespace ScifiDruid.GameScreen
         protected Texture2D playerTex;
 
         //all stage enemy and shoot texture
-        //stage 1
         protected Texture2D flameMechTex, chainsawMechTex, fly1MechTex, lucasBossTex;
         //stage 2
         //stage 3
@@ -105,7 +103,7 @@ namespace ScifiDruid.GameScreen
         protected int tileWidth;
         protected int tileHeight;
         protected int tilesetTileWidth;
-        protected List<Rectangle> collisionRects, deadBlockRects, blockRects, playerRects, mechanicRects, ground1MonsterRects, flyMonsterRects, bossRects;
+        protected List<Rectangle> collisionRects, deadBlockRects, blockRects, playerRects, mechanicRects, ground1MonsterRects, ground2MonsterRects, flyMonsterRects, bossRects;
         protected Dictionary<Polygon, Vector2> polygon;
 
         protected float startmaptileX;
@@ -159,15 +157,6 @@ namespace ScifiDruid.GameScreen
                 size = new Vector2(46, 94),
                 speed = 0.125f,
                 jumpHigh = 12,
-            };
-
-            enemy = new Enemy(flameMechTex)
-            {
-                size = new Vector2(112, 86),
-                health = 10,
-                speed = 0.22f,
-                walkList = new List<Vector2>() { new Vector2(0, 0), new Vector2(112, 0)},
-                deadList = new List<Vector2>(){new Vector2(0,108), new Vector2(112,108)},
             };
 
             //camera
@@ -283,8 +272,7 @@ namespace ScifiDruid.GameScreen
 
                             //camera update for scroll
                             Singleton.Instance.tfMatrix = camera.Follow(player.position, startmaptileX, endmaptileX);
-                            enemy.Update(gameTime);
-                            enemy.EnemyAction();
+
                             player.Action();
 
                             if (player.playerStatus == Player.PlayerStatus.END)
@@ -605,9 +593,8 @@ namespace ScifiDruid.GameScreen
                 //all draw on screen here
                 if (gamestate == GameState.START || gamestate == GameState.PLAY)
                 {
-                    //draw playeranimation
+                    //draw player animation
                     player.Draw(spriteBatch);
-                    enemy.Draw(spriteBatch);
                 }
                 
             }

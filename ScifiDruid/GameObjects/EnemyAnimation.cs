@@ -14,9 +14,12 @@ namespace ScifiDruid.GameObjects
     {
         private Texture2D texture;
         private Vector2 size;
+        private Vector2 walkSize;
+        private Vector2 runSize;
+        private Vector2 deadSize;
         private Vector2 spriteSize;
         private List<Vector2> walkSpriteVector = new List<Vector2>();
-        private List<Vector2> shootSpriteVector = new List<Vector2>();
+        private List<Vector2> runSpriteVector = new List<Vector2>();
         private List<Vector2> deadSpriteVector = new List<Vector2>();
         private List<Vector2> spriteVector = new List<Vector2>();
 
@@ -34,11 +37,14 @@ namespace ScifiDruid.GameObjects
         private int allframes;
 
         private EnemyStatus preStatus;
-        public EnemyAnimation(Texture2D texture, Vector2 size, List<Vector2> walkList, List<Vector2> deadList) : base(texture)
+        public EnemyAnimation(Texture2D texture, Vector2 walkSize, Vector2 runSize, Vector2 deadSize, List<Vector2> walkList, List<Vector2> runList, List<Vector2> deadList) : base(texture)
         {
             this.texture = texture;
-            this.size = size;
+            this.walkSize = walkSize;
+            this.runSize = runSize;
+            this.deadSize = deadSize;
             this.walkSpriteVector = walkList;
+            this.runSpriteVector = runList;
             this.deadSpriteVector = deadList;
         }
         public void Initialize()
@@ -111,19 +117,25 @@ namespace ScifiDruid.GameObjects
                 case EnemyStatus.WALK:
                     delay = 300f;
                     spriteVector = walkSpriteVector;
-                    spriteSize = new Vector2(size.X, size.Y);
+                    spriteSize = new Vector2(walkSize.X, walkSize.Y);
                     allframes = spriteVector.Count();
                     break;
                 case EnemyStatus.SHOOT:
                     delay = 300f;
                     spriteVector = walkSpriteVector;
-                    spriteSize = new Vector2(size.X, size.Y);
+                    spriteSize = new Vector2(walkSize.X, walkSize.Y);
+                    allframes = spriteVector.Count();
+                    break;
+                case EnemyStatus.RUN:
+                    delay = 300f;
+                    spriteVector = runSpriteVector;
+                    spriteSize = new Vector2(runSize.X, runSize.Y);
                     allframes = spriteVector.Count();
                     break;
                 case EnemyStatus.DEAD:
                     delay = 300f;
                     spriteVector = deadSpriteVector;
-                    spriteSize = new Vector2(size.X, size.Y);
+                    spriteSize = new Vector2(deadSize.X, deadSize.Y);
                     allframes = spriteVector.Count();
                     break;
             }

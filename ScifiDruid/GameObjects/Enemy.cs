@@ -40,8 +40,11 @@ namespace ScifiDruid.GameObjects
         private float timeElapsed;
         private bool isMovingLeft;
 
+        public Vector2 walkSize;
+        public Vector2 runSize;
+        public Vector2 deadSize;
         public List<Vector2> walkList;
-        public List<Vector2> shootList;
+        public List<Vector2> runList;
         public List<Vector2> deadList;
 
         private EnemyAnimation enemyAnimation;
@@ -84,7 +87,7 @@ namespace ScifiDruid.GameObjects
             enemyOrigin = new Vector2(textureWidth/2,textureHeight/2);  //draw in the middle
 
             enemyStatus = EnemyStatus.WALK;
-            enemyAnimation = new EnemyAnimation(texture, size, walkList, deadList);
+            enemyAnimation = new EnemyAnimation(texture, deadSize, runSize, deadSize, walkList, runList, deadList);
 
             enemyAnimation.Initialize();
 

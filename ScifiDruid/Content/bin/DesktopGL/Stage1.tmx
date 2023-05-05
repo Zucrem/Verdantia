@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="360" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="256">
- <tileset firstgid="1" source="../Content/Stage1.tsx"/>
+ <tileset firstgid="1" source="../../javaprojection/GameFinal/ScifiDruid/Content/Stage1.tsx"/>
  <layer id="1" name="Blocks" width="360" height="23">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -212,84 +212,17 @@
   <object id="255" name="sign5" x="1696" y="448" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="3" name="GroundMonster">
-  <object id="4" name="Ground_mon 1" x="2110.83" y="512.083" width="64" height="64"/>
-  <object id="7" name="start 2" x="2427" y="383.333">
-   <point/>
-  </object>
-  <object id="8" name="end 2" x="2182" y="380">
-   <point/>
-  </object>
-  <object id="9" name="Ground_mon 2" x="2368.67" y="318" width="64" height="64"/>
-  <object id="10" name="end 1" x="1824.33" y="577.333">
-   <point/>
-  </object>
-  <object id="11" name="start 1" x="2178.67" y="577.667">
-   <point/>
-  </object>
-  <object id="12" name="start 3" x="3677.33" y="478.333">
-   <point/>
-  </object>
-  <object id="13" name="end 3" x="3304.33" y="480">
-   <point/>
-  </object>
-  <object id="14" name="Ground_mon 3" x="3360" y="416" width="64" height="64"/>
-  <object id="15" name="Ground_mon 3" x="3620" y="412" width="64" height="64"/>
-  <object id="16" name="Ground_mon 6" x="4449" y="513" width="64" height="64"/>
-  <object id="17" name="Ground_mon 5" x="4061" y="511" width="64" height="64"/>
-  <object id="18" name="start 5" x="4126" y="575">
-   <point/>
-  </object>
-  <object id="19" name="start 6" x="4514" y="577">
-   <point/>
-  </object>
-  <object id="20" name="end 5" x="3775" y="576">
-   <point/>
-  </object>
-  <object id="21" name="end 6" x="4140" y="575">
-   <point/>
-  </object>
-  <object id="33" name="Ground_mon 7" x="5792" y="416" width="64" height="64"/>
-  <object id="34" name="start 7" x="5948" y="473">
-   <point/>
-  </object>
-  <object id="35" name="end 7" x="5697" y="474">
-   <point/>
-  </object>
-  <object id="36" name="ground_mon 8" x="6656" y="512" width="64" height="64"/>
-  <object id="37" name="ground_mon 9" x="7040" y="512" width="64" height="64"/>
-  <object id="38" name="start 8" x="6784" y="571">
-   <point/>
-  </object>
-  <object id="39" name="end 8" x="6399" y="570">
-   <point/>
-  </object>
-  <object id="40" name="start9" x="7231" y="571">
-   <point/>
-  </object>
-  <object id="41" name="end 9" x="6815" y="571">
-   <point/>
-  </object>
-  <object id="42" name="ground_mon 10" x="8320" y="512" width="64" height="64"/>
-  <object id="43" name="start 10" x="8544" y="569">
-   <point/>
-  </object>
-  <object id="44" name="end 10" x="8126" y="569">
-   <point/>
-  </object>
-  <object id="45" x="9790" y="416" width="65" height="64"/>
-  <object id="46" name="start 11" x="9854" y="476">
-   <point/>
-  </object>
-  <object id="47" name="end 11" x="9637" y="472">
-   <point/>
-  </object>
-  <object id="54" name="ground_mon 12" x="7136" y="224" width="64" height="64"/>
-  <object id="55" name="start 12" x="7291" y="279">
-   <point/>
-  </object>
-  <object id="56" name="end 12" x="7046" y="284">
-   <point/>
-  </object>
+  <object id="4" name="ground_mon_1" x="2110.83" y="512.083" width="64" height="64"/>
+  <object id="9" name="ground_mon_2" x="2272" y="320" width="64" height="64"/>
+  <object id="15" name="ground_mon_2" x="3456" y="416" width="64" height="64"/>
+  <object id="16" name="ground_mon_2" x="4192" y="512" width="64" height="64"/>
+  <object id="17" name="ground_mon_1" x="3936" y="512" width="64" height="64"/>
+  <object id="33" name="ground_mon_1" x="5792" y="416" width="64" height="64"/>
+  <object id="36" name="ground_mon_1" x="6656" y="512" width="64" height="64"/>
+  <object id="37" name="ground_mon_2" x="6880" y="512" width="64" height="64"/>
+  <object id="42" name="ground_mon_1" x="8352" y="512" width="64" height="64"/>
+  <object id="45" name="ground_mon_2" x="9790" y="416" width="65" height="64"/>
+  <object id="54" name="ground_mon_1" x="7136" y="224" width="64" height="64"/>
  </objectgroup>
  <objectgroup id="4" name="FlyingMonster">
   <object id="22" name="Fly_mon 1" x="4032" y="223" width="64" height="64"/>
