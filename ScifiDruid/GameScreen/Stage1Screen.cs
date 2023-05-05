@@ -68,34 +68,21 @@ namespace ScifiDruid.GameScreen
             flyMonsterRects = new List<Rectangle>();
             bossRects = new List<Rectangle>();
 
-            polygon = new Dictionary<Polygon, Vector2>();
             //add list rectangle
             foreach (var o in map.ObjectGroups["Blocks"].Objects)
             {
-                if (o.Name == "")
+                if (o.Name.Equals(""))
                 {
                     blockRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
-                }
-                if (o.Name == "triangle")
-                {
-                    Vertices vertices = new Vertices();
-                    foreach (var item in o.Points)
-                    {
-                        vertices.Add(ConvertUnits.ToSimUnits(new Vector2((float)item.X, (float)item.Y)));
-                    }
-
-                    Vector2 position = new Vector2((float)o.X, (float)o.Y);
-                    Polygon poly = new Polygon(vertices, true);
-                    polygon.Add(poly, position);
                 }
             }
             foreach (var o in map.ObjectGroups["Player"].Objects)
             {
-                if (o.Name == "startRect")
+                if (o.Name.Equals("startRect"))
                 {
                     startRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
                 }
-                if (o.Name == "end")
+                if (o.Name.Equals("end"))
                 {
                     endRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
                     //playerRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
@@ -103,8 +90,10 @@ namespace ScifiDruid.GameScreen
             }
             foreach (var o in map.ObjectGroups["SpecialBlocks"].Objects)
             {
-                if (o.Name == "water")
+                Debug.WriteLine(o.Name);
+                if (o.Name.Equals("spike"))
                 {
+                    Debug.WriteLine("yo");
                     deadBlockRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
                 }
             }
@@ -113,11 +102,11 @@ namespace ScifiDruid.GameScreen
             }
             foreach (var o in map.ObjectGroups["GroundMonster"].Objects)
             {
-                if (o.Name == "ground_mon_1")
+                if (o.Name.Equals("ground_mon_1"))
                 {
                     ground1MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
                 }
-                if (o.Name == "ground_mon_2")
+                if (o.Name.Equals("ground_mon_2"))
                 {
                     ground2MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
                 }
@@ -141,19 +130,10 @@ namespace ScifiDruid.GameScreen
                 body.Friction = 0.3f;
             }
 
-            foreach (var poly in polygon)
-            {
-                Vector2 collisionPosition = ConvertUnits.ToSimUnits(poly.Value);
-                //Singleton.Instance.world.Step(0.001f);
-
-                Body body = BodyFactory.CreatePolygon(Singleton.Instance.world, poly.Key.Vertices, 1f, collisionPosition);
-                body.UserData = "ground";
-                body.Restitution = 0.0f;
-                body.Friction = 0.0f;
-            }
             //create dead block for block in the world
             foreach (Rectangle rect in deadBlockRects)
             {
+                Debug.WriteLine(deadBlockRects.Count());
                 Vector2 deadBlockPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
                 //Singleton.Instance.world.Step(0.001f);
 
