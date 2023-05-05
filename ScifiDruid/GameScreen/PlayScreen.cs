@@ -23,9 +23,8 @@ namespace ScifiDruid.GameScreen
 {
     class PlayScreen : _GameScreen
     {
-        
+        //create class player
         protected Player player;
-        protected Enemy enemy;
 
         //all all texture
         protected Texture2D blackTex, whiteTex, greenTex;
@@ -35,6 +34,13 @@ namespace ScifiDruid.GameScreen
         protected Texture2D confirmExitPopUpPic, noConfirmPic1, yesConfirmPic1, noConfirmPic2, yesConfirmPic2;//for confirm
 
         protected Texture2D playerTex;
+
+        //all stage enemy and shoot texture
+        protected Texture2D flameMechTex, chainsawMechTex, fly1MechTex, lucasBossTex;
+        //stage 2
+        //stage 3
+
+
         private FrameCounter _frameCounter = new FrameCounter();
         private float deltaTime;
         private string fps;
@@ -62,7 +68,6 @@ namespace ScifiDruid.GameScreen
         protected float Timer = 0f;
         protected float timerPerUpdate = 0.05f;
         protected float tickPerUpdate = 30f;
-
 
         //Game state
         protected bool play = true;
@@ -98,7 +103,7 @@ namespace ScifiDruid.GameScreen
         protected int tileWidth;
         protected int tileHeight;
         protected int tilesetTileWidth;
-        protected List<Rectangle> collisionRects, deadBlockRects, blockRects, playerRects, mechanicRects, groundMonsterRects, flyMonsterRects, bossRects;
+        protected List<Rectangle> collisionRects, deadBlockRects, blockRects, playerRects, mechanicRects, ground1MonsterRects, ground2MonsterRects, flyMonsterRects, bossRects;
         protected Dictionary<Polygon, Vector2> polygon;
 
         protected float startmaptileX;
@@ -212,9 +217,14 @@ namespace ScifiDruid.GameScreen
             bigfonts = content.Load<SpriteFont>("Fonts/font60");
             mediumfonts = content.Load<SpriteFont>("Fonts/font30");
 
-            playerTex = content.Load<Texture2D>("Pictures/Play/Characters/Player/playerSheet");
+            //player asset and bullet
+            playerTex = content.Load<Texture2D>("Pictures/Play/Characters/Player/keeperSheet");
             bullet = content.Load<Texture2D>("Pictures/Play/Skills/PlayerSkill");
             //bullet = content.Load<Texture2D>("ss");
+
+            //stage1 enemy and all shoot
+            flameMechTex = content.Load<Texture2D>("Pictures/Play/Characters/Enemy/flameMech");
+            chainsawMechTex = content.Load<Texture2D>("Pictures/Play/Characters/Enemy/chainsawMech");
 
         }
 
@@ -269,8 +279,7 @@ namespace ScifiDruid.GameScreen
 
                             //camera update for scroll
                             Singleton.Instance.tfMatrix = camera.Follow(player.position, startmaptileX, endmaptileX);
-                            enemy.Update(gameTime);
-                            enemy.EnemyAction();
+
                             player.Action();
 
                             if (player.playerStatus == Player.PlayerStatus.END)

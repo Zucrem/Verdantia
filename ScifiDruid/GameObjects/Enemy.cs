@@ -40,12 +40,31 @@ namespace ScifiDruid.GameObjects
         //attribute using for moving of enemy
         private float timeElapsed;
         private bool isMovingLeft;
-        
 
-        private PlayerAnimation playerAnimation;
-        private Vector2 playerOrigin;
+        public Vector2 walkSize;
+        public Vector2 runSize;
+        public Vector2 deadSize;
+        public List<Vector2> walkList;
+        public List<Vector2> runList;
+        public List<Vector2> deadList;
+
+        private EnemyAnimation enemyAnimation;
 
         private KeyboardState currentKeyState;
+
+        //animation
+        private EnemyStatus enemyStatus;
+        //check if animation animationEnd or not
+
+        public enum EnemyStatus
+        {
+            WALK,
+            RUN,
+            SHOOT,
+            DEAD,
+            END
+        }
+
 
         public Enemy(Texture2D texture) : base(texture)
         {
@@ -70,9 +89,10 @@ namespace ScifiDruid.GameObjects
 
             enemyOrigin = new Vector2(textureWidth/2,textureHeight/2);  //draw in the middle
 
-            playerAnimation = new PlayerAnimation(texture, new Vector2(startRect.X, startRect.Y));
+            enemyStatus = EnemyStatus.WALK;
+            enemyAnimation = new EnemyAnimation(texture, deadSize, runSize, deadSize, walkList, runList, deadList);
 
-            playerAnimation.Initialize();
+            enemyAnimation.Initialize();
 
             
         }
@@ -91,12 +111,9 @@ namespace ScifiDruid.GameObjects
                 isAlive = false;
                 enemyHitBox.Dispose();
             }
-            //characterDestRec.X = (int)hitBox.Position.X;
-            //characterDestRec.Y = (int)hitBox.Position.Y;
-            playerAnimation.Update(gameTime, Player.PlayerStatus.IDLE);
             
-          
-        }
+            enemyAnimation.Update(gameTime, Enemy.EnemyStatus.WALK);
+       }
 
         public bool GotHit()
         {
@@ -152,7 +169,7 @@ namespace ScifiDruid.GameObjects
 
             int pokemon = 0;
             if(health > 0)
-            { 
+            {
                 if (timeElapsed >= 5f)
                 {
                     timeElapsed = 0f;
@@ -161,10 +178,12 @@ namespace ScifiDruid.GameObjects
 
                 if(isMovingLeft)
                 {
+                    charDirection = SpriteEffects.None;
                     enemyHitBox.ApplyForce(new Vector2(-100*speed,0));
                 }
                 else
                 {
+                    charDirection = SpriteEffects.FlipHorizontally;
                     enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
                 }
               
@@ -190,11 +209,10 @@ namespace ScifiDruid.GameObjects
         {
             if (health > 0)
             {
-                playerAnimation.Draw(spriteBatch, enemyOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
+                enemyAnimation.Draw(spriteBatch, enemyOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
             }
 
-
-            //if shoot
+           //if shoot
             /*if (_bulletBody != null && !_bulletBody.IsDisposed)
             {
                 bullet.Draw(spriteBatch);

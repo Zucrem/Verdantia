@@ -4,54 +4,6 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-<<<<<<< HEAD
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Fonts/font20.spritefont</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Fonts/font30.spritefont</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Fonts/font60.spritefont</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Main/ConfirmExit/ConfirmQuitPopUp.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Main/ConfirmExit/No.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Main/ConfirmExit/NoGlow.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Main/ConfirmExit/Yes.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Main/ConfirmExit/YesGlow.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Main/MainMenu/Black.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Main/MainMenu/ExitButton.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Main/MainMenu/GameLogo.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Main/MainMenu/MainMenuBG.jpg</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Main/MainMenu/PlayButton.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Main/MainMenu/SettingButton.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Main/Setting/ArrowButton.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Main/Setting/ArrowRButton.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Main/Setting/DoneButton.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Main/Setting/SettingBG.jpg</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/Characters/Player/playerSheet.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/Black.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/ConfirmExit/ConfirmExitPopUp.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/ConfirmExit/No.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/ConfirmExit/NoGlow.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/ConfirmExit/Yes.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/ConfirmExit/YesGlow.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/Green.jpg</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/GroundSprite.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/Pause/Continue.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/Pause/ContinueGlow.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/Pause/Exit.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/Pause/ExitGlow.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/Pause/PausePopUpBG.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/Pause/Restart.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/Pause/RestartGlow.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/Sound/ArrowButton.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/Sound/ArrowRButton.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/White.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/WinLose/DefeatSign.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/WinLose/Mainmenu.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/WinLose/Next.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/WinLose/Restart.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/PlayScreen/WinLose/VictorySign.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/Skills/PlayerSkill.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Play/StageScreen/Stage1Tileset/tileset1.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Splash/SplashScreen/Black.png</File>
-    <File>C:/Users/Chayodom/Desktop/comgameFinal/FinalGame/ScifiDruid/Content/Pictures/Splash/SplashScreen/GameLogo.png</File>
-=======
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Fonts/font20.spritefont</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Fonts/font30.spritefont</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Fonts/font60.spritefont</File>
@@ -70,7 +22,9 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Pictures/Main/Setting/ArrowRButton.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Pictures/Main/Setting/DoneButton.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Pictures/Main/Setting/SettingBG.jpg</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Pictures/Play/Characters/Player/playerSheet.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Pictures/Play/Characters/Enemy/chainsawMech.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Pictures/Play/Characters/Enemy/flameMech.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Pictures/Play/Characters/Player/keeperSheet.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Pictures/Play/PlayScreen/Black.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Pictures/Play/PlayScreen/ConfirmExit/ConfirmExitPopUp.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Pictures/Play/PlayScreen/ConfirmExit/No.png</File>
@@ -98,9 +52,10 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Pictures/Play/StageScreen/Stage1Tileset/tileset1.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Pictures/Splash/SplashScreen/Black.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/ScifiDruid/Content/Pictures/Splash/SplashScreen/GameLogo.png</File>
->>>>>>> 5664175541f166e8f5e918f23e0d502e3cf71020
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

@@ -17,15 +17,28 @@ using ScifiDruid.Managers;
 using Box2DNet.Content;
 using Box2DNet.Common;
 using System.Security.Cryptography;
+using Microsoft.Xna.Framework.Input;
 
 namespace ScifiDruid.GameScreen
 {
     class Stage1Screen : PlayScreen
     {
+        //create enemy
+        protected List<Enemy> allEnemies;
 
+        protected Enemy flameMech;
+        protected List<Enemy> flameMechEnemies;
+        protected int flameMechPositionList;
+        protected int flameMechCount;
+
+        protected Enemy chainsawMech;
+        protected List<Enemy> chainsawMechEnemies;
+        protected int chainsawMechPositionList;
+        protected int chainsawMechCount;
         public override void Initial()
         {
             base.Initial();
+
             startmaptileX = 10f;
             endmaptileX = 170f;
 
@@ -50,7 +63,8 @@ namespace ScifiDruid.GameScreen
             blockRects = new List<Rectangle>();
             playerRects = new List<Rectangle>();
             mechanicRects = new List<Rectangle>();
-            groundMonsterRects = new List<Rectangle>();
+            ground1MonsterRects = new List<Rectangle>();
+            ground2MonsterRects = new List<Rectangle>();
             flyMonsterRects = new List<Rectangle>();
             bossRects = new List<Rectangle>();
 
@@ -99,6 +113,14 @@ namespace ScifiDruid.GameScreen
             }
             foreach (var o in map.ObjectGroups["GroundMonster"].Objects)
             {
+                if (o.Name == "ground_mon_1")
+                {
+                    ground1MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                }
+                if (o.Name == "ground_mon_2")
+                {
+                    ground2MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                }
             }
             foreach (var o in map.ObjectGroups["FlyingMonster"].Objects)
             {
@@ -141,10 +163,69 @@ namespace ScifiDruid.GameScreen
                 body.Friction = 0.3f;
             }
 
-            
 
+            //create player on position
             player.Initial(startRect);
-            enemy.Initial(startRect);
+
+            //create enemy on position
+            allEnemies = new List<Enemy>();
+
+            //ground1
+            flameMechEnemies = new List<Enemy>();
+            flameMechPositionList = ground1MonsterRects.Count();
+            for (int i = 0; i < flameMechPositionList; i++)
+            {
+                flameMech = new Enemy(flameMechTex)
+                {
+                    size = new Vector2(112, 86),
+                    health = 3,
+                    speed = 0.22f,
+                    walkSize = new Vector2(112, 86),
+                    runSize = new Vector2(0, 0),
+                    deadSize = new Vector2(112, 86),
+                    walkList = new List<Vector2>() { new Vector2(0, 0), new Vector2(112, 0) },
+                    runList = new List<Vector2>(),
+                    deadList = new List<Vector2>() { new Vector2(0, 108), new Vector2(112, 108) },
+                };
+                flameMechEnemies.Add(flameMech);
+                allEnemies.Add(flameMech);
+            }
+
+            //create enemy position
+            flameMechCount = 0;
+            foreach (Enemy chainsawBot in flameMechEnemies)
+            {
+                chainsawBot.Initial(ground1MonsterRects[flameMechCount]);
+                flameMechCount++;
+            }
+            //ground2
+            chainsawMechEnemies = new List<Enemy>();
+            chainsawMechPositionList = ground2MonsterRects.Count();
+            for (int i = 0; i < chainsawMechPositionList; i++)
+            {
+                chainsawMech = new Enemy(chainsawMechTex)
+                {
+                    size = new Vector2(118, 100),
+                    health = 4,
+                    speed = 0.22f,
+                    walkSize = new Vector2(118, 100),
+                    runSize = new Vector2(136, 100),
+                    deadSize = new Vector2(118, 100),
+                    walkList = new List<Vector2>() { new Vector2(0, 0), new Vector2(144, 0) },
+                    runList = new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) },
+                    deadList = new List<Vector2>() { new Vector2(0, 254), new Vector2(142, 254) },
+                };
+                chainsawMechEnemies.Add(chainsawMech);
+                allEnemies.Add(chainsawMech);
+            }
+
+            //create enemy position
+            chainsawMechCount = 0;
+            foreach (Enemy chainsawBot in chainsawMechEnemies)
+            {
+                chainsawBot.Initial(ground2MonsterRects[chainsawMechCount]);
+                chainsawMechCount++;
+            }
         }
         public override void LoadContent()
         {
@@ -159,6 +240,25 @@ namespace ScifiDruid.GameScreen
 
         public override void Update(GameTime gameTime)
         {
+            if (play)
+            {
+                if (gamestate == GameState.PLAY)
+                {
+                    if (!Keyboard.GetState().IsKeyDown(Keys.Escape))
+                    {
+                        foreach (Enemy flamewBot in flameMechEnemies)
+                        {
+                            flamewBot.Update(gameTime);
+                            flamewBot.EnemyAction();
+                        }
+                        foreach (Enemy chainsawBot in chainsawMechEnemies)
+                        {
+                            chainsawBot.Update(gameTime);
+                            chainsawBot.EnemyAction();
+                        }
+                    }
+                }
+            }
 
             base.Update(gameTime);
         }
@@ -173,10 +273,16 @@ namespace ScifiDruid.GameScreen
                 if (gamestate == GameState.START || gamestate == GameState.PLAY)
                 {
                     tilemapManager.Draw(spriteBatch);
-                    //foreach (var poly in polygon)
-                    //{
-                    //    spriteBatch.Draw(blackTex, ConvertUnits.ToDisplayUnits(poly.Key), Color.White);
-                    //}
+
+                    //draw enemy animation
+                    foreach (Enemy flameBot in flameMechEnemies)
+                    {
+                        flameBot.Draw(spriteBatch);
+                    }
+                    foreach (Enemy chainsawBot in chainsawMechEnemies)
+                    {
+                        chainsawBot.Draw(spriteBatch);
+                    }
 
                     if (!fadeFinish)
                     {

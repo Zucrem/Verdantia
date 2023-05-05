@@ -41,6 +41,7 @@ namespace ScifiDruid.GameObjects
         private int jumpCount = 0;
         private bool wasJumped;
 
+        //time for animation
         private int jumpTime;
         private int jumpDelay;
 
@@ -49,6 +50,7 @@ namespace ScifiDruid.GameObjects
         private int attackMaxTime;
 
         private float attackTime;
+        private int dashTime;
 
         //static for change in shop and apply to all Stage
         public static int health;
@@ -63,7 +65,9 @@ namespace ScifiDruid.GameObjects
         private float skill3Cooldown;
         private float dashCooldown;
 
+        //animation time for shoot and dash
         private float attackAnimationTime;
+        private float dashAnimationTime;
 
         //Cooldown time make to static for change in shop and apply to all Stage
         public static int skill1CoolTime;
@@ -130,7 +134,7 @@ namespace ScifiDruid.GameObjects
             textureWidth = (int)size.X;
             textureHeight = (int)size.Y;
 
-            playerAnimation = new PlayerAnimation(this.texture, new Vector2(startRect.X, startRect.Y));
+            playerAnimation = new PlayerAnimation(this.texture);
 
             bulletList = new List<Bullet>();
 
@@ -181,6 +185,7 @@ namespace ScifiDruid.GameObjects
         {
             position = hitBox.Position;
             this.gameTime = gameTime;
+
             //check touch ground condition
             if (IsGround())
             {
@@ -435,6 +440,9 @@ namespace ScifiDruid.GameObjects
         {
             if (currentKeyState.IsKeyDown(Keys.C) && oldKeyState.IsKeyUp(Keys.C) && dashCooldown <= 0)
             {
+                dashAnimationTime = 0.3f;
+                dashTime = (int)gameTime.TotalGameTime.TotalMilliseconds;
+
                 switch (charDirection)
                 {
                     case SpriteEffects.None:
@@ -448,6 +456,12 @@ namespace ScifiDruid.GameObjects
                 }
 
                 dashCooldown = dashCoolTime;
+            }
+
+            if (dashAnimationTime > 0)
+            {
+                dashAnimationTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                playerStatus = PlayerStatus.DASH;
             }
 
             if (dashCooldown > 0)
