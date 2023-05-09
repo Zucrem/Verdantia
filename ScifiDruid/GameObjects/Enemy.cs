@@ -41,12 +41,8 @@ namespace ScifiDruid.GameObjects
         private float timeElapsed;
         private bool isMovingLeft;
 
-        public Vector2 walkSize;
-        public Vector2 runSize;
-        public Vector2 deadSize;
-        public List<Vector2> walkList;
-        public List<Vector2> runList;
-        public List<Vector2> deadList;
+        public List<Vector2> sizeList;
+        public List<List<Vector2>> animateList;
 
         private EnemyAnimation enemyAnimation;
 
@@ -55,7 +51,7 @@ namespace ScifiDruid.GameObjects
         //animation
         private EnemyStatus enemyStatus;
         //check if animation animationEnd or not
-
+        private bool animationEnd;
         public enum EnemyStatus
         {
             WALK,
@@ -90,29 +86,38 @@ namespace ScifiDruid.GameObjects
             enemyOrigin = new Vector2(textureWidth/2,textureHeight/2);  //draw in the middle
 
             enemyStatus = EnemyStatus.WALK;
-            enemyAnimation = new EnemyAnimation(texture, deadSize, runSize, deadSize, walkList, runList, deadList);
+            enemyAnimation = new EnemyAnimation(texture, sizeList, animateList);
 
             enemyAnimation.Initialize();
-
-            
         }
 
         public override void Update(GameTime gameTime)
         {
             this.gameTime = gameTime;
             position = enemyHitBox.Position;
-            if (Player.isAttack && GotHit())
+            if (isAlive)
             {
-                health--;
+                if (Player.isAttack && GotHit())
+                {
+                    health--;
+                }
+
+                if (health <= 0)
+                {
+                    isAlive = false;
+                    enemyStatus = EnemyStatus.DEAD;
+                }
             }
 
-            if (health <= 0 && !enemyHitBox.IsDisposed)
+            //if dead animation animationEnd
+            animationEnd = enemyAnimation.GetAnimationDead();
+            if (animationEnd)
             {
-                isAlive = false;
+                enemyStatus = EnemyStatus.END;
                 enemyHitBox.Dispose();
             }
-            
-            enemyAnimation.Update(gameTime, Enemy.EnemyStatus.WALK);
+
+            enemyAnimation.Update(gameTime, enemyStatus);
        }
 
         public bool GotHit()
@@ -139,7 +144,6 @@ namespace ScifiDruid.GameObjects
 
                 if (contactFixture.IsTouching && (contactB || contactA))
                 {
-                    Debug.WriteLine("SS");
                     return true;
                 }
                 // Check if the contact fixture is the ground
@@ -161,13 +165,8 @@ namespace ScifiDruid.GameObjects
 
         private void EnemyWalking()
         {
-            
-            
             //do normal walking left and right
             timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            
-
-            int pokemon = 0;
             if(health > 0)
             {
                 if (timeElapsed >= 5f)
@@ -207,12 +206,12 @@ namespace ScifiDruid.GameObjects
         
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (health > 0)
+            if (!animationEnd)
             {
                 enemyAnimation.Draw(spriteBatch, enemyOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
             }
 
-           //if shoot
+            //if shoot
             /*if (_bulletBody != null && !_bulletBody.IsDisposed)
             {
                 bullet.Draw(spriteBatch);

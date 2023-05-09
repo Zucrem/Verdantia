@@ -38,7 +38,9 @@ namespace ScifiDruid.GameScreen
         //all stage enemy and shoot texture
         protected Texture2D flameMechTex, chainsawMechTex, fly1MechTex, lucasBossTex;
         //stage 2
+        protected Texture2D janeBossTex, janeAmmoTex;
         //stage 3
+        protected Texture2D doctorBossTex, doctorAmmoTex;
 
 
         private FrameCounter _frameCounter = new FrameCounter();
@@ -103,7 +105,8 @@ namespace ScifiDruid.GameScreen
         protected int tileWidth;
         protected int tileHeight;
         protected int tilesetTileWidth;
-        protected List<Rectangle> collisionRects, deadBlockRects, blockRects, playerRects, mechanicRects, ground1MonsterRects, ground2MonsterRects, flyMonsterRects, bossRects;
+        protected List<Rectangle> collisionRects, deadBlockRects, blockRects, playerRects, mechanicRects, ground1MonsterRects, ground2MonsterRects, flyMonsterRects;
+        protected Rectangle bossRect;
         protected Dictionary<Polygon, Vector2> polygon;
 
         protected float startmaptileX;
@@ -218,6 +221,16 @@ namespace ScifiDruid.GameScreen
             //stage1 enemy and all shoot
             flameMechTex = content.Load<Texture2D>("Pictures/Play/Characters/Enemy/flameMech");
             chainsawMechTex = content.Load<Texture2D>("Pictures/Play/Characters/Enemy/chainsawMech");
+
+            lucasBossTex = content.Load<Texture2D>("Pictures/Play/Characters/Boss/LucasSheet");
+
+            //stage2 enemy and all shoot
+            janeBossTex = content.Load<Texture2D>("Pictures/Play/Characters/Boss/JaneSheet");
+            janeAmmoTex = content.Load<Texture2D>("Pictures/Play/Skills/BossSkills/JaneAmmoSheet");
+
+            //stage3 enemy and all shoot
+            doctorBossTex = content.Load<Texture2D>("Pictures/Play/Characters/Boss/DrSheet");
+            doctorAmmoTex = content.Load<Texture2D>("Pictures/Play/Skills/BossSkills/DrAmmoSheet");
 
         }
 

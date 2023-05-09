@@ -399,3 +399,8 @@ C:\Users\Chayodom\Desktop\comgameFinal\FinalGame\ScifiDruid\obj\Debug\net6.0\ref
 C:\Users\acer\Desktop\javaprojection\GameFinal\ScifiDruid\bin\Debug\net6.0\Content\Pictures\Play\Characters\Player\keeperSheet.xnb
 C:\Users\acer\Desktop\javaprojection\GameFinal\ScifiDruid\bin\Debug\net6.0\Content\Pictures\Play\Characters\Enemy\chainsawMech.xnb
 C:\Users\acer\Desktop\javaprojection\GameFinal\ScifiDruid\bin\Debug\net6.0\Content\Pictures\Play\Characters\Enemy\flameMech.xnb
+C:\Users\acer\Desktop\javaprojection\GameFinal\ScifiDruid\bin\Debug\net6.0\Content\Pictures\Play\Characters\Boss\DrSheet.xnb
+C:\Users\acer\Desktop\javaprojection\GameFinal\ScifiDruid\bin\Debug\net6.0\Content\Pictures\Play\Characters\Boss\JaneSheet.xnb
+C:\Users\acer\Desktop\javaprojection\GameFinal\ScifiDruid\bin\Debug\net6.0\Content\Pictures\Play\Characters\Boss\LucasSheet.xnb
+C:\Users\acer\Desktop\javaprojection\GameFinal\ScifiDruid\bin\Debug\net6.0\Content\Pictures\Play\Skills\BossSkills\DrAmmoSheet.xnb
+C:\Users\acer\Desktop\javaprojection\GameFinal\ScifiDruid\bin\Debug\net6.0\Content\Pictures\Play\Skills\BossSkills\JaneAmmoSheet.xnb

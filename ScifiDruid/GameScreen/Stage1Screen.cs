@@ -25,6 +25,7 @@ namespace ScifiDruid.GameScreen
     {
         //create enemy
         protected List<Enemy> allEnemies;
+        protected LucasBoss boss;
 
         protected Enemy flameMech;
         protected List<Enemy> flameMechEnemies;
@@ -66,7 +67,7 @@ namespace ScifiDruid.GameScreen
             ground1MonsterRects = new List<Rectangle>();
             ground2MonsterRects = new List<Rectangle>();
             flyMonsterRects = new List<Rectangle>();
-            bossRects = new List<Rectangle>();
+            bossRect = new Rectangle();
 
             //add list rectangle
             foreach (var o in map.ObjectGroups["Blocks"].Objects)
@@ -82,7 +83,7 @@ namespace ScifiDruid.GameScreen
                 {
                     startRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
                 }
-                if (o.Name.Equals("end"))
+                if (o.Name.Equals("endRect"))
                 {
                     endRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
                     //playerRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
@@ -90,10 +91,8 @@ namespace ScifiDruid.GameScreen
             }
             foreach (var o in map.ObjectGroups["SpecialBlocks"].Objects)
             {
-                Debug.WriteLine(o.Name);
                 if (o.Name.Equals("spike"))
                 {
-                    Debug.WriteLine("yo");
                     deadBlockRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
                 }
             }
@@ -116,6 +115,10 @@ namespace ScifiDruid.GameScreen
             }
             foreach (var o in map.ObjectGroups["Boss"].Objects)
             {
+                if (o.Name.Equals("boss"))
+                {
+                    bossRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                }
             }
 
             //create collision for block in the world
@@ -133,7 +136,6 @@ namespace ScifiDruid.GameScreen
             //create dead block for block in the world
             foreach (Rectangle rect in deadBlockRects)
             {
-                Debug.WriteLine(deadBlockRects.Count());
                 Vector2 deadBlockPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
                 //Singleton.Instance.world.Step(0.001f);
 
@@ -145,7 +147,8 @@ namespace ScifiDruid.GameScreen
 
 
             //create player on position
-            player.Initial(startRect);
+            //player.Initial(startRect);
+            player.Initial(endRect);
 
             //create enemy on position
             allEnemies = new List<Enemy>();
@@ -160,12 +163,10 @@ namespace ScifiDruid.GameScreen
                     size = new Vector2(112, 86),
                     health = 3,
                     speed = 0.22f,
-                    walkSize = new Vector2(112, 86),
-                    runSize = new Vector2(0, 0),
-                    deadSize = new Vector2(112, 86),
-                    walkList = new List<Vector2>() { new Vector2(0, 0), new Vector2(112, 0) },
-                    runList = new List<Vector2>(),
-                    deadList = new List<Vector2>() { new Vector2(0, 108), new Vector2(112, 108) },
+                    //list of size list
+                    sizeList = new List<Vector2>() { new Vector2(112, 86), new Vector2(0, 0), new Vector2(112, 86)},
+                    //list of list for animation list
+                    animateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(112, 0) }, new List<Vector2>(), new List<Vector2>() { new Vector2(0, 108), new Vector2(112, 108) } },
                 };
                 flameMechEnemies.Add(flameMech);
                 allEnemies.Add(flameMech);
@@ -188,12 +189,11 @@ namespace ScifiDruid.GameScreen
                     size = new Vector2(118, 100),
                     health = 4,
                     speed = 0.22f,
-                    walkSize = new Vector2(118, 100),
-                    runSize = new Vector2(136, 100),
-                    deadSize = new Vector2(118, 100),
-                    walkList = new List<Vector2>() { new Vector2(0, 0), new Vector2(144, 0) },
-                    runList = new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) },
-                    deadList = new List<Vector2>() { new Vector2(0, 254), new Vector2(142, 254) },
+
+                    //list of size list
+                    sizeList = new List<Vector2>() { new Vector2(118, 100), new Vector2(136, 100), new Vector2(118, 100) },
+                    //list of list for animation list
+                    animateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(144, 0) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 254), new Vector2(142, 254) } },
                 };
                 chainsawMechEnemies.Add(chainsawMech);
                 allEnemies.Add(chainsawMech);
@@ -206,6 +206,16 @@ namespace ScifiDruid.GameScreen
                 chainsawBot.Initial(ground2MonsterRects[chainsawMechCount]);
                 chainsawMechCount++;
             }
+
+            //create boss on position
+            boss = new LucasBoss(lucasBossTex)
+            {
+                size = new Vector2(196, 186),
+                health = 6,
+                speed = 0f,
+            };
+
+            boss.Initial(bossRect);
         }
         public override void LoadContent()
         {
@@ -226,6 +236,7 @@ namespace ScifiDruid.GameScreen
                 {
                     if (!Keyboard.GetState().IsKeyDown(Keys.Escape))
                     {
+                        //all enemy
                         foreach (Enemy flamewBot in flameMechEnemies)
                         {
                             flamewBot.Update(gameTime);
@@ -236,6 +247,8 @@ namespace ScifiDruid.GameScreen
                             chainsawBot.Update(gameTime);
                             chainsawBot.EnemyAction();
                         }
+                        //boss
+                        boss.Update(gameTime);
                     }
                 }
             }
@@ -263,6 +276,8 @@ namespace ScifiDruid.GameScreen
                     {
                         chainsawBot.Draw(spriteBatch);
                     }
+                    //draw boss animation
+                    boss.Draw(spriteBatch);
 
                     if (!fadeFinish)
                     {
