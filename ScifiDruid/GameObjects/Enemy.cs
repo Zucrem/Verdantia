@@ -185,7 +185,6 @@ namespace ScifiDruid.GameObjects
                     charDirection = SpriteEffects.FlipHorizontally;
                     enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
                 }
-              
             }
 
 

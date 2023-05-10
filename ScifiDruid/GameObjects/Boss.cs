@@ -124,42 +124,5 @@ namespace ScifiDruid.GameObjects
             }
             return false;
         }
-
-        public void ChangeAnimationStatus()
-        {
-            switch (curStatus)
-            {
-                case BossStatus.IDLE:
-                    delay = 300f;
-                    spriteVector = idleSpriteVector;
-                    spriteSize = new Vector2(idleSize.X, idleSize.Y);
-                    allframes = spriteVector.Count();
-                    break;
-                case BossStatus.ACTION1:
-                    delay = 300f;
-                    spriteVector = action1SpriteVector;
-                    spriteSize = new Vector2(action1Size.X, action1Size.Y);
-                    allframes = spriteVector.Count();
-                    break;
-                case BossStatus.ACTION2:
-                    delay = 300f;
-                    spriteVector = action2SpriteVector;
-                    spriteSize = new Vector2(action2Size.X, action2Size.Y);
-                    allframes = spriteVector.Count();
-                    break;
-                case BossStatus.ACTION3:
-                    delay = 300f;
-                    spriteVector = action3SpriteVector;
-                    spriteSize = new Vector2(action3Size.X, action3Size.Y);
-                    allframes = spriteVector.Count();
-                    break;
-                case BossStatus.DEAD:
-                    delay = 300f;
-                    spriteVector = deadSpriteVector;
-                    spriteSize = new Vector2(deadSize.X, deadSize.Y);
-                    allframes = spriteVector.Count();
-                    break;
-            }
-        }
     }
 }

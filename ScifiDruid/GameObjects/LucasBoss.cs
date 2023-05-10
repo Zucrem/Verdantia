@@ -11,6 +11,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Box2DNet.Dynamics.Contacts;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Microsoft.Xna.Framework.Input;
+using static ScifiDruid.GameObjects.Player;
 
 namespace ScifiDruid.GameObjects
 {
@@ -19,6 +21,19 @@ namespace ScifiDruid.GameObjects
         //framestate for dead animation
         private int frameState;
         private bool repeat;
+
+        //random boss action
+        private Random rand = new Random();
+        private int randomAction;
+        //attribute using for moving of boss
+        private float timeElapsed;
+        private bool isMovingLeft = true;
+        private float movingTime = 3.4f;
+
+        //boolean to do action
+        private bool action1 = false;
+        private bool action2 = false;
+        private bool action3 = false;
         public LucasBoss(Texture2D texture) : base(texture)
         {
             this.texture = texture;
@@ -78,6 +93,10 @@ namespace ScifiDruid.GameObjects
                     curStatus = BossStatus.DEAD;
                 }
             }
+
+            //boss action
+            Action();
+
             //if dead animation animationEnd
             if (animationDead)
             {
@@ -89,6 +108,7 @@ namespace ScifiDruid.GameObjects
             if (preStatus != curStatus)
             {
                 frames = 0;
+                frameState = 0;
             }
             ChangeAnimationStatus();
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -128,6 +148,21 @@ namespace ScifiDruid.GameObjects
                         elapsed = 0;
                     }
                     break;
+
+                case BossStatus.ACTION1:
+                    if (elapsed >= delay)
+                    {
+                        if (frames >= allframes - 1)
+                        {
+                            frames = 0;
+                        }
+                        else
+                        {
+                            frames++;
+                        }
+                        elapsed = 0;
+                    }
+                    break;
                 default:
                     if (elapsed >= delay)
                     {
@@ -142,11 +177,93 @@ namespace ScifiDruid.GameObjects
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
             preStatus = curStatus;
         }
+
+        public void Action()
+        {
+            if (isAlive && Player.health > 0)
+            {
+                if (curStatus == BossStatus.IDLE)
+                {
+                    randomAction = rand.Next(1, 300);
+                }
+                //do action 1
+                if (randomAction == 1)
+                {
+                    action1 = true;
+                    //clear random action number
+                    //do animation1
+                    curStatus = BossStatus.ACTION1;
+                    //do normal walking left and right
+                    timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                    if (charDirection == SpriteEffects.FlipHorizontally && timeElapsed >= movingTime)
+                    {
+                        timeElapsed = 0f;
+                        bossHitBox.ApplyForce(new Vector2(0, 0));
+                        charDirection = SpriteEffects.None;
+                    }
+                    else if (charDirection == SpriteEffects.None && timeElapsed >= movingTime)
+                    {
+                        bossHitBox.ApplyForce(new Vector2(0, 0));
+                        timeElapsed = 0f;
+                        action1 = false;
+                        charDirection = SpriteEffects.FlipHorizontally;
+                        curStatus = BossStatus.IDLE;
+                        randomAction = 0;
+                    }
+                    else if (charDirection == SpriteEffects.FlipHorizontally && timeElapsed <= movingTime)
+                    {
+                        bossHitBox.ApplyForce(new Vector2(-100 * speed, 0));
+                    }
+                    else if (charDirection == SpriteEffects.None && timeElapsed <= movingTime)
+                    {
+                        bossHitBox.ApplyForce(new Vector2(100 * speed, 0));
+                    }
+                }
+            }
+        }
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (!animationDead)
             {
                 spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bossOrigin, 1f, charDirection, 0f);
+            }
+        }
+
+        public void ChangeAnimationStatus()
+        {
+            switch (curStatus)
+            {
+                case BossStatus.IDLE:
+                    delay = 300f;
+                    spriteVector = idleSpriteVector;
+                    spriteSize = new Vector2(idleSize.X, idleSize.Y);
+                    allframes = spriteVector.Count();
+                    break;
+                case BossStatus.ACTION1:
+                    delay = 200f;
+                    spriteVector = action1SpriteVector;
+                    spriteSize = new Vector2(action1Size.X, action1Size.Y);
+                    allframes = spriteVector.Count();
+                    break;
+                case BossStatus.ACTION2:
+                    delay = 300f;
+                    spriteVector = action2SpriteVector;
+                    spriteSize = new Vector2(action2Size.X, action2Size.Y);
+                    allframes = spriteVector.Count();
+                    break;
+                case BossStatus.ACTION3:
+                    delay = 300f;
+                    spriteVector = action3SpriteVector;
+                    spriteSize = new Vector2(action3Size.X, action3Size.Y);
+                    allframes = spriteVector.Count();
+                    break;
+                case BossStatus.DEAD:
+                    delay = 300f;
+                    spriteVector = deadSpriteVector;
+                    spriteSize = new Vector2(deadSize.X, deadSize.Y);
+                    allframes = spriteVector.Count();
+                    break;
             }
         }
     }

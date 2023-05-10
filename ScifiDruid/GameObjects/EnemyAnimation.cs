@@ -84,7 +84,6 @@ namespace ScifiDruid.GameObjects
                         if (frames >= allframes - 1)
                         {
                             animationDead = true;
-                            Debug.WriteLine("yay");
                             return;
                         }
                         else

@@ -212,7 +212,7 @@ namespace ScifiDruid.GameScreen
             {
                 size = new Vector2(196, 186),
                 health = 6,
-                speed = 0f,
+                speed = 1.2f,
             };
 
             boss.Initial(bossRect);
