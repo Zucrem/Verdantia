@@ -35,6 +35,7 @@ namespace ScifiDruid.GameObjects
         private KeyboardState oldKeyState;
 
         public Body hitBox;
+        private Body lionBody;
 
         //player status
         public PlayerStatus playerStatus;
@@ -387,21 +388,17 @@ namespace ScifiDruid.GameObjects
         }
         public void Skill()
         {
-            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press && skill1Cooldown <= 0)
+            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyUp(Keys.Down) && currentKeyState.IsKeyUp(Keys.Up) && !press && skill1Cooldown <= 0)
             {
                 if (Player.health < Player.maxHealth)
                 {
                     RegenSkill();
                 }
             }
-            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Down) && !press && skill2Cooldown <= 0)
-            {
-                CrocodileSkill();
-            }
-            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyUp(Keys.Down) && currentKeyState.IsKeyUp(Keys.Up) && !press)
-            {
-                LionSkill();
-            }   
+            
+            CrocodileSkill();
+
+            LionSkill();
 
             if (press)
             {
@@ -480,7 +477,6 @@ namespace ScifiDruid.GameObjects
         public void RegenSkill()
         {
             skill1Cooldown = skill1CoolTime;
-            
             Player.health++;
             
             press = true;
@@ -488,15 +484,32 @@ namespace ScifiDruid.GameObjects
 
         public void LionSkill()
         {
-            skill3Cooldown = skill3CoolTime;
-            press = true;
+            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press)
+            {
+                lionBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(200), ConvertUnits.ToSimUnits(200), 0, hitBox.Position + new Vector2(0, textureHeight / 2), 0, BodyType.Static, "Lion Skill");
+                lionBody.IgnoreCollisionWith(hitBox);
+                lionBody.IsSensor = true;
 
+                skill3Cooldown = skill3CoolTime;
+                press = true;
+            }
 
+            if (lionBody != null)
+            {
+                lionBody.Position = hitBox.Position;
+            }
 
+            if (IsContact("Enemy", "B"))
+            {
+                Debug.WriteLine("B");
+            }
         }
 
         public void CrocodileSkill()
         {
+            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Down) && !press && skill2Cooldown <= 0)
+            {
+            }
             skill2Cooldown = skill2CoolTime;
             press = true;
         }
