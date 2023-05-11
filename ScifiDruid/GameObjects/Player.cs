@@ -86,8 +86,6 @@ namespace ScifiDruid.GameObjects
 
         public static bool isAttack = false;
         
-        private bool animationEnd;
-
         private bool press = false;
 
         private bool startCool = false;
@@ -105,6 +103,7 @@ namespace ScifiDruid.GameObjects
         //animation
         private PlayerAnimation playerAnimation;
         //check if animation animationEnd or not
+        private bool animationEnd;
 
         public enum PlayerStatus
         {

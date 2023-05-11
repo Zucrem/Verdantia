@@ -7,17 +7,19 @@ using System.Text;
 using System.Threading.Tasks;
 using static ScifiDruid.GameObjects.Player;
 using static ScifiDruid.GameObjects.Enemy;
+using System.Diagnostics;
 
 namespace ScifiDruid.GameObjects
 {
     public class EnemyAnimation : _GameObject
     {
         private Texture2D texture;
-        private Vector2 size;
+        private List <Vector2> sizeList;
         private Vector2 walkSize;
         private Vector2 runSize;
         private Vector2 deadSize;
         private Vector2 spriteSize;
+        private List<List<Vector2>> animateList = new List<List<Vector2>>();
         private List<Vector2> walkSpriteVector = new List<Vector2>();
         private List<Vector2> runSpriteVector = new List<Vector2>();
         private List<Vector2> deadSpriteVector = new List<Vector2>();
@@ -37,15 +39,19 @@ namespace ScifiDruid.GameObjects
         private int allframes;
 
         private EnemyStatus preStatus;
-        public EnemyAnimation(Texture2D texture, Vector2 walkSize, Vector2 runSize, Vector2 deadSize, List<Vector2> walkList, List<Vector2> runList, List<Vector2> deadList) : base(texture)
+        public EnemyAnimation(Texture2D texture, List<Vector2> sizeList, List<List<Vector2>> animateList) : base(texture)
         {
             this.texture = texture;
-            this.walkSize = walkSize;
-            this.runSize = runSize;
-            this.deadSize = deadSize;
-            this.walkSpriteVector = walkList;
-            this.runSpriteVector = runList;
-            this.deadSpriteVector = deadList;
+
+            this.sizeList = sizeList;
+            this.animateList = animateList;
+
+            walkSize = sizeList[0];
+            runSize = sizeList[1];
+            deadSize = sizeList[2];
+            walkSpriteVector = animateList[0];
+            runSpriteVector = animateList[1];
+            deadSpriteVector = animateList[2];
         }
         public void Initialize()
         {
@@ -133,12 +139,16 @@ namespace ScifiDruid.GameObjects
                     allframes = spriteVector.Count();
                     break;
                 case EnemyStatus.DEAD:
-                    delay = 300f;
+                    delay = 500f;
                     spriteVector = deadSpriteVector;
                     spriteSize = new Vector2(deadSize.X, deadSize.Y);
                     allframes = spriteVector.Count();
                     break;
             }
+        }
+        public bool GetAnimationDead()
+        {
+            return animationDead;
         }
     }
 }
