@@ -34,9 +34,11 @@ namespace ScifiDruid.GameObjects
         private bool action1 = false;
         private bool action2 = false;
         private bool action3 = false;
+
         public LucasBoss(Texture2D texture) : base(texture)
         {
             this.texture = texture;
+
             idleSize = new Vector2(196, 186);
             action1Size = new Vector2(228, 185);
             action2Size = new Vector2(197, 187);
@@ -58,30 +60,36 @@ namespace ScifiDruid.GameObjects
             frameState = 0;
             repeat = false;
         }
-        public void Initial(Rectangle spawnPosition)
+
+        public override void Initial(Rectangle spawnPosition, Player player)
         {
+            this.player = player;
+
             textureHeight = (int)size.Y;
             textureWidth = (int)size.X;
 
-            bossHitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(spawnPosition.X, spawnPosition.Y - 1)), 0, BodyType.Dynamic, "Boss");
-            bossHitBox.FixedRotation = true;
-            bossHitBox.Friction = 1.0f;
-            bossHitBox.AngularDamping = 2.0f;
-            bossHitBox.LinearDamping = 2.0f;
+            enemyHitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(spawnPosition.X, spawnPosition.Y - 1)), 0, BodyType.Dynamic, "Enemy");
+            enemyHitBox.FixedRotation = true;
+            enemyHitBox.Friction = 1.0f;
+            enemyHitBox.AngularDamping = 2.0f;
+            enemyHitBox.LinearDamping = 2.0f;
 
-            isAlive = true;
+            isAlive = false;
 
             charDirection = SpriteEffects.FlipHorizontally;  // heading direction
 
             bossOrigin = new Vector2(textureWidth / 2, textureHeight / 2);  //draw in the middle
         }
+
         public override void Update(GameTime gameTime)
         {
             this.gameTime = gameTime;
-            position = bossHitBox.Position;
+            position = enemyHitBox.Position;
 
             if (isAlive)
             {
+                CheckPlayerPosition(gameTime);
+
                 if (Player.isAttack && GotHit())
                 {
                     health--;
@@ -89,9 +97,12 @@ namespace ScifiDruid.GameObjects
 
                 if (health <= 0)
                 {
+                    enemyHitBox.UserData = "Dead";
                     isAlive = false;
+                    enemyHitBox.Dispose();
                     curStatus = BossStatus.DEAD;
                 }
+
             }
 
             //boss action
@@ -101,7 +112,6 @@ namespace ScifiDruid.GameObjects
             if (animationDead)
             {
                 curStatus = BossStatus.END;
-                bossHitBox.Dispose();
             }
 
             //animation
@@ -178,50 +188,119 @@ namespace ScifiDruid.GameObjects
             preStatus = curStatus;
         }
 
-        public void Action()
+        
+        public override void Action()
         {
             if (isAlive && Player.health > 0)
             {
+
+                //timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
                 if (curStatus == BossStatus.IDLE)
                 {
                     randomAction = rand.Next(1, 300);
                 }
-                //do action 1
-                if (randomAction == 1)
-                {
-                    action1 = true;
-                    //clear random action number
-                    //do animation1
-                    curStatus = BossStatus.ACTION1;
-                    //do normal walking left and right
-                    timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                    if (charDirection == SpriteEffects.FlipHorizontally && timeElapsed >= movingTime)
-                    {
-                        timeElapsed = 0f;
-                        bossHitBox.ApplyForce(new Vector2(0, 0));
-                        charDirection = SpriteEffects.None;
-                    }
-                    else if (charDirection == SpriteEffects.None && timeElapsed >= movingTime)
-                    {
-                        bossHitBox.ApplyForce(new Vector2(0, 0));
-                        timeElapsed = 0f;
-                        action1 = false;
-                        charDirection = SpriteEffects.FlipHorizontally;
-                        curStatus = BossStatus.IDLE;
-                        randomAction = 0;
-                    }
-                    else if (charDirection == SpriteEffects.FlipHorizontally && timeElapsed <= movingTime)
-                    {
-                        bossHitBox.ApplyForce(new Vector2(-100 * speed, 0));
-                    }
-                    else if (charDirection == SpriteEffects.None && timeElapsed <= movingTime)
-                    {
-                        bossHitBox.ApplyForce(new Vector2(100 * speed, 0));
-                    }
+                //do action 1
+                switch (randomAction)
+                {
+                    case 1:
+                        Skill1();
+                        break;
+                    case 2:
+                        Skill2();
+                        break;
+                    case 3:
+                        
+                        break;
                 }
+
+                Walk();
             }
         }
+
+        public override void Walk()
+        {
+            if (position.X - playerPosition.X > 0 && randomAction > 3)
+            {
+                enemyHitBox.ApplyForce(new Vector2(-75 * speed, 0));
+            }
+            else if (randomAction > 3)
+            {
+                enemyHitBox.ApplyForce(new Vector2(75 * speed, 0));
+            }
+        }
+
+        public void Skill1()
+        {
+            action1 = true;
+            //clear random action number
+            //do animation1
+            curStatus = BossStatus.ACTION1;
+            //do normal walking left and right
+            timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (charDirection == SpriteEffects.FlipHorizontally && timeElapsed >= movingTime)
+            {
+                timeElapsed = 0f;
+                //enemyHitBox.ApplyForce(new Vector2(0, 0));
+                charDirection = SpriteEffects.None;
+            }
+            else if (charDirection == SpriteEffects.None && timeElapsed >= movingTime)
+            {
+                //enemyHitBox.ApplyForce(new Vector2(0, 0));
+                timeElapsed = 0f;
+                action1 = false;
+                charDirection = SpriteEffects.FlipHorizontally;
+                curStatus = BossStatus.IDLE;
+                randomAction = 0;
+            }
+            else if (charDirection == SpriteEffects.FlipHorizontally && timeElapsed <= movingTime)
+            {
+                enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
+            }
+            else if (charDirection == SpriteEffects.None && timeElapsed <= movingTime)
+            {
+                enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
+            }
+        }
+
+        public void Skill2()
+        {
+            action1 = true;
+            //clear random action number
+            //do animation1
+            curStatus = BossStatus.ACTION1;
+            //do normal walking left and right
+            timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (charDirection == SpriteEffects.FlipHorizontally && timeElapsed >= movingTime)
+            {
+                timeElapsed = 0f;
+                //enemyHitBox.ApplyForce(new Vector2(0, 0));
+                charDirection = SpriteEffects.None;
+            }
+            else if (charDirection == SpriteEffects.None && timeElapsed >= movingTime)
+            {
+                //enemyHitBox.ApplyForce(new Vector2(0, 0));
+                timeElapsed = 0f;
+                action1 = false;
+                charDirection = SpriteEffects.FlipHorizontally;
+                curStatus = BossStatus.IDLE;
+                randomAction = 0;
+            }
+            else if (charDirection == SpriteEffects.FlipHorizontally && timeElapsed <= movingTime)
+            {
+                enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
+            }
+            else if (charDirection == SpriteEffects.None && timeElapsed <= movingTime)
+            {
+                enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
+            }
+        }
+
+        
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (!animationDead)
@@ -230,7 +309,7 @@ namespace ScifiDruid.GameObjects
             }
         }
 
-        public void ChangeAnimationStatus()
+        public override void ChangeAnimationStatus()
         {
             switch (curStatus)
             {

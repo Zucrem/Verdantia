@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TiledSharp;
+using ScifiDruid.GameObjects;
 
 namespace ScifiDruid.GameScreen
 {
@@ -14,6 +15,7 @@ namespace ScifiDruid.GameScreen
         public override void Initial()
         {
 
+            Player.level2Unlock = true;
 
             base.Initial();
         }

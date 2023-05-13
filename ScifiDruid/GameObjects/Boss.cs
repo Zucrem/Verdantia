@@ -10,7 +10,7 @@ using Box2DNet.Dynamics;
 
 namespace ScifiDruid.GameObjects
 {
-    public class Boss : _GameObject
+    public class Boss : Enemy
     {
         protected Texture2D texture;
 
@@ -18,10 +18,10 @@ namespace ScifiDruid.GameObjects
         protected Rectangle bossSourceRec; //where read
         protected Vector2 bossOrigin;  //start draw boss point
 
-        public Body bossHitBox;       // to check the hit of bullet
-
         protected bool isPlayerinArea = false;       // to check is player in the area 
         protected bool isGoingToFall = false;        // check is there are hole infront of this enemy
+
+        public bool isAlive;
 
         public int health;                          // reduce when get hit by bullet
         public int damage;
@@ -40,6 +40,8 @@ namespace ScifiDruid.GameObjects
         protected Vector2 deadSize;
 
         protected Vector2 spriteSize;
+        public Vector2 position;
+        public Vector2 size;
 
         protected List<Vector2> idleSpriteVector = new List<Vector2>();
         protected List<Vector2> action1SpriteVector = new List<Vector2>();
@@ -57,6 +59,8 @@ namespace ScifiDruid.GameObjects
         protected float elapsed;
         protected float delay;
 
+        public float speed;
+
         //all sprite position in spritesheet
         protected Rectangle sourceRect;
 
@@ -65,6 +69,8 @@ namespace ScifiDruid.GameObjects
 
         protected BossStatus preStatus;
         protected BossStatus curStatus;
+
+        public SpriteEffects charDirection;
 
         public Boss(Texture2D texture) : base(texture)
         {
@@ -82,31 +88,19 @@ namespace ScifiDruid.GameObjects
             END
         }
 
-        public virtual void Initial()
+        public virtual void Initial(Rectangle spawnPosition,Player player)
         {
             curStatus = BossStatus.IDLE;
             preStatus = BossStatus.IDLE;
+            
         }
 
-        public virtual void Update(GameTime gameTime) { }
-
-        public virtual void Draw(SpriteBatch spriteBatch) { }
-
-        public bool GotHit()
+        public override bool GotHit()
         {
-            ContactEdge contactEdge = bossHitBox.ContactList;
+            ContactEdge contactEdge = enemyHitBox.ContactList;
             while (contactEdge != null)
             {
                 Contact contactFixture = contactEdge.Contact;
-
-                //if (contactEdge.Contact.FixtureB.Body.UserData.Equals("Bullet") || contactEdge.Contact.FixtureA.Body.UserData.Equals("Bullet"))
-                //{
-                //    Debug.WriteLine("Count " + Singleton.Instance.world.BodyList.Count);
-
-                //    Debug.WriteLine("A " + contactEdge.Contact.FixtureA.Body.UserData);
-
-                //    Debug.WriteLine("B " + contactEdge.Contact.FixtureB.Body.UserData);
-                //}
 
                 Body fixtureB_Body = contactEdge.Contact.FixtureB.Body;
                 Body fixtureA_Body = contactEdge.Contact.FixtureA.Body;
@@ -124,5 +118,11 @@ namespace ScifiDruid.GameObjects
             }
             return false;
         }
+        
+        public virtual void Action() { }
+
+        public virtual void Walk() { }
+
+        public virtual void ChangeAnimationStatus() { }
     }
 }
