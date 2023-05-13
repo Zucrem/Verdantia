@@ -17,6 +17,7 @@ using Box2DNet.Dynamics;
 using Box2DNet.Factories;
 using Box2DNet;
 using Box2DNet.Dynamics.Contacts;
+using System.Data;
 
 namespace ScifiDruid.GameObjects
 {
@@ -39,6 +40,7 @@ namespace ScifiDruid.GameObjects
 
         //player status
         public PlayerStatus playerStatus;
+        public KnockbackStatus knockbackStatus;
 
         private bool touchGround;
 
@@ -88,12 +90,18 @@ namespace ScifiDruid.GameObjects
         public static bool isAttack = false;
         
         private bool press = false;
-
+        private bool startDash = false;
         private bool startCool = false;
 
-        public int jumpHigh;
+        public static bool level2Unlock;
+        public static bool level3Unlock;
 
-        private SpriteEffects bulletDirection;
+        public float jumpHigh;
+
+        private SpriteEffects enemyDirection;
+
+        public List<Enemy> enemies;
+
         public List<Bullet> bulletList;
 
         private GameTime gameTime;
@@ -124,6 +132,12 @@ namespace ScifiDruid.GameObjects
             END
         }
 
+        public enum KnockbackStatus
+        {
+            FONT,
+            BACK
+        }
+
         public Player(Texture2D texture ,Texture2D bulletTexture) : base(texture)
         {
             this.texture = texture;
@@ -134,19 +148,19 @@ namespace ScifiDruid.GameObjects
 
         public void Initial(Rectangle startRect)
         {
+            
             textureWidth = (int)size.X;
             textureHeight = (int)size.Y;
 
             playerAnimation = new PlayerAnimation(this.texture);
 
             bulletList = new List<Bullet>();
-
-            hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(startRect.X, startRect.Y - 1)), 0, BodyType.Dynamic);
+            Debug.WriteLine(textureWidth);
+            hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(startRect.X, startRect.Y - 1)), 0, BodyType.Dynamic,"Player");
             hitBox.FixedRotation = true;
             hitBox.Friction = 1.0f;
             hitBox.AngularDamping = 2.0f;
             hitBox.LinearDamping = 2.0f;
-
             //check touch ground condition
             touchGround = true;
 
@@ -201,10 +215,11 @@ namespace ScifiDruid.GameObjects
                     touchGround = false;
                 }
 
-                if (IsContact("Enemy", "B"))
+                if (IsContact("Enemy", "B") && playerStatus != PlayerStatus.DASH)
                 {
                     GotHit();
                 }
+
                 else if (hitCooldown > 0)
                 {
                     hitCooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -218,6 +233,17 @@ namespace ScifiDruid.GameObjects
                 else
                 {
                     hitBox.GravityScale = 1;
+                }
+
+                if (hitCooldown <= 0)
+                {
+                    foreach (Body item in Singleton.Instance.world.BodyList)
+                    {
+                        if (item.UserData.Equals("Enemy"))
+                        {
+                            hitBox.RestoreCollisionWith(item);
+                        }
+                    }
                 }
 
             }
@@ -258,13 +284,8 @@ namespace ScifiDruid.GameObjects
                 Attack();
                 Dash();
                 Skill();
-
-                if (currentKeyState.IsKeyDown(Keys.K) && oldKeyState.IsKeyUp(Keys.K))
-                {
-                    GotHit();
-                }
             }
-            
+
             oldKeyState = currentKeyState;
         }
 
@@ -272,7 +293,7 @@ namespace ScifiDruid.GameObjects
         {
             if (currentKeyState.IsKeyDown(Keys.Left))
             {
-                hitBox.ApplyForce(new Vector2(-100 * speed, 0));
+                hitBox.ApplyForce(new Vector2(-hitBox.Mass * speed, 0));
                 charDirection = SpriteEffects.None;
 
                 //check if player still on ground
@@ -283,7 +304,7 @@ namespace ScifiDruid.GameObjects
             }
             if (currentKeyState.IsKeyDown(Keys.Right))
             {
-                hitBox.ApplyForce(new Vector2(100 * speed, 0));
+                hitBox.ApplyForce(new Vector2(hitBox.Mass * speed, 0));
                 charDirection = SpriteEffects.FlipHorizontally;
 
                 //check if player still on ground
@@ -309,7 +330,7 @@ namespace ScifiDruid.GameObjects
                     wasJumped = true;
                 }
 
-                hitBox.ApplyLinearImpulse(new Vector2(0, -jumpHigh));
+                hitBox.ApplyLinearImpulse(new Vector2(0, -hitBox.Mass * jumpHigh));
             }
 
             if (wasJumped && touchGround)
@@ -392,10 +413,11 @@ namespace ScifiDruid.GameObjects
             {
                 if (Player.health < Player.maxHealth)
                 {
+                    Debug.WriteLine("SS");
                     RegenSkill();
                 }
             }
-            
+
             CrocodileSkill();
 
             LionSkill();
@@ -411,15 +433,27 @@ namespace ScifiDruid.GameObjects
                 {
                     skill1Cooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
+                else
+                {
+                    startCool = false;
+                }
 
                 if (skill2Cooldown > 0)
                 {
                     skill2Cooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
+                else
+                {
+                    startCool = false;
+                }
 
                 if (skill3Cooldown > 0)
                 {
                     skill3Cooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+                else
+                {
+                    startCool = false;
                 }
             }
 
@@ -450,15 +484,15 @@ namespace ScifiDruid.GameObjects
                 switch (charDirection)
                 {
                     case SpriteEffects.None:
-                        hitBox.ApplyLinearImpulse(new Vector2(-10, 0));
+                        hitBox.ApplyLinearImpulse(new Vector2(-hitBox.Mass * (speed - 3), 0));
 
                         break;
                     case SpriteEffects.FlipHorizontally:
-                        hitBox.ApplyLinearImpulse(new Vector2(10, 0));
+                        hitBox.ApplyLinearImpulse(new Vector2(hitBox.Mass * (speed - 3), 0));
 
                         break;
                 }
-
+                hitCooldown = 0.5f;
                 dashCooldown = dashCoolTime;
             }
 
@@ -466,6 +500,13 @@ namespace ScifiDruid.GameObjects
             {
                 dashAnimationTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                 playerStatus = PlayerStatus.DASH;
+                foreach (Body item in Singleton.Instance.world.BodyList)
+                {
+                    if (item.UserData != null && item.UserData.Equals("Enemy"))
+                    {
+                        hitBox.IgnoreCollisionWith(item);
+                    }
+                }
             }
 
             if (dashCooldown > 0)
@@ -484,8 +525,10 @@ namespace ScifiDruid.GameObjects
 
         public void LionSkill()
         {
-            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press)
+            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press && skill3Cooldown <= 0)
             {
+                Debug.WriteLine("AA");
+
                 lionBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(200), ConvertUnits.ToSimUnits(200), 0, hitBox.Position + new Vector2(0, textureHeight / 2), 0, BodyType.Static, "Lion Skill");
                 lionBody.IgnoreCollisionWith(hitBox);
                 lionBody.IsSensor = true;
@@ -509,34 +552,54 @@ namespace ScifiDruid.GameObjects
         {
             if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Down) && !press && skill2Cooldown <= 0)
             {
+                Debug.WriteLine("SS");
+                isAlive = false;
+                press = true;
+                skill2Cooldown = skill2CoolTime;
             }
-            skill2Cooldown = skill2CoolTime;
-            press = true;
+
+            if (!isAlive && skill2Cooldown > 0)
+            {
+                playerStatus = PlayerStatus.RUN;
+                hitBox.ApplyForce(new Vector2(10, 0));
+            }
         }
 
         public void GotHit()
         {
             if (hitCooldown <= 0)
             {
+                
                 if (Player.health > 0)
                 {
                     Player.health--;
                 }
 
-                switch (charDirection)
+                switch (knockbackStatus)
                 {
-                    case SpriteEffects.None:
-                        hitBox.ApplyLinearImpulse(new Vector2(10, -jumpHigh));
+                    case KnockbackStatus.FONT:
+                        hitBox.ApplyLinearImpulse(new Vector2(hitBox.Mass * speed, -hitBox.Mass * jumpHigh));
 
                         break;
-                    case SpriteEffects.FlipHorizontally:
-                        hitBox.ApplyLinearImpulse(new Vector2(-10, -jumpHigh));
+                    case KnockbackStatus.BACK:
+                        hitBox.ApplyLinearImpulse(new Vector2(-hitBox.Mass * speed, -hitBox.Mass * jumpHigh));
 
                         break;
                 }
-
-                hitCooldown = 0.5f;
+                hitCooldown = 1f;
+                
             }
+            else
+            {
+                foreach (Body item in Singleton.Instance.world.BodyList)
+                {
+                    if (item.UserData.Equals("Enemy"))
+                    {
+                        hitBox.IgnoreCollisionWith(item);
+                    }
+                }
+            }
+
             
         }
 
@@ -553,6 +616,21 @@ namespace ScifiDruid.GameObjects
                         if (contactFixture.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals(contact))
                         {
                             //if Contact thing in parameter it will return True
+
+                            foreach (var item in enemies)
+                            {
+                                if (item != null && item.enemyHitBox.BodyId == contactEdge.Contact.FixtureB.Body.BodyId)
+                                {
+                                    if (item.enemyHitBox.Position.X - hitBox.Position.X > 0)
+                                    {
+                                        knockbackStatus = KnockbackStatus.BACK;
+                                    }
+                                    else
+                                    {
+                                        knockbackStatus = KnockbackStatus.FONT;
+                                    }
+                                }
+                            }
                             return true;
                         }
                         break; 
@@ -561,6 +639,20 @@ namespace ScifiDruid.GameObjects
                         if (contactFixture.IsTouching && contactEdge.Contact.FixtureB.Body.UserData != null && contactEdge.Contact.FixtureB.Body.UserData.Equals(contact))
                         {
                             //if Contact thing in parameter it will return True
+                            foreach (var item in enemies)
+                            {
+                                if (item != null && item.enemyHitBox.BodyId == contactEdge.Contact.FixtureB.Body.BodyId)
+                                {
+                                    if (item.enemyHitBox.Position.X - hitBox.Position.X > 0)
+                                    {
+                                        knockbackStatus = KnockbackStatus.BACK;
+                                    }
+                                    else
+                                    {
+                                        knockbackStatus = KnockbackStatus.FONT;
+                                    }
+                                }
+                            }
                             return true;
                         }
                         break;

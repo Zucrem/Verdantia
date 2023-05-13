@@ -20,6 +20,9 @@ namespace ScifiDruid.GameObjects
     {
         private Texture2D texture;    //enemy Texture (Animaiton)
 
+        protected Player player;
+        protected Vector2 playerPosition;
+
         private Rectangle enemyDestRect;  //where postion
         private Rectangle enemySourceRec; //where read
         private Vector2 enemyOrigin;  //start draw enemy point
@@ -52,6 +55,9 @@ namespace ScifiDruid.GameObjects
         private EnemyStatus enemyStatus;
         //check if animation animationEnd or not
         private bool animationEnd;
+
+        protected float playerCheckTime;
+
         public enum EnemyStatus
         {
             WALK,
@@ -68,7 +74,7 @@ namespace ScifiDruid.GameObjects
             //characterSouceRec = new Rectangle(0, 0, sizeX, sizeY);
         }
 
-        public void Initial(Rectangle startRect)
+        public void Initial(Rectangle startRect,Player player)
         {
             textureHeight = (int)size.Y;
             textureWidth= (int)size.X;
@@ -78,7 +84,15 @@ namespace ScifiDruid.GameObjects
             enemyHitBox.Friction = 1.0f;
             enemyHitBox.AngularDamping = 2.0f;
             enemyHitBox.LinearDamping = 2.0f;
+            //enemyHitBox.IsSensor = true;
 
+            //foreach (Body item in Singleton.Instance.world.BodyList)
+            //{
+            //    if (!item.UserData.Equals("Player"))
+            //    {
+            //        enemyHitBox.IgnoreCollisionWith(item);
+            //    }
+            //}
             isAlive = true;
 
             charDirection = SpriteEffects.FlipHorizontally;  // heading direction
@@ -105,6 +119,7 @@ namespace ScifiDruid.GameObjects
                 if (health <= 0)
                 {
                     isAlive = false;
+                    enemyHitBox.Dispose();
                     enemyStatus = EnemyStatus.DEAD;
                 }
             }
@@ -114,27 +129,17 @@ namespace ScifiDruid.GameObjects
             if (animationEnd)
             {
                 enemyStatus = EnemyStatus.END;
-                enemyHitBox.Dispose();
             }
 
             enemyAnimation.Update(gameTime, enemyStatus);
        }
 
-        public bool GotHit()
+        public virtual bool GotHit()
         {
             ContactEdge contactEdge = enemyHitBox.ContactList;
             while (contactEdge != null)
             {
                 Contact contactFixture = contactEdge.Contact;
-
-                //if (contactEdge.Contact.FixtureB.Body.UserData.Equals("Bullet") || contactEdge.Contact.FixtureA.Body.UserData.Equals("Bullet"))
-                //{
-                //    Debug.WriteLine("Count " + Singleton.Instance.world.BodyList.Count);
-
-                //    Debug.WriteLine("A " + contactEdge.Contact.FixtureA.Body.UserData);
-
-                //    Debug.WriteLine("B " + contactEdge.Contact.FixtureB.Body.UserData);
-                //}
 
                 Body fixtureB_Body = contactEdge.Contact.FixtureB.Body;
                 Body fixtureA_Body = contactEdge.Contact.FixtureA.Body;
@@ -151,6 +156,19 @@ namespace ScifiDruid.GameObjects
                 contactEdge = contactEdge.Next;
             }
             return false;
+        }
+
+        public void CheckPlayerPosition(GameTime gameTime)
+        {
+            if (playerCheckTime <= 0)
+            {
+                playerCheckTime = 1;
+                playerPosition = player.position;
+            }
+            else
+            {
+                playerCheckTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
         }
 
         public void EnemyAction()
