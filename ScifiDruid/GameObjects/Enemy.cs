@@ -1,36 +1,32 @@
-﻿using Box2DNet;
-using Box2DNet.Dynamics;
-using Box2DNet.Dynamics.Contacts;
-using Box2DNet.Factories;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Box2DNet.Dynamics.Contacts;
+using Box2DNet.Dynamics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Timers;
+using Box2DNet.Factories;
+using Box2DNet;
 using static ScifiDruid.GameObjects.Player;
 
 namespace ScifiDruid.GameObjects
 {
     public class Enemy : _GameObject
     {
-        private Texture2D texture;    //enemy Texture (Animaiton)
+        protected Texture2D texture;
 
         protected Player player;
         protected Vector2 playerPosition;
 
         private Rectangle enemyDestRect;  //where postion
         private Rectangle enemySourceRec; //where read
-        private Vector2 enemyOrigin;  //start draw enemy point
+        protected Vector2 enemyOrigin;  //start draw enemy point
 
-        public Body enemyHitBox;       // to check the hit of bullet
-
-        private bool isPlayerinArea = false;       // to check is player in the area 
-        private bool isGoingToFall = false;        // check is there are hole infront of this enemy
+        protected bool isPlayerinArea = false;       // to check is player in the area 
+        protected bool isGoingToFall = false;        // check is there are hole infront of this enemy
 
         public int health;                          // reduce when get hit by bullet
         public int damage;
@@ -38,7 +34,25 @@ namespace ScifiDruid.GameObjects
         public int textureWidth;
         public int textureHeight;
 
-        private GameTime gameTime;
+        protected GameTime gameTime;
+
+        //for animation
+        protected Vector2 idleSize;
+        protected Vector2 runSize;
+        protected Vector2 deadSize;
+
+        public Body enemyHitBox;       // to check the hit of bullet
+
+        protected Vector2 spriteSize;
+
+        protected List<Vector2> idleSpriteVector = new List<Vector2>();
+        protected List<Vector2> runSpriteVector = new List<Vector2>();
+        protected List<Vector2> deadSpriteVector = new List<Vector2>();
+
+        protected List<Vector2> spriteVector = new List<Vector2>();
+
+        //get animation state if dead
+        protected bool animationDead = false;
 
         //attribute using for moving of enemy
         private float timeElapsed;
@@ -47,92 +61,42 @@ namespace ScifiDruid.GameObjects
         public List<Vector2> sizeList;
         public List<List<Vector2>> animateList;
 
-        private EnemyAnimation enemyAnimation;
-
         private KeyboardState currentKeyState;
 
-        //animation
-        private EnemyStatus enemyStatus;
-        //check if animation animationEnd or not
-        private bool animationEnd;
+        //time
+        protected float elapsed;
+        protected float delay;
 
+        //all sprite position in spritesheet
+        protected Rectangle sourceRect;
+
+        protected int frames;
+        protected int allframes;
+
+        protected EnemyStatus preStatus;
+        protected EnemyStatus curStatus;
+
+        //check player position
         protected float playerCheckTime;
-
-        public enum EnemyStatus
-        {
-            WALK,
-            RUN,
-            SHOOT,
-            DEAD,
-            END
-        }
-
 
         public Enemy(Texture2D texture) : base(texture)
         {
             this.texture = texture;
-            //characterSouceRec = new Rectangle(0, 0, sizeX, sizeY);
         }
 
-        public void Initial(Rectangle startRect,Player player)
+        protected enum EnemyStatus
         {
-            textureHeight = (int)size.Y;
-            textureWidth= (int)size.X;
-
-            enemyHitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(startRect.X, startRect.Y - 1)), 0, BodyType.Dynamic,"Enemy");
-            enemyHitBox.FixedRotation = true;
-            enemyHitBox.Friction = 1.0f;
-            enemyHitBox.AngularDamping = 2.0f;
-            enemyHitBox.LinearDamping = 2.0f;
-            //enemyHitBox.IsSensor = true;
-
-            //foreach (Body item in Singleton.Instance.world.BodyList)
-            //{
-            //    if (!item.UserData.Equals("Player"))
-            //    {
-            //        enemyHitBox.IgnoreCollisionWith(item);
-            //    }
-            //}
-            isAlive = true;
-
-            charDirection = SpriteEffects.FlipHorizontally;  // heading direction
-
-            enemyOrigin = new Vector2(textureWidth/2,textureHeight/2);  //draw in the middle
-
-            enemyStatus = EnemyStatus.WALK;
-            enemyAnimation = new EnemyAnimation(texture, sizeList, animateList);
-
-            enemyAnimation.Initialize();
+            IDLE,
+            RUN,
+            DEAD,
+            END
         }
 
-        public override void Update(GameTime gameTime)
+        public virtual void Initial(Rectangle spawnPosition, Player player)
         {
-            this.gameTime = gameTime;
-            position = enemyHitBox.Position;
-            if (isAlive)
-            {
-                if (Player.isAttack && GotHit())
-                {
-                    health--;
-                }
-
-                if (health <= 0)
-                {
-                    isAlive = false;
-                    enemyHitBox.Dispose();
-                    enemyStatus = EnemyStatus.DEAD;
-                }
-            }
-
-            //if dead animation animationEnd
-            animationEnd = enemyAnimation.GetAnimationDead();
-            if (animationEnd)
-            {
-                enemyStatus = EnemyStatus.END;
-            }
-
-            enemyAnimation.Update(gameTime, enemyStatus);
-       }
+            curStatus = EnemyStatus.IDLE;
+            preStatus = EnemyStatus.IDLE;
+        }
 
         public virtual bool GotHit()
         {
@@ -158,6 +122,34 @@ namespace ScifiDruid.GameObjects
             return false;
         }
 
+        public bool IsContact(String contact, String fixture)
+        {
+            ContactEdge contactEdge = enemyHitBox.ContactList;
+            while (contactEdge != null)
+            {
+                Contact contactFixture = contactEdge.Contact;
+                switch (fixture)
+                {
+                    case "A":
+                        // Check if the contact fixture is the ground
+                        if (contactFixture.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals(contact))
+                        {
+                            return true;
+                        }
+                        break;
+                    case "B":
+                        // Check if the contact fixture is the ground
+                        if (contactFixture.IsTouching && contactEdge.Contact.FixtureB.Body.UserData != null && contactEdge.Contact.FixtureB.Body.UserData.Equals(contact))
+                        {
+                            return true;
+                        }
+                        break;
+                }
+
+                contactEdge = contactEdge.Next;
+            }
+            return false;
+        }
         public void CheckPlayerPosition(GameTime gameTime)
         {
             if (playerCheckTime <= 0)
@@ -171,70 +163,11 @@ namespace ScifiDruid.GameObjects
             }
         }
 
-        public void EnemyAction()
-        {
-            currentKeyState = Keyboard.GetState();
-            if (isAlive)
-            {
-                EnemyWalking();
-            }
-            //EnemyAlertWalking();
-        }
+        public virtual void Action() { }
 
-        private void EnemyWalking()
-        {
-            //do normal walking left and right
-            timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if(health > 0)
-            {
-                if (timeElapsed >= 5f)
-                {
-                    timeElapsed = 0f;
-                    isMovingLeft= !isMovingLeft;
-                }
+        public virtual void Walk() { }
 
-                if(isMovingLeft)
-                {
-                    charDirection = SpriteEffects.None;
-                    enemyHitBox.ApplyForce(new Vector2(-100*speed,0));
-                }
-                else
-                {
-                    charDirection = SpriteEffects.FlipHorizontally;
-                    enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
-                }
-            }
-
-
-        }
-
-        
-
-        private void EnemyAlertWalking()
-        {
-
-            //player on (right ,mid,left)
-            //got to that direction of player
-            //stop when player go out of detect area
-
-
-            //do alert condition follow Player and Track Player down to death
-        }
-        
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            if (!animationEnd)
-            {
-                enemyAnimation.Draw(spriteBatch, enemyOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
-            }
-
-            //if shoot
-            /*if (_bulletBody != null && !_bulletBody.IsDisposed)
-            {
-                bullet.Draw(spriteBatch);
-            }*/
-
-            base.Draw(spriteBatch);
-        }
+        public virtual void ChangeAnimationStatus() { }
     }
 }
+
