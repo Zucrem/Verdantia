@@ -10,61 +10,24 @@ using Box2DNet.Dynamics;
 
 namespace ScifiDruid.GameObjects
 {
-    public class Boss : _GameObject
+    public class Boss : Enemy
     {
-        protected Texture2D texture;
-
         protected Rectangle bossDestRect;  //where postion
         protected Rectangle bossSourceRec; //where read
         protected Vector2 bossOrigin;  //start draw boss point
 
-        public Body bossHitBox;       // to check the hit of bullet
-
-        protected bool isPlayerinArea = false;       // to check is player in the area 
-        protected bool isGoingToFall = false;        // check is there are hole infront of this enemy
-
-        public int health;                          // reduce when get hit by bullet
-        public int damage;
-
-        public int textureWidth;
-        public int textureHeight;
-
-        protected GameTime gameTime;
-
         //for animation
-        protected Vector2 idleSize;
         protected Vector2 action1Size;
         protected Vector2 action2Size;
         protected Vector2 action3Size;
         protected Vector2 action4Size;
-        protected Vector2 deadSize;
-
-        protected Vector2 spriteSize;
-
-        protected List<Vector2> idleSpriteVector = new List<Vector2>();
         protected List<Vector2> action1SpriteVector = new List<Vector2>();
         protected List<Vector2> action2SpriteVector = new List<Vector2>();
         protected List<Vector2> action3SpriteVector = new List<Vector2>();
         protected List<Vector2> action4SpriteVector = new List<Vector2>();
-        protected List<Vector2> deadSpriteVector = new List<Vector2>();
 
-        protected List<Vector2> spriteVector = new List<Vector2>();
-
-        //get animation state if dead
-        protected bool animationDead = false;
-
-        //time
-        protected float elapsed;
-        protected float delay;
-
-        //all sprite position in spritesheet
-        protected Rectangle sourceRect;
-
-        protected int frames;
-        protected int allframes;
-
-        protected BossStatus preStatus;
-        protected BossStatus curStatus;
+        protected BossStatus preBossStatus;
+        protected BossStatus curBossStatus;
 
         public Boss(Texture2D texture) : base(texture)
         {
@@ -82,31 +45,19 @@ namespace ScifiDruid.GameObjects
             END
         }
 
-        public virtual void Initial()
+        public override void Initial(Rectangle spawnPosition,Player player)
         {
-            curStatus = BossStatus.IDLE;
-            preStatus = BossStatus.IDLE;
+            curBossStatus = BossStatus.IDLE;
+            preBossStatus = BossStatus.IDLE;
+            
         }
 
-        public virtual void Update(GameTime gameTime) { }
-
-        public virtual void Draw(SpriteBatch spriteBatch) { }
-
-        public bool GotHit()
+        public override bool GotHit()
         {
-            ContactEdge contactEdge = bossHitBox.ContactList;
+            ContactEdge contactEdge = enemyHitBox.ContactList;
             while (contactEdge != null)
             {
                 Contact contactFixture = contactEdge.Contact;
-
-                //if (contactEdge.Contact.FixtureB.Body.UserData.Equals("Bullet") || contactEdge.Contact.FixtureA.Body.UserData.Equals("Bullet"))
-                //{
-                //    Debug.WriteLine("Count " + Singleton.Instance.world.BodyList.Count);
-
-                //    Debug.WriteLine("A " + contactEdge.Contact.FixtureA.Body.UserData);
-
-                //    Debug.WriteLine("B " + contactEdge.Contact.FixtureB.Body.UserData);
-                //}
 
                 Body fixtureB_Body = contactEdge.Contact.FixtureB.Body;
                 Body fixtureA_Body = contactEdge.Contact.FixtureA.Body;
@@ -124,5 +75,11 @@ namespace ScifiDruid.GameObjects
             }
             return false;
         }
+        
+        public override void Action() { }
+
+        public override void Walk() { }
+
+        public override void ChangeAnimationStatus() { }
     }
 }

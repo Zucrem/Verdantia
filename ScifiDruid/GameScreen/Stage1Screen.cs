@@ -27,15 +27,16 @@ namespace ScifiDruid.GameScreen
         protected List<Enemy> allEnemies;
         protected LucasBoss boss;
 
-        protected Enemy flameMech;
-        protected List<Enemy> flameMechEnemies;
+        protected RangeEnemy flameMech;
+        protected List<RangeEnemy> flameMechEnemies;
         protected int flameMechPositionList;
         protected int flameMechCount;
 
-        protected Enemy chainsawMech;
-        protected List<Enemy> chainsawMechEnemies;
+        protected MeleeEnemy chainsawMech;
+        protected List<MeleeEnemy> chainsawMechEnemies;
         protected int chainsawMechPositionList;
         protected int chainsawMechCount;
+
         public override void Initial()
         {
             base.Initial();
@@ -47,6 +48,8 @@ namespace ScifiDruid.GameScreen
             Player.mana = 100;
             Player.maxHealth = 5;
             Player.maxMana = 100;
+            Player.level2Unlock = false;
+            Player.level3Unlock = false;
 
             //create tileset for map1
             //map = new TmxMap("Content/stage1test.tmx");
@@ -147,26 +150,24 @@ namespace ScifiDruid.GameScreen
 
 
             //create player on position
-            //player.Initial(startRect);
-            player.Initial(endRect);
+            player.Initial(startRect);
+            //player.Initial(endRect);
 
             //create enemy on position
             allEnemies = new List<Enemy>();
 
-            //ground1
-            flameMechEnemies = new List<Enemy>();
+            //range enemy
+            flameMechEnemies = new List<RangeEnemy>();
             flameMechPositionList = ground1MonsterRects.Count();
+            List<Vector2> flameMechSizeList = new List<Vector2>() { new Vector2(112, 86), new Vector2(112, 86) };
+            List<List<Vector2>> flameMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(112, 0) }, new List<Vector2>() { new Vector2(0, 108), new Vector2(112, 108) } };
             for (int i = 0; i < flameMechPositionList; i++)
             {
-                flameMech = new Enemy(flameMechTex)
+                flameMech = new RangeEnemy(flameMechTex, flameMechSizeList, flameMechAnimateList)
                 {
                     size = new Vector2(112, 86),
                     health = 3,
                     speed = 0.22f,
-                    //list of size list
-                    sizeList = new List<Vector2>() { new Vector2(112, 86), new Vector2(0, 0), new Vector2(112, 86)},
-                    //list of list for animation list
-                    animateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(112, 0) }, new List<Vector2>(), new List<Vector2>() { new Vector2(0, 108), new Vector2(112, 108) } },
                 };
                 flameMechEnemies.Add(flameMech);
                 allEnemies.Add(flameMech);
@@ -174,26 +175,24 @@ namespace ScifiDruid.GameScreen
 
             //create enemy position
             flameMechCount = 0;
-            foreach (Enemy chainsawBot in flameMechEnemies)
+            foreach (RangeEnemy chainsawBot in flameMechEnemies)
             {
-                chainsawBot.Initial(ground1MonsterRects[flameMechCount]);
+                chainsawBot.Initial(ground1MonsterRects[flameMechCount], player);
                 flameMechCount++;
             }
-            //ground2
-            chainsawMechEnemies = new List<Enemy>();
+
+            //melee enemy
+            chainsawMechEnemies = new List<MeleeEnemy>();
             chainsawMechPositionList = ground2MonsterRects.Count();
+            List<Vector2> chainsawMechSizeList = new List<Vector2>() { new Vector2(118, 100), new Vector2(136, 100), new Vector2(118, 100) };
+            List<List<Vector2>> chainsawMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(144, 0) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 254), new Vector2(142, 254) } };
             for (int i = 0; i < chainsawMechPositionList; i++)
             {
-                chainsawMech = new Enemy(chainsawMechTex)
+                chainsawMech = new MeleeEnemy(chainsawMechTex, chainsawMechSizeList, chainsawMechAnimateList)
                 {
                     size = new Vector2(118, 100),
                     health = 4,
                     speed = 0.22f,
-
-                    //list of size list
-                    sizeList = new List<Vector2>() { new Vector2(118, 100), new Vector2(136, 100), new Vector2(118, 100) },
-                    //list of list for animation list
-                    animateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(144, 0) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 254), new Vector2(142, 254) } },
                 };
                 chainsawMechEnemies.Add(chainsawMech);
                 allEnemies.Add(chainsawMech);
@@ -201,9 +200,9 @@ namespace ScifiDruid.GameScreen
 
             //create enemy position
             chainsawMechCount = 0;
-            foreach (Enemy chainsawBot in chainsawMechEnemies)
+            foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
             {
-                chainsawBot.Initial(ground2MonsterRects[chainsawMechCount]);
+                chainsawBot.Initial(ground2MonsterRects[chainsawMechCount], player);
                 chainsawMechCount++;
             }
 
@@ -214,8 +213,12 @@ namespace ScifiDruid.GameScreen
                 health = 6,
                 speed = 1.2f,
             };
+            allEnemies.Add(boss);
 
-            boss.Initial(bossRect);
+            boss.Initial(bossRect,player);
+
+            //add all enemy for player to know em all
+            player.enemies = allEnemies;
         }
         public override void LoadContent()
         {
@@ -237,12 +240,12 @@ namespace ScifiDruid.GameScreen
                     if (!Keyboard.GetState().IsKeyDown(Keys.Escape))
                     {
                         //all enemy
-                        foreach (Enemy flamewBot in flameMechEnemies)
+                        foreach (RangeEnemy flamewBot in flameMechEnemies)
                         {
                             flamewBot.Update(gameTime);
                             flamewBot.EnemyAction();
                         }
-                        foreach (Enemy chainsawBot in chainsawMechEnemies)
+                        foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
                         {
                             chainsawBot.Update(gameTime);
                             chainsawBot.EnemyAction();
@@ -258,8 +261,6 @@ namespace ScifiDruid.GameScreen
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            base.Draw(spriteBatch);
-
             //draw tileset for map1
             if (play)
             {
@@ -268,11 +269,11 @@ namespace ScifiDruid.GameScreen
                     tilemapManager.Draw(spriteBatch);
 
                     //draw enemy animation
-                    foreach (Enemy flameBot in flameMechEnemies)
+                    foreach (RangeEnemy flameBot in flameMechEnemies)
                     {
                         flameBot.Draw(spriteBatch);
                     }
-                    foreach (Enemy chainsawBot in chainsawMechEnemies)
+                    foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
                     {
                         chainsawBot.Draw(spriteBatch);
                     }
@@ -285,6 +286,9 @@ namespace ScifiDruid.GameScreen
                     }
                 }
             }
+
+            base.Draw(spriteBatch);
+
         }
     }
 }

@@ -118,9 +118,6 @@ namespace ScifiDruid.GameScreen
 
         private bool worldReset = false;
 
-        private bool worldResetDD;
-
-
         protected enum GameState 
         { 
             START, PLAY, WIN, LOSE, PAUSE, EXIT
@@ -128,8 +125,6 @@ namespace ScifiDruid.GameScreen
 
         public virtual void Initial()
         {
-
-            worldResetDD = false;
 
             gamestate = GameState.START;
 
@@ -158,13 +153,12 @@ namespace ScifiDruid.GameScreen
             {
                 name = "Player Character",
                 size = new Vector2(46, 94),
-                speed = 0.15f,
-                jumpHigh = 12,
+                speed = 20f,
+                jumpHigh = 10.5f,
             };
 
             //camera
             camera = new Camera();
-
         }
         public override void LoadContent()
         {
@@ -284,7 +278,16 @@ namespace ScifiDruid.GameScreen
                             Singleton.Instance.world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
 
                             //camera update for scroll
-                            Singleton.Instance.tfMatrix = camera.Follow(player.position, startmaptileX, endmaptileX);
+                            Matrix lastScreen = camera.Follow(player.position, endmaptileX, endmaptileX);
+
+                            if (Singleton.Instance.tfMatrix.M41 != lastScreen.M41)
+                            {
+                                Singleton.Instance.tfMatrix = camera.Follow(player.position, startmaptileX, endmaptileX);
+                            }
+                            else
+                            {
+                                Singleton.Instance.tfMatrix = lastScreen;
+                            }
 
                             player.Action();
 
@@ -605,7 +608,6 @@ namespace ScifiDruid.GameScreen
                             bullet.Draw(spriteBatch);
                         }
                     }
-                    //spriteBatch.Draw(_groundSprite, ConvertUnits.ToDisplayUnits(_groundBody.Position), null, Color.White, 0f, new Vector2(_groundSprite.Width / 2, _groundSprite.Height / 2), 1f, SpriteEffects.None, 0f);
                 }
 
                 //all draw on screen here
