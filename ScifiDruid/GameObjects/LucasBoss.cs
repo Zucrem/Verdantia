@@ -73,7 +73,7 @@ namespace ScifiDruid.GameObjects
             enemyHitBox.AngularDamping = 2.0f;
             enemyHitBox.LinearDamping = 2.0f;
 
-            isAlive = true;
+            isAlive = false;
 
             charDirection = SpriteEffects.FlipHorizontally;  // heading direction
 
