@@ -119,15 +119,25 @@ namespace ScifiDruid.GameScreen
                 }
                 if (o.Name.Equals("left_side"))
                 {
-                    boss_left_side = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    boss_left_side = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height); 
+                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(boss_left_side.Width), ConvertUnits.ToSimUnits(boss_left_side.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(boss_left_side.X, boss_left_side.Y)));
+                    body.UserData = "Boss_left_side";
+                    body.IsSensor = true;
                 }
                 if (o.Name.Equals("right_side"))
                 {
                     boss_right_side = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(boss_right_side.Width), ConvertUnits.ToSimUnits(boss_right_side.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(boss_right_side.X, boss_right_side.Y)));
+                    body.UserData = "Boss_right_side";
+                    body.IsSensor = true;
                 }
                 if (o.Name.Equals("boss_event"))
                 {
                     boss_event = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+
+                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(boss_event.Width), ConvertUnits.ToSimUnits(boss_event.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(boss_event.X, boss_event.Y)));
+                    body.UserData = "Boss_event";
+                    body.IsSensor = true;
                 }
             }
             foreach (var o in map.ObjectGroups["GroundMonster"].Objects)
@@ -238,12 +248,14 @@ namespace ScifiDruid.GameScreen
                 health = 6,
                 speed = 1.2f,
             };
+            //spawn boss
+            boss.Initial(bossRect, player);
+
             //add to all enemy for
             allEnemies.AddRange(flameMechEnemies);
             allEnemies.AddRange(chainsawMechEnemies);
             allEnemies.Add(boss);
 
-            boss.Initial(bossRect,player);
 
             //add all enemy for player to know em all
             player.enemies = allEnemies;
@@ -280,6 +292,22 @@ namespace ScifiDruid.GameScreen
                         }
                         //boss
                         boss.Update(gameTime);
+
+                        //if player get into boss state
+                        if (player.IsContact("Boss_event", "A") && !created_boss)
+                        {
+                            boss_area = true;
+                        }
+                        //if player is in boss area just spawn
+                        if (boss_area && !created_boss)
+                        {
+                            boss.isAlive = true;
+
+                            //create block to block player
+                            Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(wallblock.Width), ConvertUnits.ToSimUnits(wallblock.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(wallblock.X, wallblock.Y)));
+                            body.UserData = "ground";
+                            created_boss = true;
+                        }
                     }
                 }
             }
