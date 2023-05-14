@@ -37,6 +37,12 @@ namespace ScifiDruid.GameScreen
         protected int chainsawMechPositionList;
         protected int chainsawMechCount;
 
+        //special occasion position
+        protected Rectangle wallblock;
+        protected Rectangle boss_left_side;
+        protected Rectangle boss_right_side;
+        protected Rectangle boss_event;
+
         public override void Initial()
         {
             base.Initial();
@@ -89,7 +95,10 @@ namespace ScifiDruid.GameScreen
                 if (o.Name.Equals("endRect"))
                 {
                     endRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
-                    //playerRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                }
+                if (o.Name.Equals("bossState"))
+                {
+                    bossState = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
                 }
             }
             foreach (var o in map.ObjectGroups["SpecialBlocks"].Objects)
@@ -102,19 +111,37 @@ namespace ScifiDruid.GameScreen
             foreach (var o in map.ObjectGroups["SpecialProps"].Objects)
             {
             }
+            foreach (var o in map.ObjectGroups["SpecialOccasions"].Objects)
+            {
+                if (o.Name.Equals("wallblock"))
+                {
+                    wallblock = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                }
+                if (o.Name.Equals("left_side"))
+                {
+                    boss_left_side = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                }
+                if (o.Name.Equals("right_side"))
+                {
+                    boss_right_side = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                }
+                if (o.Name.Equals("boss_event"))
+                {
+                    boss_event = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                }
+            }
             foreach (var o in map.ObjectGroups["GroundMonster"].Objects)
             {
+                //flamethrower machine position
                 if (o.Name.Equals("ground_mon_1"))
                 {
                     ground1MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
                 }
+                //chainsaw machine position
                 if (o.Name.Equals("ground_mon_2"))
                 {
                     ground2MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
                 }
-            }
-            foreach (var o in map.ObjectGroups["FlyingMonster"].Objects)
-            {
             }
             foreach (var o in map.ObjectGroups["Boss"].Objects)
             {
@@ -151,7 +178,7 @@ namespace ScifiDruid.GameScreen
 
             //create player on position
             player.Initial(startRect);
-            //player.Initial(endRect);
+            //player.Initial(boss_event);
 
             //create enemy on position
             allEnemies = new List<Enemy>();
@@ -170,7 +197,6 @@ namespace ScifiDruid.GameScreen
                     speed = 0.22f,
                 };
                 flameMechEnemies.Add(flameMech);
-                allEnemies.Add(flameMech);
             }
 
             //create enemy position
@@ -195,7 +221,6 @@ namespace ScifiDruid.GameScreen
                     speed = 0.22f,
                 };
                 chainsawMechEnemies.Add(chainsawMech);
-                allEnemies.Add(chainsawMech);
             }
 
             //create enemy position
@@ -213,6 +238,9 @@ namespace ScifiDruid.GameScreen
                 health = 6,
                 speed = 1.2f,
             };
+            //add to all enemy for
+            allEnemies.AddRange(flameMechEnemies);
+            allEnemies.AddRange(chainsawMechEnemies);
             allEnemies.Add(boss);
 
             boss.Initial(bossRect,player);
@@ -243,12 +271,12 @@ namespace ScifiDruid.GameScreen
                         foreach (RangeEnemy flamewBot in flameMechEnemies)
                         {
                             flamewBot.Update(gameTime);
-                            flamewBot.EnemyAction();
+                            flamewBot.Action();
                         }
                         foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
                         {
                             chainsawBot.Update(gameTime);
-                            chainsawBot.EnemyAction();
+                            chainsawBot.Action();
                         }
                         //boss
                         boss.Update(gameTime);

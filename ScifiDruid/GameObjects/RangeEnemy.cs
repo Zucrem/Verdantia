@@ -91,9 +91,6 @@ namespace ScifiDruid.GameObjects
 
             }
 
-            //boss action
-            Action();
-
             //if step on dead block
             if (IsContact("dead", "A"))
             {
@@ -150,7 +147,7 @@ namespace ScifiDruid.GameObjects
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
             preStatus = curStatus;
         }
-        public void EnemyAction()
+        public override void Action()
         {
             if (isAlive)
             {
