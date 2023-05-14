@@ -27,7 +27,6 @@ namespace ScifiDruid.GameObjects
         private int randomAction;
         //attribute using for moving of boss
         private float timeElapsed;
-        private bool isMovingLeft = true;
         private float movingTime = 3.4f;
 
         //boolean to do action
@@ -74,7 +73,7 @@ namespace ScifiDruid.GameObjects
             enemyHitBox.AngularDamping = 2.0f;
             enemyHitBox.LinearDamping = 2.0f;
 
-            isAlive = false;
+            isAlive = true;
 
             charDirection = SpriteEffects.FlipHorizontally;  // heading direction
 
@@ -100,7 +99,7 @@ namespace ScifiDruid.GameObjects
                     enemyHitBox.UserData = "Dead";
                     isAlive = false;
                     enemyHitBox.Dispose();
-                    curStatus = BossStatus.DEAD;
+                    curBossStatus = BossStatus.DEAD;
                 }
 
             }
@@ -111,18 +110,18 @@ namespace ScifiDruid.GameObjects
             //if dead animation animationEnd
             if (animationDead)
             {
-                curStatus = BossStatus.END;
+                curBossStatus = BossStatus.END;
             }
 
             //animation
-            if (preStatus != curStatus)
+            if (preBossStatus != curBossStatus)
             {
                 frames = 0;
                 frameState = 0;
             }
             ChangeAnimationStatus();
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            switch (curStatus)
+            switch (curBossStatus)
             {
                 case BossStatus.IDLE:
                     if (elapsed >= delay)
@@ -185,7 +184,7 @@ namespace ScifiDruid.GameObjects
                     break;
             }
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
-            preStatus = curStatus;
+            preBossStatus = curBossStatus;
         }
 
         
@@ -196,7 +195,7 @@ namespace ScifiDruid.GameObjects
 
                 //timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                if (curStatus == BossStatus.IDLE)
+                if (curBossStatus == BossStatus.IDLE)
                 {
                     randomAction = rand.Next(1, 300);
                 }
@@ -223,10 +222,12 @@ namespace ScifiDruid.GameObjects
         {
             if (position.X - playerPosition.X > 0 && randomAction > 3)
             {
+                charDirection = SpriteEffects.FlipHorizontally;
                 enemyHitBox.ApplyForce(new Vector2(-75 * speed, 0));
             }
             else if (randomAction > 3)
             {
+                charDirection = SpriteEffects.None;
                 enemyHitBox.ApplyForce(new Vector2(75 * speed, 0));
             }
         }
@@ -236,7 +237,7 @@ namespace ScifiDruid.GameObjects
             action1 = true;
             //clear random action number
             //do animation1
-            curStatus = BossStatus.ACTION1;
+            curBossStatus = BossStatus.ACTION1;
             //do normal walking left and right
             timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -252,7 +253,7 @@ namespace ScifiDruid.GameObjects
                 timeElapsed = 0f;
                 action1 = false;
                 charDirection = SpriteEffects.FlipHorizontally;
-                curStatus = BossStatus.IDLE;
+                curBossStatus = BossStatus.IDLE;
                 randomAction = 0;
             }
             else if (charDirection == SpriteEffects.FlipHorizontally && timeElapsed <= movingTime)
@@ -270,7 +271,7 @@ namespace ScifiDruid.GameObjects
             action1 = true;
             //clear random action number
             //do animation1
-            curStatus = BossStatus.ACTION1;
+            curBossStatus = BossStatus.ACTION1;
             //do normal walking left and right
             timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -286,7 +287,7 @@ namespace ScifiDruid.GameObjects
                 timeElapsed = 0f;
                 action1 = false;
                 charDirection = SpriteEffects.FlipHorizontally;
-                curStatus = BossStatus.IDLE;
+                curBossStatus = BossStatus.IDLE;
                 randomAction = 0;
             }
             else if (charDirection == SpriteEffects.FlipHorizontally && timeElapsed <= movingTime)
@@ -311,10 +312,10 @@ namespace ScifiDruid.GameObjects
 
         public override void ChangeAnimationStatus()
         {
-            switch (curStatus)
+            switch (curBossStatus)
             {
                 case BossStatus.IDLE:
-                    delay = 300f;
+                    delay = 200f;
                     spriteVector = idleSpriteVector;
                     spriteSize = new Vector2(idleSize.X, idleSize.Y);
                     allframes = spriteVector.Count();
