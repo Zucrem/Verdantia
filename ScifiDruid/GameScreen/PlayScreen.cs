@@ -97,8 +97,11 @@ namespace ScifiDruid.GameScreen
         //map
         protected TmxMap map;
         protected TileMapManager tilemapManager;
+        //player spawn and next map position
         protected Rectangle startRect;
         protected Rectangle endRect;
+        //boss state position
+        protected Rectangle bossState;
 
         protected Texture2D tilesetStage1;
 
