@@ -16,7 +16,8 @@ namespace ScifiDruid.GameObjects
 {
     public class Enemy : _GameObject
     {
-        protected Texture2D texture;
+
+        protected Texture2D texture; //enemy Texture (Animaiton)
 
         protected Player player;
         protected Vector2 playerPosition;
@@ -55,8 +56,8 @@ namespace ScifiDruid.GameObjects
         protected bool animationDead = false;
 
         //attribute using for moving of enemy
-        private float timeElapsed;
-        private bool isMovingLeft;
+        protected float timeElapsed;
+        protected bool isMovingLeft;
 
         public List<Vector2> sizeList;
         public List<List<Vector2>> animateList;
@@ -150,6 +151,7 @@ namespace ScifiDruid.GameObjects
             }
             return false;
         }
+        
         public void CheckPlayerPosition(GameTime gameTime)
         {
             if (playerCheckTime <= 0)
