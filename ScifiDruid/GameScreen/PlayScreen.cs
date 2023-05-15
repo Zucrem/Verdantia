@@ -97,8 +97,17 @@ namespace ScifiDruid.GameScreen
         //map
         protected TmxMap map;
         protected TileMapManager tilemapManager;
+        //player spawn and next map position
         protected Rectangle startRect;
         protected Rectangle endRect;
+        //boss state position
+        protected Rectangle bossState;
+
+        //check if player is in boss state or not
+        protected bool boss_area = false;
+        protected bool created_boss = false;
+        protected bool getPlayerPosition = true;
+        protected Vector2 cameraNow;
 
         protected Texture2D tilesetStage1;
 
@@ -280,9 +289,19 @@ namespace ScifiDruid.GameScreen
                             //camera update for scroll
                             Matrix lastScreen = camera.Follow(player.position, endmaptileX, endmaptileX);
 
-                            if (Singleton.Instance.tfMatrix.M41 != lastScreen.M41)
+                            if (!boss_area)
                             {
                                 Singleton.Instance.tfMatrix = camera.Follow(player.position, startmaptileX, endmaptileX);
+                            }
+                            else if (Singleton.Instance.tfMatrix.M41 != lastScreen.M41)
+                            {
+                                if (getPlayerPosition)
+                                {
+                                    getPlayerPosition = false;
+                                    cameraNow = player.position;
+                                }
+                                cameraNow += new Vector2((float)gameTime.ElapsedGameTime.TotalSeconds,0);
+                                Singleton.Instance.tfMatrix = camera.Follow(cameraNow, startmaptileX, endmaptileX);
                             }
                             else
                             {
