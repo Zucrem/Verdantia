@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Box2DNet.Dynamics.Contacts;
-using Box2DNet.Dynamics;
 
 namespace ScifiDruid.GameObjects
 {
@@ -50,30 +44,6 @@ namespace ScifiDruid.GameObjects
             curBossStatus = BossStatus.IDLE;
             preBossStatus = BossStatus.IDLE;
             
-        }
-
-        public override bool GotHit()
-        {
-            ContactEdge contactEdge = enemyHitBox.ContactList;
-            while (contactEdge != null)
-            {
-                Contact contactFixture = contactEdge.Contact;
-
-                Body fixtureB_Body = contactEdge.Contact.FixtureB.Body;
-                Body fixtureA_Body = contactEdge.Contact.FixtureA.Body;
-
-                bool contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals("Bullet"));
-                bool contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals("Bullet"));
-
-                if (contactFixture.IsTouching && (contactB || contactA))
-                {
-                    return true;
-                }
-                // Check if the contact fixture is the ground
-
-                contactEdge = contactEdge.Next;
-            }
-            return false;
         }
         
         public override void Action() { }

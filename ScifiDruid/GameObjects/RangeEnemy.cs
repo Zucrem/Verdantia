@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Box2DNet.Dynamics;
 using Box2DNet.Factories;
 using Box2DNet;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Box2DNet.Dynamics.Contacts;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using Microsoft.Xna.Framework.Input;
-using static ScifiDruid.GameObjects.Player;
 
 namespace ScifiDruid.GameObjects
 {
@@ -76,10 +69,7 @@ namespace ScifiDruid.GameObjects
             {
                 CheckPlayerPosition(gameTime);
 
-                if (Player.isAttack && GotHit())
-                {
-                    health--;
-                }
+                takeDMG(1, "Bullet");
 
                 if (health <= 0)
                 {
@@ -88,13 +78,12 @@ namespace ScifiDruid.GameObjects
                     enemyHitBox.Dispose();
                     curStatus = EnemyStatus.DEAD;
                 }
-
             }
 
             //if step on dead block
-            if (IsContact("dead", "A"))
+            if (IsContact("Dead", "A"))
             {
-                isAlive = false;
+                isAlive = false;    
                 curStatus = EnemyStatus.DEAD;
             }
 

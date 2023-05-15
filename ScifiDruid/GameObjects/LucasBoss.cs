@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Box2DNet.Dynamics;
 using Box2DNet.Factories;
 using Box2DNet;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Box2DNet.Dynamics.Contacts;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using Microsoft.Xna.Framework.Input;
-using static ScifiDruid.GameObjects.Player;
 
 namespace ScifiDruid.GameObjects
 {
@@ -34,9 +27,14 @@ namespace ScifiDruid.GameObjects
         private bool action2 = false;
         private bool action3 = false;
 
-        public LucasBoss(Texture2D texture) : base(texture)
+        private Texture2D drillTexture;
+
+        private Body drillBody;
+
+        public LucasBoss(Texture2D texture , Texture2D drillTexture) : base(texture)
         {
             this.texture = texture;
+            this.drillTexture = drillTexture;
 
             idleSize = new Vector2(196, 186);
             action1Size = new Vector2(228, 185);
@@ -89,19 +87,19 @@ namespace ScifiDruid.GameObjects
             {
                 CheckPlayerPosition(gameTime);
 
-                if (Player.isAttack && GotHit())
-                {
-                    health--;
-                }
+                takeDMG(1, "Bullet");
 
                 if (health <= 0)
                 {
                     enemyHitBox.UserData = "Dead";
                     isAlive = false;
                     enemyHitBox.Dispose();
+                    if (drillBody != null)
+                    {
+                        drillBody.Dispose();
+                    }
                     curBossStatus = BossStatus.DEAD;
                 }
-
             }
 
             //boss action
@@ -268,45 +266,13 @@ namespace ScifiDruid.GameObjects
 
         public void Skill2()
         {
-            action1 = true;
-            //clear random action number
-            //do animation1
-            curBossStatus = BossStatus.ACTION1;
-            //do normal walking left and right
-            timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (charDirection == SpriteEffects.FlipHorizontally && timeElapsed >= movingTime)
+            if (!action2)
             {
-                timeElapsed = 0f;
-                //enemyHitBox.ApplyForce(new Vector2(0, 0));
-                charDirection = SpriteEffects.None;
-            }
-            else if (charDirection == SpriteEffects.None && timeElapsed >= movingTime)
-            {
-                //enemyHitBox.ApplyForce(new Vector2(0, 0));
-                timeElapsed = 0f;
-                action1 = false;
-                charDirection = SpriteEffects.FlipHorizontally;
-                curBossStatus = BossStatus.IDLE;
-                randomAction = 0;
-            }
-            else if (charDirection == SpriteEffects.FlipHorizontally && timeElapsed <= movingTime)
-            {
-                enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
-            }
-            else if (charDirection == SpriteEffects.None && timeElapsed <= movingTime)
-            {
-                enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
-            }
-        }
-
-        
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            if (!animationDead)
-            {
-                spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bossOrigin, 1f, charDirection, 0f);
+                action2 = true;
+                curBossStatus = BossStatus.ACTION2;
+                drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world,ConvertUnits.ToSimUnits(100), ConvertUnits.ToSimUnits(100),0,enemyHitBox.Position);
+                drillBody.UserData = "Drill";
+                drillBody.IgnoreCollisionWith(enemyHitBox);
             }
         }
 
@@ -345,6 +311,20 @@ namespace ScifiDruid.GameObjects
                     allframes = spriteVector.Count();
                     break;
             }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            if (!animationDead)
+            {
+                spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bossOrigin, 1f, charDirection, 0f);
+                
+                if (action2)
+                {
+                    spriteBatch.Draw(drillTexture, ConvertUnits.ToDisplayUnits(drillBody.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(100)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(100))), Color.Black,0,new Vector2(100/2,100/2),1, charDirection ,0f);
+                }
+            }
+
         }
     }
 }

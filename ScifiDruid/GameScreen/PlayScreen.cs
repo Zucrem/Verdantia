@@ -158,11 +158,11 @@ namespace ScifiDruid.GameScreen
             yesConfirmButton = new Button(yesConfirmPic1, new Vector2(495, 390), new Vector2(120, 60));
             noConfirmButton = new Button(noConfirmPic1, new Vector2(710, 390), new Vector2(70, 60));
 
-            player = new Player(playerTex, bullet)
+            player = new Player(playerTex, bullet,whiteTex)
             {
                 name = "Player Character",
                 size = new Vector2(46, 94),
-                speed = 20f,
+                speed = 13,
                 jumpHigh = 10.5f,
             };
 
@@ -613,6 +613,7 @@ namespace ScifiDruid.GameScreen
 
             }
         }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (play)
@@ -633,7 +634,7 @@ namespace ScifiDruid.GameScreen
                 if (gamestate == GameState.START || gamestate == GameState.PLAY)
                 {
                     //draw playeranimation
-                    player.Draw(spriteBatch);
+                    //player.Draw(spriteBatch);
                 }
                 
             }

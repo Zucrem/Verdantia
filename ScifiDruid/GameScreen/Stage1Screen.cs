@@ -168,7 +168,7 @@ namespace ScifiDruid.GameScreen
                 //Singleton.Instance.world.Step(0.001f);
 
                 Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, collisionPosition);
-                body.UserData = "ground";
+                body.UserData = "Ground";
                 body.Restitution = 0.0f;
                 body.Friction = 0.3f;
             }
@@ -180,13 +180,14 @@ namespace ScifiDruid.GameScreen
                 //Singleton.Instance.world.Step(0.001f);
 
                 Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, deadBlockPosition);
-                body.UserData = "dead";
+                body.UserData = "Dead";
                 body.Restitution = 0.0f;
                 body.Friction = 0.3f;
             }
 
 
             //create player on position
+
             player.Initial(startRect);
             //player.Initial(boss_event);
 
@@ -242,7 +243,7 @@ namespace ScifiDruid.GameScreen
             }
 
             //create boss on position
-            boss = new LucasBoss(lucasBossTex)
+            boss = new LucasBoss(lucasBossTex,whiteTex)
             {
                 size = new Vector2(196, 186),
                 health = 6,
@@ -333,6 +334,9 @@ namespace ScifiDruid.GameScreen
                     {
                         chainsawBot.Draw(spriteBatch);
                     }
+
+                    player.Draw(spriteBatch);
+
                     //draw boss animation
                     boss.Draw(spriteBatch);
 

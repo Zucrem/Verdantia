@@ -1,18 +1,5 @@
-﻿using ScifiDruid.Managers;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualBasic.FileIO;
-using System.Diagnostics;
-using System.Xml;
-using static ScifiDruid.GameObjects.Player;
 using Box2DNet.Dynamics;
 using Box2DNet.Factories;
 using Box2DNet;
@@ -52,7 +39,7 @@ namespace ScifiDruid.GameObjects
             BULLETEND
         }
       
-        public Bullet(Texture2D texture , Vector2 position,Body playerBody,SpriteEffects charDirection) : base(texture)
+        public Bullet(Texture2D texture , Vector2 position,Player player,SpriteEffects charDirection) : base(texture)
         {
             this.texture = texture;
             this.charDirection = charDirection;
@@ -64,9 +51,9 @@ namespace ScifiDruid.GameObjects
             bulletDistance = 10;
 
             bulletAnimation = new SkillAnimation(this.texture);
-            bulletBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bulletSizeX), ConvertUnits.ToSimUnits(bulletSizeY),0,position,0,BodyType.Dynamic,"Bullet");
+            bulletBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bulletSizeX), ConvertUnits.ToSimUnits(bulletSizeY),0,position,0,BodyType.Dynamic, "Bullet");
             bulletBody.IgnoreGravity = true;
-            bulletBody.IgnoreCollisionWith(playerBody);
+            bulletBody.IgnoreCollisionWith(player.hitBox);
 
             switch (charDirection)
             {
@@ -117,11 +104,24 @@ namespace ScifiDruid.GameObjects
             while (contactEdge != null)
             {
                 Contact contactFixture = contactEdge.Contact;
-                if (contactFixture.IsTouching)
+
+                Body fixtureA_Body = contactEdge.Contact.FixtureA.Body;
+                Body fixtureB_Body = contactEdge.Contact.FixtureB.Body;
+
+                bool contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals("Ground"));
+                bool contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals("Ground"));
+                bool contactGround = contactA || contactB;
+                
+                contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals("Enemy"));
+                contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals("Enemy"));
+                bool contactEnemy = contactA || contactB;
+                
+                if (contactFixture.IsTouching && (contactGround || contactEnemy))
                 {
                     bulletBody.Dispose();
                     return true;
                 }
+
                 // Check if the contact fixture is the ground
                 
                 contactEdge = contactEdge.Next;

@@ -78,10 +78,7 @@ namespace ScifiDruid.GameObjects
             {
                 CheckPlayerPosition(gameTime);
 
-                if (Player.isAttack && GotHit())
-                {
-                    health--;
-                }
+                takeDMG(1,"Bullet");
 
                 if (health <= 0)
                 {
@@ -90,11 +87,10 @@ namespace ScifiDruid.GameObjects
                     enemyHitBox.Dispose();
                     curStatus = EnemyStatus.DEAD;
                 }
-
             }
 
             //if step on dead block
-            if (IsContact("dead", "A"))
+            if (IsContact("Dead", "A"))
             {
                 isAlive = false;
                 curStatus = EnemyStatus.DEAD;
@@ -208,6 +204,7 @@ namespace ScifiDruid.GameObjects
 
             //do alert condition follow Player and Track Player down to death
         }
+
 
 
         public override void Draw(SpriteBatch spriteBatch)

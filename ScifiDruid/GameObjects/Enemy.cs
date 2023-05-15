@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Box2DNet.Dynamics.Contacts;
 using Box2DNet.Dynamics;
 using Microsoft.Xna.Framework.Input;
-using Box2DNet.Factories;
-using Box2DNet;
-using static ScifiDruid.GameObjects.Player;
 
 namespace ScifiDruid.GameObjects
 {
@@ -99,7 +93,7 @@ namespace ScifiDruid.GameObjects
             preStatus = EnemyStatus.IDLE;
         }
 
-        public virtual bool GotHit()
+        public bool GotHit(String dmgType)
         {
             ContactEdge contactEdge = enemyHitBox.ContactList;
             while (contactEdge != null)
@@ -109,8 +103,8 @@ namespace ScifiDruid.GameObjects
                 Body fixtureB_Body = contactEdge.Contact.FixtureB.Body;
                 Body fixtureA_Body = contactEdge.Contact.FixtureA.Body;
 
-                bool contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals("Bullet"));
-                bool contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals("Bullet"));
+                bool contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals(dmgType));
+                bool contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals(dmgType));
 
                 if (contactFixture.IsTouching && (contactB || contactA))
                 {
@@ -121,6 +115,15 @@ namespace ScifiDruid.GameObjects
                 contactEdge = contactEdge.Next;
             }
             return false;
+        }
+
+        public void takeDMG(int dmg,String dmgType)
+        {
+            if (GotHit(dmgType))
+            {
+                health -= dmg;
+            }
+
         }
 
         public bool IsContact(String contact, String fixture)
@@ -151,7 +154,7 @@ namespace ScifiDruid.GameObjects
             }
             return false;
         }
-        
+
         public void CheckPlayerPosition(GameTime gameTime)
         {
             if (playerCheckTime <= 0)
