@@ -162,7 +162,8 @@ namespace ScifiDruid.GameScreen
             {
                 name = "Player Character",
                 size = new Vector2(46, 94),
-                speed = 13,
+                //speed = 13,
+                speed = 20,
                 jumpHigh = 10.5f,
             };
 
@@ -588,7 +589,6 @@ namespace ScifiDruid.GameScreen
 
         public void resetWorld()
         {
-            Debug.WriteLine("Reset ! ");
             Singleton.Instance.world.ClearForces();
             Singleton.Instance.world.Clear();
         }
@@ -599,11 +599,6 @@ namespace ScifiDruid.GameScreen
             {
                 //background
                 spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
-
-                if (gamestate == GameState.START)
-                {
-                    fps = "FPS: 0";
-                }
 
                 int mana = (int)Player.mana;
                 int health = (int)Player.health;

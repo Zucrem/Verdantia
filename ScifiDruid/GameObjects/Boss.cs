@@ -23,6 +23,8 @@ namespace ScifiDruid.GameObjects
         protected BossStatus preBossStatus;
         protected BossStatus curBossStatus;
 
+        public float skillTime;
+
         public Boss(Texture2D texture) : base(texture)
         {
             this.texture = texture;

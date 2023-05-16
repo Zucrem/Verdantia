@@ -295,15 +295,15 @@ namespace ScifiDruid.GameScreen
                         boss.Update(gameTime);
 
                         //if player get into boss state
-                        if (player.IsContact("Boss_event", "A") && !created_boss)
+                        if (!created_boss && player.IsContact(player.hitBox,"Boss_event"))
                         {
                             boss_area = true;
                         }
                         //if player is in boss area just spawn
-                        if (boss_area && !created_boss)
+                        if (!created_boss && boss_area)
                         {
                             boss.isAlive = true;
-
+                            boss.skillTime = 5;
                             //create block to block player
                             Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(wallblock.Width), ConvertUnits.ToSimUnits(wallblock.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(wallblock.X, wallblock.Y)));
                             body.UserData = "ground";

@@ -73,7 +73,7 @@ namespace ScifiDruid.GameObjects
 
                 if (health <= 0)
                 {
-                    enemyHitBox.UserData = "Dead";
+                    enemyHitBox.UserData = "Died";
                     isAlive = false;
                     enemyHitBox.Dispose();
                     curStatus = EnemyStatus.DEAD;
@@ -83,7 +83,8 @@ namespace ScifiDruid.GameObjects
             //if step on dead block
             if (IsContact("Dead", "A"))
             {
-                isAlive = false;    
+                isAlive = false;
+                enemyHitBox.Dispose();
                 curStatus = EnemyStatus.DEAD;
             }
 

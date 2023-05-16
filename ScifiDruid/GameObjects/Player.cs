@@ -220,7 +220,7 @@ namespace ScifiDruid.GameObjects
                     touchGround = false;
                 }
 
-                if (IsContact(hitBox, "Enemy", "B") && playerStatus != PlayerStatus.DASH)
+                if (IsContact(hitBox, "Enemy") && playerStatus != PlayerStatus.DASH)
                 {
                     GotHit();
                 }
@@ -255,7 +255,7 @@ namespace ScifiDruid.GameObjects
 
             //all animation
             //if step on dead block
-            if (IsContact(hitBox, "Dead", "A") || (hitCooldown <= 1.7 && touchGround && Player.health == 0))
+            if (IsContact(hitBox, "Dead") || (hitCooldown <= 1.7 && touchGround && Player.health == 0))
             {
                 isAlive = false;
                 playerStatus = PlayerStatus.DEAD;
@@ -522,10 +522,9 @@ namespace ScifiDruid.GameObjects
 
         public void LionSkill()
         {
+
             if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press && skill3Cooldown <= 0)
             {
-                Debug.WriteLine("AA");
-
                 lionBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(500), ConvertUnits.ToSimUnits(200), 0, hitBox.Position + new Vector2(0, textureHeight / 2), 0, BodyType.Static, "Lion");
                 lionBody.IgnoreCollisionWith(hitBox);
                 lionBody.IsSensor = true;
@@ -548,8 +547,8 @@ namespace ScifiDruid.GameObjects
                 lionBody = null;
             }
 
-            //Active is do dmg every 1 sec
-            if (lionBody != null && skill3Active <= 0 && IsContact(lionBody, "Enemy", "A"))
+            //Do damge to every enemy that contact with lionBody
+            if (lionBody != null && skill3Active <= 0 && IsContact(lionBody, "Enemy"))
             {
                 if (enemyContract != null)
                 {
@@ -557,14 +556,8 @@ namespace ScifiDruid.GameObjects
                     {
                         enemy.takeDMG(4, "Lion");
                     }
-                    skill3Active = 1;
                     //lionBody.Dispose();
                 }
-            }
-
-            if (skill3Active > 0)
-            {
-                skill3Active -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
         }
@@ -599,11 +592,9 @@ namespace ScifiDruid.GameObjects
                 {
                     case KnockbackStatus.FONT:
                         hitBox.ApplyLinearImpulse(new Vector2(hitBox.Mass * (speed - 6), -hitBox.Mass * jumpHigh));
-
                         break;
                     case KnockbackStatus.BACK:
                         hitBox.ApplyLinearImpulse(new Vector2(-hitBox.Mass * (speed - 6), -hitBox.Mass * jumpHigh));
-
                         break;
                 }
                 hitCooldown = 1f;
@@ -615,6 +606,7 @@ namespace ScifiDruid.GameObjects
                 {
                     if (item.UserData.Equals("Enemy"))
                     {
+                        enemyContract.Clear();
                         hitBox.IgnoreCollisionWith(item);
                     }
                 }
@@ -623,66 +615,48 @@ namespace ScifiDruid.GameObjects
 
         }
 
-        public bool IsContact(Body box, String contact, String fixture)
+        public bool IsContact(Body box, String contact)
         {
             ContactEdge contactEdge = box.ContactList;
             while (contactEdge != null)
             {
                 Contact contactFixture = contactEdge.Contact;
-                switch (fixture)
+
+                Body fixtureA = contactEdge.Contact.FixtureA.Body;
+                Body fixtureB = contactEdge.Contact.FixtureB.Body;
+
+                bool fixtureA_Check = fixtureA.UserData != null && fixtureA.UserData.Equals(contact);
+                bool fixtureB_Check = fixtureB.UserData != null && fixtureB.UserData.Equals(contact);
+
+
+                // Check if the contact fixture is the ground
+                if (contactFixture.IsTouching && (fixtureA_Check || fixtureB_Check))
                 {
-                    case "A":
-                        // Check if the contact fixture is the ground
-                        if (contactFixture.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals(contact))
+                    //if Contact thing in parameter it will return True
+                    foreach (Enemy item in enemies)
+                    {
+
+                        if (item != null && (item.enemyHitBox.BodyId == fixtureA.BodyId || item.enemyHitBox.BodyId == fixtureB.BodyId))
                         {
-                            //if Contact thing in parameter it will return True
-                            foreach (Enemy item in enemies)
+                            if (!enemyContract.Contains(item))
                             {
-                                if (item != null && item.enemyHitBox.BodyId == contactEdge.Contact.FixtureA.Body.BodyId)
-                                {
-                                    if (!enemyContract.Contains(item))
-                                    {
-                                        enemyContract.Add(item);
-                                    }
-                                    if (item.enemyHitBox.Position.X - box.Position.X > 0)
-                                    {
-                                        knockbackStatus = KnockbackStatus.BACK;
-                                    }
-                                    else
-                                    {
-                                        knockbackStatus = KnockbackStatus.FONT;
-                                    }
-                                }
+                                enemyContract.Add(item);
                             }
-                            return true;
-                        }
-                        break;
-                    case "B":
-                        // Check if the contact fixture is the ground
-                        if (contactFixture.IsTouching && contactEdge.Contact.FixtureB.Body.UserData != null && contactEdge.Contact.FixtureB.Body.UserData.Equals(contact))
-                        {
-                            //if Contact thing in parameter it will return True
-                            foreach (Enemy item in enemies)
+                            else
                             {
-                                if (item != null && item.enemyHitBox.BodyId == contactEdge.Contact.FixtureB.Body.BodyId)
-                                {
-                                    if (!enemyContract.Contains(item))
-                                    {
-                                        enemyContract.Add(item);
-                                    }
-                                    if (item.enemyHitBox.Position.X - box.Position.X > 0)
-                                    {
-                                        knockbackStatus = KnockbackStatus.BACK;
-                                    }
-                                    else
-                                    {
-                                        knockbackStatus = KnockbackStatus.FONT;
-                                    }
-                                }
+                                return false;
                             }
-                            return true;
+                            if (item.enemyHitBox.Position.X - box.Position.X > 0)
+                            {
+                                knockbackStatus = KnockbackStatus.BACK;
+                            }
+                            else
+                            {
+                                knockbackStatus = KnockbackStatus.FONT;
+                            }
                         }
-                        break;
+                    }
+                    return true;
                 }
 
                 contactEdge = contactEdge.Next;
