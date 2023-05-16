@@ -95,6 +95,8 @@ namespace ScifiDruid.GameObjects
                 isAlive = false;
                 enemyHitBox.Dispose();
                 curStatus = EnemyStatus.DEAD;
+                health = 0;
+                enemyHitBox.Dispose();
             }
 
             //if dead animation animationEnd

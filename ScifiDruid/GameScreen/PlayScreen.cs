@@ -35,8 +35,10 @@ namespace ScifiDruid.GameScreen
 
         protected Texture2D playerTex;
 
-        //all stage enemy and shoot texture
+        //all stage texture
+        //stage 1
         protected Texture2D flameMechTex, chainsawMechTex, fly1MechTex, lucasBossTex;
+        protected Texture2D switch_wall_Tex;
         //stage 2
         protected Texture2D janeBossTex, janeAmmoTex;
         //stage 3
@@ -220,7 +222,6 @@ namespace ScifiDruid.GameScreen
             //player asset and bullet
             playerTex = content.Load<Texture2D>("Pictures/Play/Characters/Player/keeperSheet");
             bullet = content.Load<Texture2D>("Pictures/Play/Skills/PlayerSkill");
-            //bullet = content.Load<Texture2D>("ss");
 
             //stage1 enemy and all shoot
             flameMechTex = content.Load<Texture2D>("Pictures/Play/Characters/Enemy/flameMech");
@@ -236,6 +237,8 @@ namespace ScifiDruid.GameScreen
             doctorBossTex = content.Load<Texture2D>("Pictures/Play/Characters/Boss/DrSheet");
             doctorAmmoTex = content.Load<Texture2D>("Pictures/Play/Skills/BossSkills/DrAmmoSheet");
 
+            //song and sfx
+            MediaPlayer.IsRepeating = true;
         }
 
         public override void UnloadContent()
@@ -245,12 +248,22 @@ namespace ScifiDruid.GameScreen
 
         public override void Update(GameTime gameTime)
         {
+            //sound
+            MediaPlayer.Volume = Singleton.Instance.bgMusicVolume;
+
+            //mouse state
             Singleton.Instance.MousePrevious = Singleton.Instance.MouseCurrent;
             Singleton.Instance.MouseCurrent = Mouse.GetState();
 
             if (play)
             {
+                //resume music
+                MediaPlayer.Resume();
+
+                //update player
                 player.Update(gameTime);
+
+                //game state
                 switch (gamestate)
                 {
                     case GameState.START:
@@ -322,6 +335,9 @@ namespace ScifiDruid.GameScreen
             }
             else
             {
+                //pause music
+                MediaPlayer.Pause();
+
                 //change camera position
                 Singleton.Instance.tfMatrix = Matrix.CreateTranslation(Vector3.Zero);
                 //if not press Exit
@@ -330,6 +346,7 @@ namespace ScifiDruid.GameScreen
                     switch (gamestate)
                     {
                         case GameState.WIN:
+                            MediaPlayer.Stop();
                             //Next
                             if (nextButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
@@ -364,6 +381,7 @@ namespace ScifiDruid.GameScreen
                             }
                             break;
                         case GameState.LOSE:
+                            MediaPlayer.Stop();
                             //Restart
                             if (restartButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
@@ -552,11 +570,11 @@ namespace ScifiDruid.GameScreen
                     Singleton.Instance.bgMusicVolume = masterBGM;
                     break;
                 case AudioState.MEDIUM:
-                    masterBGM = 0.5f;
+                    masterBGM = 0.4f;
                     Singleton.Instance.bgMusicVolume = masterBGM;
                     break;
                 case AudioState.FULL:
-                    masterBGM = 1f;
+                    masterBGM = 0.8f;
                     Singleton.Instance.bgMusicVolume = masterBGM;
                     break;
             }
@@ -628,7 +646,7 @@ namespace ScifiDruid.GameScreen
                 //all draw on screen here
                 if (gamestate == GameState.START || gamestate == GameState.PLAY)
                 {
-                    //draw playeranimation
+                    //draw player animation
                     //player.Draw(spriteBatch);
                 }
                 
