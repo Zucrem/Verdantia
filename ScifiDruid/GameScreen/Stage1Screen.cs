@@ -18,31 +18,44 @@ using Box2DNet.Content;
 using Box2DNet.Common;
 using System.Security.Cryptography;
 using Microsoft.Xna.Framework.Input;
+using static ScifiDruid.GameObjects.Player;
 
 namespace ScifiDruid.GameScreen
 {
     class Stage1Screen : PlayScreen
     {
+        //create switch and wall
+        private SwitchWall switch_wall;
+        private Wall stage_wall;
+
         //create enemy
-        protected List<Enemy> allEnemies;
-        protected LucasBoss boss;
+        private List<Enemy> allEnemies;
+        private LucasBoss boss;
 
-        protected RangeEnemy flameMech;
-        protected List<RangeEnemy> flameMechEnemies;
-        protected int flameMechPositionList;
-        protected int flameMechCount;
+        private RangeEnemy flameMech;
+        private List<RangeEnemy> flameMechEnemies;
+        private int flameMechPositionList;
+        private int flameMechCount;
 
-        protected MeleeEnemy chainsawMech;
-        protected List<MeleeEnemy> chainsawMechEnemies;
-        protected int chainsawMechPositionList;
-        protected int chainsawMechCount;
+        private MeleeEnemy chainsawMech;
+        private List<MeleeEnemy> chainsawMechEnemies;
+        private int chainsawMechPositionList;
+        private int chainsawMechCount;
 
         //special occasion position
-        protected Rectangle wallblock;
-        protected Rectangle boss_left_side;
-        protected Rectangle boss_right_side;
-        protected Rectangle boss_event;
+        //if boss event
+        private Rectangle wallblock;
+        private Rectangle boss_left_side;
+        private Rectangle boss_right_side;
+        private Rectangle boss_event;
 
+        //if open switch and wall gone
+        private Rectangle switch_button;
+        private Rectangle rock_wall;
+        private bool isOpenSwitch = false;
+
+        //Map Theme
+        private Song lucasTheme;
         public override void Initial()
         {
             base.Initial();
@@ -56,9 +69,7 @@ namespace ScifiDruid.GameScreen
             Player.maxMana = 100;
             Player.level2Unlock = false;
             Player.level3Unlock = false;
-
             //create tileset for map1
-            //map = new TmxMap("Content/stage1test.tmx");
             map = new TmxMap("Content/Stage1.tmx");
             tilesetStage1 = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage1Tileset/" + map.Tilesets[0].Name.ToString());
 
@@ -110,6 +121,14 @@ namespace ScifiDruid.GameScreen
             }
             foreach (var o in map.ObjectGroups["SpecialProps"].Objects)
             {
+                if (o.Name.Equals("wall"))
+                {
+                    rock_wall = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 50, (int)o.Width, (int)o.Height);
+                }
+                if (o.Name.Equals("switch"))
+                {
+                    switch_button = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                }
             }
             foreach (var o in map.ObjectGroups["SpecialOccasions"].Objects)
             {
@@ -257,6 +276,20 @@ namespace ScifiDruid.GameScreen
             allEnemies.AddRange(chainsawMechEnemies);
             allEnemies.Add(boss);
 
+            //switch event
+            //create switch button on position
+            switch_wall = new SwitchWall(switch_wall_Tex)
+            {
+                size = new Vector2(32, 32),
+            };
+            switch_wall.Initial(switch_button);
+
+            //create wall button on position
+            stage_wall = new Wall(switch_wall_Tex)
+            {
+                size = new Vector2(32, 192),
+            };
+            stage_wall.Initial(rock_wall);
 
             //add all enemy for player to know em all
             player.enemies = allEnemies;
@@ -264,6 +297,13 @@ namespace ScifiDruid.GameScreen
         public override void LoadContent()
         {
             base.LoadContent();
+
+            //button and rock wall
+            switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage1Tileset/specialProps1");
+
+            //bg music and sfx
+            lucasTheme = content.Load<Song>("Songs/Stage1Screen/BossStage1Theme");
+            MediaPlayer.Play(lucasTheme);
 
             Initial();
         }
@@ -294,25 +334,53 @@ namespace ScifiDruid.GameScreen
                         //boss
                         boss.Update(gameTime);
 
+                        //switch button
+                        switch_wall.Update(gameTime);
+                        //stage wall
+                        stage_wall.Update(gameTime);
+
                         //if player get into boss state
-                        if (player.IsContact("Boss_event", "A") && !created_boss)
+                        if (player.IsContact(player.hitBox, "Boss_event", "A") && !created_boss)
                         {
                             boss_area = true;
+                            MediaPlayer.Stop();
+
+                            //set player to inactive before boss
+                            player.playerStatus = PlayerStatus.IDLE;
+                            player.isAlive = false;
                         }
+
                         //if player is in boss area just spawn
-                        if (boss_area && !created_boss)
+                        Matrix lastScreen = camera.Follow(player.position, endmaptileX, endmaptileX);
+                        if (boss_area && !created_boss && Singleton.Instance.tfMatrix.M41 == lastScreen.M41)
                         {
+                            //player active after this
+                            player.isAlive = true;
                             boss.isAlive = true;
 
                             //create block to block player
                             Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(wallblock.Width), ConvertUnits.ToSimUnits(wallblock.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(wallblock.X, wallblock.Y)));
-                            body.UserData = "ground";
+                            body.UserData = "Ground";
                             created_boss = true;
+
+                            //player Song
+                            MediaPlayer.Play(lucasTheme);
+                        }
+
+                        //switch event
+                        //press switch button
+                        if (!isOpenSwitch && switch_wall.pressSwitch)
+                        {
+                            isOpenSwitch = true;
+                        }
+                        //after open switch = clear wall
+                        if (isOpenSwitch)
+                        {
+                            stage_wall.wallHitBox.Dispose();
                         }
                     }
                 }
             }
-
             base.Update(gameTime);
         }
 
@@ -334,11 +402,20 @@ namespace ScifiDruid.GameScreen
                     {
                         chainsawBot.Draw(spriteBatch);
                     }
-
+                    //draw player animation
                     player.Draw(spriteBatch);
 
                     //draw boss animation
                     boss.Draw(spriteBatch);
+
+                    //draw switch animation
+                    switch_wall.Draw(spriteBatch);
+
+                    //draw wall
+                    if (!isOpenSwitch)
+                    {
+                        stage_wall.Draw(spriteBatch);
+                    }
 
                     if (!fadeFinish)
                     {

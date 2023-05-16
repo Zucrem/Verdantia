@@ -14,7 +14,7 @@ namespace ScifiDruid
         public World world = new World(new Vector2(0, 9.82f));
         public Vector2 Dimensions = new(1280, 720);
         public Vector2 CenterScreen;
-        public float bgMusicVolume = 1f;
+        public float bgMusicVolume = 0.8f;
         public float soundMasterVolume = 0.6f;
         public bool cmdExit = false;
         public bool gameOver = false;

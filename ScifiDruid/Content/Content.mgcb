@@ -649,6 +649,12 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Splash/SplashScreen/GameLogo.png
 
+#begin Songs/Stage1Screen/BossStage1Theme.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Songs/Stage1Screen/BossStage1Theme.mp3
+
 #begin Stage1.tmx
 /copy:Stage1.tmx
 
