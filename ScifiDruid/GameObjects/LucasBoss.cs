@@ -22,6 +22,7 @@ namespace ScifiDruid.GameObjects
         private float timeElapsed;
         private float movingTime = 3.4f;
 
+
         //boolean to do action
         private bool action1 = false;
         private bool action2 = false;
@@ -30,6 +31,8 @@ namespace ScifiDruid.GameObjects
         private Texture2D drillTexture;
 
         private Body drillBody;
+
+
 
         public LucasBoss(Texture2D texture , Texture2D drillTexture) : base(texture)
         {
@@ -76,6 +79,8 @@ namespace ScifiDruid.GameObjects
             charDirection = SpriteEffects.FlipHorizontally;  // heading direction
 
             bossOrigin = new Vector2(textureWidth / 2, textureHeight / 2);  //draw in the middle
+
+            skillTime = 5;
         }
 
         public override void Update(GameTime gameTime)
@@ -91,7 +96,7 @@ namespace ScifiDruid.GameObjects
 
                 if (health <= 0)
                 {
-                    enemyHitBox.UserData = "Dead";
+                    enemyHitBox.UserData = "Died";
                     isAlive = false;
                     enemyHitBox.Dispose();
                     if (drillBody != null)
@@ -117,6 +122,7 @@ namespace ScifiDruid.GameObjects
                 frames = 0;
                 frameState = 0;
             }
+
             ChangeAnimationStatus();
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             switch (curBossStatus)
@@ -193,9 +199,14 @@ namespace ScifiDruid.GameObjects
 
                 //timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                if (curBossStatus == BossStatus.IDLE)
+                if (skillTime <= 0 && curBossStatus == BossStatus.IDLE)
                 {
-                    randomAction = rand.Next(1, 300);
+                    randomAction = rand.Next(1, 6);
+                    skillTime = 5;
+                }
+                else if (curBossStatus == BossStatus.IDLE)
+                {
+                    skillTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
 
                 //do action 1
@@ -239,28 +250,34 @@ namespace ScifiDruid.GameObjects
             //do normal walking left and right
             timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (charDirection == SpriteEffects.FlipHorizontally && timeElapsed >= movingTime)
+            if (timeElapsed >= movingTime)
             {
-                timeElapsed = 0f;
-                //enemyHitBox.ApplyForce(new Vector2(0, 0));
-                charDirection = SpriteEffects.None;
+                switch (charDirection)
+                {
+                    case SpriteEffects.None:
+                        timeElapsed = 0f;
+                        action1 = false;
+                        charDirection = SpriteEffects.FlipHorizontally;
+                        curBossStatus = BossStatus.IDLE;
+                        randomAction = 0;
+                        break;
+                    case SpriteEffects.FlipHorizontally:
+                        timeElapsed = 0f;
+                        charDirection = SpriteEffects.None; 
+                        break;
+                }
             }
-            else if (charDirection == SpriteEffects.None && timeElapsed >= movingTime)
+            else
             {
-                //enemyHitBox.ApplyForce(new Vector2(0, 0));
-                timeElapsed = 0f;
-                action1 = false;
-                charDirection = SpriteEffects.FlipHorizontally;
-                curBossStatus = BossStatus.IDLE;
-                randomAction = 0;
-            }
-            else if (charDirection == SpriteEffects.FlipHorizontally && timeElapsed <= movingTime)
-            {
-                enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
-            }
-            else if (charDirection == SpriteEffects.None && timeElapsed <= movingTime)
-            {
-                enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
+                switch (charDirection)
+                {
+                    case SpriteEffects.None:
+                        enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
+                        break;
+                    case SpriteEffects.FlipHorizontally:
+                        enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
+                        break;
+                }
             }
         }
 
@@ -273,6 +290,8 @@ namespace ScifiDruid.GameObjects
                 drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world,ConvertUnits.ToSimUnits(100), ConvertUnits.ToSimUnits(100),0,enemyHitBox.Position);
                 drillBody.UserData = "Drill";
                 drillBody.IgnoreCollisionWith(enemyHitBox);
+
+
             }
         }
 

@@ -340,7 +340,7 @@ namespace ScifiDruid.GameScreen
                         stage_wall.Update(gameTime);
 
                         //if player get into boss state
-                        if (player.IsContact(player.hitBox, "Boss_event", "A") && !created_boss)
+                        if (!created_boss && player.IsContact(player.hitBox,"Boss_event"))
                         {
                             boss_area = true;
                             MediaPlayer.Stop();
@@ -352,12 +352,12 @@ namespace ScifiDruid.GameScreen
 
                         //if player is in boss area just spawn
                         Matrix lastScreen = camera.Follow(player.position, endmaptileX, endmaptileX);
-                        if (boss_area && !created_boss && Singleton.Instance.tfMatrix.M41 == lastScreen.M41)
+                        if (!created_boss && boss_area && Singleton.Instance.tfMatrix.M41 == lastScreen.M41)
                         {
                             //player active after this
                             player.isAlive = true;
                             boss.isAlive = true;
-
+                            boss.skillTime = 5;
                             //create block to block player
                             Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(wallblock.Width), ConvertUnits.ToSimUnits(wallblock.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(wallblock.X, wallblock.Y)));
                             body.UserData = "Ground";
