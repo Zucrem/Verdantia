@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="360" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="309">
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="360" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="310">
  <tileset firstgid="1" source="Stage1.tsx"/>
  <layer id="1" name="Blocks" width="360" height="23">
   <data encoding="csv">
@@ -98,9 +98,6 @@
   <object id="282" x="3520" y="416" width="192" height="32"/>
   <object id="301" x="1280" y="480" width="192" height="224"/>
  </objectgroup>
- <objectgroup id="10" name="Wall">
-  <object id="248" name="wall" x="8704" y="0" width="32" height="288"/>
- </objectgroup>
  <objectgroup id="2" name="Player">
   <object id="2" name="startRect" x="128" y="480" width="32" height="94"/>
   <object id="177" name="bossState" x="10592" y="480" width="32" height="94"/>
@@ -124,6 +121,7 @@
   <object id="253" name="sign3" x="928" y="448" width="32" height="32"/>
   <object id="254" name="sign4" x="1376" y="448" width="32" height="32"/>
   <object id="255" name="sign5" x="1632" y="448" width="32" height="32"/>
+  <object id="309" name="wall" x="8704" y="0" width="32" height="288"/>
  </objectgroup>
  <objectgroup id="3" name="GroundMonster">
   <object id="4" name="ground_mon_1" x="2208" y="512" width="480" height="64"/>
