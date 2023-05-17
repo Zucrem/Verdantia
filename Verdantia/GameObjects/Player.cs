@@ -161,7 +161,7 @@ namespace ScifiDruid.GameObjects
             textureHeight = (int)size.Y;
 
             playerAnimation = new PlayerAnimation(this.texture);
-            playerSkillAnimation = new PlayerSkillAnimation(texture);
+            playerSkillAnimation = new PlayerSkillAnimation(bulletTexture);
             bulletList = new List<PlayerBullet>();
             enemyContract = new List<Enemy>();
 
@@ -271,7 +271,6 @@ namespace ScifiDruid.GameObjects
             }
 
             playerAnimation.Update(gameTime, playerStatus); 
-            playerSkillAnimation.Update(gameTime, charDirection);
 
         }
 
@@ -441,6 +440,8 @@ namespace ScifiDruid.GameObjects
 
             if (startCool)
             {
+                playerSkillAnimation.Update(gameTime, charDirection);
+
                 if (skill1Cooldown > 0)
                 {
                     skill1Cooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -524,7 +525,7 @@ namespace ScifiDruid.GameObjects
         {
             skill1Cooldown = skill1CoolTime;
             Player.health++;
-
+            playerSkillAnimation.HealSymbol(position);
             press = true;
         }
 

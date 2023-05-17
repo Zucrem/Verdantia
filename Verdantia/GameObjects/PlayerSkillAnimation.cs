@@ -92,10 +92,13 @@ namespace ScifiDruid.GameObjects
             spriteVector = healSymbolRectVector;
             symbolOrigin = new Vector2(spriteSize.X / 2, spriteSize.Y / 2);
             allframes = healSymbolRectVector.Count();
+            elapsed = 0;
 
             animationDead = false;
             preStatus = SymbolStatus.SYMBOLSTART;
             curStatus = SymbolStatus.SYMBOLSTART;
+            Debug.WriteLine(symbolOrigin);
+
         }
 
         public void BirdSymbol(Vector2 position)
@@ -145,9 +148,9 @@ namespace ScifiDruid.GameObjects
             preStatus = SymbolStatus.SYMBOLSTART;
             curStatus = SymbolStatus.SYMBOLSTART;
         }
+
         public void Update(GameTime gameTime, SpriteEffects playerSprite)
         {
-            Debug.WriteLine(symbolOrigin);
             //skill direction
             switch (playerSprite)
             {
@@ -180,11 +183,11 @@ namespace ScifiDruid.GameObjects
                     {
                         frames++;
                     }
-                    //else if (frames >= allframes - 1)
-                    //{
-                    //    animationDead = true;
-                    //    return;
-                    //}
+                    else if (frames >= allframes - 1)
+                    {
+                        animationDead = true;
+                        return;
+                    }
                 }
                 elapsed = 0;
             }
