@@ -8,14 +8,14 @@ using System.Diagnostics;
 
 namespace ScifiDruid
 {
-    public class ScifiDruid : Game
+    public class Verdantia : Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
         private bool b = true;
 
-        public ScifiDruid()
+        public Verdantia()
         {
             _graphics = new GraphicsDeviceManager(this)
             {

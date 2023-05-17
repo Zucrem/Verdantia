@@ -14,11 +14,9 @@ namespace ScifiDruid.GameObjects
         protected Vector2 action1Size;
         protected Vector2 action2Size;
         protected Vector2 action3Size;
-        protected Vector2 action4Size;
-        protected List<Vector2> action1SpriteVector = new List<Vector2>();
-        protected List<Vector2> action2SpriteVector = new List<Vector2>();
-        protected List<Vector2> action3SpriteVector = new List<Vector2>();
-        protected List<Vector2> action4SpriteVector = new List<Vector2>();
+        protected List<Vector2> action1SpriteVector;
+        protected List<Vector2> action2SpriteVector;
+        protected List<Vector2> action3SpriteVector;
 
         protected BossStatus preBossStatus;
         protected BossStatus curBossStatus;
@@ -36,7 +34,6 @@ namespace ScifiDruid.GameObjects
             ACTION1,
             ACTION2,
             ACTION3,
-            ACTION4,
             DEAD,
             END
         }

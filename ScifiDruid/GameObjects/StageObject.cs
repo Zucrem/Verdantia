@@ -11,7 +11,7 @@ using System.Diagnostics;
 
 namespace ScifiDruid.GameObjects
 {
-    public class Wall : _GameObject
+    public class StageObject : _GameObject
     {
 
         protected Texture2D texture; //enemy Texture (Animaiton)
@@ -35,7 +35,7 @@ namespace ScifiDruid.GameObjects
         protected Rectangle sourceRect;
 
 
-        public Wall(Texture2D texture) : base(texture)
+        public StageObject(Texture2D texture) : base(texture)
         {
             this.texture = texture;
         }

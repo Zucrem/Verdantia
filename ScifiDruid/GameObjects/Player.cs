@@ -107,7 +107,7 @@ namespace ScifiDruid.GameObjects
 
         public List<Enemy> enemies;
 
-        public List<Bullet> bulletList;
+        public List<PlayerBullet> bulletList;
 
         private GameTime gameTime;
 
@@ -160,7 +160,7 @@ namespace ScifiDruid.GameObjects
             textureHeight = (int)size.Y;
 
             playerAnimation = new PlayerAnimation(this.texture);
-            bulletList = new List<Bullet>();
+            bulletList = new List<PlayerBullet>();
             enemyContract = new List<Enemy>();
 
             hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(startRect.X, startRect.Y - 1)), 0, BodyType.Dynamic, "Player");
@@ -350,7 +350,7 @@ namespace ScifiDruid.GameObjects
 
             if (currentKeyState.IsKeyDown(Keys.X) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && Player.mana > 0)
             {
-                bulletList.Add(new Bullet(bulletTexture, hitBox.Position + new Vector2(0, -0.12f), this, charDirection));
+                bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0, -0.12f), this, charDirection));
                 Player.isAttack = true;
                 attackAnimationTime = 0.3f;
                 attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
@@ -393,18 +393,18 @@ namespace ScifiDruid.GameObjects
 
             else if (bulletList.Count > 0)
             {
-                foreach (Bullet bullet in bulletList)
+                foreach (PlayerBullet bullet in bulletList)
                 {
                     bullet.Update(gameTime);
                     if (bullet.IsContact() || bullet.IsOutRange())
                     {
-                        if (bullet.bulletStatus != Bullet.BulletStatus.BULLETEND)
+                        if (bullet.bulletStatus != PlayerBullet.BulletStatus.BULLETEND)
                         {
-                            bullet.bulletStatus = Bullet.BulletStatus.BULLETDEAD;
+                            bullet.bulletStatus = PlayerBullet.BulletStatus.BULLETDEAD;
                         }
                     }
                     //if animation end
-                    if (bullet.bulletStatus == Bullet.BulletStatus.BULLETEND)
+                    if (bullet.bulletStatus == PlayerBullet.BulletStatus.BULLETEND)
                     {
                         bulletList.Remove(bullet);
                         break;

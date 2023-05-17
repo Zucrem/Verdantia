@@ -111,7 +111,7 @@ namespace ScifiDruid.GameScreen
         protected bool getPlayerPosition = true;
         protected Vector2 cameraNow;
 
-        protected Texture2D tilesetStage1;
+        protected Texture2D tilesetStage1, tilesetStage2, tilesetStage3;
 
         protected int tileWidth;
         protected int tileHeight;
@@ -221,7 +221,7 @@ namespace ScifiDruid.GameScreen
 
             //player asset and bullet
             playerTex = content.Load<Texture2D>("Pictures/Play/Characters/Player/keeperSheet");
-            bullet = content.Load<Texture2D>("Pictures/Play/Skills/PlayerSkill");
+            bullet = content.Load<Texture2D>("Pictures/Play/Skills/PlayerSkills/PlayerSkills");
 
             //stage1 enemy and all shoot
             flameMechTex = content.Load<Texture2D>("Pictures/Play/Characters/Enemy/flameMech");
@@ -353,7 +353,15 @@ namespace ScifiDruid.GameScreen
                                 MediaPlayer.Stop();
                                 //unlock another stage
                                 //Singleton.Instance.stageunlock++;
-                                ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
+                                if (Singleton.Instance.levelState == LevelState.FOREST)
+                                {
+                                    Singleton.Instance.levelState = LevelState.CITY;
+                                }
+                                else if (Singleton.Instance.levelState == LevelState.CITY)
+                                {
+                                    Singleton.Instance.levelState = LevelState.LAB;
+                                }
+                                changeScreen = true;
                             }
                             //Restart
                             if (restartButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
@@ -374,8 +382,14 @@ namespace ScifiDruid.GameScreen
                             {
                                 switch (Singleton.Instance.levelState)
                                 {
-                                    case LevelState.LAB:
+                                    case LevelState.FOREST:
                                         ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
+                                        break;
+                                    case LevelState.CITY:
+                                        ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
+                                        break;
+                                    case LevelState.LAB:
+                                        ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.MenuScreen);
                                         break;
                                 }
                             }
@@ -399,18 +413,7 @@ namespace ScifiDruid.GameScreen
                             //Restart Screen
                             if (nextScreen)
                             {
-                                switch (Singleton.Instance.levelState)
-                                {
-                                    case LevelState.FOREST:
-                                        ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
-                                        break;
-                                    case LevelState.CITY:
-                                        ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
-                                        break;
-                                    case LevelState.LAB:
-                                        ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
-                                        break;
-                                }
+                                ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
                             }
                             break;
                         case GameState.PAUSE:
@@ -636,7 +639,7 @@ namespace ScifiDruid.GameScreen
                 {
                     if (Player.isAttack)
                     {
-                        foreach (Bullet bullet in player.bulletList)
+                        foreach (PlayerBullet bullet in player.bulletList)
                         {
                             bullet.Draw(spriteBatch);
                         }
