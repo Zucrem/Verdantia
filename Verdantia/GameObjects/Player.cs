@@ -115,7 +115,8 @@ namespace ScifiDruid.GameObjects
         private int textureWidth, textureHeight;
 
         //animation
-        private PlayerAnimation playerAnimation;
+        private PlayerAnimation playerAnimation; 
+        private PlayerSkillAnimation playerSkillAnimation;
         //check if animation animationEnd or not
         private bool animationEnd;
 
@@ -160,6 +161,7 @@ namespace ScifiDruid.GameObjects
             textureHeight = (int)size.Y;
 
             playerAnimation = new PlayerAnimation(this.texture);
+            playerSkillAnimation = new PlayerSkillAnimation(texture);
             bulletList = new List<PlayerBullet>();
             enemyContract = new List<Enemy>();
 
@@ -268,7 +270,8 @@ namespace ScifiDruid.GameObjects
                 playerStatus = PlayerStatus.END;
             }
 
-            playerAnimation.Update(gameTime, playerStatus);
+            playerAnimation.Update(gameTime, playerStatus); 
+            playerSkillAnimation.Update(gameTime, charDirection);
 
         }
 
@@ -350,6 +353,8 @@ namespace ScifiDruid.GameObjects
 
             if (currentKeyState.IsKeyDown(Keys.X) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && Player.mana > 0)
             {
+                playerSkillAnimation.ShootSymbol(hitBox.Position + new Vector2(0, -0.5f));
+
                 bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0, -0.12f), this, charDirection));
                 Player.isAttack = true;
                 attackAnimationTime = 0.3f;
@@ -535,6 +540,8 @@ namespace ScifiDruid.GameObjects
                 skill3Cooldown = skill3CoolTime;
                 skill3Time = 1;
                 press = true;
+
+                playerSkillAnimation.LionSymbol(hitBox.Position);
             }
 
             //Time Active for 1 sec
@@ -711,6 +718,7 @@ namespace ScifiDruid.GameObjects
             if (!animationEnd)
             {
                 playerAnimation.Draw(spriteBatch, playerOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
+                playerSkillAnimation.Draw(spriteBatch);
             }
 
             if (lionBody != null)
@@ -722,7 +730,6 @@ namespace ScifiDruid.GameObjects
             {
                 bullet.Draw(spriteBatch);
             }*/
-
             base.Draw(spriteBatch);
         }
     }

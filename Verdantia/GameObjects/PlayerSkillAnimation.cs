@@ -6,8 +6,7 @@ using Box2DNet;
 using Box2DNet.Dynamics.Contacts;
 using System.Collections.Generic;
 using System.Linq;
-using static ScifiDruid.GameObjects.PlayerSkillAnimation;
-using static ScifiDruid.GameObjects.PlayerBullet;
+using System.Diagnostics;
 
 namespace ScifiDruid.GameObjects
 {
@@ -26,22 +25,19 @@ namespace ScifiDruid.GameObjects
 
         public Body symbolBody;
 
-        private int symbolSizeX;
-        private int symbolSizeY;
-
         //animation
         //shoot and dead Size
         private Vector2 shootSymbolSize;
+        private Vector2 healSymbolSize;
         private Vector2 birdSymbolSize;
         private Vector2 crocSymbolSize;
         private Vector2 lionSymbolSize;
-        private Vector2 symbolStartSize, symbolEndSize;
         //Vector
         private List<Vector2> shootSymbolRectVector;
+        private List<Vector2> healSymbolRectVector;
         private List<Vector2> birdSymbolRectVector;
         private List<Vector2> crocSymbolRectVector;
         private List<Vector2> lionSymbolRectVector;
-        private List<Vector2> symbolRectVector;
 
         //all sprite position in spritesheet
         private Rectangle sourceRect;
@@ -64,36 +60,94 @@ namespace ScifiDruid.GameObjects
             SYMBOLEND
         }
 
-        public PlayerSkillAnimation(Texture2D texture, Vector2 position, SpriteEffects charDirection, Vector2 size, List<Vector2> rectVector, float delay) : base(texture)
+        public PlayerSkillAnimation(Texture2D texture) : base(texture)
         {
             this.texture = texture;
-            this.charDirection = charDirection;
+
+            charDirection = SpriteEffects.FlipHorizontally;
+        }
+
+        public void ShootSymbol(Vector2 position)
+        {
             this.position = position;
-            this.spriteSize = size;
-            this.spriteVector = rectVector;
-            this.delay = delay;
-
-            allframes = rectVector.Count();
-
-            //animation
+            delay = 200f;
             shootSymbolSize = new Vector2(16, 30);
-            birdSymbolSize = new Vector2(100, 70);
-            crocSymbolSize = new Vector2(69, 35);
-            lionSymbolSize = new Vector2(113, 100);
-
             shootSymbolRectVector = new List<Vector2>() { new Vector2(247, 3), new Vector2(275, 1), new Vector2(306, 0) };
-            birdSymbolRectVector = new List<Vector2>() { new Vector2(272, 321), new Vector2(272, 465), new Vector2(272, 606) };
-            crocSymbolRectVector = new List<Vector2>() { new Vector2(28, 219), new Vector2(140, 220), new Vector2(278, 227) };
-            lionSymbolRectVector = new List<Vector2>() { new Vector2(60, 306), new Vector2(62, 473), new Vector2(59, 583) };
-
+            spriteSize = shootSymbolSize;
+            spriteVector = shootSymbolRectVector;
             symbolOrigin = new Vector2(spriteSize.X / 2, spriteSize.Y / 2);
+            allframes = shootSymbolRectVector.Count();
 
+            animationDead = false;
+            preStatus = SymbolStatus.SYMBOLSTART;
+            curStatus = SymbolStatus.SYMBOLSTART;
+        }
+        public void HealSymbol(Vector2 position)
+        {
+            this.position = position;
+            delay = 600f;
+            healSymbolSize = new Vector2(46, 34);
+            healSymbolRectVector = new List<Vector2>() { new Vector2(354, 0) };
+            spriteSize = healSymbolSize;
+            spriteVector = healSymbolRectVector;
+            symbolOrigin = new Vector2(spriteSize.X / 2, spriteSize.Y / 2);
+            allframes = healSymbolRectVector.Count();
+
+            animationDead = false;
             preStatus = SymbolStatus.SYMBOLSTART;
             curStatus = SymbolStatus.SYMBOLSTART;
         }
 
+        public void BirdSymbol(Vector2 position)
+        {
+            this.position = position;
+            delay = 200f;
+            birdSymbolSize = new Vector2(100, 70);
+            birdSymbolRectVector = new List<Vector2>() { new Vector2(272, 321), new Vector2(272, 465), new Vector2(272, 606) };
+            spriteSize = birdSymbolSize;
+            spriteVector = birdSymbolRectVector;
+            symbolOrigin = new Vector2(spriteSize.X / 2, spriteSize.Y / 2);
+            allframes = birdSymbolRectVector.Count();
+
+            animationDead = false;
+            preStatus = SymbolStatus.SYMBOLSTART;
+            curStatus = SymbolStatus.SYMBOLSTART;
+        }
+
+        public void CrocSymbol(Vector2 position)
+        {
+            this.position = position;
+            delay = 200f;
+            crocSymbolSize = new Vector2(69, 35);
+            crocSymbolRectVector = new List<Vector2>() { new Vector2(28, 219), new Vector2(140, 220), new Vector2(278, 227) };
+            spriteSize = crocSymbolSize;
+            spriteVector = crocSymbolRectVector;
+            symbolOrigin = new Vector2(spriteSize.X / 2, spriteSize.Y / 2);
+            allframes = crocSymbolRectVector.Count();
+
+            animationDead = false;
+            preStatus = SymbolStatus.SYMBOLSTART;
+            curStatus = SymbolStatus.SYMBOLSTART;
+        }
+
+        public void LionSymbol(Vector2 position)
+        {
+            this.position = position;
+            delay = 200f;
+            lionSymbolSize = new Vector2(113, 100);
+            lionSymbolRectVector = new List<Vector2>() { new Vector2(60, 306), new Vector2(62, 473), new Vector2(59, 583) };
+            spriteSize = lionSymbolSize;
+            spriteVector = lionSymbolRectVector;
+            symbolOrigin = new Vector2(spriteSize.X / 2, spriteSize.Y / 2);
+            allframes = lionSymbolRectVector.Count();
+
+            animationDead = false;
+            preStatus = SymbolStatus.SYMBOLSTART;
+            curStatus = SymbolStatus.SYMBOLSTART;
+        }
         public void Update(GameTime gameTime, SpriteEffects playerSprite)
         {
+            Debug.WriteLine(symbolOrigin);
             //skill direction
             switch (playerSprite)
             {
@@ -118,7 +172,6 @@ namespace ScifiDruid.GameObjects
 
             //animation
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-
             if (elapsed >= delay)
             {
                 if (symbolStatus == SymbolStatus.SYMBOLSTART)
@@ -127,11 +180,11 @@ namespace ScifiDruid.GameObjects
                     {
                         frames++;
                     }
-                    else if (frames >= allframes - 1)
-                    {
-                        animationDead = true;
-                        return;
-                    }
+                    //else if (frames >= allframes - 1)
+                    //{
+                    //    animationDead = true;
+                    //    return;
+                    //}
                 }
                 elapsed = 0;
             }
@@ -144,6 +197,7 @@ namespace ScifiDruid.GameObjects
         {
             if (!animationDead)
             {
+                //Debug.WriteLine("draw");
                 spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, symbolOrigin, 1f, charDirection, 0f);
             }
         }
