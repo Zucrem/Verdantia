@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Input;
 using Box2DNet.Factories;
 using Box2DNet;
 using static ScifiDruid.GameObjects.Player;
+using System.Diagnostics;
 
 namespace ScifiDruid.GameObjects
 {
@@ -27,7 +28,7 @@ namespace ScifiDruid.GameObjects
         protected Vector2 enemyOrigin;  //start draw enemy point
 
         protected bool isPlayerinArea = false;       // to check is player in the area 
-        protected bool isGoingToFall = false;        // check is there are hole infront of this enemy
+        //protected bool isGoingToFall = false;        // check is there are hole infront of this enemy
 
         public int health;                          // reduce when get hit by bullet
         public int damage;
@@ -151,13 +152,18 @@ namespace ScifiDruid.GameObjects
             }
             return false;
         }
-        
+
         public void CheckPlayerPosition(GameTime gameTime)
         {
             if (playerCheckTime <= 0)
             {
                 playerCheckTime = 1;
                 playerPosition = player.position;
+                if (playerPosition.X - position.X < 6 && playerPosition.X - position.X > -6)
+                {
+                    isPlayerinArea = true;
+                }
+                else { isPlayerinArea = false; }
             }
             else
             {
