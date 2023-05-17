@@ -6,6 +6,7 @@ using Box2DNet;
 using Box2DNet.Dynamics.Contacts;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 
 namespace ScifiDruid.GameObjects
 {
@@ -51,8 +52,8 @@ namespace ScifiDruid.GameObjects
         private int allframes;
 
         //bullet status
-        private BulletStatus preStatus;
-        private BulletStatus curStatus;
+        private BulletStatus preStatus = BulletStatus.BULLETALIVE;
+        private BulletStatus curStatus = BulletStatus.BULLETALIVE;
 
         private bool animationDead = false;
         public enum BulletStatus
@@ -85,6 +86,8 @@ namespace ScifiDruid.GameObjects
             bulletAliveRectVector = new List<Vector2>() { new Vector2(0, 12), new Vector2(62, 12), new Vector2(120, 12) };
             bulletDeadRectVector = new List<Vector2>() { new Vector2(0, 6), new Vector2(210, 6) };
 
+            
+
             bulletAliveCount = bulletAliveRectVector.Count();
             bulletDeadCount = bulletDeadRectVector.Count();
 
@@ -99,12 +102,6 @@ namespace ScifiDruid.GameObjects
             }
 
             bulletOrigin = new Vector2(bulletSizeX / 2, bulletSizeY / 2);
-        }
-
-        public void Initialize()
-        {
-            preStatus = BulletStatus.BULLETALIVE;
-            curStatus = BulletStatus.BULLETALIVE;
         }
 
         public void Shoot(GameTime gameTime)
@@ -127,17 +124,16 @@ namespace ScifiDruid.GameObjects
             //if dead animation animationEnd
             if (animationDead)
             {
-                curStatus = BulletStatus.BULLETEND;
+                bulletStatus = BulletStatus.BULLETEND;
             }
 
-            if (preStatus != curStatus)
+            if (preStatus != bulletStatus)
             {
                 frames = 0;
             }
 
-            ChangeBulletAnimationStatus(bulletStatus);
+            ChangeBulletAnimationStatus();
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-
             if (elapsed >= delay)
             {
                 if (bulletStatus == BulletStatus.BULLETALIVE)
@@ -203,7 +199,7 @@ namespace ScifiDruid.GameObjects
             {
                 // The Bullet was Out of range
                 bulletBody.Dispose();
-                curStatus = BulletStatus.BULLETDEAD;
+                bulletStatus = BulletStatus.BULLETDEAD;
                 return true;
             }
 
@@ -216,10 +212,8 @@ namespace ScifiDruid.GameObjects
             {
                 spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(bulletBody.Position), sourceRect, Color.White, 0, bulletOrigin, 1f, charDirection, 0f);
             }
-
-            base.Draw(spriteBatch);
         }
-        public void ChangeBulletAnimationStatus(BulletStatus bulletStatus)
+        public void ChangeBulletAnimationStatus()
         {
             switch (bulletStatus)
             {
@@ -230,7 +224,7 @@ namespace ScifiDruid.GameObjects
                     allframes = bulletAliveCount;
                     break;
                 case BulletStatus.BULLETDEAD:
-                    delay = 150f;
+                    delay = 200f;
                     spriteVector = bulletDeadRectVector;
                     spriteSize = bulletDeadSize;
                     allframes = bulletDeadCount;

@@ -18,9 +18,6 @@ namespace ScifiDruid.GameObjects
 {
     public class MeleeEnemy : Enemy
     {
-        //framestate for dead animation
-        private int frameState;
-        private bool repeat;
 
         //random boss action
         private Random rand = new Random();
@@ -43,10 +40,6 @@ namespace ScifiDruid.GameObjects
             deadSpriteVector = animateList[2];
 
             frames = 0;
-
-            //animation dead state
-            frameState = 0;
-            repeat = false;
         }
 
         public override void Initial(Rectangle spawnPosition, Player player)
@@ -109,7 +102,6 @@ namespace ScifiDruid.GameObjects
             if (preStatus != curStatus)
             {
                 frames = 0;
-                frameState = 0;
             }
             ChangeAnimationStatus();
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;

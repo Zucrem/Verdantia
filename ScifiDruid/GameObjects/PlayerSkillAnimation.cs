@@ -6,12 +6,12 @@ using Box2DNet;
 using Box2DNet.Dynamics.Contacts;
 using System.Collections.Generic;
 using System.Linq;
-using static ScifiDruid.GameObjects.PlayerSkill;
+using static ScifiDruid.GameObjects.PlayerSkillAnimation;
 using static ScifiDruid.GameObjects.PlayerBullet;
 
 namespace ScifiDruid.GameObjects
 {
-    public class PlayerSkill : _GameObject
+    public class PlayerSkillAnimation : _GameObject
     {
         private Texture2D texture;
 
@@ -41,11 +41,7 @@ namespace ScifiDruid.GameObjects
         private List<Vector2> birdSymbolRectVector;
         private List<Vector2> crocSymbolRectVector;
         private List<Vector2> lionSymbolRectVector;
-        private List<Vector2> symbolStartRectVector;
-        private List<Vector2> symbolEndRectVector;
-
-        private int symbolStartCount;
-        private int symbolEndCount;
+        private List<Vector2> symbolRectVector;
 
         //all sprite position in spritesheet
         private Rectangle sourceRect;
@@ -68,31 +64,32 @@ namespace ScifiDruid.GameObjects
             SYMBOLEND
         }
 
-        public PlayerSkill(Texture2D texture, Vector2 position, SpriteEffects charDirection, string name) : base(texture)
+        public PlayerSkillAnimation(Texture2D texture, Vector2 position, SpriteEffects charDirection, Vector2 size, List<Vector2> rectVector, float delay) : base(texture)
         {
             this.texture = texture;
             this.charDirection = charDirection;
             this.position = position;
-            this.name = name;
+            this.spriteSize = size;
+            this.spriteVector = rectVector;
+            this.delay = delay;
 
+            allframes = rectVector.Count();
 
             //animation
-            symbolStartSize = new Vector2(40, 8);
-            symbolEndSize = new Vector2(16, 20);
+            shootSymbolSize = new Vector2(16, 30);
+            birdSymbolSize = new Vector2(100, 70);
+            crocSymbolSize = new Vector2(69, 35);
+            lionSymbolSize = new Vector2(113, 100);
 
-            symbolStartRectVector = new List<Vector2>() { new Vector2(0, 12), new Vector2(62, 12), new Vector2(120, 12) };
-            symbolEndRectVector = new List<Vector2>() { new Vector2(0, 6), new Vector2(210, 6) };
+            shootSymbolRectVector = new List<Vector2>() { new Vector2(247, 3), new Vector2(275, 1), new Vector2(306, 0) };
+            birdSymbolRectVector = new List<Vector2>() { new Vector2(272, 321), new Vector2(272, 465), new Vector2(272, 606) };
+            crocSymbolRectVector = new List<Vector2>() { new Vector2(28, 219), new Vector2(140, 220), new Vector2(278, 227) };
+            lionSymbolRectVector = new List<Vector2>() { new Vector2(60, 306), new Vector2(62, 473), new Vector2(59, 583) };
 
-            symbolStartCount = symbolStartRectVector.Count();
-            symbolEndCount = symbolEndRectVector.Count();
+            symbolOrigin = new Vector2(spriteSize.X / 2, spriteSize.Y / 2);
 
-            symbolOrigin = new Vector2(symbolSizeX / 2, symbolSizeY / 2);
-        }
-
-        public void Initialize()
-        {
             preStatus = SymbolStatus.SYMBOLSTART;
-            curStatus = SymbolStatus.SYMBOLEND;
+            curStatus = SymbolStatus.SYMBOLSTART;
         }
 
         public void Update(GameTime gameTime, SpriteEffects playerSprite)
@@ -120,19 +117,11 @@ namespace ScifiDruid.GameObjects
             }
 
             //animation
-            ChangeSymbolAnimationStatus(symbolStatus);
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
             if (elapsed >= delay)
             {
                 if (symbolStatus == SymbolStatus.SYMBOLSTART)
-                {
-                    if (frames < allframes - 1)
-                    {
-                        frames++;
-                    }
-                }
-                else if (symbolStatus == SymbolStatus.SYMBOLEND)
                 {
                     if (frames < allframes - 1)
                     {
@@ -156,24 +145,6 @@ namespace ScifiDruid.GameObjects
             if (!animationDead)
             {
                 spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, symbolOrigin, 1f, charDirection, 0f);
-            }
-        }
-        public void ChangeSymbolAnimationStatus(SymbolStatus symbolStatus)
-        {
-            switch (symbolStatus)
-            {
-                case SymbolStatus.SYMBOLSTART:
-                    delay = 150f;
-                    spriteVector = symbolStartRectVector;
-                    spriteSize = symbolStartSize;
-                    allframes = symbolStartCount;
-                    break;
-                case SymbolStatus.SYMBOLEND:
-                    delay = 150f;
-                    spriteVector = symbolEndRectVector;
-                    spriteSize = symbolEndSize;
-                    allframes = symbolEndCount;
-                    break;
             }
         }
     }
