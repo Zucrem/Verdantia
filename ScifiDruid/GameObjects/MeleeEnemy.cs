@@ -30,6 +30,11 @@ namespace ScifiDruid.GameObjects
         private bool isMovingLeft = true;
         private float movingTime = 3.4f;
 
+        private float pathWalkLength;
+        private float xspawnPosition;
+
+
+
         public MeleeEnemy(Texture2D texture, List<Vector2> sizeList, List<List<Vector2>> animateList) : base(texture)
         {
             this.texture = texture;
@@ -62,6 +67,12 @@ namespace ScifiDruid.GameObjects
             enemyHitBox.AngularDamping = 2.0f;
             enemyHitBox.LinearDamping = 2.0f;
 
+            pathWalkLength = ConvertUnits.ToSimUnits((spawnPosition.Width / 2) - 64);
+            xspawnPosition = ConvertUnits.ToSimUnits(spawnPosition.X);
+
+
+
+
             isAlive = true;
 
             charDirection = SpriteEffects.FlipHorizontally;  // heading direction
@@ -77,6 +88,8 @@ namespace ScifiDruid.GameObjects
             if (isAlive)
             {
                 CheckPlayerPosition(gameTime);
+                
+
 
                 takeDMG(1,"Bullet");
 
@@ -164,36 +177,42 @@ namespace ScifiDruid.GameObjects
         }
         public override void Action()
         {
-            if (isAlive)
+            if (isAlive && isPlayerinArea)
+            {
+                EnemyAlertWalking();
+            }
+            else if (isAlive)
             {
                 EnemyWalking();
             }
-            //EnemyAlertWalking();
+            
         }
 
         private void EnemyWalking()
         {
             //do normal walking left and right
-            timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (health > 0)
-            {
-                if (timeElapsed >= 5f)
-                {
-                    timeElapsed = 0f;
-                    isMovingLeft = !isMovingLeft;
-                }
 
-                if (isMovingLeft)
-                {
-                    charDirection = SpriteEffects.None;
-                    enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
-                }
-                else
-                {
-                    charDirection = SpriteEffects.FlipHorizontally;
-                    enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
-                }
+            if ((xspawnPosition - enemyHitBox.Position.X) > pathWalkLength && isMovingLeft)
+            {
+                isMovingLeft = !isMovingLeft;
             }
+            else if ((xspawnPosition - enemyHitBox.Position.X) < pathWalkLength * -1 && !isMovingLeft)
+            {
+                isMovingLeft = !isMovingLeft;
+            }
+
+            if (isMovingLeft)
+            {
+                charDirection = SpriteEffects.None;
+                enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
+            }
+            else
+            {
+                charDirection = SpriteEffects.FlipHorizontally;
+                enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
+            }
+
+
 
 
         }
@@ -203,8 +222,20 @@ namespace ScifiDruid.GameObjects
             //player on (right ,mid,left)
             //got to that direction of player
             //stop when player go out of detect area
+            curStatus = EnemyStatus.RUN;
 
+            if (playerPosition.X - position.X > 1)
+            {
+                charDirection = SpriteEffects.FlipHorizontally;
+                enemyHitBox.ApplyForce(new Vector2(150 * speed, 0));
+            }
+            else if (playerPosition.X - position.X < -1)
+            {
 
+                charDirection = SpriteEffects.None;
+                enemyHitBox.ApplyForce(new Vector2(-150 * speed, 0));
+
+            }
             //do alert condition follow Player and Track Player down to death
         }
 
