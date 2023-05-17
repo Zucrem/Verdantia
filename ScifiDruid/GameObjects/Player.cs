@@ -385,7 +385,6 @@ namespace ScifiDruid.GameObjects
                 }
             }
 
-
             if (bulletList.Count == 0)
             {
                 Player.isAttack = false;
@@ -396,12 +395,16 @@ namespace ScifiDruid.GameObjects
                 foreach (PlayerBullet bullet in bulletList)
                 {
                     bullet.Update(gameTime);
-                    if (bullet.IsContact() || bullet.IsOutRange())
+                    if (bullet.IsOutRange())
                     {
                         if (bullet.bulletStatus != PlayerBullet.BulletStatus.BULLETEND)
                         {
                             bullet.bulletStatus = PlayerBullet.BulletStatus.BULLETDEAD;
                         }
+                    }
+                    if (bullet.IsContact())
+                    {
+                        bullet.bulletStatus = PlayerBullet.BulletStatus.BULLETEND;
                     }
                     //if animation end
                     if (bullet.bulletStatus == PlayerBullet.BulletStatus.BULLETEND)
