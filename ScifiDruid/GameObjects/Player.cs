@@ -332,7 +332,7 @@ namespace ScifiDruid.GameObjects
                 else
                 {
                     hitBox.LinearVelocity = new Vector2(hitBox.LinearVelocity.X, 0f);
-                    wasJumped = true;
+                    //wasJumped = true;
                 }
 
                 hitBox.ApplyLinearImpulse(new Vector2(0, -hitBox.Mass * jumpHigh));
@@ -633,8 +633,13 @@ namespace ScifiDruid.GameObjects
                 if (contactFixture.IsTouching && (fixtureA_Check || fixtureB_Check))
                 {
                     //if Contact thing in parameter it will return True
-                    foreach (Enemy item in enemies)
+                    foreach (Enemy item in Singleton.Instance.enemiesInWorld)
                     {
+                        //if Doesn't use skill lion now it will not process in foreach
+                        if (lionBody == null)
+                        {
+                            break;
+                        }
 
                         if (item != null && (item.enemyHitBox.BodyId == fixtureA.BodyId || item.enemyHitBox.BodyId == fixtureB.BodyId))
                         {
@@ -646,16 +651,26 @@ namespace ScifiDruid.GameObjects
                             {
                                 return false;
                             }
-                            if (item.enemyHitBox.Position.X - box.Position.X > 0)
-                            {
-                                knockbackStatus = KnockbackStatus.BACK;
-                            }
-                            else
-                            {
-                                knockbackStatus = KnockbackStatus.FONT;
-                            }
                         }
                     }
+
+                    foreach (Body body in Singleton.Instance.world.BodyList)
+                    {
+                        if (body.UserData == null || !body.UserData.Equals("Enemy") || !(body.BodyId == fixtureA.BodyId || body.BodyId == fixtureB.BodyId))
+                        {
+                            continue;
+                        }
+
+                        if (body.Position.X - box.Position.X > 0)
+                        {
+                            knockbackStatus = KnockbackStatus.BACK;
+                        }
+                        else
+                        {
+                            knockbackStatus = KnockbackStatus.FONT;
+                        }
+                    }
+
                     return true;
                 }
 

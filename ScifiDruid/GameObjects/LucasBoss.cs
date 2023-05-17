@@ -228,12 +228,17 @@ namespace ScifiDruid.GameObjects
 
         public override void Walk()
         {
-            if (position.X - playerPosition.X > 0 && randomAction > 3)
+            if (curBossStatus != BossStatus.IDLE)
+            {
+                return;
+            }
+
+            if (position.X - playerPosition.X > 0)
             {
                 charDirection = SpriteEffects.FlipHorizontally;
                 enemyHitBox.ApplyForce(new Vector2(-75 * speed, 0));
             }
-            else if (randomAction > 3)
+            else
             {
                 charDirection = SpriteEffects.None;
                 enemyHitBox.ApplyForce(new Vector2(75 * speed, 0));
@@ -286,12 +291,37 @@ namespace ScifiDruid.GameObjects
             {
                 action2 = true;
                 curBossStatus = BossStatus.ACTION2;
-                drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world,ConvertUnits.ToSimUnits(100), ConvertUnits.ToSimUnits(100),0,enemyHitBox.Position);
-                drillBody.UserData = "Drill";
+                drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world,ConvertUnits.ToSimUnits(100), ConvertUnits.ToSimUnits(100),0,enemyHitBox.Position,0,BodyType.Dynamic, "Enemy");
                 drillBody.IgnoreCollisionWith(enemyHitBox);
-
-
+                drillBody.IsSensor = true;
+                drillBody.IgnoreGravity = true;
+                switch (charDirection)
+                {
+                    case SpriteEffects.None:
+                        drillBody.ApplyLinearImpulse(new Vector2(3 * speed, 0));
+                        break;
+                    case SpriteEffects.FlipHorizontally:
+                        drillBody.ApplyLinearImpulse(new Vector2(-3 * speed, 0));
+                        break;
+                }
             }
+            else
+            {
+                if (IsContact(drillBody, "Ground"))
+                {
+                    drillBody.IsStatic = true;
+                    switch (charDirection)
+                    {
+                        case SpriteEffects.None:
+                            enemyHitBox.ApplyForce(new Vector2(60 * speed, 0));
+                            break;
+                        case SpriteEffects.FlipHorizontally:
+                            enemyHitBox.ApplyForce(new Vector2(-60 * speed, 0));
+                            break;
+                    }
+                }
+            }
+
         }
 
         public override void ChangeAnimationStatus()
