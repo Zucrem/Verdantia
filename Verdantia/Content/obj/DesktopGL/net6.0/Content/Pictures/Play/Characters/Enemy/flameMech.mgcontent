@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Code/ScifiDruid/Verdantia/Content/Pictures/Play/Characters/Enemy/flameMech.png</SourceFile>
-  <SourceTime>2023-05-05T15:39:27.4463751+07:00</SourceTime>
-  <DestFile>D:/Code/ScifiDruid/Verdantia/Content/bin/DesktopGL/Content/Pictures/Play/Characters/Enemy/flameMech.xnb</DestFile>
-  <DestTime>2023-05-17T23:41:04.1463752+07:00</DestTime>
+  <SourceFile>D:/Code/Verdantia/Verdantia/Content/Pictures/Play/Characters/Enemy/flameMech.png</SourceFile>
+  <SourceTime>2023-05-17T23:48:51.2199986+07:00</SourceTime>
+  <DestFile>D:/Code/Verdantia/Verdantia/Content/bin/DesktopGL/Content/Pictures/Play/Characters/Enemy/flameMech.xnb</DestFile>
+  <DestTime>2023-05-18T05:22:59.4558068+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

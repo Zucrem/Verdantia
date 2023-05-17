@@ -108,11 +108,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Code\\ScifiDruid\\Verdantia\\Verdantia.csproj",
+      "projectUniqueName": "D:\\Code\\Verdantia\\Verdantia\\Verdantia.csproj",
       "projectName": "Verdantia",
-      "projectPath": "D:\\Code\\ScifiDruid\\Verdantia\\Verdantia.csproj",
+      "projectPath": "D:\\Code\\Verdantia\\Verdantia\\Verdantia.csproj",
       "packagesPath": "C:\\Users\\zucre\\.nuget\\packages\\",
-      "outputPath": "D:\\Code\\ScifiDruid\\Verdantia\\obj\\",
+      "outputPath": "D:\\Code\\Verdantia\\Verdantia\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
