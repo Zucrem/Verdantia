@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Box2DNet.Dynamics.Contacts;
 using Box2DNet.Dynamics;
 using Microsoft.Xna.Framework.Input;
+using static ScifiDruid.GameObjects.Player;
 
 namespace ScifiDruid.GameObjects
 {
@@ -126,28 +127,25 @@ namespace ScifiDruid.GameObjects
 
         }
 
-        public bool IsContact(String contact, String fixture)
+        public bool IsContact(Body box, String contact)
         {
-            ContactEdge contactEdge = enemyHitBox.ContactList;
+            ContactEdge contactEdge = box.ContactList;
             while (contactEdge != null)
             {
                 Contact contactFixture = contactEdge.Contact;
-                switch (fixture)
+
+                Body fixtureA = contactEdge.Contact.FixtureA.Body;
+                Body fixtureB = contactEdge.Contact.FixtureB.Body;
+
+                bool fixtureA_Check = fixtureA.UserData != null && fixtureA.UserData.Equals(contact);
+                bool fixtureB_Check = fixtureB.UserData != null && fixtureB.UserData.Equals(contact);
+
+
+                // Check if the contact fixture is the ground
+                if (contactFixture.IsTouching && (fixtureA_Check || fixtureB_Check))
                 {
-                    case "A":
-                        // Check if the contact fixture is the ground
-                        if (contactFixture.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals(contact))
-                        {
-                            return true;
-                        }
-                        break;
-                    case "B":
-                        // Check if the contact fixture is the ground
-                        if (contactFixture.IsTouching && contactEdge.Contact.FixtureB.Body.UserData != null && contactEdge.Contact.FixtureB.Body.UserData.Equals(contact))
-                        {
-                            return true;
-                        }
-                        break;
+                    //if Contact thing in parameter it will return True
+                    return true;
                 }
 
                 contactEdge = contactEdge.Next;

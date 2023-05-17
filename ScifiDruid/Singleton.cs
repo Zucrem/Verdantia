@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Box2DNet.Dynamics;
+using ScifiDruid.GameObjects;
 
 namespace ScifiDruid
 {
@@ -38,6 +39,7 @@ namespace ScifiDruid
 
         private static Singleton instance;
 
+        public List<Enemy> enemiesInWorld = new List<Enemy>();
         public enum AudioState
         {
             MUTE,

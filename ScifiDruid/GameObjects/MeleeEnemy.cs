@@ -103,7 +103,7 @@ namespace ScifiDruid.GameObjects
             }
 
             //if step on dead block
-            if (IsContact("Dead", "A"))
+            if (IsContact(enemyHitBox, "Dead"))
             {
                 isAlive = false;
                 enemyHitBox.Dispose();

@@ -212,9 +212,6 @@ namespace ScifiDruid.GameScreen
             player.Initial(startRect);
             //player.Initial(boss_event);
 
-            //create enemy on position
-            allEnemies = new List<Enemy>();
-
             //range enemy
             flameMechEnemies = new List<RangeEnemy>();
             flameMechPositionList = ground1MonsterRects.Count();
@@ -273,10 +270,10 @@ namespace ScifiDruid.GameScreen
             //spawn boss
             boss.Initial(bossRect, player);
 
-            //add to all enemy for
-            allEnemies.AddRange(flameMechEnemies);
-            allEnemies.AddRange(chainsawMechEnemies);
-            allEnemies.Add(boss);
+            //add All enemy to locate enemy
+            Singleton.Instance.enemiesInWorld.AddRange(flameMechEnemies);
+            Singleton.Instance.enemiesInWorld.AddRange(chainsawMechEnemies);
+            Singleton.Instance.enemiesInWorld.Add(boss);
 
             //switch event
             //create switch button on position
@@ -293,8 +290,6 @@ namespace ScifiDruid.GameScreen
             };
             stage_wall.Initial(rock_wall);
 
-            //add all enemy for player to know em all
-            player.enemies = allEnemies;
         }
         public override void LoadContent()
         {
@@ -404,11 +399,12 @@ namespace ScifiDruid.GameScreen
                     {
                         chainsawBot.Draw(spriteBatch);
                     }
-                    //draw player animation
-                    player.Draw(spriteBatch);
 
                     //draw boss animation
                     boss.Draw(spriteBatch);
+                    
+                    //draw player animation
+                    player.Draw(spriteBatch);
 
                     //draw switch animation
                     switch_wall.Draw(spriteBatch);
