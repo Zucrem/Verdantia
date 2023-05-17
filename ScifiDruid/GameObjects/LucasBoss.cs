@@ -43,14 +43,13 @@ namespace ScifiDruid.GameObjects
             action1Size = new Vector2(228, 185);
             action2Size = new Vector2(197, 187);
             action3Size = new Vector2(220, 184);
-            action4Size = new Vector2(0, 0);
             deadSize = new Vector2(187, 188);
 
             idleSpriteVector = new List<Vector2>() { new Vector2(16, 0), new Vector2(264, 0) };
+
             action1SpriteVector = new List<Vector2>() { new Vector2(0, 215), new Vector2(230, 221) };
             action2SpriteVector = new List<Vector2>() { new Vector2(16, 436) };
             action3SpriteVector = new List<Vector2>() { new Vector2(230, 438), new Vector2(0, 898), new Vector2(230, 904) };
-            action4SpriteVector = new List<Vector2>();
 
             deadSpriteVector = new List<Vector2>() { new Vector2(503, 0), new Vector2(737, 0), new Vector2(975, 0), new Vector2(1215, 0) };
 

@@ -26,7 +26,7 @@ namespace ScifiDruid.GameScreen
     {
         //create switch and wall
         private SwitchWall switch_wall;
-        private Wall stage_wall;
+        private GameObjects.StageObject stage_wall;
 
         //create enemy
         private List<Enemy> allEnemies;
@@ -55,11 +55,13 @@ namespace ScifiDruid.GameScreen
         private bool isOpenSwitch = false;
 
         //Map Theme
+        private Song Stage1Theme;
         private Song lucasTheme;
         public override void Initial()
         {
             base.Initial();
 
+            //map size
             startmaptileX = 10f;
             endmaptileX = 170f;
 
@@ -285,7 +287,7 @@ namespace ScifiDruid.GameScreen
             switch_wall.Initial(switch_button);
 
             //create wall button on position
-            stage_wall = new Wall(switch_wall_Tex)
+            stage_wall = new GameObjects.StageObject(switch_wall_Tex)
             {
                 size = new Vector2(32, 192),
             };
