@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>D:/Code/ScifiDruid/Verdantia/Content/Fonts/font20.spritefont</SourceFile>
+  <SourceTime>2023-03-03T15:38:18+07:00</SourceTime>
+  <DestFile>D:/Code/ScifiDruid/Verdantia/Content/bin/DesktopGL/Content/Fonts/font20.xnb</DestFile>
+  <DestTime>2023-05-17T23:41:03.1958338+07:00</DestTime>
+  <Importer>FontDescriptionImporter</Importer>
+  <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
+  <Processor>FontDescriptionProcessor</Processor>
+  <ProcessorTime>2022-07-26T18:44:56+07:00</ProcessorTime>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Compressed</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
