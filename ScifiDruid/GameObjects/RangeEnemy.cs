@@ -204,10 +204,8 @@ namespace ScifiDruid.GameObjects
             }
             else if (playerPosition.X - position.X < -2)
             {
-                
                 charDirection = SpriteEffects.None;
                 enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
-                
             }
            
 
