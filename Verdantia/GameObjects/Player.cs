@@ -120,8 +120,7 @@ namespace ScifiDruid.GameObjects
         //check if animation animationEnd or not
         private bool animationEnd;
 
-
-        private bool dd = false;
+        private int playerDirectionInt = 1;
 
         public enum PlayerStatus
         {
@@ -157,11 +156,12 @@ namespace ScifiDruid.GameObjects
         public void Initial(Rectangle startRect)
         {
 
+            playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position + new Vector2(0, 0), "Null");
+
             textureWidth = (int)size.X;
             textureHeight = (int)size.Y;
 
             playerAnimation = new PlayerAnimation(this.texture);
-            playerSkillAnimation = new PlayerSkillAnimation(bulletTexture);
             bulletList = new List<PlayerBullet>();
             enemyContract = new List<Enemy>();
 
@@ -255,6 +255,17 @@ namespace ScifiDruid.GameObjects
 
             }
 
+            //player direction
+            switch (charDirection)
+            {
+                case SpriteEffects.None:
+                    playerDirectionInt = -1;
+                    break;
+                case SpriteEffects.FlipHorizontally:
+                    playerDirectionInt = 1;
+                    break;
+            }
+
             //all animation
             //if step on dead block
             if (IsContact(hitBox, "Dead") || (hitCooldown <= 1.7 && touchGround && Player.health == 0))
@@ -270,7 +281,8 @@ namespace ScifiDruid.GameObjects
                 playerStatus = PlayerStatus.END;
             }
 
-            playerAnimation.Update(gameTime, playerStatus); 
+            playerAnimation.Update(gameTime, playerStatus);
+            playerSkillAnimation.Update(gameTime, position, charDirection);
 
         }
 
@@ -334,6 +346,7 @@ namespace ScifiDruid.GameObjects
                 else
                 {
                     hitBox.LinearVelocity = new Vector2(hitBox.LinearVelocity.X, 0f);
+                    playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Bird");
                     //wasJumped = true;
                 }
 
@@ -352,9 +365,9 @@ namespace ScifiDruid.GameObjects
 
             if (currentKeyState.IsKeyDown(Keys.X) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && Player.mana > 0)
             {
-                playerSkillAnimation.ShootSymbol(hitBox.Position + new Vector2(0, -0.5f));
+                playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position,"Shoot");
 
-                bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0, -0.12f), this, charDirection));
+                bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0.43f *  playerDirectionInt , -0.12f), this, charDirection));
                 Player.isAttack = true;
                 attackAnimationTime = 0.3f;
                 attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
@@ -440,7 +453,6 @@ namespace ScifiDruid.GameObjects
 
             if (startCool)
             {
-                playerSkillAnimation.Update(gameTime, charDirection);
 
                 if (skill1Cooldown > 0)
                 {
@@ -525,7 +537,7 @@ namespace ScifiDruid.GameObjects
         {
             skill1Cooldown = skill1CoolTime;
             Player.health++;
-            playerSkillAnimation.HealSymbol(position);
+            playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Heal");
             press = true;
         }
 
@@ -542,7 +554,7 @@ namespace ScifiDruid.GameObjects
                 skill3Time = 1;
                 press = true;
 
-                playerSkillAnimation.LionSymbol(hitBox.Position);
+                playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Lion");
             }
 
             //Time Active for 1 sec
@@ -577,9 +589,11 @@ namespace ScifiDruid.GameObjects
         {
             if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Down) && !press && skill2Cooldown <= 0)
             {
-                isAlive = false;
+                //isAlive = false;
                 press = true;
                 skill2Cooldown = skill2CoolTime;
+
+                playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Croc");
             }
 
             if (!isAlive && skill2Cooldown > 0)
@@ -718,13 +732,13 @@ namespace ScifiDruid.GameObjects
             //draw player
             if (!animationEnd)
             {
-                playerAnimation.Draw(spriteBatch, playerOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
                 playerSkillAnimation.Draw(spriteBatch);
+                playerAnimation.Draw(spriteBatch, playerOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
             }
 
             if (lionBody != null)
             {
-                spriteBatch.Draw(lionTexture, ConvertUnits.ToDisplayUnits(lionBody.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(500)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(200))), Color.Black, 0, new Vector2(500 / 2, 200 / 2), 1, SpriteEffects.None, 0);
+                //spriteBatch.Draw(lionTexture, ConvertUnits.ToDisplayUnits(lionBody.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(500)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(200))), Color.Black, 0, new Vector2(500 / 2, 200 / 2), 1, SpriteEffects.None, 0);
             }
             //if shoot
             /*if (_bulletBody != null && !_bulletBody.IsDisposed)

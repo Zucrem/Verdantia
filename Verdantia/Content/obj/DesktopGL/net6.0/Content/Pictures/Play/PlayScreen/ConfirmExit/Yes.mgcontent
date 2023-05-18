@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Code/Verdantia/Verdantia/Content/Pictures/Play/PlayScreen/ConfirmExit/Yes.png</SourceFile>
-  <SourceTime>2023-05-17T23:48:51.2293787+07:00</SourceTime>
-  <DestFile>D:/Code/Verdantia/Verdantia/Content/bin/DesktopGL/Content/Pictures/Play/PlayScreen/ConfirmExit/Yes.xnb</DestFile>
-  <DestTime>2023-05-18T05:24:40.778207+07:00</DestTime>
+  <SourceFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/ConfirmExit/Yes.png</SourceFile>
+  <SourceTime>2023-05-18T01:04:58.2771508+07:00</SourceTime>
+  <DestFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/bin/DesktopGL/Content/Pictures/Play/PlayScreen/ConfirmExit/Yes.xnb</DestFile>
+  <DestTime>2023-05-18T11:15:39.7588989+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
