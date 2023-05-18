@@ -589,7 +589,7 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/Skills/BossSkills/JaneAmmoSheet.png
 
-#begin Pictures/Play/Skills/PlayerSkills/PlayerSkills.png
+#begin Pictures/Play/Skills/PlayerSkills/playerSkills.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -599,7 +599,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Play/Skills/PlayerSkills/PlayerSkills.png
+/build:Pictures/Play/Skills/PlayerSkills/playerSkills.png
 
 #begin Pictures/Play/StageScreen/Stage1Tileset/specialProps1.png
 /importer:TextureImporter

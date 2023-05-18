@@ -26,7 +26,7 @@ namespace ScifiDruid.GameScreen
     {
         //create switch and wall
         private SwitchWall switch_wall;
-        private GameObjects.StageObject stage_wall;
+        private StageObject stage_wall;
 
         //create enemy
         private List<Enemy> allEnemies;
