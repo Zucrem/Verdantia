@@ -35,15 +35,15 @@ namespace ScifiDruid.GameObjects
         protected Rectangle sourceRect;
 
 
-        public StageObject(Texture2D texture) : base(texture)
+        public StageObject(Texture2D texture, Vector2 size, Vector2 texturePosition) : base(texture)
         {
             this.texture = texture;
+            spriteSize = size;
+            spriteVector = texturePosition;
         }
 
         public void Initial(Rectangle spawnPosition)
         {
-            spriteSize = new Vector2(32, 192);
-            spriteVector = new Vector2(0, 0);
 
             textureHeight = (int)size.Y;
             textureWidth = (int)size.X;

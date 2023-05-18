@@ -46,9 +46,12 @@ namespace ScifiDruid.GameObjects
         private SwitchStatus curStatus;
 
 
-        public SwitchWall(Texture2D texture) : base(texture)
+        public SwitchWall(Texture2D texture, Vector2 size, Vector2 switchCloseTexPos, Vector2 switchOpenTexPos) : base(texture)
         {
             this.texture = texture;
+            spriteSize = size;
+            switchClosePos = switchCloseTexPos;
+            switchOpenPos = switchOpenTexPos;
         }
 
         protected enum SwitchStatus
@@ -59,10 +62,6 @@ namespace ScifiDruid.GameObjects
 
         public void Initial(Rectangle spawnPosition)
         {
-            spriteSize = new Vector2(32, 32);
-            switchClosePos = new Vector2(32, 0);
-            switchOpenPos = new Vector2(64, 0);
-
             textureHeight = (int)size.Y;
             textureWidth = (int)size.X;
 

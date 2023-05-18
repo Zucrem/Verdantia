@@ -625,6 +625,42 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/StageScreen/Stage1Tileset/tileset1.png
 
+#begin Pictures/Play/StageScreen/Stage2Tileset/specialProps2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/StageScreen/Stage2Tileset/specialProps2.png
+
+#begin Pictures/Play/StageScreen/Stage2Tileset/tileset2_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/StageScreen/Stage2Tileset/tileset2_1.png
+
+#begin Pictures/Play/StageScreen/Stage2Tileset/tileset2_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/StageScreen/Stage2Tileset/tileset2_2.png
+
 #begin Pictures/Splash/SplashScreen/Black.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -660,4 +696,13 @@
 
 #begin Stage1.tsx
 /copy:Stage1.tsx
+
+#begin Stage2_1.tsx
+/copy:Stage2_1.tsx
+
+#begin Stage2_2.tsx
+/copy:Stage2_2.tsx
+
+#begin Stage2.tmx
+/copy:Stage2.tmx
 

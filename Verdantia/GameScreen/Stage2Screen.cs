@@ -26,11 +26,12 @@ namespace ScifiDruid.GameScreen
         private SwitchWall switch_wall2;
         private StageObject stage_wall2;
 
-        private SwitchWall switch_wall3;
-        private StageObject stage_wall3;
+        //panel moving and falling
+        private StageObject panelMove;
+        private List<StageObject> panelMoveBlocks;
 
-        private SwitchWall switch_wall4;
-        private StageObject stage_wall4;
+        private StageObject panelFall;
+        private List<StageObject> panelFallBlocks;
 
         //create enemy
         private List<Enemy> allEnemies;
@@ -55,20 +56,16 @@ namespace ScifiDruid.GameScreen
 
         //if open switch and wall gone
         private Rectangle switch_button1;
-        private Rectangle rock_wall1;
+        private Rectangle sign_wall1;
         private bool isOpenSwitch1 = false;
 
         private Rectangle switch_button2;
-        private Rectangle rock_wall2;
+        private Rectangle sign_wall2;
         private bool isOpenSwitch2 = false;
 
         private Rectangle switch_button3;
-        private Rectangle rock_wall3;
+        private Rectangle sign_wall3;
         private bool isOpenSwitch3 = false;
-
-        private Rectangle switch_button4;
-        private Rectangle rock_wall4;
-        private bool isOpenSwitch4 = false;
 
         //special panel
         private Rectangle movingLRBlock;
@@ -82,6 +79,17 @@ namespace ScifiDruid.GameScreen
         //Map Theme
         private Song Stage2Theme;
         private Song janeTheme;
+
+        //switch and wall size and panel
+        private Vector2 switch_size = new Vector2(32, 32);
+        private Vector2 switch_close_textureSize = new Vector2(64, 2);
+        private Vector2 switch_open_textureSize = new Vector2(96, 2);
+
+        private Vector2 wall_size = new Vector2(64, 192);
+        private Vector2 wall_textureSize = new Vector2(0, 10);
+
+        private Vector2 panel_size = new Vector2(64, 32);
+        private Vector2 panel_textureSize = new Vector2(64, 66);
         public override void Initial()
         {
             base.Initial();
@@ -117,6 +125,11 @@ namespace ScifiDruid.GameScreen
             flyMonsterRects = new List<Rectangle>();
             bossRect = new Rectangle();
 
+
+            movingLRBlocks = new List<Rectangle>();
+            movingUDBlocks = new List<Rectangle>();
+            fallingBlocks = new List<Rectangle>();
+
             //add list rectangle
             foreach (var o in map.ObjectGroups["Blocks"].Objects)
             {
@@ -151,7 +164,7 @@ namespace ScifiDruid.GameScreen
             {
                 if (o.Name.Equals("wall1"))
                 {
-                    rock_wall1 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 50, (int)o.Width, (int)o.Height);
+                    sign_wall1 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 38, (int)o.Width, (int)o.Height);
                 }
                 if (o.Name.Equals("switch1"))
                 {
@@ -160,7 +173,7 @@ namespace ScifiDruid.GameScreen
 
                 if (o.Name.Equals("wall2"))
                 {
-                    rock_wall2 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 50, (int)o.Width, (int)o.Height);
+                    sign_wall2 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 38, (int)o.Width, (int)o.Height);
                 }
                 if (o.Name.Equals("switch2"))
                 {
@@ -170,22 +183,13 @@ namespace ScifiDruid.GameScreen
 
                 if (o.Name.Equals("wall3"))
                 {
-                    rock_wall3 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 50, (int)o.Width, (int)o.Height);
+                    sign_wall3 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 38, (int)o.Width, (int)o.Height);
                 }
                 if (o.Name.Equals("switch3"))
                 {
                     switch_button3 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
                 }
 
-
-                if (o.Name.Equals("wall4"))
-                {
-                    rock_wall4 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 50, (int)o.Width, (int)o.Height);
-                }
-                if (o.Name.Equals("switch4"))
-                {
-                    switch_button4 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
-                }
             }
             foreach (var o in map.ObjectGroups["FallingBlocks"].Objects)
             {
@@ -255,7 +259,7 @@ namespace ScifiDruid.GameScreen
             }
             foreach (var o in map.ObjectGroups["Boss"].Objects)
             {
-                if (o.Name.Equals("boss"))
+                if (o.Name.Equals("Boss"))
                 {
                     bossRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
                 }
@@ -288,8 +292,8 @@ namespace ScifiDruid.GameScreen
 
             //create player on position
 
-            player.Initial(startRect);
-            //player.Initial(boss_event);
+            //player.Initial(startRect);
+            player.Initial(boss_event);
 
             //create enemy on position
             allEnemies = new List<Enemy>();
@@ -360,30 +364,18 @@ namespace ScifiDruid.GameScreen
 
             //switch event
             //create switch button on position
-            switch_wall1 = new SwitchWall(switch_wall_Tex){size = new Vector2(32, 32)};
+            switch_wall1 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) {size = new Vector2(32, 32)};
             switch_wall1.Initial(switch_button1);
 
-            switch_wall2 = new SwitchWall(switch_wall_Tex){size = new Vector2(32, 32)};
+            switch_wall2 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) {size = new Vector2(32, 32)};
             switch_wall2.Initial(switch_button2);
 
-            switch_wall3 = new SwitchWall(switch_wall_Tex){ size = new Vector2(32, 32)};
-            switch_wall3.Initial(switch_button3);
-
-            switch_wall4 = new SwitchWall(switch_wall_Tex){ size = new Vector2(32, 32)};
-            switch_wall4.Initial(switch_button4);
-
             //create wall button on position
-            stage_wall1 = new StageObject(switch_wall_Tex){size = new Vector2(32, 192)};
-            stage_wall1.Initial(rock_wall1);
+            stage_wall1 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) {size = new Vector2(64, 182)};
+            stage_wall1.Initial(sign_wall1);
 
-            stage_wall2 = new StageObject(switch_wall_Tex) { size = new Vector2(32, 192) };
-            stage_wall2.Initial(rock_wall2);
-
-            stage_wall3 = new StageObject(switch_wall_Tex) { size = new Vector2(32, 192) };
-            stage_wall3.Initial(rock_wall3);
-
-            stage_wall4 = new StageObject(switch_wall_Tex) { size = new Vector2(32, 192) };
-            stage_wall4.Initial(rock_wall4);
+            stage_wall2 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
+            stage_wall2.Initial(sign_wall2);
 
             //add all enemy for player to know em all
             player.enemies = allEnemies;
@@ -393,11 +385,11 @@ namespace ScifiDruid.GameScreen
             base.LoadContent();
 
             //button and rock wall
-            /*switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage2Tileset/specialProps2");
+            switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage2Tileset/specialProps2");
 
             //bg music and sfx
-            janeTheme = content.Load<Song>("Songs/Stage1Screen/BossStage2Theme");
-            MediaPlayer.Play(janeTheme);*/
+            //janeTheme = content.Load<Song>("Songs/Stage1Screen/BossStage2Theme");
+            //MediaPlayer.Play(janeTheme);
 
             Initial();
         }
@@ -431,19 +423,15 @@ namespace ScifiDruid.GameScreen
                         //switch button
                         switch_wall1.Update(gameTime);
                         switch_wall2.Update(gameTime);
-                        switch_wall3.Update(gameTime);
-                        switch_wall4.Update(gameTime);
                         //stage wall
                         stage_wall1.Update(gameTime);
                         stage_wall2.Update(gameTime);
-                        stage_wall3.Update(gameTime);
-                        stage_wall4.Update(gameTime);
 
                         //if player get into boss state
                         if (!created_boss && player.IsContact(player.hitBox, "Boss_event"))
                         {
                             boss_area = true;
-                            MediaPlayer.Stop();
+                            //MediaPlayer.Stop();
 
                             //set player to inactive before boss
                             player.playerStatus = PlayerStatus.IDLE;
@@ -464,7 +452,7 @@ namespace ScifiDruid.GameScreen
                             created_boss = true;
 
                             //player Song
-                            MediaPlayer.Play(janeTheme);
+                            //MediaPlayer.Play(janeTheme);
                         }
 
                         //switch event
@@ -479,15 +467,6 @@ namespace ScifiDruid.GameScreen
                             isOpenSwitch2 = true;
                         }
 
-                        if (!isOpenSwitch3 && switch_wall3.pressSwitch)
-                        {
-                            isOpenSwitch3 = true;
-                        }
-
-                        if (!isOpenSwitch4 && switch_wall4.pressSwitch)
-                        {
-                            isOpenSwitch4 = true;
-                        }
                         //after open switch = clear wall
                         if (isOpenSwitch1)
                         {
@@ -498,16 +477,6 @@ namespace ScifiDruid.GameScreen
                         {
                             stage_wall2.wallHitBox.Dispose();
                         }
-
-                        if (isOpenSwitch3)
-                        {
-                            stage_wall3.wallHitBox.Dispose();
-                        }
-
-                        if (isOpenSwitch4)
-                        {
-                            stage_wall4.wallHitBox.Dispose();
-                        }
                     }
                 }
             }
@@ -516,6 +485,50 @@ namespace ScifiDruid.GameScreen
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            //draw tileset for map1
+            if (play)
+            {
+                if (gamestate == GameState.START || gamestate == GameState.PLAY)
+                {
+                    tilemapManager.Draw(spriteBatch);
+
+                    //draw enemy animation
+                    /*foreach (RangeEnemy flameBot in flameMechEnemies)
+                    {
+                        flameBot.Draw(spriteBatch);
+                    }
+                    foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
+                    {
+                        chainsawBot.Draw(spriteBatch);
+                    }*/
+
+                    //draw boss animation
+                    boss.Draw(spriteBatch);
+
+                    //draw player animation
+                    player.Draw(spriteBatch);
+
+                    ////draw switch animation
+                    switch_wall1.Draw(spriteBatch);
+                    switch_wall2.Draw(spriteBatch);
+                    //draw wall1
+                    if (!isOpenSwitch1)
+                    {
+                        stage_wall1.Draw(spriteBatch);
+                    }
+                    //draw wall2
+                    if (!isOpenSwitch2)
+                    {
+                        stage_wall2.Draw(spriteBatch);
+                    }
+
+                    if (!fadeFinish)
+                    {
+                        spriteBatch.Draw(blackTex, Vector2.Zero, colorStart);
+                    }
+                }
+            }
+
             base.Draw(spriteBatch);
         }
     }

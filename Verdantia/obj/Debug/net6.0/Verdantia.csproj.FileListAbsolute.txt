@@ -274,3 +274,9 @@ D:\Code\Verdantia\Verdantia\obj\Debug\net6.0\refint\Verdantia.dll
 D:\Code\Verdantia\Verdantia\obj\Debug\net6.0\Verdantia.pdb
 D:\Code\Verdantia\Verdantia\obj\Debug\net6.0\Verdantia.genruntimeconfig.cache
 D:\Code\Verdantia\Verdantia\obj\Debug\net6.0\ref\Verdantia.dll
+C:\Users\acer\Desktop\javaprojection\GameFinal\Verdantia\bin\Debug\net6.0\Content\Pictures\Play\StageScreen\Stage2Tileset\specialProps2.xnb
+C:\Users\acer\Desktop\javaprojection\GameFinal\Verdantia\bin\Debug\net6.0\Content\Pictures\Play\StageScreen\Stage2Tileset\tileset2_1.xnb
+C:\Users\acer\Desktop\javaprojection\GameFinal\Verdantia\bin\Debug\net6.0\Content\Pictures\Play\StageScreen\Stage2Tileset\tileset2_2.xnb
+C:\Users\acer\Desktop\javaprojection\GameFinal\Verdantia\bin\Debug\net6.0\Content\Stage2.tmx
+C:\Users\acer\Desktop\javaprojection\GameFinal\Verdantia\bin\Debug\net6.0\Content\Stage2_1.tsx
+C:\Users\acer\Desktop\javaprojection\GameFinal\Verdantia\bin\Debug\net6.0\Content\Stage2_2.tsx
