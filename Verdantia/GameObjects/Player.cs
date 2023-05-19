@@ -18,6 +18,7 @@ using Box2DNet.Factories;
 using Box2DNet;
 using Box2DNet.Dynamics.Contacts;
 using System.Data;
+using System.Reflection.Metadata;
 
 namespace ScifiDruid.GameObjects
 {
@@ -122,6 +123,12 @@ namespace ScifiDruid.GameObjects
 
         private int playerDirectionInt = 1;
 
+        //all sound effect
+        private SoundEffect playerShoot, playerCrocShoot, playerDeadSound, playerJumpSound;
+
+        //all boolean to check sound not repeat
+        private bool playerDead = false;
+
         public enum PlayerStatus
         {
             IDLE,
@@ -203,6 +210,15 @@ namespace ScifiDruid.GameObjects
             }
 
             base.Initial();
+            LoadContent();
+        }
+
+        public void LoadContent()
+        {
+            ContentManager content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
+            //all sound effetc for player
+            //playerDeadSound = content.Load<SoundEffect>("Sounds/Player/PlayerDead");
+            //playerJumpSound = content.Load<SoundEffect>("Sounds/Player/PlayerJump");
         }
 
         public override void Update(GameTime gameTime)
@@ -268,10 +284,12 @@ namespace ScifiDruid.GameObjects
 
             //all animation
             //if step on dead block
-            if (IsContact(hitBox, "Dead") || (hitCooldown <= 1.7 && touchGround && Player.health == 0))
+            if ((IsContact(hitBox, "Dead") || (hitCooldown <= 1.7 && touchGround && Player.health == 0)) && playerDead == false)
             {
                 isAlive = false;
-                playerStatus = PlayerStatus.DEAD;
+                playerStatus = PlayerStatus.DEAD; 
+                //playerDeadSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                playerDead = true;
             }
 
             //if dead animation animationEnd
@@ -342,6 +360,7 @@ namespace ScifiDruid.GameObjects
                 if (touchGround)
                 {
                     playerStatus = PlayerStatus.JUMP;
+                    //playerJumpSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                 }
                 else
                 {

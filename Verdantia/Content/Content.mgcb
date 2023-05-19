@@ -637,7 +637,7 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/StageScreen/Stage2Tileset/specialProps2.png
 
-#begin Pictures/Play/StageScreen/Stage2Tileset/tileset2_1.png
+#begin Pictures/Play/StageScreen/Stage2Tileset/tileset2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -647,19 +647,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Play/StageScreen/Stage2Tileset/tileset2_1.png
-
-#begin Pictures/Play/StageScreen/Stage2Tileset/tileset2_2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Pictures/Play/StageScreen/Stage2Tileset/tileset2_2.png
+/build:Pictures/Play/StageScreen/Stage2Tileset/tileset2.png
 
 #begin Pictures/Splash/SplashScreen/Black.png
 /importer:TextureImporter
@@ -691,18 +679,57 @@
 /processorParam:Quality=Best
 /build:Songs/Stage1Screen/BossStage1Theme.mp3
 
+#begin Songs/Stage1Screen/Stage1Theme.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Songs/Stage1Screen/Stage1Theme.mp3
+
+#begin Songs/Stage2Screen/BossStage2Theme.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Songs/Stage2Screen/BossStage2Theme.mp3
+
+#begin Songs/Stage2Screen/Stage2Theme.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Songs/Stage2Screen/Stage2Theme.mp3
+
+#begin Songs/Stage3Screen/BossStage3Theme.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Songs/Stage3Screen/BossStage3Theme.mp3
+
+#begin Songs/Stage3Screen/Stage3Theme.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Songs/Stage3Screen/Stage3Theme.mp3
+
+#begin Sounds/Player/PlayerDead.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Player/PlayerDead.wav
+
+#begin Sounds/Player/PlayerJump.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Player/PlayerJump.wav
+
 #begin Stage1.tmx
 /copy:Stage1.tmx
 
 #begin Stage1.tsx
 /copy:Stage1.tsx
 
-#begin Stage2_1.tsx
-/copy:Stage2_1.tsx
-
-#begin Stage2_2.tsx
-/copy:Stage2_2.tsx
-
 #begin Stage2.tmx
 /copy:Stage2.tmx
+
+#begin Stage2.tsx
+/copy:Stage2.tsx
 

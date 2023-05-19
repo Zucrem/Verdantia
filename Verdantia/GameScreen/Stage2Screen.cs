@@ -77,7 +77,7 @@ namespace ScifiDruid.GameScreen
         private List<Rectangle> fallingBlocks;
 
         //Map Theme
-        private Song Stage2Theme;
+        private Song stage2Theme;
         private Song janeTheme;
 
         //switch and wall size and panel
@@ -164,7 +164,7 @@ namespace ScifiDruid.GameScreen
             {
                 if (o.Name.Equals("wall1"))
                 {
-                    sign_wall1 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 38, (int)o.Width, (int)o.Height);
+                    sign_wall1 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 125, (int)o.Width, (int)o.Height);
                 }
                 if (o.Name.Equals("switch1"))
                 {
@@ -173,21 +173,11 @@ namespace ScifiDruid.GameScreen
 
                 if (o.Name.Equals("wall2"))
                 {
-                    sign_wall2 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 38, (int)o.Width, (int)o.Height);
+                    sign_wall2 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 27, (int)o.Width, (int)o.Height);
                 }
                 if (o.Name.Equals("switch2"))
                 {
                     switch_button2 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
-                }
-
-
-                if (o.Name.Equals("wall3"))
-                {
-                    sign_wall3 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 38, (int)o.Width, (int)o.Height);
-                }
-                if (o.Name.Equals("switch3"))
-                {
-                    switch_button3 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
                 }
 
             }
@@ -292,8 +282,8 @@ namespace ScifiDruid.GameScreen
 
             //create player on position
 
-            //player.Initial(startRect);
-            player.Initial(boss_event);
+            player.Initial(startRect);
+            //player.Initial(boss_event);
 
             //create enemy on position
             allEnemies = new List<Enemy>();
@@ -388,8 +378,9 @@ namespace ScifiDruid.GameScreen
             switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage2Tileset/specialProps2");
 
             //bg music and sfx
-            //janeTheme = content.Load<Song>("Songs/Stage1Screen/BossStage2Theme");
-            //MediaPlayer.Play(janeTheme);
+            stage2Theme = content.Load<Song>("Songs/Stage2Screen/Stage2Theme");
+            janeTheme = content.Load<Song>("Songs/Stage2Screen/BossStage2Theme");
+            MediaPlayer.Play(stage2Theme);
 
             Initial();
         }
@@ -431,7 +422,7 @@ namespace ScifiDruid.GameScreen
                         if (!created_boss && player.IsContact(player.hitBox, "Boss_event"))
                         {
                             boss_area = true;
-                            //MediaPlayer.Stop();
+                            MediaPlayer.Stop();
 
                             //set player to inactive before boss
                             player.playerStatus = PlayerStatus.IDLE;
@@ -452,7 +443,7 @@ namespace ScifiDruid.GameScreen
                             created_boss = true;
 
                             //player Song
-                            //MediaPlayer.Play(janeTheme);
+                            MediaPlayer.Play(janeTheme);
                         }
 
                         //switch event

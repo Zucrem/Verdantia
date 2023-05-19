@@ -55,7 +55,7 @@ namespace ScifiDruid.GameScreen
         private bool isOpenSwitch = false;
 
         //Map Theme
-        private Song Stage1Theme;
+        private Song stage1Theme;
         private Song lucasTheme;
 
         //switch and wall size
@@ -307,8 +307,9 @@ namespace ScifiDruid.GameScreen
             switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage1Tileset/specialProps1");
 
             //bg music and sfx
+            stage1Theme = content.Load<Song>("Songs/Stage1Screen/Stage1Theme");
             lucasTheme = content.Load<Song>("Songs/Stage1Screen/BossStage1Theme");
-            MediaPlayer.Play(lucasTheme);
+            MediaPlayer.Play(stage1Theme);
 
             Initial();
         }

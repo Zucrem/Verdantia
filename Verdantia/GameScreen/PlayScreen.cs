@@ -18,6 +18,7 @@ using Box2DNet;
 using TiledSharp;
 using System.ComponentModel.DataAnnotations;
 using Box2DNet.Content;
+using Microsoft.Xna.Framework.Audio;
 
 namespace ScifiDruid.GameScreen
 {
