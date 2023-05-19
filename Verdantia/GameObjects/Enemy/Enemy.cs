@@ -35,6 +35,7 @@ namespace ScifiDruid.GameObjects
         //for animation
         protected Vector2 idleSize;
         protected Vector2 runSize;
+        protected Vector2 detectPlayerSize;
         protected Vector2 deadSize;
 
         public Body enemyHitBox;       // to check the hit of bullet
@@ -43,6 +44,7 @@ namespace ScifiDruid.GameObjects
 
         protected List<Vector2> idleSpriteVector = new List<Vector2>();
         protected List<Vector2> runSpriteVector = new List<Vector2>();
+        protected List<Vector2> detectPlayerSpriteVector = new List<Vector2>();
         protected List<Vector2> deadSpriteVector = new List<Vector2>();
 
         protected List<Vector2> spriteVector = new List<Vector2>();
@@ -84,6 +86,7 @@ namespace ScifiDruid.GameObjects
         {
             IDLE,
             RUN,
+            DETECT,
             DEAD,
             END
         }

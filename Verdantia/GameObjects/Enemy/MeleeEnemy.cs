@@ -38,11 +38,13 @@ namespace ScifiDruid.GameObjects
 
             idleSize = sizeList[0];
             runSize = sizeList[1];
-            deadSize = sizeList[2];
+            detectPlayerSize = sizeList[2];
+            deadSize = sizeList[3];
 
             idleSpriteVector = animateList[0];
             runSpriteVector = animateList[1];
-            deadSpriteVector = animateList[2];
+            detectPlayerSpriteVector = animateList[2];
+            deadSpriteVector = animateList[3];
 
             frames = 0;
         }
@@ -255,6 +257,12 @@ namespace ScifiDruid.GameObjects
                     delay = 200f;
                     spriteVector = runSpriteVector;
                     spriteSize = new Vector2(runSize.X, runSize.Y);
+                    allframes = spriteVector.Count();
+                    break;
+                case EnemyStatus.DETECT:
+                    delay = 200f;
+                    spriteVector = detectPlayerSpriteVector;
+                    spriteSize = detectPlayerSize;
                     allframes = spriteVector.Count();
                     break;
                 case EnemyStatus.DEAD:
