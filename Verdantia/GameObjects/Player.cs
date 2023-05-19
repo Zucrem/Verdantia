@@ -61,6 +61,8 @@ namespace ScifiDruid.GameObjects
         private float attackTime;
         private int dashTime;
 
+        private bool isShootup;
+
         //static for change in shop and apply to all Stage
         public static int health;
         public static float mana;
@@ -238,7 +240,7 @@ namespace ScifiDruid.GameObjects
                     touchGround = false;
                 }
 
-                if (IsContact(hitBox, "Enemy") && playerStatus != PlayerStatus.DASH)
+                if ( (IsContact(hitBox, "Enemy") || IsContact(hitBox, "SkillBoss")) && playerStatus != PlayerStatus.DASH)
                 {
                     GotHit();
                 }
@@ -262,7 +264,7 @@ namespace ScifiDruid.GameObjects
                 {
                     foreach (Body item in Singleton.Instance.world.BodyList)
                     {
-                        if (item.UserData.Equals("Enemy"))
+                        if (item.UserData.Equals("Enemy") || item.UserData.Equals("SkillBoss"))
                         {
                             hitBox.RestoreCollisionWith(item);
                         }
@@ -382,11 +384,24 @@ namespace ScifiDruid.GameObjects
         {
             attackDelay = (int)gameTime.TotalGameTime.TotalMilliseconds - attackTimeDelay;
 
-            if (currentKeyState.IsKeyDown(Keys.X) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && Player.mana > 0)
+            //Normal Shoot left or right
+            if (currentKeyState.IsKeyDown(Keys.X) && currentKeyState.IsKeyUp(Keys.Up) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && Player.mana > 0)
             {
                 playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position,"Shoot");
-
+                isShootup = false;
                 bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0.43f *  playerDirectionInt , -0.12f), this, charDirection));
+                Player.isAttack = true;
+                attackAnimationTime = 0.3f;
+                attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
+                attackTime = 5;
+                bulletList[bulletList.Count - 1].Shoot(gameTime);
+                Player.mana -= 5;
+            }
+            //Shoot Up
+            else if (currentKeyState.IsKeyDown(Keys.X) && currentKeyState.IsKeyDown(Keys.Up) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && Player.mana > 0)
+            {
+                isShootup = true;
+                bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0, -1), this, charDirection,isShootup));
                 Player.isAttack = true;
                 attackAnimationTime = 0.3f;
                 attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
@@ -409,16 +424,32 @@ namespace ScifiDruid.GameObjects
             {
                 attackAnimationTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                switch (playerStatus)
+                if (isShootup)
                 {
-                    case PlayerStatus.IDLE:
-                        playerStatus = PlayerStatus.SHOOT;
-
-                        break;
-                    case PlayerStatus.RUN:
-                        playerStatus = PlayerStatus.SHOOT_RUN;
-                        break;
+                    switch (playerStatus)
+                    {
+                        case PlayerStatus.IDLE:
+                            playerStatus = PlayerStatus.SHOOT_UP;
+                            break;
+                        case PlayerStatus.RUN:
+                            playerStatus = PlayerStatus.SHOOT_UP_RUN;
+                            break;
+                    }
                 }
+                else
+                {
+                    switch (playerStatus)
+                    {
+                        case PlayerStatus.IDLE:
+                            playerStatus = PlayerStatus.SHOOT;
+
+                            break;
+                        case PlayerStatus.RUN:
+                            playerStatus = PlayerStatus.SHOOT_RUN;
+                            break;
+                    }
+                }
+                
             }
 
             if (bulletList.Count == 0)
@@ -539,7 +570,7 @@ namespace ScifiDruid.GameObjects
                 playerStatus = PlayerStatus.DASH;
                 foreach (Body item in Singleton.Instance.world.BodyList)
                 {
-                    if (item.UserData != null && item.UserData.Equals("Enemy"))
+                    if (item.UserData != null && (item.UserData.Equals("Enemy") || item.UserData.Equals("SkillBoss")))
                     {
                         hitBox.IgnoreCollisionWith(item);
                     }
@@ -626,7 +657,6 @@ namespace ScifiDruid.GameObjects
         {
             if (hitCooldown <= 0)
             {
-
                 if (Player.health > 0)
                 {
                     Player.health--;
@@ -648,7 +678,7 @@ namespace ScifiDruid.GameObjects
             {
                 foreach (Body item in Singleton.Instance.world.BodyList)
                 {
-                    if (item.UserData.Equals("Enemy"))
+                    if (item.UserData.Equals("Enemy") || item.UserData.Equals("SkillBoss"))
                     {
                         enemyContract.Clear();
                         hitBox.IgnoreCollisionWith(item);
@@ -672,7 +702,6 @@ namespace ScifiDruid.GameObjects
                 bool fixtureA_Check = fixtureA.UserData != null && fixtureA.UserData.Equals(contact);
                 bool fixtureB_Check = fixtureB.UserData != null && fixtureB.UserData.Equals(contact);
 
-
                 // Check if the contact fixture is the ground
                 if (contactFixture.IsTouching && (fixtureA_Check || fixtureB_Check))
                 {
@@ -693,6 +722,7 @@ namespace ScifiDruid.GameObjects
                             }
                             else
                             {
+                                Debug.WriteLine("SS");
                                 return false;
                             }
                         }
@@ -700,7 +730,7 @@ namespace ScifiDruid.GameObjects
 
                     foreach (Body body in Singleton.Instance.world.BodyList)
                     {
-                        if (body.UserData == null || !body.UserData.Equals("Enemy") || !(body.BodyId == fixtureA.BodyId || body.BodyId == fixtureB.BodyId))
+                        if (body.UserData == null || ( !body.UserData.Equals("Enemy") && !body.UserData.Equals("SkillBoss") ) || !(body.BodyId == fixtureA.BodyId || body.BodyId == fixtureB.BodyId))
                         {
                             continue;
                         }
