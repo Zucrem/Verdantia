@@ -363,7 +363,7 @@ namespace ScifiDruid.GameObjects
             switch (curBossStatus)
             {
                 case BossStatus.IDLE:
-                    delay = 200f;
+                    delay = 300f;
                     spriteVector = idleSpriteVector;
                     spriteSize = new Vector2(idleSize.X, idleSize.Y);
                     allframes = spriteVector.Count();
