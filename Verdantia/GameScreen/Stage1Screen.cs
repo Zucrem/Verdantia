@@ -202,7 +202,8 @@ namespace ScifiDruid.GameScreen
             //create player on position
 
             player.Initial(startRect);
-            //player.Initial(boss_event);ww
+            //player.Initial(bossState);
+
 
             //range enemy
             flameMechEnemies = new List<RangeEnemy>();
@@ -231,8 +232,8 @@ namespace ScifiDruid.GameScreen
             //melee enemy
             chainsawMechEnemies = new List<MeleeEnemy>();
             chainsawMechPositionList = ground2MonsterRects.Count();
-            List<Vector2> chainsawMechSizeList = new List<Vector2>() { new Vector2(118, 100), new Vector2(136, 100), new Vector2(118, 100) };
-            List<List<Vector2>> chainsawMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(144, 0) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 254), new Vector2(142, 254) } };
+            List<Vector2> chainsawMechSizeList = new List<Vector2>() { new Vector2(118, 100), new Vector2(136, 100), new Vector2(136, 100), new Vector2(118, 100) };
+            List<List<Vector2>> chainsawMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(144, 0) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 254), new Vector2(142, 254) } };
             for (int i = 0; i < chainsawMechPositionList; i++)
             {
                 chainsawMech = new MeleeEnemy(chainsawMechTex, chainsawMechSizeList, chainsawMechAnimateList)
@@ -323,6 +324,12 @@ namespace ScifiDruid.GameScreen
                         }
                         //boss
                         boss.Update(gameTime);
+
+                        //check if boss death then
+                        if (!boss.isAlive && created_boss)
+                        {
+                            MediaPlayer.Stop();
+                        }
 
                         //switch button
                         switch_wall.Update(gameTime);

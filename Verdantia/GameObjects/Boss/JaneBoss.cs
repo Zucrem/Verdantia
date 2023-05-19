@@ -25,6 +25,11 @@ namespace ScifiDruid.GameObjects
         private Vector2 shootGunSize;
         private Vector2 shootPlasmaSize;
 
+        private Vector2 prepareSize;
+        private Vector2 dashInSize;
+        private Vector2 dashOutSize;
+        private Vector2 punchSize;
+
         //boolean to do action
         private bool action1 = false;
         private bool action2 = false;
@@ -42,7 +47,8 @@ namespace ScifiDruid.GameObjects
         private List<Vector2> callDownBombSpriteVector;
 
         private List<Vector2> prepareSpriteVector;
-        private List<Vector2> dashSpriteVector;
+        private List<Vector2> dashInSpriteVector;
+        private List<Vector2> dashOutSpriteVector;
         private List<Vector2> punchSpriteVector;
 
         public JaneBoss(Texture2D texture) : base(texture)
@@ -53,8 +59,11 @@ namespace ScifiDruid.GameObjects
             shootGunSize = new Vector2(74, 112);
             shootPlasmaSize = new Vector2(88, 88);
             action2Size = new Vector2(84, 110);
-            action3Size = new Vector2(88, 120);
-            deadSize = new Vector2(34, 90);
+            prepareSize = new Vector2(78, 98);
+            dashInSize = new Vector2(78, 98);
+            dashOutSize = new Vector2(90, 104);
+            punchSize = new Vector2(92, 120);
+            deadSize = new Vector2(74, 112);
 
             //idle spritevector
             idleSpriteVector = new List<Vector2>() { new Vector2(8, 0), new Vector2(140, 0), new Vector2(256, 0)};
@@ -67,12 +76,13 @@ namespace ScifiDruid.GameObjects
             callDownBombSpriteVector = new List<Vector2>() { new Vector2(362, 148), new Vector2(478, 148), new Vector2(584, 148)};
 
             //action3 spritevector
-            prepareSpriteVector = new List<Vector2>() { new Vector2(0, 276) };
-            dashSpriteVector = new List<Vector2>() { new Vector2(106, 276), new Vector2(222, 276), new Vector2(346, 276) };
-            punchSpriteVector = new List<Vector2>() { new Vector2(0, 426), new Vector2(122, 426), new Vector2(242, 426)};
+            prepareSpriteVector = new List<Vector2>() { new Vector2(0, 298) };
+            dashInSpriteVector = new List<Vector2>() { new Vector2(134, 298), new Vector2(251, 298), new Vector2(363, 298) };
+            dashOutSpriteVector = new List<Vector2>() { new Vector2(488, 292), new Vector2(589, 294), new Vector2(707, 294) };
+            punchSpriteVector = new List<Vector2>() { new Vector2(4, 426), new Vector2(114, 426), new Vector2(242, 426) };
 
             //dead spritevector
-            deadSpriteVector = new List<Vector2>() { new Vector2(368, 456), new Vector2(472, 456)};
+            deadSpriteVector = new List<Vector2>() { new Vector2(368, 434), new Vector2(472, 434)};
 
             frames = 0;
 
@@ -92,7 +102,8 @@ namespace ScifiDruid.GameObjects
         private enum Action3
         {
             PREPARE,
-            DASH,
+            DASHIN,
+            DASHOUT,
             PUNCH
         }
 
@@ -234,7 +245,7 @@ namespace ScifiDruid.GameObjects
                     }
                     break;
                 case BossStatus.ACTION3:
-                    if (punchState == Action3.PREPARE || punchState == Action3.DASH)
+                    if (punchState == Action3.PREPARE)
                     {
                         if (elapsed >= delay)
                         {
@@ -249,7 +260,7 @@ namespace ScifiDruid.GameObjects
                             elapsed = 0;
                         }
                     }
-                    else if (punchState == Action3.PUNCH)
+                    else if (punchState == Action3.PUNCH || punchState == Action3.DASHIN || punchState == Action3.DASHOUT)
                     {
                         if (elapsed >= delay)
                         {
@@ -294,7 +305,7 @@ namespace ScifiDruid.GameObjects
                         //Skill2();
                         break;
                     case 3:
-                        Skill3();
+                        //Skill3();
                         break;
                 }
             }
@@ -302,7 +313,12 @@ namespace ScifiDruid.GameObjects
 
         public void Skill1()
         {
-            action1 = true;
+            if (!action2)
+            {
+                action2 = true;
+                curBossStatus = BossStatus.ACTION2;
+            }
+
             //clear random action number
             //do animation1
             curBossStatus = BossStatus.ACTION1;
@@ -386,7 +402,7 @@ namespace ScifiDruid.GameObjects
                     break;
                 case BossStatus.ACTION2:
                     delay = 300f;
-                    spriteVector = action2SpriteVector;
+                    spriteVector = callDownBombSpriteVector;
                     spriteSize = new Vector2(action2Size.X, action2Size.Y);
                     allframes = spriteVector.Count();
                     break;
@@ -396,12 +412,19 @@ namespace ScifiDruid.GameObjects
                     switch (punchState)
                     {
                         case Action3.PREPARE:
+                            spriteSize = prepareSize;
                             spriteVector = prepareSpriteVector;
                             break;
-                        case Action3.DASH:
-                            spriteVector = dashSpriteVector;
+                        case Action3.DASHIN:
+                            spriteSize = dashInSize;
+                            spriteVector = dashInSpriteVector;
+                            break;
+                        case Action3.DASHOUT:
+                            spriteSize = dashOutSize;
+                            spriteVector = dashOutSpriteVector;
                             break;
                         case Action3.PUNCH:
+                            spriteSize = punchSize;
                             spriteVector = punchSpriteVector;
                             break;
                     }

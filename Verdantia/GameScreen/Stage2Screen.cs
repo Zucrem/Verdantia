@@ -82,7 +82,7 @@ namespace ScifiDruid.GameScreen
         private Vector2 wall_size = new Vector2(64, 192);
         private Vector2 wall_textureSize = new Vector2(0, 10);
 
-        private Vector2 panel_size = new Vector2(64, 32);
+        private Vector2 panel_size = new Vector2(64, 6);
         private Vector2 panel_textureSize = new Vector2(64, 66);
         public override void Initial()
         {
@@ -262,8 +262,8 @@ namespace ScifiDruid.GameScreen
 
             //create player on position
 
-            player.Initial(startRect);
-            //player.Initial(boss_event);
+            //player.Initial(startRect);
+            player.Initial(bossState);
 
             //create enemy on position
             allEnemies = new List<Enemy>();
@@ -296,8 +296,8 @@ namespace ScifiDruid.GameScreen
             //melee enemy
             chainsawMechEnemies = new List<MeleeEnemy>();
             chainsawMechPositionList = ground2MonsterRects.Count();
-            List<Vector2> chainsawMechSizeList = new List<Vector2>() { new Vector2(118, 100), new Vector2(136, 100), new Vector2(118, 100) };
-            List<List<Vector2>> chainsawMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(144, 0) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 254), new Vector2(142, 254) } };
+            List<Vector2> chainsawMechSizeList = new List<Vector2>() { new Vector2(118, 100), new Vector2(136, 100), new Vector2(136, 100), new Vector2(118, 100) };
+            List<List<Vector2>> chainsawMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(144, 0) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 254), new Vector2(142, 254) } };
             for (int i = 0; i < chainsawMechPositionList; i++)
             {
                 chainsawMech = new MeleeEnemy(chainsawMechTex, chainsawMechSizeList, chainsawMechAnimateList)
@@ -390,6 +390,12 @@ namespace ScifiDruid.GameScreen
                         }*/
                         //boss
                         boss.Update(gameTime);
+
+                        //check if boss death then
+                        if (!boss.isAlive && created_boss)
+                        {
+                            MediaPlayer.Stop();
+                        }
 
                         //switch button
                         switch_wall1.Update(gameTime);

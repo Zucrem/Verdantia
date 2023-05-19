@@ -33,12 +33,14 @@ namespace ScifiDruid.GameObjects
         //shoot and dead Size
         private Vector2 shootSymbolSize = new Vector2(16, 33);
         private Vector2 healSymbolSize = new Vector2(46, 37);
+        private Vector2 dashSymbolSize = new Vector2(100, 77);
         private Vector2 birdSymbolSize = new Vector2(100, 77);
         private Vector2 crocSymbolSize = new Vector2(69, 39);
         private Vector2 lionSymbolSize = new Vector2(230, 220);
         //Vector
         private List<Vector2> shootSymbolRectVector = new List<Vector2>() { new Vector2(247, 2), new Vector2(275, 1), new Vector2(306, 0) };
         private List<Vector2> healSymbolRectVector = new List<Vector2>() { new Vector2(354, 0) };
+        private List<Vector2> dashSymbolRectVector = new List<Vector2>() { new Vector2(272, 367), new Vector2(272, 510), new Vector2(272, 660) };
         private List<Vector2> birdSymbolRectVector = new List<Vector2>() { new Vector2(272, 660), new Vector2(272, 510), new Vector2(272, 367) };
         private List<Vector2> crocSymbolRectVector = new List<Vector2>() { new Vector2(28, 238), new Vector2(140, 239), new Vector2(278, 247) };
         private List<Vector2> lionSymbolRectVector = new List<Vector2>() { new Vector2(0, 284), new Vector2(0, 456), new Vector2(0, 707), new Vector2(0, 980) };
@@ -160,6 +162,14 @@ namespace ScifiDruid.GameObjects
                     symbolOrigin = new Vector2(spriteSize.X / 2, spriteSize.Y / 2);
                     allframes = spriteVector.Count();
                     break;
+                case "Dash":
+                    symbolPosition = position + (new Vector2(1.2f * direction * (-1), -0.12f));
+                    delay = 200f;
+                    spriteSize = dashSymbolSize;
+                    spriteVector = dashSymbolRectVector;
+                    symbolOrigin = new Vector2(spriteSize.X / 2, spriteSize.Y / 2);
+                    allframes = spriteVector.Count();
+                    break;
                 case "Bird":
                     symbolPosition = position + (new Vector2(1.2f * direction * (-1), -0.12f));
                     delay = 200f;
@@ -170,7 +180,7 @@ namespace ScifiDruid.GameObjects
                     break;
                 case "Croc":
                     symbolPosition = position + (new Vector2(0.8f * direction, -0.7f));
-                    delay = 1500f;
+                    delay = 300f;
                     spriteSize = crocSymbolSize;
                     spriteVector = crocSymbolRectVector;
                     symbolOrigin = new Vector2(spriteSize.X / 2, spriteSize.Y / 2);
