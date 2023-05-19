@@ -131,6 +131,8 @@ namespace ScifiDruid.GameObjects
         //all boolean to check sound not repeat
         private bool playerDead = false;
 
+        private bool isCroc = false;
+
         public enum PlayerStatus
         {
             IDLE,
@@ -388,8 +390,12 @@ namespace ScifiDruid.GameObjects
             if (currentKeyState.IsKeyDown(Keys.X) && currentKeyState.IsKeyUp(Keys.Up) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && Player.mana > 0)
             {
                 playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position,"Shoot");
+                bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0.43f * playerDirectionInt, -0.12f), this, charDirection, isCroc, isShootup));
+                if (isCroc)
+                {
+                    isCroc = false;
+                }
                 isShootup = false;
-                bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0.43f *  playerDirectionInt , -0.12f), this, charDirection));
                 Player.isAttack = true;
                 attackAnimationTime = 0.3f;
                 attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
@@ -546,6 +552,7 @@ namespace ScifiDruid.GameObjects
         {
             if (currentKeyState.IsKeyDown(Keys.C) && oldKeyState.IsKeyUp(Keys.C) && dashCooldown <= 0)
             {
+                playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Dash");
                 dashAnimationTime = 0.3f;
                 dashTime = (int)gameTime.TotalGameTime.TotalMilliseconds;
 
@@ -642,7 +649,7 @@ namespace ScifiDruid.GameObjects
                 //isAlive = false;
                 press = true;
                 skill2Cooldown = skill2CoolTime;
-
+                isCroc = true;
                 playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Croc");
             }
 
@@ -791,7 +798,7 @@ namespace ScifiDruid.GameObjects
 
             if (lionBody != null)
             {
-                spriteBatch.Draw(lionTexture, ConvertUnits.ToDisplayUnits(lionBody.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(500)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(200))), Color.Black, 0, new Vector2(500 / 2, 200 / 2), 1, SpriteEffects.None, 0);
+                //spriteBatch.Draw(lionTexture, ConvertUnits.ToDisplayUnits(lionBody.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(500)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(200))), Color.Black, 0, new Vector2(500 / 2, 200 / 2), 1, SpriteEffects.None, 0);
             }
             //if shoot
             /*if (_bulletBody != null && !_bulletBody.IsDisposed)

@@ -620,8 +620,8 @@ namespace ScifiDruid.GameScreen
             if (play)
             {
                 //background
-                //spriteBatch.Draw(blackTex, Vector2.Zero, Color.White);
-                spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
+                spriteBatch.Draw(blackTex, Vector2.Zero, Color.White);
+                //spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
 
                 int mana = (int)Player.mana;
                 int health = (int)Player.health;
