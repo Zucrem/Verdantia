@@ -325,7 +325,7 @@ namespace ScifiDruid.GameScreen
                 speed = 1.2f,
             };
             //spawn boss
-            boss.Initial(bossRect, player);
+            boss.Initial(bossRect, player, boss_event);
 
             //add to all enemy for
             //allEnemies.AddRange(flameMechEnemies);

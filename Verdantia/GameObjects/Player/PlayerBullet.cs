@@ -82,7 +82,7 @@ namespace ScifiDruid.GameObjects
             bulletBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bulletSizeX), ConvertUnits.ToSimUnits(bulletSizeY), 0, position, 0, BodyType.Dynamic, "Bullet");
             bulletBody.IgnoreGravity = true;
             bulletBody.IgnoreCollisionWith(player.hitBox);
-
+            bulletBody.IsSensor = true;
             //animation
             bulletAliveSize = new Vector2(40, 9);
             bulletDeadSize = new Vector2(16, 21);
