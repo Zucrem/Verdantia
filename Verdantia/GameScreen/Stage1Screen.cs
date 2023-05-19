@@ -45,8 +45,6 @@ namespace ScifiDruid.GameScreen
         //special occasion position
         //if boss event
         private Rectangle wallblock;
-        private Rectangle boss_left_side;
-        private Rectangle boss_right_side;
         private Rectangle boss_event;
 
         //if open switch and wall gone
@@ -145,20 +143,6 @@ namespace ScifiDruid.GameScreen
                 if (o.Name.Equals("wallblock"))
                 {
                     wallblock = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
-                }
-                if (o.Name.Equals("left_side"))
-                {
-                    boss_left_side = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height); 
-                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(boss_left_side.Width), ConvertUnits.ToSimUnits(boss_left_side.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(boss_left_side.X, boss_left_side.Y)));
-                    body.UserData = "Boss_left_side";
-                    body.IsSensor = true;
-                }
-                if (o.Name.Equals("right_side"))
-                {
-                    boss_right_side = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
-                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(boss_right_side.Width), ConvertUnits.ToSimUnits(boss_right_side.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(boss_right_side.X, boss_right_side.Y)));
-                    body.UserData = "Boss_right_side";
-                    body.IsSensor = true;
                 }
                 if (o.Name.Equals("boss_event"))
                 {
