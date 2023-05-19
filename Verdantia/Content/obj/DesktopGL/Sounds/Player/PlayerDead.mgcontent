@@ -3,7 +3,7 @@
   <SourceFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Player/PlayerDead.wav</SourceFile>
   <SourceTime>2023-05-19T16:29:44.6145969+07:00</SourceTime>
   <DestFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/bin/DesktopGL/Sounds/Player/PlayerDead.xnb</DestFile>
-  <DestTime>2023-05-19T16:54:29.4565183+07:00</DestTime>
+  <DestTime>2023-05-19T21:35:22.349396+07:00</DestTime>
   <Importer>WavImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>
