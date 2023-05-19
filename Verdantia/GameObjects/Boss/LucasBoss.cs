@@ -6,11 +6,18 @@ using Box2DNet.Factories;
 using Box2DNet;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Diagnostics;
 
 namespace ScifiDruid.GameObjects
 {
     public class LucasBoss : Boss
     {
+        private Rectangle leftArea;
+        private Rectangle rightArea;
+        private Rectangle fieldBoss;
+
+        private float centerFieldBoss;
+
         //framestate for dead animation
         private int frameState;
         private bool repeat;
@@ -20,8 +27,7 @@ namespace ScifiDruid.GameObjects
         private int randomAction;
         //attribute using for moving of boss
         private float timeElapsed;
-        private float movingTime = 3.4f;
-
+        private float movingTime = 5f;
 
         //boolean to do action
         private bool action1 = false;
@@ -32,12 +38,11 @@ namespace ScifiDruid.GameObjects
 
         private Body drillBody;
 
-
-
-        public LucasBoss(Texture2D texture , Texture2D drillTexture) : base(texture)
+        public LucasBoss(Texture2D texture, Texture2D drillTexture) : base(texture)
         {
             this.texture = texture;
             this.drillTexture = drillTexture;
+
 
             idleSize = new Vector2(196, 186);
             action1Size = new Vector2(228, 185);
@@ -60,12 +65,16 @@ namespace ScifiDruid.GameObjects
             repeat = false;
         }
 
-        public override void Initial(Rectangle spawnPosition, Player player)
+        public override void Initial(Rectangle spawnPosition, Player player, Rectangle leftArea, Rectangle rightArea, Rectangle fieldBoss)
         {
             this.player = player;
+            this.leftArea = leftArea;
+            this.rightArea = rightArea;
+            this.fieldBoss = fieldBoss;
 
             textureHeight = (int)size.Y;
             textureWidth = (int)size.X;
+            centerFieldBoss = (fieldBoss.Width / 2) + fieldBoss.X;
 
             enemyHitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(spawnPosition.X, spawnPosition.Y - 1)), 0, BodyType.Dynamic, "Enemy");
             enemyHitBox.FixedRotation = true;
@@ -190,7 +199,7 @@ namespace ScifiDruid.GameObjects
             preBossStatus = curBossStatus;
         }
 
-        
+
         public override void Action()
         {
             if (isAlive && Player.health > 0)
@@ -201,11 +210,22 @@ namespace ScifiDruid.GameObjects
                 if (skillTime <= 0 && curBossStatus == BossStatus.IDLE)
                 {
                     randomAction = rand.Next(1, 6);
+                    //randomAction = 3;
+
                     skillTime = 5;
                 }
                 else if (curBossStatus == BossStatus.IDLE)
                 {
                     skillTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+
+                if (randomAction < 4 && randomAction > 0)
+                {
+                    //if (position.X - )
+                }
+                else
+                {
+                    //Walk();
                 }
 
                 //do action 1
@@ -218,11 +238,10 @@ namespace ScifiDruid.GameObjects
                         Skill2();
                         break;
                     case 3:
-                        
+                        Skill3();
                         break;
                 }
 
-                Walk();
             }
         }
 
@@ -260,16 +279,16 @@ namespace ScifiDruid.GameObjects
                 {
                     case SpriteEffects.None:
                         timeElapsed = 0f;
-                        action1 = false;
                         charDirection = SpriteEffects.FlipHorizontally;
-                        curBossStatus = BossStatus.IDLE;
-                        randomAction = 0;
                         break;
                     case SpriteEffects.FlipHorizontally:
                         timeElapsed = 0f;
-                        charDirection = SpriteEffects.None; 
+                        charDirection = SpriteEffects.None;
                         break;
                 }
+                action1 = false;
+                curBossStatus = BossStatus.IDLE;
+                randomAction = 0;
             }
             else
             {
@@ -291,7 +310,7 @@ namespace ScifiDruid.GameObjects
             {
                 action2 = true;
                 curBossStatus = BossStatus.ACTION2;
-                drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world,ConvertUnits.ToSimUnits(100), ConvertUnits.ToSimUnits(100),0,enemyHitBox.Position,0,BodyType.Dynamic, "Enemy");
+                drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(100), ConvertUnits.ToSimUnits(100), 0, enemyHitBox.Position, 0, BodyType.Dynamic, "SkillBoss");
                 drillBody.IgnoreCollisionWith(enemyHitBox);
                 drillBody.IsSensor = true;
                 drillBody.IgnoreGravity = true;
@@ -309,19 +328,85 @@ namespace ScifiDruid.GameObjects
             {
                 if (IsContact(drillBody, "Ground"))
                 {
-                    drillBody.IsStatic = true;
+                    drillBody.IsSensor = false;
+                    drillBody.RestoreCollisionWith(enemyHitBox);
                     switch (charDirection)
                     {
                         case SpriteEffects.None:
-                            enemyHitBox.ApplyForce(new Vector2(60 * speed, 0));
+                            enemyHitBox.ApplyForce(new Vector2(80 * speed, 0));
                             break;
                         case SpriteEffects.FlipHorizontally:
-                            enemyHitBox.ApplyForce(new Vector2(-60 * speed, 0));
+                            enemyHitBox.ApplyForce(new Vector2(-80 * speed, 0));
+                            break;
+                    }
+                }
+
+                if (IsContact(enemyHitBox, "SkillBoss"))
+                {
+                    drillBody.Dispose();
+                    //drillBody.RestoreCollisionWith(enemyHitBox);
+                    curBossStatus = BossStatus.IDLE;
+                    randomAction = 0;
+                    action2 = false;
+
+                    switch (charDirection)
+                    {
+                        case SpriteEffects.None:
+                            charDirection = SpriteEffects.FlipHorizontally;
+                            break;
+                        case SpriteEffects.FlipHorizontally:
+                            charDirection = SpriteEffects.None;
                             break;
                     }
                 }
             }
+        }
 
+        public void Skill3()
+        {
+            if (!action3)
+            {
+                action3 = true;
+                curBossStatus = BossStatus.ACTION2;
+                drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(100), ConvertUnits.ToSimUnits(100), 0, enemyHitBox.Position, 0, BodyType.Dynamic, "SkillBoss");
+                drillBody.IgnoreCollisionWith(enemyHitBox);
+                drillBody.IsSensor = true;
+                drillBody.IgnoreGravity = true;
+                switch (charDirection)
+                {
+                    case SpriteEffects.None:
+                        drillBody.ApplyLinearImpulse(new Vector2(6 * speed, 0));
+                        break;
+                    case SpriteEffects.FlipHorizontally:
+                        drillBody.ApplyLinearImpulse(new Vector2(-6 * speed, 0));
+                        break;
+                }
+            }
+            else
+            {
+                if (IsContact(drillBody, "Ground"))
+                {
+                    drillBody.IsSensor = false;
+                    drillBody.RestoreCollisionWith(enemyHitBox);
+                    switch (charDirection)
+                    {
+                        case SpriteEffects.None:
+                            drillBody.ApplyLinearImpulse(new Vector2(-2 * speed, 0));
+                            break;
+                        case SpriteEffects.FlipHorizontally:
+                            drillBody.ApplyLinearImpulse(new Vector2(2 * speed, 0));
+                            break;
+                    }
+                }
+
+                if (IsContact(enemyHitBox, "SkillBoss"))
+                {
+                    drillBody.Dispose();
+                    curBossStatus = BossStatus.IDLE;
+                    randomAction = 0;
+                    action3 = false;
+                }
+            }
         }
 
         public override void ChangeAnimationStatus()
@@ -366,10 +451,10 @@ namespace ScifiDruid.GameObjects
             if (!animationDead)
             {
                 spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bossOrigin, 1f, charDirection, 0f);
-                
-                if (action2)
+
+                if (action2 || action3)
                 {
-                    spriteBatch.Draw(drillTexture, ConvertUnits.ToDisplayUnits(drillBody.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(100)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(100))), Color.Black,0,new Vector2(100/2,100/2),1, charDirection ,0f);
+                    spriteBatch.Draw(drillTexture, ConvertUnits.ToDisplayUnits(drillBody.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(100)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(100))), Color.Black, 0, new Vector2(100 / 2, 100 / 2), 1, charDirection, 0f);
                 }
             }
 

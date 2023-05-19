@@ -7,6 +7,7 @@ using Box2DNet.Dynamics.Contacts;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using System;
 
 namespace ScifiDruid.GameObjects
 {
@@ -59,6 +60,9 @@ namespace ScifiDruid.GameObjects
 
         //if using croc skill
         public bool croc = false;
+
+        private bool isShootup;
+
         public enum BulletStatus
         {
             BULLETALIVE,
@@ -66,11 +70,12 @@ namespace ScifiDruid.GameObjects
             BULLETEND
         }
 
-        public PlayerBullet(Texture2D texture, Vector2 position, Player player, SpriteEffects charDirection, bool isCroc) : base(texture)
+        public PlayerBullet(Texture2D texture, Vector2 position, Player player, SpriteEffects charDirection, bool isCroc, bool isShootup) : base(texture)
         {
             this.texture = texture;
             this.charDirection = charDirection;
             this.position = position;
+            this.isShootup = isShootup;
 
             if (!isCroc)
             {
@@ -114,14 +119,17 @@ namespace ScifiDruid.GameObjects
             bulletAliveCount = bulletAliveRectVector.Count();
             bulletDeadCount = bulletDeadRectVector.Count();
 
-            switch (charDirection)
+            if (!isShootup)
             {
-                case SpriteEffects.None:
-                    bulletBody.Position += new Vector2(-0.5f, 0);
-                    break;
-                case SpriteEffects.FlipHorizontally:
-                    bulletBody.Position += new Vector2(1f, 0);
-                    break;
+                switch (charDirection)
+                {
+                    case SpriteEffects.None:
+                        bulletBody.Position += new Vector2(-0.5f, 0);
+                        break;
+                    case SpriteEffects.FlipHorizontally:
+                        bulletBody.Position += new Vector2(1f, 0);
+                        break;
+                }
             }
 
             bulletOrigin = new Vector2(bulletSizeX / 2, bulletSizeY / 2);
@@ -129,17 +137,27 @@ namespace ScifiDruid.GameObjects
 
         public void Shoot(GameTime gameTime)
         {
-            switch (charDirection)
+            if (isShootup)
             {
-                case SpriteEffects.None:
-                    bulletBody.ApplyForce(new Vector2(-bulletSpeed, 0));
-                    bulletStatus = BulletStatus.BULLETALIVE;
-                    break;
-                case SpriteEffects.FlipHorizontally:
-                    bulletBody.ApplyForce(new Vector2(bulletSpeed, 0));
-                    bulletStatus = BulletStatus.BULLETALIVE;
-                    break;
+                bulletBody.ApplyForce(new Vector2(0, -bulletSpeed));
+                rotation = MathHelper.ToRadians(90);
+                charDirection = SpriteEffects.FlipVertically;
             }
+            else
+            {
+                rotation = 0;
+                switch (charDirection)
+                {
+                    case SpriteEffects.None:
+                        bulletBody.ApplyForce(new Vector2(-bulletSpeed, 0));
+                        break;
+                    case SpriteEffects.FlipHorizontally:
+                        bulletBody.ApplyForce(new Vector2(bulletSpeed, 0));
+                        break;
+                }
+            }
+            bulletStatus = BulletStatus.BULLETALIVE;
+
         }
 
         public override void Update(GameTime gameTime)
@@ -233,7 +251,7 @@ namespace ScifiDruid.GameObjects
         {
             if (!animationDead)
             {
-                spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(bulletBody.Position), sourceRect, Color.White, 0, bulletOrigin, 1f, charDirection, 0f);
+                spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(bulletBody.Position), sourceRect, Color.White, rotation, bulletOrigin, 1f, charDirection, 0f);
             }
         }
         public void ChangeBulletAnimationStatus()
