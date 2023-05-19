@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Code/Verdantia/Verdantia/Content/Fonts/font20.spritefont</SourceFile>
-  <SourceTime>2023-05-17T23:48:51.2076939+07:00</SourceTime>
-  <DestFile>D:/Code/Verdantia/Verdantia/Content/bin/DesktopGL/Content/Fonts/font20.xnb</DestFile>
-  <DestTime>2023-05-18T05:22:58.4699234+07:00</DestTime>
+  <SourceFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Fonts/font20.spritefont</SourceFile>
+  <SourceTime>2023-05-18T01:04:58.2561264+07:00</SourceTime>
+  <DestFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/bin/DesktopGL/Content/Fonts/font20.xnb</DestFile>
+  <DestTime>2023-05-18T11:15:36.7286851+07:00</DestTime>
   <Importer>FontDescriptionImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>FontDescriptionProcessor</Processor>

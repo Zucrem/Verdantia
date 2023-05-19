@@ -57,7 +57,7 @@ namespace ScifiDruid.GameObjects
             deadSize = new Vector2(34, 90);
 
             //idle spritevector
-            idleSpriteVector = new List<Vector2>() { new Vector2(0, 0), new Vector2(140, 0), new Vector2(256, 0)};
+            idleSpriteVector = new List<Vector2>() { new Vector2(8, 0), new Vector2(140, 0), new Vector2(256, 0)};
 
             //action1 spritevector
             shootGunSpriteVector = new List<Vector2>() { new Vector2(372, 0), new Vector2(488, 0)};
@@ -288,10 +288,10 @@ namespace ScifiDruid.GameObjects
                 switch (randomAction)
                 {
                     case 1:
-                        Skill1();
+                        //Skill1();
                         break;
                     case 2:
-                        Skill2();
+                        //Skill2();
                         break;
                     case 3:
                         Skill3();
@@ -363,7 +363,7 @@ namespace ScifiDruid.GameObjects
             switch (curBossStatus)
             {
                 case BossStatus.IDLE:
-                    delay = 200f;
+                    delay = 300f;
                     spriteVector = idleSpriteVector;
                     spriteSize = new Vector2(idleSize.X, idleSize.Y);
                     allframes = spriteVector.Count();

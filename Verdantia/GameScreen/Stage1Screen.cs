@@ -26,7 +26,7 @@ namespace ScifiDruid.GameScreen
     {
         //create switch and wall
         private SwitchWall switch_wall;
-        private GameObjects.StageObject stage_wall;
+        private StageObject stage_wall;
 
         //create enemy
         private List<Enemy> allEnemies;
@@ -55,8 +55,16 @@ namespace ScifiDruid.GameScreen
         private bool isOpenSwitch = false;
 
         //Map Theme
-        private Song Stage1Theme;
+        private Song stage1Theme;
         private Song lucasTheme;
+
+        //switch and wall size
+        private Vector2 switch_size = new Vector2(32, 32);
+        private Vector2 switch_close_textureSize = new Vector2(32, 0);
+        private Vector2 switch_open_textureSize = new Vector2(64, 0);
+
+        private Vector2 wall_size = new Vector2(32, 192);
+        private Vector2 wall_textureSize = new Vector2(0, 0);
         public override void Initial()
         {
             base.Initial();
@@ -277,14 +285,14 @@ namespace ScifiDruid.GameScreen
 
             //switch event
             //create switch button on position
-            switch_wall = new SwitchWall(switch_wall_Tex)
+            switch_wall = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize)
             {
                 size = new Vector2(32, 32),
             };
             switch_wall.Initial(switch_button);
 
             //create wall button on position
-            stage_wall = new GameObjects.StageObject(switch_wall_Tex)
+            stage_wall = new GameObjects.StageObject(switch_wall_Tex, wall_size, wall_textureSize)
             {
                 size = new Vector2(32, 192),
             };
@@ -299,8 +307,9 @@ namespace ScifiDruid.GameScreen
             switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage1Tileset/specialProps1");
 
             //bg music and sfx
+            stage1Theme = content.Load<Song>("Songs/Stage1Screen/Stage1Theme");
             lucasTheme = content.Load<Song>("Songs/Stage1Screen/BossStage1Theme");
-            MediaPlayer.Play(lucasTheme);
+            MediaPlayer.Play(stage1Theme);
 
             Initial();
         }

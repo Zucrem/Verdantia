@@ -84,11 +84,11 @@ namespace ScifiDruid.GameObjects
             bulletBody.IgnoreCollisionWith(player.hitBox);
 
             //animation
-            bulletAliveSize = new Vector2(40, 8);
-            bulletDeadSize = new Vector2(16, 20);
+            bulletAliveSize = new Vector2(40, 9);
+            bulletDeadSize = new Vector2(16, 21);
 
-            bulletAliveRectVector = new List<Vector2>() { new Vector2(0, 12), new Vector2(62, 12), new Vector2(120, 12) };
-            bulletDeadRectVector = new List<Vector2>() { new Vector2(0, 6), new Vector2(210, 6) };
+            bulletAliveRectVector = new List<Vector2>() { new Vector2(0, 13), new Vector2(62, 13), new Vector2(120, 13) };
+            bulletDeadRectVector = new List<Vector2>() { new Vector2(170, 7), new Vector2(210, 8) };
 
 
 

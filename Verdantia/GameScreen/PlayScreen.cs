@@ -18,6 +18,7 @@ using Box2DNet;
 using TiledSharp;
 using System.ComponentModel.DataAnnotations;
 using Box2DNet.Content;
+using Microsoft.Xna.Framework.Audio;
 
 namespace ScifiDruid.GameScreen
 {
@@ -619,6 +620,7 @@ namespace ScifiDruid.GameScreen
             if (play)
             {
                 //background
+                //spriteBatch.Draw(blackTex, Vector2.Zero, Color.White);
                 spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
 
                 int mana = (int)Player.mana;
