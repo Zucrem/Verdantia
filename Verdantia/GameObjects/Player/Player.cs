@@ -396,6 +396,7 @@ namespace ScifiDruid.GameObjects
                     isCroc = false;
                 }
                 isShootup = false;
+                bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0.43f *  playerDirectionInt , -0.12f), this, charDirection , isShootup));
                 Player.isAttack = true;
                 attackAnimationTime = 0.3f;
                 attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;

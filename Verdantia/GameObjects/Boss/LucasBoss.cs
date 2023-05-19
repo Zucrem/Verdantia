@@ -65,11 +65,11 @@ namespace ScifiDruid.GameObjects
             repeat = false;
         }
 
-        public override void Initial(Rectangle spawnPosition, Player player, Rectangle leftArea, Rectangle rightArea, Rectangle fieldBoss)
+        public override void Initial(Rectangle spawnPosition, Player player, Rectangle fieldBoss)
         {
             this.player = player;
-            this.leftArea = leftArea;
-            this.rightArea = rightArea;
+            //this.leftArea = leftArea;
+            //this.rightArea = rightArea;
             this.fieldBoss = fieldBoss;
 
             textureHeight = (int)size.Y;
