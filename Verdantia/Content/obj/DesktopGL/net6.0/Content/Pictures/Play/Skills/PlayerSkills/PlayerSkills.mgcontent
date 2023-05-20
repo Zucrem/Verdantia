@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Code/ScifiDruid/Verdantia/Content/Pictures/Play/Skills/PlayerSkills/PlayerSkills.png</SourceFile>
-  <SourceTime>2023-05-17T22:08:10.8699345+07:00</SourceTime>
-  <DestFile>D:/Code/ScifiDruid/Verdantia/Content/bin/DesktopGL/Content/Pictures/Play/Skills/PlayerSkills/PlayerSkills.xnb</DestFile>
-  <DestTime>2023-05-17T23:41:04.9875899+07:00</DestTime>
+  <SourceFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Skills/PlayerSkills/playerSkills.png</SourceFile>
+  <SourceTime>2023-05-18T22:05:30.2089877+07:00</SourceTime>
+  <DestFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/bin/DesktopGL/Content/Pictures/Play/Skills/PlayerSkills/playerSkills.xnb</DestFile>
+  <DestTime>2023-05-18T22:07:44.6165262+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

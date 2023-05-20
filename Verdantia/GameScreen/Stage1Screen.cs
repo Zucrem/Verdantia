@@ -26,7 +26,7 @@ namespace ScifiDruid.GameScreen
     {
         //create switch and wall
         private SwitchWall switch_wall;
-        private GameObjects.StageObject stage_wall;
+        private StageObject stage_wall;
 
         //create enemy
         private List<Enemy> allEnemies;
@@ -45,8 +45,6 @@ namespace ScifiDruid.GameScreen
         //special occasion position
         //if boss event
         private Rectangle wallblock;
-        private Rectangle boss_left_side;
-        private Rectangle boss_right_side;
         private Rectangle boss_event;
 
         //if open switch and wall gone
@@ -55,8 +53,16 @@ namespace ScifiDruid.GameScreen
         private bool isOpenSwitch = false;
 
         //Map Theme
-        private Song Stage1Theme;
+        private Song stage1Theme;
         private Song lucasTheme;
+
+        //switch and wall size
+        private Vector2 switch_size = new Vector2(32, 32);
+        private Vector2 switch_close_textureSize = new Vector2(32, 0);
+        private Vector2 switch_open_textureSize = new Vector2(64, 0);
+
+        private Vector2 wall_size = new Vector2(32, 192);
+        private Vector2 wall_textureSize = new Vector2(0, 0);
         public override void Initial()
         {
             base.Initial();
@@ -138,20 +144,6 @@ namespace ScifiDruid.GameScreen
                 {
                     wallblock = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
                 }
-                if (o.Name.Equals("left_side"))
-                {
-                    boss_left_side = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height); 
-                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(boss_left_side.Width), ConvertUnits.ToSimUnits(boss_left_side.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(boss_left_side.X, boss_left_side.Y)));
-                    body.UserData = "Boss_left_side";
-                    body.IsSensor = true;
-                }
-                if (o.Name.Equals("right_side"))
-                {
-                    boss_right_side = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
-                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(boss_right_side.Width), ConvertUnits.ToSimUnits(boss_right_side.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(boss_right_side.X, boss_right_side.Y)));
-                    body.UserData = "Boss_right_side";
-                    body.IsSensor = true;
-                }
                 if (o.Name.Equals("boss_event"))
                 {
                     boss_event = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
@@ -209,8 +201,9 @@ namespace ScifiDruid.GameScreen
 
             //create player on position
 
-            player.Initial(startRect);
-            //player.Initial(boss_event);
+            //player.Initial(startRect);
+            player.Initial(bossState);
+
 
             //range enemy
             flameMechEnemies = new List<RangeEnemy>();
@@ -239,8 +232,8 @@ namespace ScifiDruid.GameScreen
             //melee enemy
             chainsawMechEnemies = new List<MeleeEnemy>();
             chainsawMechPositionList = ground2MonsterRects.Count();
-            List<Vector2> chainsawMechSizeList = new List<Vector2>() { new Vector2(118, 100), new Vector2(136, 100), new Vector2(118, 100) };
-            List<List<Vector2>> chainsawMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(144, 0) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 254), new Vector2(142, 254) } };
+            List<Vector2> chainsawMechSizeList = new List<Vector2>() { new Vector2(118, 100), new Vector2(136, 100), new Vector2(136, 100), new Vector2(118, 100) };
+            List<List<Vector2>> chainsawMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(144, 0) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 254), new Vector2(142, 254) } };
             for (int i = 0; i < chainsawMechPositionList; i++)
             {
                 chainsawMech = new MeleeEnemy(chainsawMechTex, chainsawMechSizeList, chainsawMechAnimateList)
@@ -268,7 +261,7 @@ namespace ScifiDruid.GameScreen
                 speed = 1.2f,
             };
             //spawn boss
-            boss.Initial(bossRect, player);
+            boss.Initial(bossRect, player, boss_event);
 
             //add All enemy to locate enemy
             Singleton.Instance.enemiesInWorld.AddRange(flameMechEnemies);
@@ -277,14 +270,14 @@ namespace ScifiDruid.GameScreen
 
             //switch event
             //create switch button on position
-            switch_wall = new SwitchWall(switch_wall_Tex)
+            switch_wall = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize)
             {
                 size = new Vector2(32, 32),
             };
             switch_wall.Initial(switch_button);
 
             //create wall button on position
-            stage_wall = new GameObjects.StageObject(switch_wall_Tex)
+            stage_wall = new GameObjects.StageObject(switch_wall_Tex, wall_size, wall_textureSize)
             {
                 size = new Vector2(32, 192),
             };
@@ -299,8 +292,9 @@ namespace ScifiDruid.GameScreen
             switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage1Tileset/specialProps1");
 
             //bg music and sfx
+            stage1Theme = content.Load<Song>("Songs/Stage1Screen/Stage1Theme");
             lucasTheme = content.Load<Song>("Songs/Stage1Screen/BossStage1Theme");
-            MediaPlayer.Play(lucasTheme);
+            MediaPlayer.Play(stage1Theme);
 
             Initial();
         }
@@ -330,6 +324,12 @@ namespace ScifiDruid.GameScreen
                         }
                         //boss
                         boss.Update(gameTime);
+
+                        //check if boss death then
+                        if (!boss.isAlive && created_boss)
+                        {
+                            MediaPlayer.Stop();
+                        }
 
                         //switch button
                         switch_wall.Update(gameTime);

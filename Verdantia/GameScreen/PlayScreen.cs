@@ -18,6 +18,7 @@ using Box2DNet;
 using TiledSharp;
 using System.ComponentModel.DataAnnotations;
 using Box2DNet.Content;
+using Microsoft.Xna.Framework.Audio;
 
 namespace ScifiDruid.GameScreen
 {
@@ -164,8 +165,8 @@ namespace ScifiDruid.GameScreen
             {
                 name = "Player Character",
                 size = new Vector2(46, 94),
-                //speed = 13,
-                speed = 40,
+                speed = 13,
+                //speed = 40,
                 jumpHigh = 10.5f,
             };
 
@@ -619,7 +620,8 @@ namespace ScifiDruid.GameScreen
             if (play)
             {
                 //background
-                spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
+                spriteBatch.Draw(blackTex, Vector2.Zero, Color.White);
+                //spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
 
                 int mana = (int)Player.mana;
                 int health = (int)Player.health;
