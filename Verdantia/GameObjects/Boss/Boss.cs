@@ -38,7 +38,7 @@ namespace ScifiDruid.GameObjects
             END
         }
 
-        public override void Initial(Rectangle spawnPosition,Player player)
+        public virtual void Initial(Rectangle spawnPosition,Player player, Rectangle fieldBoss)
         {
             curBossStatus = BossStatus.IDLE;
             preBossStatus = BossStatus.IDLE;
