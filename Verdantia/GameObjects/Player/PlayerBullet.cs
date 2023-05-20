@@ -54,7 +54,6 @@ namespace ScifiDruid.GameObjects
 
         //bullet status
         private BulletStatus preStatus = BulletStatus.BULLETALIVE;
-        private BulletStatus curStatus = BulletStatus.BULLETALIVE;
 
         private bool animationDead = false;
 

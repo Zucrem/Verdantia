@@ -85,6 +85,7 @@
   <object id="167" x="9632" y="384" width="640" height="320"/>
   <object id="169" x="10272" y="576" width="1248" height="32"/>
   <object id="222" x="-32" y="0" width="32" height="576"/>
+  <object id="223" x="11520" y="0" width="32" height="576"/>
   <object id="240" x="864" y="480" width="192" height="96"/>
   <object id="258" x="2720" y="416" width="32" height="160"/>
   <object id="261" x="3840" y="352" width="192" height="32"/>
@@ -99,8 +100,8 @@
  </objectgroup>
  <objectgroup id="2" name="Player">
   <object id="2" name="startRect" x="128" y="480" width="32" height="94"/>
-  <object id="177" name="bossState" x="10144" y="288" width="32" height="94"/>
-  <object id="306" name="endRect" x="11520" y="0" width="32" height="576"/>
+  <object id="177" name="bossState" x="10560" y="480" width="32" height="94"/>
+  <object id="306" name="endRect" x="10144" y="288" width="32" height="94"/>
  </objectgroup>
  <objectgroup id="9" name="SpecialBlocks">
   <object id="179" name="spike" x="1472" y="704" width="128" height="32"/>
@@ -143,6 +144,8 @@
  </objectgroup>
  <objectgroup id="12" name="SpecialOccasions">
   <object id="303" name="boss_event" x="10272" y="544" width="1248" height="32"/>
+  <object id="304" name="left_side" x="10240" y="384" width="32" height="192"/>
+  <object id="305" name="right_side" x="11520" y="384" width="32" height="192"/>
   <object id="307" name="wallblock" x="10240" y="0" width="32" height="384"/>
  </objectgroup>
 </map>
