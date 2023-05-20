@@ -25,13 +25,14 @@ namespace ScifiDruid.GameObjects
         //bullet state
         public BulletStatus bulletStatus;
 
+        public Player player;
         public Body bulletBody;
 
-        private int bulletSizeX;
-        private int bulletSizeY;
+        public int bulletSizeX;
+        public int bulletSizeY;
 
-        private int bulletSpeed;
-        private int bulletDistance;
+        public int bulletSpeed;
+        public int bulletDistance;
 
         //animation
         //shoot and dead Size
@@ -69,28 +70,26 @@ namespace ScifiDruid.GameObjects
             BULLETEND
         }
 
-        public PlayerBullet(Texture2D texture, Vector2 position, Player player, SpriteEffects charDirection, bool isCroc, bool isShootup) : base(texture)
+        public PlayerBullet(Texture2D texture, Vector2 position, Player player, SpriteEffects charDirection,bool isShootup) : base(texture)
         {
             this.texture = texture;
             this.charDirection = charDirection;
             this.position = position;
             this.isShootup = isShootup;
+            this.player = player;
+        }
+
+        public void CreateBullet(bool isCroc)
+        {
+            //build object
+            bulletBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bulletSizeX), ConvertUnits.ToSimUnits(bulletSizeY), 0, position, 0, BodyType.Dynamic, "Bullet");
+            bulletBody.IgnoreGravity = true;
+            bulletBody.IgnoreCollisionWith(player.hitBox);
+            bulletBody.IsSensor = true;
 
             if (!isCroc)
             {
-                bulletSpeed = 400;
-                bulletSizeX = 40;
-                bulletSizeY = 9;
-                bulletDistance = 10;
-
-                //build object
-                bulletBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bulletSizeX), ConvertUnits.ToSimUnits(bulletSizeY), 0, position, 0, BodyType.Dynamic, "Bullet");
-                bulletBody.IgnoreGravity = true;
-                bulletBody.IgnoreCollisionWith(player.hitBox);
-                bulletBody.IsSensor = true;
-                
                 //animation
-                bulletAliveSize = new Vector2(40, 9);
                 bulletDeadSize = new Vector2(16, 21);
 
                 bulletAliveRectVector = new List<Vector2>() { new Vector2(0, 13), new Vector2(62, 13), new Vector2(120, 13) };
@@ -98,25 +97,14 @@ namespace ScifiDruid.GameObjects
             }
             else if (isCroc)
             {
-                bulletSpeed = 600;
-                bulletSizeX = 52;
-                bulletSizeY = 39;
-                bulletDistance = 10;
-
-                //build object
-                bulletBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bulletSizeX), ConvertUnits.ToSimUnits(bulletSizeY), 0, position, 0, BodyType.Dynamic, "Bullet");
-                bulletBody.IgnoreGravity = true;
-                bulletBody.IgnoreCollisionWith(player.hitBox);
-                bulletBody.IsSensor = true;
-
                 //animation
-                bulletAliveSize = new Vector2(52, 39);
                 bulletDeadSize = new Vector2(34, 37);
 
                 bulletAliveRectVector = new List<Vector2>() { new Vector2(0, 107), new Vector2(78, 107), new Vector2(160, 106) };
                 bulletDeadRectVector = new List<Vector2>() { new Vector2(240, 107), new Vector2(306, 106), new Vector2(364, 107) };
             }
 
+            bulletAliveSize = new Vector2(bulletSizeX, bulletSizeY);
             bulletAliveCount = bulletAliveRectVector.Count();
             bulletDeadCount = bulletDeadRectVector.Count();
 

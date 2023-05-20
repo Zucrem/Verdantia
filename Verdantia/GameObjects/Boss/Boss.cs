@@ -23,6 +23,8 @@ namespace ScifiDruid.GameObjects
 
         public float skillTime;
 
+        protected SpriteEffects bossSkilDirection;
+
         public Boss(Texture2D texture) : base(texture)
         {
             this.texture = texture;

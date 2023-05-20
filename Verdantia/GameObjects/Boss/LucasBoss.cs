@@ -38,6 +38,8 @@ namespace ScifiDruid.GameObjects
 
         private Body drillBody;
 
+        private int countBounce = 0;
+
         public LucasBoss(Texture2D texture, Texture2D drillTexture) : base(texture)
         {
             this.texture = texture;
@@ -209,8 +211,8 @@ namespace ScifiDruid.GameObjects
 
                 if (skillTime <= 0 && curBossStatus == BossStatus.IDLE)
                 {
-                    randomAction = rand.Next(1, 6);
-                    //randomAction = 3;
+                    //randomAction = rand.Next(1, 6);
+                    randomAction = 3;
 
                     skillTime = 5;
                 }
@@ -306,15 +308,17 @@ namespace ScifiDruid.GameObjects
 
         public void Skill2()
         {
+            //Drill
             if (!action2)
             {
                 action2 = true;
-                curBossStatus = BossStatus.ACTION2;
-                drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(100), ConvertUnits.ToSimUnits(100), 0, enemyHitBox.Position, 0, BodyType.Dynamic, "SkillBoss");
+                curBossStatus = BossStatus.ACTION3;
+                drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(62), ConvertUnits.ToSimUnits(28), 0, enemyHitBox.Position, 0, BodyType.Dynamic, "SkillBoss");
                 drillBody.IgnoreCollisionWith(enemyHitBox);
                 drillBody.IsSensor = true;
                 drillBody.IgnoreGravity = true;
-                switch (charDirection)
+                bossSkilDirection = charDirection;
+                switch (bossSkilDirection)
                 {
                     case SpriteEffects.None:
                         drillBody.ApplyLinearImpulse(new Vector2(3 * speed, 0));
@@ -330,7 +334,7 @@ namespace ScifiDruid.GameObjects
                 {
                     drillBody.IsSensor = false;
                     drillBody.RestoreCollisionWith(enemyHitBox);
-                    switch (charDirection)
+                    switch (bossSkilDirection)
                     {
                         case SpriteEffects.None:
                             enemyHitBox.ApplyForce(new Vector2(80 * speed, 0));
@@ -364,21 +368,23 @@ namespace ScifiDruid.GameObjects
 
         public void Skill3()
         {
+            //Saw
             if (!action3)
             {
                 action3 = true;
                 curBossStatus = BossStatus.ACTION2;
-                drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(100), ConvertUnits.ToSimUnits(100), 0, enemyHitBox.Position, 0, BodyType.Dynamic, "SkillBoss");
+                drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(56), ConvertUnits.ToSimUnits(56), 0, enemyHitBox.Position, 0, BodyType.Dynamic, "SkillBoss");
                 drillBody.IgnoreCollisionWith(enemyHitBox);
                 drillBody.IsSensor = true;
                 drillBody.IgnoreGravity = true;
-                switch (charDirection)
+                bossSkilDirection = charDirection;
+                switch (bossSkilDirection)
                 {
                     case SpriteEffects.None:
-                        drillBody.ApplyLinearImpulse(new Vector2(6 * speed, 0));
+                        drillBody.ApplyLinearImpulse(new Vector2(0.3f * speed, 0));
                         break;
                     case SpriteEffects.FlipHorizontally:
-                        drillBody.ApplyLinearImpulse(new Vector2(-6 * speed, 0));
+                        drillBody.ApplyLinearImpulse(new Vector2(-0.3f * speed, 0));
                         break;
                 }
             }
@@ -386,15 +392,28 @@ namespace ScifiDruid.GameObjects
             {
                 if (IsContact(drillBody, "Ground"))
                 {
+                    countBounce++;
+                    if (countBounce >= 4)
+                    {
+                        switch (bossSkilDirection)
+                        {
+                            case SpriteEffects.None:
+                                bossSkilDirection = SpriteEffects.FlipHorizontally;
+                                break;
+                            case SpriteEffects.FlipHorizontally:
+                                bossSkilDirection = SpriteEffects.None;
+                                break;
+                        }
+                    }
                     drillBody.IsSensor = false;
                     drillBody.RestoreCollisionWith(enemyHitBox);
-                    switch (charDirection)
+                    switch (bossSkilDirection)
                     {
                         case SpriteEffects.None:
-                            drillBody.ApplyLinearImpulse(new Vector2(-2 * speed, 0));
+                            drillBody.ApplyLinearImpulse(new Vector2(-0.1f * speed, 0));
                             break;
                         case SpriteEffects.FlipHorizontally:
-                            drillBody.ApplyLinearImpulse(new Vector2(2 * speed, 0));
+                            drillBody.ApplyLinearImpulse(new Vector2(0.1f * speed, 0));
                             break;
                     }
                 }
@@ -452,9 +471,13 @@ namespace ScifiDruid.GameObjects
             {
                 spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bossOrigin, 1f, charDirection, 0f);
 
-                if (action2 || action3)
+                if (action2)
                 {
-                    spriteBatch.Draw(drillTexture, ConvertUnits.ToDisplayUnits(drillBody.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(100)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(100))), Color.Black, 0, new Vector2(100 / 2, 100 / 2), 1, charDirection, 0f);
+                    spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(drillBody.Position), new Rectangle(50, 1262, 62, 28), Color.White, 0, new Vector2(62 / 2, 28 / 2), 1, bossSkilDirection, 0f);
+                }
+                else if (action3)
+                {
+                    spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(drillBody.Position), new Rectangle(152, 1258, 56, 56), Color.White, 0, new Vector2(56 / 2, 56 / 2), 1, bossSkilDirection, 0f);
                 }
             }
 
