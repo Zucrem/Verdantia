@@ -767,7 +767,7 @@ namespace ScifiDruid.GameObjects
 
             if (lionBody != null)
             {
-                //spriteBatch.Draw(lionTexture, ConvertUnits.ToDisplayUnits(lionBody.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(500)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(200))), Color.Black, 0, new Vector2(500 / 2, 200 / 2), 1, SpriteEffects.None, 0);
+                spriteBatch.Draw(lionTexture, ConvertUnits.ToDisplayUnits(lionBody.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(500)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(200))), Color.Black, 0, new Vector2(500 / 2, 200 / 2), 1, SpriteEffects.None, 0);
             }
             //if shoot
             /*if (_bulletBody != null && !_bulletBody.IsDisposed)

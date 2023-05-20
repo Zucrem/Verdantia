@@ -277,6 +277,42 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/Characters/Enemy/flameMech.png
 
+#begin Pictures/Play/Characters/Enemy/FlyingDrone.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Characters/Enemy/FlyingDrone.png
+
+#begin Pictures/Play/Characters/Enemy/MeleePolice.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Characters/Enemy/MeleePolice.png
+
+#begin Pictures/Play/Characters/Enemy/RangePolice.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Characters/Enemy/RangePolice.png
+
 #begin Pictures/Play/Characters/Player/keeperSheet.png
 /importer:TextureImporter
 /processor:TextureProcessor

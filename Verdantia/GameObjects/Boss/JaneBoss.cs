@@ -36,8 +36,7 @@ namespace ScifiDruid.GameObjects
         private bool action3 = false;
 
         //boolean action1 in 2 part and action3
-        private Action1 shootState = Action1.SHOOTGUN;
-        private Action3 punchState = Action3.PREPARE;
+        private ActionState actionState;
 
         //unique jane animation
         private List<Vector2> shootGunSpriteVector;
@@ -91,16 +90,13 @@ namespace ScifiDruid.GameObjects
             repeat = false;
         }
 
-        //Action1 all states
-        private enum Action1
+        //Action all states
+        private enum ActionState
         {
+            IDLE,
             SHOOTGUN,
-            SHOOTPLASMA
-        }
-
-        //Action3 all states
-        private enum Action3
-        {
+            SHOOTPLASMA,
+            CALLDOWNBOMB,
             PREPARE,
             DASHIN,
             DASHOUT,
@@ -161,10 +157,6 @@ namespace ScifiDruid.GameObjects
             //animation
             if (preBossStatus != curBossStatus)
             {
-                //change to starter state for jane
-                shootState = Action1.SHOOTGUN;
-                punchState = Action3.PREPARE;
-
                 frames = 0;
                 frameState = 0;
             }
@@ -203,7 +195,7 @@ namespace ScifiDruid.GameObjects
                     }
                     break;
                 case BossStatus.ACTION1:
-                    if (shootState == Action1.SHOOTGUN)
+                    if (actionState == ActionState.SHOOTGUN)
                     {
                         if (elapsed >= delay)
                         {
@@ -218,7 +210,7 @@ namespace ScifiDruid.GameObjects
                             elapsed = 0;
                         }
                     }
-                    else if (shootState == Action1.SHOOTPLASMA)
+                    else if (actionState == ActionState.SHOOTPLASMA)
                     {
                         if (elapsed >= delay)
                         {
@@ -245,7 +237,7 @@ namespace ScifiDruid.GameObjects
                     }
                     break;
                 case BossStatus.ACTION3:
-                    if (punchState == Action3.PREPARE)
+                    if (actionState == ActionState.PREPARE)
                     {
                         if (elapsed >= delay)
                         {
@@ -260,7 +252,7 @@ namespace ScifiDruid.GameObjects
                             elapsed = 0;
                         }
                     }
-                    else if (punchState == Action3.PUNCH || punchState == Action3.DASHIN || punchState == Action3.DASHOUT)
+                    else if (actionState == ActionState.PUNCH || actionState == ActionState.DASHIN || actionState == ActionState.DASHOUT)
                     {
                         if (elapsed >= delay)
                         {
@@ -385,14 +377,14 @@ namespace ScifiDruid.GameObjects
                     allframes = spriteVector.Count();
                     break;
                 case BossStatus.ACTION1:
-                    if (shootState == Action1.SHOOTGUN)
+                    if (actionState == ActionState.SHOOTGUN)
                     {
                         delay = 200f;
                         spriteVector = shootGunSpriteVector;
                         spriteSize = new Vector2(shootGunSize.X, shootGunSize.Y);
                         allframes = spriteVector.Count();
                     }
-                    else if (shootState == Action1.SHOOTPLASMA)
+                    else if (actionState == ActionState.SHOOTPLASMA)
                     {
                         delay = 200f;
                         spriteVector = shootPlasmaSpriteVector;
@@ -409,21 +401,21 @@ namespace ScifiDruid.GameObjects
                 case BossStatus.ACTION3:
                     delay = 300f;
                     spriteSize = new Vector2(action3Size.X, action3Size.Y);
-                    switch (punchState)
+                    switch (actionState)
                     {
-                        case Action3.PREPARE:
+                        case ActionState.PREPARE:
                             spriteSize = prepareSize;
                             spriteVector = prepareSpriteVector;
                             break;
-                        case Action3.DASHIN:
+                        case ActionState.DASHIN:
                             spriteSize = dashInSize;
                             spriteVector = dashInSpriteVector;
                             break;
-                        case Action3.DASHOUT:
+                        case ActionState.DASHOUT:
                             spriteSize = dashOutSize;
                             spriteVector = dashOutSpriteVector;
                             break;
-                        case Action3.PUNCH:
+                        case ActionState.PUNCH:
                             spriteSize = punchSize;
                             spriteVector = punchSpriteVector;
                             break;
