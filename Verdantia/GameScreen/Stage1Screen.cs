@@ -201,8 +201,8 @@ namespace ScifiDruid.GameScreen
 
             //create player on position
 
-            player.Initial(startRect);
-            //player.Initial(bossState);
+            //player.Initial(startRect);
+            player.Initial(bossState);
 
 
             //range enemy

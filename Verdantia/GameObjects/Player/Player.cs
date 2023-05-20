@@ -389,14 +389,33 @@ namespace ScifiDruid.GameObjects
             //Normal Shoot left or right
             if (currentKeyState.IsKeyDown(Keys.X) && currentKeyState.IsKeyUp(Keys.Up) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && Player.mana > 0)
             {
-                playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position,"Shoot");
-                bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0.43f * playerDirectionInt, -0.12f), this, charDirection, isCroc, isShootup));
+                isShootup = false;
+                PlayerBullet bullet = new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0.43f * playerDirectionInt, -0.12f), this, charDirection, isShootup)
+                {
+                    bulletSpeed = 400,
+                    bulletSizeX = 40,
+                    bulletSizeY = 9,
+                    bulletDistance = 10,
+                };
+                playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Shoot");
+
                 if (isCroc)
                 {
+                    bullet.bulletSpeed = 600;
+                    bullet.bulletSizeX = 52;
+                    bullet.bulletSizeY = 39;
+                    bullet.bulletDistance = 10;
+                    bullet.CreateBullet(isCroc);
                     isCroc = false;
                 }
-                isShootup = false;
-                bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0.43f *  playerDirectionInt , -0.12f), this, charDirection , isShootup));
+                else
+                {
+                    bullet.CreateBullet(isCroc);
+                }
+
+                bulletList.Add(bullet);
+                //bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0.43f *  playerDirectionInt , -0.12f), this, charDirection , isCroc, isShootup));
+
                 Player.isAttack = true;
                 attackAnimationTime = 0.3f;
                 attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
@@ -408,7 +427,20 @@ namespace ScifiDruid.GameObjects
             else if (currentKeyState.IsKeyDown(Keys.X) && currentKeyState.IsKeyDown(Keys.Up) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && Player.mana > 0)
             {
                 isShootup = true;
-                bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0, -1), this, charDirection,isShootup));
+
+                PlayerBullet bullet = new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0, -1f), this, charDirection, isShootup)
+                {
+
+                    bulletSpeed = 400,
+                    bulletSizeX = 40,
+                    bulletSizeY = 9,
+                    bulletDistance = 10,
+                };
+                bullet.CreateBullet(false);
+                bulletList.Add(bullet);
+
+                //bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0, -1f), this, charDirection, isShootup));
+
                 Player.isAttack = true;
                 attackAnimationTime = 0.3f;
                 attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
@@ -537,6 +569,7 @@ namespace ScifiDruid.GameObjects
                 press = false;
             }
         }
+
         public void Falling()
         {
             Vector2 velocity = hitBox.LinearVelocity;
