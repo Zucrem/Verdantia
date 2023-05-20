@@ -124,7 +124,7 @@ namespace ScifiDruid.GameObjects
             bulletOrigin = new Vector2(bulletSizeX / 2, bulletSizeY / 2);
         }
 
-        public void Shoot(GameTime gameTime)
+        public void Shoot()
         {
             if (isShootup)
             {

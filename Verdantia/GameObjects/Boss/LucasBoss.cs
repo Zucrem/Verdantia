@@ -40,6 +40,30 @@ namespace ScifiDruid.GameObjects
 
         private int countBounce = 0;
 
+        //for animation
+        protected Vector2 action1Size;
+        protected Vector2 action2_1Size;
+        protected Vector2 action2_2Size;
+        protected Vector2 action3Size;
+        protected List<Vector2> action1SpriteVector;
+        protected List<Vector2> action2_1SpriteVector;
+        protected List<Vector2> action2_2SpriteVector;
+        protected List<Vector2> action3SpriteVector;
+
+        private BossStatus preBossStatus;
+        private BossStatus curBossStatus;
+
+        private enum BossStatus
+        {
+            IDLE,
+            ACTION1,
+            ACTION2_1,
+            ACTION2_2,
+            ACTION3,
+            DEAD,
+            END
+        }
+
         public LucasBoss(Texture2D texture, Texture2D drillTexture) : base(texture)
         {
             this.texture = texture;
@@ -48,15 +72,17 @@ namespace ScifiDruid.GameObjects
 
             idleSize = new Vector2(196, 186);
             action1Size = new Vector2(228, 185);
-            action2Size = new Vector2(197, 187);
-            action3Size = new Vector2(220, 184);
+            action2_1Size = new Vector2(220, 184);
+            action2_2Size = new Vector2(220, 184);
+            action3Size = new Vector2(197, 186); 
             deadSize = new Vector2(187, 188);
 
             idleSpriteVector = new List<Vector2>() { new Vector2(16, 0), new Vector2(264, 0) };
 
             action1SpriteVector = new List<Vector2>() { new Vector2(0, 215), new Vector2(230, 221) };
-            action2SpriteVector = new List<Vector2>() { new Vector2(16, 436) };
-            action3SpriteVector = new List<Vector2>() { new Vector2(230, 438), new Vector2(0, 898), new Vector2(230, 904) };
+            action2_1SpriteVector = new List<Vector2>() { new Vector2(230, 438) };
+            action2_2SpriteVector = new List<Vector2>(){ new Vector2(0, 898), new Vector2(230, 904) };
+            action3SpriteVector = new List<Vector2>() { new Vector2(16, 436) };
 
             deadSpriteVector = new List<Vector2>() { new Vector2(503, 0), new Vector2(737, 0), new Vector2(975, 0), new Vector2(1215, 0) };
 
@@ -91,6 +117,9 @@ namespace ScifiDruid.GameObjects
             bossOrigin = new Vector2(textureWidth / 2, textureHeight / 2);  //draw in the middle
 
             skillTime = 5;
+
+            curBossStatus = BossStatus.IDLE;
+            preBossStatus = BossStatus.IDLE;
         }
 
         public override void Update(GameTime gameTime)
@@ -211,8 +240,8 @@ namespace ScifiDruid.GameObjects
 
                 if (skillTime <= 0 && curBossStatus == BossStatus.IDLE)
                 {
-                    //randomAction = rand.Next(1, 6);
-                    randomAction = 3;
+                    randomAction = rand.Next(1, 6);
+                    //randomAction = 3;
 
                     skillTime = 5;
                 }
@@ -312,7 +341,7 @@ namespace ScifiDruid.GameObjects
             if (!action2)
             {
                 action2 = true;
-                curBossStatus = BossStatus.ACTION3;
+                curBossStatus = BossStatus.ACTION2_1;
                 drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(62), ConvertUnits.ToSimUnits(28), 0, enemyHitBox.Position, 0, BodyType.Dynamic, "SkillBoss");
                 drillBody.IgnoreCollisionWith(enemyHitBox);
                 drillBody.IsSensor = true;
@@ -332,6 +361,7 @@ namespace ScifiDruid.GameObjects
             {
                 if (IsContact(drillBody, "Ground"))
                 {
+                    curBossStatus = BossStatus.ACTION2_2;
                     drillBody.IsSensor = false;
                     drillBody.RestoreCollisionWith(enemyHitBox);
                     switch (bossSkilDirection)
@@ -372,7 +402,7 @@ namespace ScifiDruid.GameObjects
             if (!action3)
             {
                 action3 = true;
-                curBossStatus = BossStatus.ACTION2;
+                curBossStatus = BossStatus.ACTION3;
                 drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(56), ConvertUnits.ToSimUnits(56), 0, enemyHitBox.Position, 0, BodyType.Dynamic, "SkillBoss");
                 drillBody.IgnoreCollisionWith(enemyHitBox);
                 drillBody.IsSensor = true;
@@ -381,10 +411,10 @@ namespace ScifiDruid.GameObjects
                 switch (bossSkilDirection)
                 {
                     case SpriteEffects.None:
-                        drillBody.ApplyLinearImpulse(new Vector2(0.3f * speed, 0));
+                        drillBody.ApplyLinearImpulse(new Vector2(3f * speed, 0));
                         break;
                     case SpriteEffects.FlipHorizontally:
-                        drillBody.ApplyLinearImpulse(new Vector2(-0.3f * speed, 0));
+                        drillBody.ApplyLinearImpulse(new Vector2(-3f * speed, 0));
                         break;
                 }
             }
@@ -444,10 +474,16 @@ namespace ScifiDruid.GameObjects
                     spriteSize = new Vector2(action1Size.X, action1Size.Y);
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.ACTION2:
+                case BossStatus.ACTION2_1:
                     delay = 300f;
-                    spriteVector = action2SpriteVector;
-                    spriteSize = new Vector2(action2Size.X, action2Size.Y);
+                    spriteVector = action2_1SpriteVector;
+                    spriteSize = new Vector2(action2_1Size.X, action2_1Size.Y);
+                    allframes = spriteVector.Count();
+                    break;
+                case BossStatus.ACTION2_2:
+                    delay = 300f;
+                    spriteVector = action2_2SpriteVector;
+                    spriteSize = new Vector2(action2_2Size.X, action2_2Size.Y);
                     allframes = spriteVector.Count();
                     break;
                 case BossStatus.ACTION3:
@@ -477,7 +513,7 @@ namespace ScifiDruid.GameObjects
                 }
                 else if (action3)
                 {
-                    spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(drillBody.Position), new Rectangle(152, 1258, 56, 56), Color.White, 0, new Vector2(56 / 2, 56 / 2), 1, bossSkilDirection, 0f);
+                    spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(drillBody.Position), new Rectangle(152, 1248, 56, 56), Color.White, 0, new Vector2(56 / 2, 56 / 2), 1, bossSkilDirection, 0f);
                 }
             }
 
