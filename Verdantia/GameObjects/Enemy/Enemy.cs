@@ -162,7 +162,7 @@ namespace ScifiDruid.GameObjects
             {
                 playerCheckTime = 1;
                 playerPosition = player.position;
-                if (playerPosition.X - position.X < 6 && playerPosition.X - position.X > -6)
+                if (playerPosition.X - position.X < 6 && playerPosition.X - position.X > -6 && playerPosition.Y - position.Y < 3 && playerPosition.Y - position.Y > -3)
                 {
                     isPlayerinArea = true;
                 }

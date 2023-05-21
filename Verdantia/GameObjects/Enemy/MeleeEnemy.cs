@@ -185,6 +185,7 @@ namespace ScifiDruid.GameObjects
         private void EnemyWalking()
         {
             //do normal walking left and right
+            curStatus = EnemyStatus.IDLE;
 
             if ((xspawnPosition - enemyHitBox.Position.X) > pathWalkLength && isMovingLeft)
             {
