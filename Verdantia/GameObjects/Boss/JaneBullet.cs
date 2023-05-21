@@ -21,7 +21,7 @@ namespace ScifiDruid.GameObjects
         protected GameTime gameTime;
 
         //bullet state
-        private BulletStatus bossBulletStatus;
+        public BulletStatus bossBulletStatus;
 
         //wallOrigin
         private Vector2 bulletOrigin;
@@ -39,9 +39,6 @@ namespace ScifiDruid.GameObjects
         //frames 
         public int frames = 0;
 
-        //bullet status
-        private BulletStatus preStatus = BulletStatus.BULLETALIVE;
-
         private int bulletSpeed;
         private int bulletDistance;
 
@@ -52,7 +49,7 @@ namespace ScifiDruid.GameObjects
         private Vector2 spriteSize;
         private Vector2 spriteVector;
 
-        private enum BulletStatus
+        public enum BulletStatus
         {
             BULLETALIVE,
             BULLETEND
@@ -93,7 +90,7 @@ namespace ScifiDruid.GameObjects
             bulletOrigin = new Vector2(bulletSizeX / 2, bulletSizeY / 2);
         }
 
-        public void Shoot(GameTime gameTime)
+        public void Shoot()
         {
             switch (charDirection)
             {
@@ -116,14 +113,7 @@ namespace ScifiDruid.GameObjects
                 bossBulletStatus = BulletStatus.BULLETEND;
             }
 
-            if (preStatus != bossBulletStatus)
-            {
-                frames = 0;
-            }
-
-
             sourceRect = new Rectangle((int)spriteVector.X, (int)spriteVector.Y, (int)spriteSize.X, (int)spriteSize.Y);
-            preStatus = bossBulletStatus;
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
