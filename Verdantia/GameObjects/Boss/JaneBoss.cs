@@ -44,6 +44,7 @@ namespace ScifiDruid.GameObjects
         //boolean action1 in 2 part and action3
 
         //unique jane animation
+        private List<Vector2> idleSpriteVector;
         private List<Vector2> shootGunSpriteVector;
 
         private List<Vector2> shootPlasmaSpriteVector;
@@ -54,6 +55,7 @@ namespace ScifiDruid.GameObjects
         private List<Vector2> dashInSpriteVector;
         private List<Vector2> dashOutSpriteVector;
         private List<Vector2> punchSpriteVector;
+        private List<Vector2> deadSpriteVector;
 
 
         private BossStatus preBossStatus;

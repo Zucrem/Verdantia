@@ -6,6 +6,7 @@ using Box2DNet.Factories;
 using Box2DNet;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using static ScifiDruid.Singleton;
 
 namespace ScifiDruid.GameObjects
 {
@@ -18,23 +19,46 @@ namespace ScifiDruid.GameObjects
         //random boss action
         private Random rand = new Random();
         private int randomAction;
-        //attribute using for moving of boss
-        private float timeElapsed;
-        private bool isMovingLeft = true;
         private float movingTime = 3.4f;
 
         private float pathWalkLength;
         private float xspawnPosition;
 
+        //for animation
+        protected Vector2 idleSize;
+        protected Vector2 walkSize;
+        protected Vector2 shootSize;
+        protected Vector2 deadSize;
+
+        private List<Vector2> idleSpriteVector;
+        private List<Vector2> walkSpriteVector;
+        private List<Vector2> shootSpriteVector;
+        private List<Vector2> deadSpriteVector;
+
+
+        private EnemyStatus preStatus;
+        private EnemyStatus curStatus;
+        private enum EnemyStatus
+        {
+            IDLE,
+            WALK,
+            SHOOT,
+            DEAD,
+            END
+        }
         public RangeEnemy(Texture2D texture, List<Vector2> sizeList, List<List<Vector2>> animateList) : base(texture)
         {
             this.texture = texture;
 
             idleSize = sizeList[0];
-            deadSize = sizeList[1];
+            walkSize = sizeList[1];
+            shootSize = sizeList[2];
+            deadSize = sizeList[3];
 
             idleSpriteVector = animateList[0];
-            deadSpriteVector = animateList[1];
+            walkSpriteVector = animateList[1];
+            shootSpriteVector = animateList[2];
+            deadSpriteVector = animateList[3];
 
             frames = 0;
 
@@ -43,7 +67,7 @@ namespace ScifiDruid.GameObjects
             repeat = false;
         }
 
-        public override void Initial(Rectangle spawnPosition, Player player)
+        public void Initial(Rectangle spawnPosition, Player player)
         {
             this.player = player;
 
@@ -61,9 +85,20 @@ namespace ScifiDruid.GameObjects
 
             isAlive = true;
 
-            charDirection = SpriteEffects.FlipHorizontally;  // heading direction
+            // heading direction
+            if (Singleton.Instance.levelState == LevelState.FOREST)
+            {
+                charDirection = SpriteEffects.FlipHorizontally;
+            }
+            else
+            {
+                charDirection = SpriteEffects.None;
+            } 
 
             enemyOrigin = new Vector2(textureWidth / 2, textureHeight / 2);  //draw in the middle
+
+            curStatus = EnemyStatus.WALK;
+            preStatus = EnemyStatus.WALK;
         }
 
         public override void Update(GameTime gameTime)
@@ -126,6 +161,34 @@ namespace ScifiDruid.GameObjects
                         elapsed = 0;
                     }
                     break;
+                case EnemyStatus.WALK:
+                    if (elapsed >= delay)
+                    {
+                        if (frames >= allframes - 1)
+                        {
+                            frames = 0;
+                        }
+                        else
+                        {
+                            frames++;
+                        }
+                        elapsed = 0;
+                    }
+                    break;
+                case EnemyStatus.SHOOT:
+                    if (elapsed >= delay)
+                    {
+                        if (frames >= allframes - 1)
+                        {
+                            frames = 0;
+                        }
+                        else
+                        {
+                            frames++;
+                        }
+                        elapsed = 0;
+                    }
+                    break;
                 case EnemyStatus.DEAD:
                     if (elapsed >= delay)
                     {
@@ -171,12 +234,26 @@ namespace ScifiDruid.GameObjects
 
             if (isMovingLeft)
             {
-                charDirection = SpriteEffects.None;
+                if (Singleton.Instance.levelState == LevelState.FOREST)
+                {
+                    charDirection = SpriteEffects.None;
+                }
+                else
+                {
+                    charDirection = SpriteEffects.FlipHorizontally;
+                }
                 enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
             }
             else
             {
-                charDirection = SpriteEffects.FlipHorizontally;
+                if (Singleton.Instance.levelState == LevelState.FOREST)
+                {
+                    charDirection = SpriteEffects.FlipHorizontally;
+                }
+                else
+                {
+                    charDirection = SpriteEffects.None;
+                }
                 enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
             }
 
@@ -191,12 +268,26 @@ namespace ScifiDruid.GameObjects
 
             if (playerPosition.X - position.X > 2)
             {
-                charDirection = SpriteEffects.FlipHorizontally;
+                if (Singleton.Instance.levelState == LevelState.FOREST)
+                {
+                    charDirection = SpriteEffects.FlipHorizontally;
+                }
+                else
+                {
+                    charDirection = SpriteEffects.None;
+                }
                 enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
             }
             else if (playerPosition.X - position.X < -2)
             {
-                charDirection = SpriteEffects.None;
+                if (Singleton.Instance.levelState == LevelState.FOREST)
+                {
+                    charDirection = SpriteEffects.None;
+                }
+                else
+                {
+                    charDirection = SpriteEffects.FlipHorizontally;
+                }
                 enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
             }
            
@@ -221,6 +312,18 @@ namespace ScifiDruid.GameObjects
                     delay = 200f;
                     spriteVector = idleSpriteVector;
                     spriteSize = new Vector2(idleSize.X, idleSize.Y);
+                    allframes = spriteVector.Count();
+                    break;
+                case EnemyStatus.WALK:
+                    delay = 300f;
+                    spriteVector = walkSpriteVector;
+                    spriteSize = new Vector2(walkSize.X, walkSize.Y);
+                    allframes = spriteVector.Count();
+                    break;
+                case EnemyStatus.SHOOT:
+                    delay = 300f;
+                    spriteVector = shootSpriteVector;
+                    spriteSize = new Vector2(shootSize.X, shootSize.Y);
                     allframes = spriteVector.Count();
                     break;
                 case EnemyStatus.DEAD:

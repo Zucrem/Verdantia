@@ -41,14 +41,18 @@ namespace ScifiDruid.GameObjects
         private int countBounce = 0;
 
         //for animation
-        protected Vector2 action1Size;
-        protected Vector2 action2_1Size;
-        protected Vector2 action2_2Size;
-        protected Vector2 action3Size;
-        protected List<Vector2> action1SpriteVector;
-        protected List<Vector2> action2_1SpriteVector;
-        protected List<Vector2> action2_2SpriteVector;
-        protected List<Vector2> action3SpriteVector;
+        private Vector2 idleSize;
+        private Vector2 action1Size;
+        private Vector2 action2_1Size;
+        private Vector2 action2_2Size;
+        private Vector2 action3Size;
+        private Vector2 deadSize;
+        private List<Vector2> idleSpriteVector;
+        private List<Vector2> action1SpriteVector;
+        private List<Vector2> action2_1SpriteVector;
+        private List<Vector2> action2_2SpriteVector;
+        private List<Vector2> action3SpriteVector;
+        private List<Vector2> deadSpriteVector;
 
         private BossStatus preBossStatus;
         private BossStatus curBossStatus;

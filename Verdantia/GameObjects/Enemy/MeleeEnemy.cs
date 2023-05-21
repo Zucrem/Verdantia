@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework.Input;
 using static ScifiDruid.GameObjects.Player;
+using static ScifiDruid.Singleton;
 
 namespace ScifiDruid.GameObjects
 {
@@ -30,8 +31,28 @@ namespace ScifiDruid.GameObjects
         private float pathWalkLength;
         private float xspawnPosition;
 
+        //for animation
+        protected Vector2 idleSize;
+        protected Vector2 runSize;
+        protected Vector2 detectPlayerSize;
+        protected Vector2 deadSize;
+
+        private List<Vector2> idleSpriteVector = new List<Vector2>();
+        private List<Vector2> runSpriteVector = new List<Vector2>();
+        private List<Vector2> detectPlayerSpriteVector = new List<Vector2>();
+        private List<Vector2> deadSpriteVector = new List<Vector2>();
 
 
+        private EnemyStatus preStatus;
+        private EnemyStatus curStatus;
+        private enum EnemyStatus
+        {
+            IDLE,
+            RUN,
+            DETECT,
+            DEAD,
+            END
+        }
         public MeleeEnemy(Texture2D texture, List<Vector2> sizeList, List<List<Vector2>> animateList) : base(texture)
         {
             this.texture = texture;
@@ -49,7 +70,7 @@ namespace ScifiDruid.GameObjects
             frames = 0;
         }
 
-        public override void Initial(Rectangle spawnPosition, Player player)
+        public void Initial(Rectangle spawnPosition, Player player)
         {
             this.player = player;
 
@@ -65,14 +86,22 @@ namespace ScifiDruid.GameObjects
             pathWalkLength = ConvertUnits.ToSimUnits((spawnPosition.Width / 2) - 64);
             xspawnPosition = ConvertUnits.ToSimUnits(spawnPosition.X);
 
-
-
-
             isAlive = true;
 
-            charDirection = SpriteEffects.FlipHorizontally;  // heading direction
+            // heading direction
+            if (Singleton.Instance.levelState == LevelState.FOREST)
+            {
+                charDirection = SpriteEffects.FlipHorizontally;
+            }
+            else
+            {
+                charDirection = SpriteEffects.None;
+            }
 
             enemyOrigin = new Vector2(textureWidth / 2, textureHeight / 2);  //draw in the middle
+
+            curStatus = EnemyStatus.RUN;
+            preStatus = EnemyStatus.RUN;
         }
 
         public override void Update(GameTime gameTime)
@@ -199,7 +228,7 @@ namespace ScifiDruid.GameObjects
         private void EnemyWalking()
         {
             //do normal walking left and right
-            curStatus = EnemyStatus.IDLE;
+            curStatus = EnemyStatus.RUN;
 
             if ((xspawnPosition - enemyHitBox.Position.X) > pathWalkLength && isMovingLeft)
             {
@@ -212,12 +241,26 @@ namespace ScifiDruid.GameObjects
 
             if (isMovingLeft)
             {
-                charDirection = SpriteEffects.None;
+                if (Singleton.Instance.levelState == LevelState.FOREST)
+                {
+                    charDirection = SpriteEffects.None;
+                }
+                else
+                {
+                    charDirection = SpriteEffects.FlipHorizontally;
+                }
                 enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
             }
             else
             {
-                charDirection = SpriteEffects.FlipHorizontally;
+                if (Singleton.Instance.levelState == LevelState.FOREST)
+                {
+                    charDirection = SpriteEffects.FlipHorizontally;
+                }
+                else
+                {
+                    charDirection = SpriteEffects.None;
+                }
                 enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
             }
 
@@ -235,13 +278,28 @@ namespace ScifiDruid.GameObjects
 
             if (playerPosition.X - position.X > 1)
             {
-                charDirection = SpriteEffects.FlipHorizontally;
+                if (Singleton.Instance.levelState == LevelState.FOREST)
+                {
+                    charDirection = SpriteEffects.FlipHorizontally;
+                }
+                else
+                {
+                    charDirection = SpriteEffects.None;
+                }
+                    
                 enemyHitBox.ApplyForce(new Vector2(150 * speed, 0));
             }
             else if (playerPosition.X - position.X < -1)
             {
 
-                charDirection = SpriteEffects.None;
+                if (Singleton.Instance.levelState == LevelState.FOREST)
+                {
+                    charDirection = SpriteEffects.None;
+                }
+                else
+                {
+                    charDirection = SpriteEffects.FlipHorizontally;
+                }
                 enemyHitBox.ApplyForce(new Vector2(-150 * speed, 0));
 
             }

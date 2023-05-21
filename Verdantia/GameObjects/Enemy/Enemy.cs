@@ -32,20 +32,9 @@ namespace ScifiDruid.GameObjects
 
         protected GameTime gameTime;
 
-        //for animation
-        protected Vector2 idleSize;
-        protected Vector2 runSize;
-        protected Vector2 detectPlayerSize;
-        protected Vector2 deadSize;
-
         public Body enemyHitBox;       // to check the hit of bullet
 
         protected Vector2 spriteSize;
-
-        protected List<Vector2> idleSpriteVector = new List<Vector2>();
-        protected List<Vector2> runSpriteVector = new List<Vector2>();
-        protected List<Vector2> detectPlayerSpriteVector = new List<Vector2>();
-        protected List<Vector2> deadSpriteVector = new List<Vector2>();
 
         protected List<Vector2> spriteVector = new List<Vector2>();
 
@@ -71,9 +60,6 @@ namespace ScifiDruid.GameObjects
         protected int frames;
         protected int allframes;
 
-        protected EnemyStatus preStatus;
-        protected EnemyStatus curStatus;
-
         //check player position
         protected float playerCheckTime;
 
@@ -82,20 +68,6 @@ namespace ScifiDruid.GameObjects
             this.texture = texture;
         }
 
-        protected enum EnemyStatus
-        {
-            IDLE,
-            RUN,
-            DETECT,
-            DEAD,
-            END
-        }
-
-        public virtual void Initial(Rectangle spawnPosition, Player player)
-        {
-            curStatus = EnemyStatus.IDLE;
-            preStatus = EnemyStatus.IDLE;
-        }
 
         public bool GotHit(String dmgType)
         {
