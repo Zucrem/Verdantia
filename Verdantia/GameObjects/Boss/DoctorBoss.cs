@@ -25,6 +25,26 @@ namespace ScifiDruid.GameObjects
         private bool action1 = false;
         private bool action2 = false;
         private bool action3 = false;
+        //for animation
+        protected Vector2 action1Size;
+        protected Vector2 action2Size;
+        protected Vector2 action3Size;
+        protected List<Vector2> action1SpriteVector;
+        protected List<Vector2> action2SpriteVector;
+        protected List<Vector2> action3SpriteVector;
+
+        private BossStatus preBossStatus;
+        private BossStatus curBossStatus;
+
+        private enum BossStatus
+        {
+            IDLE,
+            ACTION1,
+            ACTION2,
+            ACTION3,
+            DEAD,
+            END
+        }
 
         public DoctorBoss(Texture2D texture) : base(texture)
         {
