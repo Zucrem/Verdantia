@@ -26,10 +26,13 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Boss/JaneSheet.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Boss/LucasSheet.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Enemy/chainsawMech.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Enemy/EyeBall.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Enemy/flameMech.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Enemy/FlyingDrone.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Enemy/MeleePolice.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Enemy/RangePolice.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Enemy/ShieldDog.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Enemy/Tentacle.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Guardian/birdTex.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Guardian/crocTex.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Guardian/lionTex.png</File>
@@ -79,6 +82,9 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Songs/Stage3Screen/Stage3Theme.mp3</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

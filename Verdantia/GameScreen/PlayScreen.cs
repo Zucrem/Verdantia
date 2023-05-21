@@ -37,13 +37,14 @@ namespace ScifiDruid.GameScreen
         protected Texture2D playerTex;
 
         //all stage texture
-        //stage 1
-        protected Texture2D flameMechTex, chainsawMechTex, fly1MechTex, lucasBossTex;
+        //all stage
         protected Texture2D switch_wall_Tex;
+        //stage 1
+        protected Texture2D flameMechTex, chainsawMechTex, lucasBossTex;
         //stage 2
-        protected Texture2D janeBossTex, janeAmmoTex;
+        protected Texture2D meleePoliceTex, gunPoliceTex, droneTex, janeBossTex, janeAmmoTex;
         //stage 3
-        protected Texture2D doctorBossTex, doctorAmmoTex;
+        protected Texture2D tentacleTex, shieldDogTex, eyeBallTex, doctorBossTex, doctorAmmoTex;
 
 
         private FrameCounter _frameCounter = new FrameCounter();
@@ -95,7 +96,6 @@ namespace ScifiDruid.GameScreen
         //sound 
         protected float masterBGM = Singleton.Instance.bgMusicVolume;
         protected float masterSFX = Singleton.Instance.soundMasterVolume;
-        private Texture2D _groundSprite;
 
         //map
         protected TmxMap map;
@@ -231,10 +231,18 @@ namespace ScifiDruid.GameScreen
             lucasBossTex = content.Load<Texture2D>("Pictures/Play/Characters/Boss/LucasSheet");
 
             //stage2 enemy and all shoot
+            meleePoliceTex = content.Load<Texture2D>("Pictures/Play/Characters/Enemy/MeleePolice");
+            gunPoliceTex = content.Load<Texture2D>("Pictures/Play/Characters/Enemy/RangePolice");
+            droneTex = content.Load<Texture2D>("Pictures/Play/Characters/Enemy/FlyingDrone");
+
             janeBossTex = content.Load<Texture2D>("Pictures/Play/Characters/Boss/JaneSheet");
             janeAmmoTex = content.Load<Texture2D>("Pictures/Play/Skills/BossSkills/JaneAmmoSheet");
 
             //stage3 enemy and all shoot
+            tentacleTex = content.Load<Texture2D>("Pictures/Play/Characters/Enemy/Tentacle");
+            shieldDogTex = content.Load<Texture2D>("Pictures/Play/Characters/Enemy/ShieldDog");
+            eyeBallTex = content.Load<Texture2D>("Pictures/Play/Characters/Enemy/Eyeball");
+
             doctorBossTex = content.Load<Texture2D>("Pictures/Play/Characters/Boss/DrSheet");
             doctorAmmoTex = content.Load<Texture2D>("Pictures/Play/Skills/BossSkills/DrAmmoSheet");
 
@@ -620,8 +628,8 @@ namespace ScifiDruid.GameScreen
             if (play)
             {
                 //background
-                spriteBatch.Draw(blackTex, Vector2.Zero, Color.White);
-                //spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
+                //spriteBatch.Draw(blackTex, Vector2.Zero, Color.White);
+                spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
 
                 int mana = (int)Player.mana;
                 int health = (int)Player.health;

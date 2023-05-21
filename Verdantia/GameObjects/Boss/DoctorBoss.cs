@@ -26,12 +26,16 @@ namespace ScifiDruid.GameObjects
         private bool action2 = false;
         private bool action3 = false;
         //for animation
+        protected Vector2 idleSize;
         protected Vector2 action1Size;
         protected Vector2 action2Size;
         protected Vector2 action3Size;
+        protected Vector2 deadSize;
+        protected List<Vector2> idleSpriteVector;
         protected List<Vector2> action1SpriteVector;
         protected List<Vector2> action2SpriteVector;
         protected List<Vector2> action3SpriteVector;
+        protected List<Vector2> deadSpriteVector;
 
         private BossStatus preBossStatus;
         private BossStatus curBossStatus;
@@ -78,7 +82,7 @@ namespace ScifiDruid.GameObjects
             repeat = false;
         }
 
-        public override void Initial(Rectangle spawnPosition, Player player)
+        public void Initial(Rectangle spawnPosition, Player player)
         {
             this.player = player;
 

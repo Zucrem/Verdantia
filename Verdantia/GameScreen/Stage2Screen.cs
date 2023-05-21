@@ -37,15 +37,15 @@ namespace ScifiDruid.GameScreen
         private List<Enemy> allEnemies;
         private JaneBoss boss;
 
-        /*private RangeEnemy flameMech;
-        private List<RangeEnemy> flameMechEnemies;
-        private int flameMechPositionList;
-        private int flameMechCount;
+        private RangeEnemy gunPolice;
+        private List<RangeEnemy> gunPoliceEnemies;
+        private int gunPolicePositionList;
+        private int gunPoliceCount;
 
-        private MeleeEnemy chainsawMech;
-        private List<MeleeEnemy> chainsawMechEnemies;
-        private int chainsawMechPositionList;
-        private int chainsawMechCount;*/
+        private MeleeEnemy meleePolice;
+        private List<MeleeEnemy> meleePoliceEnemies;
+        private int meleePolicePositionList;
+        private int meleePoliceCount;
 
         //special occasion position
         //if boss event
@@ -268,54 +268,54 @@ namespace ScifiDruid.GameScreen
             //create enemy on position
             allEnemies = new List<Enemy>();
 
-            /*
+            
             //range enemy
-            flameMechEnemies = new List<RangeEnemy>();
-            flameMechPositionList = ground1MonsterRects.Count();
-            List<Vector2> flameMechSizeList = new List<Vector2>() { new Vector2(112, 86), new Vector2(112, 86) };
-            List<List<Vector2>> flameMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(112, 0) }, new List<Vector2>() { new Vector2(0, 108), new Vector2(112, 108) } };
-            for (int i = 0; i < flameMechPositionList; i++)
+            gunPoliceEnemies = new List<RangeEnemy>();
+            gunPolicePositionList = ground1MonsterRects.Count();
+            List<Vector2> gunPoliceSizeList = new List<Vector2>() { new Vector2(46, 92), new Vector2(46, 92), new Vector2(46, 92), new Vector2(99, 92)};
+            List<List<Vector2>> gunPoliceAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(119, 0), new Vector2(228, 1) }, new List<Vector2>() { new Vector2(337, 0), new Vector2(0, 111), new Vector2(119, 111), new Vector2(227, 111) } , new List<Vector2>() { new Vector2(0, 226), new Vector2(116, 226) } , new List<Vector2>() { new Vector2(0, 355), new Vector2(116, 355), new Vector2(227, 353), new Vector2(326, 352), new Vector2(435, 357) } };
+            for (int i = 0; i < gunPolicePositionList; i++)
             {
-                flameMech = new RangeEnemy(flameMechTex, flameMechSizeList, flameMechAnimateList)
+                gunPolice = new RangeEnemy(gunPoliceTex, gunPoliceSizeList, gunPoliceAnimateList)
                 {
-                    size = new Vector2(112, 86),
+                    size = new Vector2(46, 92),
                     health = 3,
-                    speed = 0.22f,
+                    speed = 0.1f,
                 };
-                flameMechEnemies.Add(flameMech);
+                gunPoliceEnemies.Add(gunPolice);
             }
 
             //create enemy position
-            flameMechCount = 0;
-            foreach (RangeEnemy chainsawBot in flameMechEnemies)
+            gunPoliceCount = 0;
+            foreach (RangeEnemy gun in gunPoliceEnemies)
             {
-                chainsawBot.Initial(ground1MonsterRects[flameMechCount], player);
-                flameMechCount++;
+                gun.Initial(ground1MonsterRects[gunPoliceCount], player);
+                gunPoliceCount++;
             }
 
             //melee enemy
-            chainsawMechEnemies = new List<MeleeEnemy>();
-            chainsawMechPositionList = ground2MonsterRects.Count();
-            List<Vector2> chainsawMechSizeList = new List<Vector2>() { new Vector2(118, 100), new Vector2(136, 100), new Vector2(136, 100), new Vector2(118, 100) };
-            List<List<Vector2>> chainsawMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(144, 0) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 254), new Vector2(142, 254) } };
-            for (int i = 0; i < chainsawMechPositionList; i++)
+            meleePoliceEnemies = new List<MeleeEnemy>();
+            meleePolicePositionList = ground2MonsterRects.Count();
+            List<Vector2> meleePoliceSizeList = new List<Vector2>() { new Vector2(55, 94), new Vector2(44, 94), new Vector2(74, 109), new Vector2(99, 94) };
+            List<List<Vector2>> meleePoliceAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(107, 0), new Vector2(214, 0), new Vector2(321, 1) }, new List<Vector2>() { new Vector2(428, 2), new Vector2(0, 135), new Vector2(108, 135), new Vector2(219, 135), new Vector2(328, 135), new Vector2(423, 135) }, new List<Vector2>() { new Vector2(0, 270), new Vector2(97, 270), new Vector2(214, 270), new Vector2(318, 270) }, new List<Vector2>() { new Vector2(0, 406), new Vector2(100, 406), new Vector2(249, 406), new Vector2(375, 406), new Vector2(501, 406) } };
+            for (int i = 0; i < meleePolicePositionList; i++)
             {
-                chainsawMech = new MeleeEnemy(chainsawMechTex, chainsawMechSizeList, chainsawMechAnimateList)
+                meleePolice = new MeleeEnemy(meleePoliceTex, meleePoliceSizeList, meleePoliceAnimateList)
                 {
-                    size = new Vector2(118, 100),
+                    size = new Vector2(44, 94),
                     health = 4,
-                    speed = 0.22f,
+                    speed = 0.1f,
                 };
-                chainsawMechEnemies.Add(chainsawMech);
+                meleePoliceEnemies.Add(meleePolice);
             }
 
             //create enemy position
-            chainsawMechCount = 0;
-            foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
+            meleePoliceCount = 0;
+            foreach (MeleeEnemy melee in meleePoliceEnemies)
             {
-                chainsawBot.Initial(ground2MonsterRects[chainsawMechCount], player);
-                chainsawMechCount++;
-            }*/
+                melee.Initial(ground2MonsterRects[meleePoliceCount], player);
+                meleePoliceCount++;
+            }
 
             //create boss on position
             boss = new JaneBoss(janeBossTex)
@@ -328,8 +328,8 @@ namespace ScifiDruid.GameScreen
             boss.Initial(bossRect, player, boss_event);
 
             //add to all enemy for
-            //allEnemies.AddRange(flameMechEnemies);
-            //allEnemies.AddRange(chainsawMechEnemies);
+            allEnemies.AddRange(gunPoliceEnemies);
+            allEnemies.AddRange(meleePoliceEnemies);
             allEnemies.Add(boss);
 
             //switch event
@@ -378,16 +378,16 @@ namespace ScifiDruid.GameScreen
                     if (!Keyboard.GetState().IsKeyDown(Keys.Escape))
                     {
                         //all enemy
-                        /*foreach (RangeEnemy flamewBot in flameMechEnemies)
+                        foreach (RangeEnemy gun in gunPoliceEnemies)
                         {
-                            flamewBot.Update(gameTime);
-                            flamewBot.Action();
+                            gun.Update(gameTime);
+                            gun.Action();
                         }
-                        foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
+                        foreach (MeleeEnemy melee in meleePoliceEnemies)
                         {
-                            chainsawBot.Update(gameTime);
-                            chainsawBot.Action();
-                        }*/
+                            melee.Update(gameTime);
+                            melee.Action();
+                        }
                         //boss
                         boss.Update(gameTime);
 
@@ -470,14 +470,14 @@ namespace ScifiDruid.GameScreen
                     tilemapManager.Draw(spriteBatch);
 
                     //draw enemy animation
-                    /*foreach (RangeEnemy flameBot in flameMechEnemies)
+                    foreach (RangeEnemy gun in gunPoliceEnemies)
                     {
-                        flameBot.Draw(spriteBatch);
+                        gun.Draw(spriteBatch);
                     }
-                    foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
+                    foreach (MeleeEnemy melee in meleePoliceEnemies)
                     {
-                        chainsawBot.Draw(spriteBatch);
-                    }*/
+                        melee.Draw(spriteBatch);
+                    }
 
                     //draw boss animation
                     boss.Draw(spriteBatch);

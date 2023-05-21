@@ -265,6 +265,18 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/Characters/Enemy/chainsawMech.png
 
+#begin Pictures/Play/Characters/Enemy/EyeBall.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Characters/Enemy/EyeBall.png
+
 #begin Pictures/Play/Characters/Enemy/flameMech.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -312,6 +324,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/Characters/Enemy/RangePolice.png
+
+#begin Pictures/Play/Characters/Enemy/ShieldDog.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Characters/Enemy/ShieldDog.png
+
+#begin Pictures/Play/Characters/Enemy/Tentacle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Characters/Enemy/Tentacle.png
 
 #begin Pictures/Play/Characters/Guardian/birdTex.png
 /importer:TextureImporter

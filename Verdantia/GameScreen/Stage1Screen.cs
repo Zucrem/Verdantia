@@ -208,8 +208,8 @@ namespace ScifiDruid.GameScreen
             //range enemy
             flameMechEnemies = new List<RangeEnemy>();
             flameMechPositionList = ground1MonsterRects.Count();
-            List<Vector2> flameMechSizeList = new List<Vector2>() { new Vector2(112, 86), new Vector2(112, 86) };
-            List<List<Vector2>> flameMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(112, 0) }, new List<Vector2>() { new Vector2(0, 108), new Vector2(112, 108) } };
+            List<Vector2> flameMechSizeList = new List<Vector2>() { new Vector2(112, 86), new Vector2(112, 86), new Vector2(112, 86), new Vector2(112, 86) };
+            List<List<Vector2>> flameMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0)}, new List<Vector2>() { new Vector2(0, 0), new Vector2(112, 0) }, new List<Vector2>() { new Vector2(0, 0) }, new List<Vector2>() { new Vector2(0, 108), new Vector2(112, 108) } };
             for (int i = 0; i < flameMechPositionList; i++)
             {
                 flameMech = new RangeEnemy(flameMechTex, flameMechSizeList, flameMechAnimateList)

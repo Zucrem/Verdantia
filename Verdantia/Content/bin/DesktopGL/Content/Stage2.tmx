@@ -206,7 +206,7 @@
   <object id="103" name="ground_mon_1" x="896" y="448" width="64" height="64"/>
   <object id="104" name="ground_mon_1" x="1472" y="480" width="288" height="64"/>
   <object id="178" name="ground_mon_1" x="3808" y="352" width="256" height="64"/>
-  <object id="270" name="ground_mon_1" x="9088" y="352" width="64" height="64"/>
+  <object id="270" name="ground_mon_1" x="8800" y="352" width="416" height="64"/>
   <object id="271" name="ground_mon_1" x="8096" y="128" width="288" height="64"/>
   <object id="272" name="ground_mon_1" x="7328" y="128" width="256" height="64"/>
   <object id="279" name="ground_mon_2" x="1120" y="480" width="416" height="64"/>
