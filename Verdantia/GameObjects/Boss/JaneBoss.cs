@@ -22,13 +22,19 @@ namespace ScifiDruid.GameObjects
         private float movingTime = 3.4f;
 
         //boss size
+        private Vector2 idleSize;
+
         private Vector2 shootGunSize;
         private Vector2 shootPlasmaSize;
+
+        private Vector2 action2Size;
 
         private Vector2 prepareSize;
         private Vector2 dashInSize;
         private Vector2 dashOutSize;
         private Vector2 punchSize;
+
+        private Vector2 deadSize;
 
         //boolean to do action
         private bool action1 = false;
@@ -36,7 +42,6 @@ namespace ScifiDruid.GameObjects
         private bool action3 = false;
 
         //boolean action1 in 2 part and action3
-        private ActionState actionState;
 
         //unique jane animation
         private List<Vector2> shootGunSpriteVector;
@@ -49,6 +54,10 @@ namespace ScifiDruid.GameObjects
         private List<Vector2> dashInSpriteVector;
         private List<Vector2> dashOutSpriteVector;
         private List<Vector2> punchSpriteVector;
+
+
+        private BossStatus preBossStatus;
+        private BossStatus curBossStatus;
 
         public JaneBoss(Texture2D texture) : base(texture)
         {
@@ -91,7 +100,7 @@ namespace ScifiDruid.GameObjects
         }
 
         //Action all states
-        private enum ActionState
+        private enum BossStatus
         {
             IDLE,
             SHOOTGUN,
@@ -100,7 +109,9 @@ namespace ScifiDruid.GameObjects
             PREPARE,
             DASHIN,
             DASHOUT,
-            PUNCH
+            PUNCH,
+            DEAD,
+            END
         }
 
         public override void Initial(Rectangle spawnPosition, Player player, Rectangle fieldBoss)
@@ -123,6 +134,9 @@ namespace ScifiDruid.GameObjects
             bossOrigin = new Vector2(textureWidth / 2, textureHeight / 2);  //draw in the middle
 
             skillTime = 5;
+
+            curBossStatus = BossStatus.IDLE;
+            preBossStatus = BossStatus.IDLE;
         }
 
         public override void Update(GameTime gameTime)
@@ -194,35 +208,7 @@ namespace ScifiDruid.GameObjects
                         elapsed = 0;
                     }
                     break;
-                case BossStatus.ACTION1:
-                    if (actionState == ActionState.SHOOTGUN)
-                    {
-                        if (elapsed >= delay)
-                        {
-                            if (frames >= allframes - 1)
-                            {
-                                frames = 0;
-                            }
-                            else
-                            {
-                                frames++;
-                            }
-                            elapsed = 0;
-                        }
-                    }
-                    else if (actionState == ActionState.SHOOTPLASMA)
-                    {
-                        if (elapsed >= delay)
-                        {
-                            if (frames < allframes - 1)
-                            {
-                                frames++;
-                            }
-                            elapsed = 0;
-                        }
-                    }
-                    break;
-                case BossStatus.ACTION2:
+                case BossStatus.SHOOTGUN:
                     if (elapsed >= delay)
                     {
                         if (frames >= allframes - 1)
@@ -236,32 +222,52 @@ namespace ScifiDruid.GameObjects
                         elapsed = 0;
                     }
                     break;
-                case BossStatus.ACTION3:
-                    if (actionState == ActionState.PREPARE)
+                case BossStatus.SHOOTPLASMA:
+                    if (elapsed >= delay)
                     {
-                        if (elapsed >= delay)
+                        if (frames < allframes - 1)
                         {
-                            if (frames >= allframes - 1)
-                            {
-                                frames = 0;
-                            }
-                            else
-                            {
-                                frames++;
-                            }
-                            elapsed = 0;
+                            frames++;
                         }
+                        elapsed = 0;
                     }
-                    else if (actionState == ActionState.PUNCH || actionState == ActionState.DASHIN || actionState == ActionState.DASHOUT)
+                    break;
+                case BossStatus.CALLDOWNBOMB:
+                    if (elapsed >= delay)
                     {
-                        if (elapsed >= delay)
+                        if (frames >= allframes - 1)
                         {
-                            if (frames < allframes - 1)
-                            {
-                                frames++;
-                            }
-                            elapsed = 0;
+                            frames = 0;
                         }
+                        else
+                        {
+                            frames++;
+                        }
+                        elapsed = 0;
+                    }
+                    break;
+                case BossStatus.PREPARE:
+                    if (elapsed >= delay)
+                    {
+                        if (frames >= allframes - 1)
+                        {
+                            frames = 0;
+                        }
+                        else
+                        {
+                            frames++;
+                        }
+                        elapsed = 0;
+                    }
+                    break;
+                default:
+                    if (elapsed >= delay)
+                    {
+                        if (frames < allframes - 1)
+                        {
+                            frames++;
+                        }
+                        elapsed = 0;
                     }
                     break;
             }
@@ -305,15 +311,15 @@ namespace ScifiDruid.GameObjects
 
         public void Skill1()
         {
-            if (!action2)
+            if (!action1)
             {
-                action2 = true;
-                curBossStatus = BossStatus.ACTION2;
+                action1 = true;
+                curBossStatus = BossStatus.CALLDOWNBOMB;
             }
 
             //clear random action number
             //do animation1
-            curBossStatus = BossStatus.ACTION1;
+            curBossStatus = BossStatus.IDLE;
             //do normal walking left and right
             timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -353,7 +359,7 @@ namespace ScifiDruid.GameObjects
             if (!action2)
             {
                 action2 = true;
-                curBossStatus = BossStatus.ACTION2;
+                curBossStatus = BossStatus.CALLDOWNBOMB;
             }
         }
 
@@ -362,7 +368,7 @@ namespace ScifiDruid.GameObjects
             if (!action3)
             {
                 action3 = true;
-                curBossStatus = BossStatus.ACTION3;
+                curBossStatus = BossStatus.PREPARE;
             }
         }
 
@@ -376,50 +382,46 @@ namespace ScifiDruid.GameObjects
                     spriteSize = new Vector2(idleSize.X, idleSize.Y);
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.ACTION1:
-                    if (actionState == ActionState.SHOOTGUN)
-                    {
-                        delay = 200f;
-                        spriteVector = shootGunSpriteVector;
-                        spriteSize = new Vector2(shootGunSize.X, shootGunSize.Y);
-                        allframes = spriteVector.Count();
-                    }
-                    else if (actionState == ActionState.SHOOTPLASMA)
-                    {
-                        delay = 200f;
-                        spriteVector = shootPlasmaSpriteVector;
-                        spriteSize = new Vector2(shootPlasmaSize.X, shootPlasmaSize.Y);
-                        allframes = spriteVector.Count();
-                    }
+                case BossStatus.SHOOTGUN:
+                    delay = 200f;
+                    spriteVector = shootGunSpriteVector;
+                    spriteSize = new Vector2(shootGunSize.X, shootGunSize.Y);
+                    allframes = spriteVector.Count();
                     break;
-                case BossStatus.ACTION2:
+                case BossStatus.SHOOTPLASMA:
+                    delay = 200f;
+                    spriteVector = shootPlasmaSpriteVector;
+                    spriteSize = new Vector2(shootPlasmaSize.X, shootPlasmaSize.Y);
+                    allframes = spriteVector.Count();
+                    break;
+                case BossStatus.CALLDOWNBOMB:
                     delay = 300f;
                     spriteVector = callDownBombSpriteVector;
                     spriteSize = new Vector2(action2Size.X, action2Size.Y);
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.ACTION3:
+                case BossStatus.PREPARE:
                     delay = 300f;
-                    spriteSize = new Vector2(action3Size.X, action3Size.Y);
-                    switch (actionState)
-                    {
-                        case ActionState.PREPARE:
-                            spriteSize = prepareSize;
-                            spriteVector = prepareSpriteVector;
-                            break;
-                        case ActionState.DASHIN:
-                            spriteSize = dashInSize;
-                            spriteVector = dashInSpriteVector;
-                            break;
-                        case ActionState.DASHOUT:
-                            spriteSize = dashOutSize;
-                            spriteVector = dashOutSpriteVector;
-                            break;
-                        case ActionState.PUNCH:
-                            spriteSize = punchSize;
-                            spriteVector = punchSpriteVector;
-                            break;
-                    }
+                    spriteSize = prepareSize;
+                    spriteVector = prepareSpriteVector;
+                    allframes = spriteVector.Count();
+                    break;
+                case BossStatus.DASHIN:
+                    delay = 300f;
+                    spriteSize = dashInSize;
+                    spriteVector = dashInSpriteVector;
+                    allframes = spriteVector.Count();
+                    break;
+                case BossStatus.DASHOUT:
+                    delay = 300f; 
+                    spriteSize = dashOutSize;
+                    spriteVector = dashOutSpriteVector;
+                    allframes = spriteVector.Count();
+                    break;
+                case BossStatus.PUNCH:
+                    delay = 300f; 
+                    spriteSize = punchSize;
+                    spriteVector = punchSpriteVector;
                     allframes = spriteVector.Count();
                     break;
                 case BossStatus.DEAD:

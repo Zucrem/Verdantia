@@ -150,6 +150,20 @@ namespace ScifiDruid.GameObjects
                         elapsed = 0;
                     }
                     break;
+                case EnemyStatus.DETECT:
+                    if (elapsed >= delay)
+                    {
+                        if (frames >= allframes - 1)
+                        {
+                            curStatus = EnemyStatus.RUN;
+                        }
+                        else
+                        {
+                            frames++;
+                        }
+                        elapsed = 0;
+                    }
+                    break;
                 case EnemyStatus.DEAD:
                     if (elapsed >= delay)
                     {
@@ -185,6 +199,7 @@ namespace ScifiDruid.GameObjects
         private void EnemyWalking()
         {
             //do normal walking left and right
+            curStatus = EnemyStatus.IDLE;
 
             if ((xspawnPosition - enemyHitBox.Position.X) > pathWalkLength && isMovingLeft)
             {

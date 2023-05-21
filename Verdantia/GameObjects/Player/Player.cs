@@ -420,7 +420,7 @@ namespace ScifiDruid.GameObjects
                 attackAnimationTime = 0.3f;
                 attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
                 attackTime = 5;
-                bulletList[bulletList.Count - 1].Shoot(gameTime);
+                bulletList[bulletList.Count - 1].Shoot();
                 Player.mana -= 5;
             }
             //Shoot Up
@@ -445,7 +445,7 @@ namespace ScifiDruid.GameObjects
                 attackAnimationTime = 0.3f;
                 attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
                 attackTime = 5;
-                bulletList[bulletList.Count - 1].Shoot(gameTime);
+                bulletList[bulletList.Count - 1].Shoot();
                 Player.mana -= 5;
             }
 
