@@ -14,8 +14,6 @@ namespace ScifiDruid.GameObjects
     public class PlayerBullet : _GameObject
     {
         private Texture2D texture;
-
-        private List<Vector2> spriteVector = new List<Vector2>();
         //time
         private float elapsed;
         private float delay;
@@ -48,6 +46,7 @@ namespace ScifiDruid.GameObjects
         private Rectangle sourceRect;
 
         private Vector2 spriteSize;
+        private List<Vector2> spriteVector;
 
         //frames 
         public int frames = 0;
