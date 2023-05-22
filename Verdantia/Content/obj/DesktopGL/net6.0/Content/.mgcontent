@@ -4,6 +4,7 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/../../../../../Downloads/J Sprite/JaneSheet.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Fonts/font20.spritefont</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Fonts/font30.spritefont</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Fonts/font60.spritefont</File>
@@ -23,7 +24,6 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/Setting/DoneButton.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/Setting/SettingBG.jpg</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Boss/DrSheet.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Boss/JaneSheet.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Boss/LucasSheet.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Enemy/chainsawMech.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Enemy/EyeBall.png</File>
@@ -39,9 +39,13 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Player/keeperSheet.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/birdPortriat.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/dialogBox.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/doctorPortrait.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/janePortrait.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/lionPortrait.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/lucasPortrait.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/soulBirdPortrait.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/soulCrocPortrait.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/soulLionPortrait.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Black.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/ConfirmExit/ConfirmExitPopUp.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/ConfirmExit/No.png</File>
@@ -81,8 +85,16 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Songs/Stage2Screen/Stage2Theme.mp3</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Songs/Stage3Screen/BossStage3Theme.mp3</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Songs/Stage3Screen/Stage3Theme.mp3</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Button/clicksound.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Button/hoverSound.wav</File>
   </SourceFiles>
   <DestFiles>
+    <File>Pictures/Play/Characters/Boss/JaneSheet.png</File>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

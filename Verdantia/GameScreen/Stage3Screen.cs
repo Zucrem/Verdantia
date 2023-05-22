@@ -15,6 +15,7 @@ using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Input;
 using static ScifiDruid.GameObjects.Player;
 using Verdantia.GameObjects;
+using static ScifiDruid.GameObjects.DoctorBoss;
 
 namespace ScifiDruid.GameScreen
 {
@@ -52,6 +53,7 @@ namespace ScifiDruid.GameScreen
         //if boss event
         private Rectangle wallblock;
         private Rectangle boss_event;
+        private Rectangle invWall;
 
         //if open switch and wall gone
         private Rectangle switch_button1;
@@ -80,6 +82,9 @@ namespace ScifiDruid.GameScreen
 
         private Vector2 panel_size = new Vector2(64, 6);
         private Vector2 panel_textureSize = new Vector2(64, 66);
+
+        //check boss state
+        private bool bossDead = false;
         public override void Initial()
         {
             base.Initial();
@@ -187,7 +192,14 @@ namespace ScifiDruid.GameScreen
 
                     Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(boss_event.Width), ConvertUnits.ToSimUnits(boss_event.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(boss_event.X, boss_event.Y)));
                     body.UserData = "Boss_event";
-                    body.IsSensor = true;
+                    body.IsSensor = true; 
+                }
+                if (o.Name.Equals("inv_wall"))
+                {
+                    invWall = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+
+                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(invWall.Width), ConvertUnits.ToSimUnits(invWall.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(invWall.X, invWall.Y)));
+                    body.UserData = "Wall";
                 }
             }
             foreach (var o in map.ObjectGroups["FlyingMonster"].Objects)
@@ -243,15 +255,13 @@ namespace ScifiDruid.GameScreen
                 body.Friction = 0.3f;
             }
 
-
             //create player on position
-
-            //player.Initial(startRect);
-            player.Initial(bossState);
+            player.Initial(startRect);
+            //player.Initial(bossState);
 
             Vector2 guardianSize = new Vector2(49, 55);
             List<Vector2> guardianAnimateList = new List<Vector2>() { new Vector2(10, 2), new Vector2(67, 2), new Vector2(4, 59), new Vector2(61, 59) };
-            //guardian = new Guardian(guardianTex, new Vector2(bossState.X, bossState.Y), guardianSize, guardianAnimateList);
+            //guardian = new Guardian(guardianTex, guardianSize, guardianAnimateList);
 
 
             //create enemy on position
@@ -346,6 +356,8 @@ namespace ScifiDruid.GameScreen
             //button and rock wall
             switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage2Tileset/specialProps2");
             //guardianTex = content.Load<Texture2D>("Pictures/Play/Characters/Guardian/birdTex");
+            //guardianTex = content.Load<Texture2D>("Pictures/Play/Characters/Guardian/crocTex");
+            //guardianTex = content.Load<Texture2D>("Pictures/Play/Characters/Guardian/lionTex");
 
             //bg music and sfx
             stage3Theme = content.Load<Song>("Songs/Stage3Screen/Stage3Theme");
@@ -363,11 +375,14 @@ namespace ScifiDruid.GameScreen
         {
             if (play)
             {
-                if (gamestate == GameState.PLAY)
+                if (gamestate == GameState.OPENING || gamestate == GameState.END)
+                {
+                    //guardian.Update(gameTime);
+                }
+                if (gamestate == GameState.PLAY || gamestate == GameState.END)
                 {
                     if (!Keyboard.GetState().IsKeyDown(Keys.Escape))
                     {
-                        //guardian.Update(gameTime);
                         //all enemy
                         foreach (RangeEnemy dog in shieldDogEnemies)
                         {
@@ -382,10 +397,19 @@ namespace ScifiDruid.GameScreen
                         //boss
                         boss.Update(gameTime);
 
-                        //check if boss death then
-                        if (!boss.isAlive && created_boss)
+                        //check if boss death then change to END state
+                        if (boss.IsBossDead() && !bossDead)
                         {
+                            bossDead = true;
                             MediaPlayer.Stop();
+                            MediaPlayer.Play(stage3Theme);
+                        }
+                        if (boss.IsBossEnd() && bossDead)
+                        {
+                            //set player to inactive
+                            player.playerStatus = PlayerStatus.IDLE;
+                            player.isAlive = false;
+                            gamestate = GameState.END;
                         }
 
                         //switch button
@@ -418,6 +442,10 @@ namespace ScifiDruid.GameScreen
                             Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(wallblock.Width), ConvertUnits.ToSimUnits(wallblock.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(wallblock.X, wallblock.Y)));
                             body.UserData = "Ground";
                             created_boss = true;
+
+                            //endRect at boss state
+                            Body endRectBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(endRect.Width), ConvertUnits.ToSimUnits(endRect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(endRect.X, endRect.Y)));
+                            endRectBody.UserData = "Ground";
 
                             //player Song
                             MediaPlayer.Play(doctorTheme);
@@ -456,7 +484,12 @@ namespace ScifiDruid.GameScreen
             //draw tileset for map1
             if (play)
             {
-                if (gamestate == GameState.START || gamestate == GameState.PLAY)
+                if (gamestate == GameState.OPENING || gamestate == GameState.END)
+                {
+                    //guardian.Draw(spriteBatch);
+                }
+
+                if (gamestate == GameState.START || gamestate == GameState.OPENING || gamestate == GameState.PLAY || gamestate == GameState.END)
                 {
                     tilemapManager.Draw(spriteBatch);
 
@@ -469,7 +502,6 @@ namespace ScifiDruid.GameScreen
                     {
                         tentacle.Draw(spriteBatch);
                     }
-                    //guardian.Draw(spriteBatch);
 
                     //draw boss animation
                     boss.Draw(spriteBatch);

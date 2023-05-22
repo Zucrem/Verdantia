@@ -1,6 +1,9 @@
 ﻿using Box2DNet;
+using Box2DNet.Dynamics;
+using Box2DNet.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ScifiDruid;
 using ScifiDruid.GameObjects;
 using System;
 using System.Collections.Generic;
@@ -16,6 +19,8 @@ namespace Verdantia.GameObjects
     {
         private Texture2D texture;
         private GameTime gameTime;
+
+        private Body guardianBody;
 
         //animation
         private int guardianSizeX;
@@ -41,10 +46,9 @@ namespace Verdantia.GameObjects
         //time
         private float elapsed;
         private float delay = 200f;
-        public Guardian(Texture2D texture, Vector2 position, Vector2 guardianSpriteSize, List<Vector2> guardianSpriteList) : base(texture)
+        public Guardian(Texture2D texture, Vector2 guardianSpriteSize, List<Vector2> guardianSpriteList) : base(texture)
         {
             this.texture = texture;
-            this.position = position;
 
             //animation
             guardianSize = guardianSpriteSize;
@@ -52,19 +56,32 @@ namespace Verdantia.GameObjects
             guardianRectVector = guardianSpriteList;
 
             guardianSizeX = (int)guardianSize.X;
-            guardianSizeY = (int)guardianSize.Y;
+            guardianSizeY = (int)guardianSize.Y; 
 
             guardianOrigin = new Vector2(guardianSizeX / 2, guardianSizeY / 2);
 
             spriteSize = guardianSize;
             spriteVector = guardianRectVector;
             allframes = spriteVector.Count();
-            Debug.WriteLine(spriteVector[0]);
+        }
+
+        public void FlyInitial(Rectangle spawnPosition)
+        {
+            guardianBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(guardianSizeX), ConvertUnits.ToSimUnits(guardianSizeY), 1f, ConvertUnits.ToSimUnits(new Vector2(spawnPosition.X, spawnPosition.Y)), 0, BodyType.Dynamic, "Guardian");
+            guardianBody.IsSensor = true;
+            guardianBody.IgnoreGravity = true;
+        }
+        public void GroundInitial(Rectangle spawnPosition)
+        {
+            guardianBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(guardianSizeX), ConvertUnits.ToSimUnits(guardianSizeY), 1f, ConvertUnits.ToSimUnits(new Vector2(spawnPosition.X, spawnPosition.Y)), 0, BodyType.Dynamic, "Guardian");
+            guardianBody.IsSensor = true;
         }
 
         public override void Update(GameTime gameTime)
         {
-            this.gameTime = gameTime; 
+            this.gameTime = gameTime;
+            position = guardianBody.Position;
+
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
             if (elapsed >= delay)
