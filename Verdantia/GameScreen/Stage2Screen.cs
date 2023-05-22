@@ -14,11 +14,15 @@ using ScifiDruid.Managers;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Input;
 using static ScifiDruid.GameObjects.Player;
+using Verdantia.GameObjects;
 
 namespace ScifiDruid.GameScreen
 {
     class Stage2Screen : PlayScreen
     {
+        //create guardian tex
+        private Guardian guardian;
+
         //create switch and wall
         private SwitchWall switch_wall1;
         private StageObject stage_wall1;
@@ -97,7 +101,6 @@ namespace ScifiDruid.GameScreen
             Player.mana = 100;
             Player.maxHealth = 5;
             Player.maxMana = 100;
-            Player.level2Unlock = false;
             Player.level3Unlock = false;
             //create tileset for map1
             map = new TmxMap("Content/Stage2.tmx");
@@ -211,20 +214,23 @@ namespace ScifiDruid.GameScreen
             }
             foreach (var o in map.ObjectGroups["GroundMonster"].Objects)
             {
-                //flamethrower machine position
+                //gun police machine position
                 if (o.Name.Equals("ground_mon_1"))
                 {
                     ground1MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
                 }
-                //chainsaw machine position
+                //melee police position
                 if (o.Name.Equals("ground_mon_2"))
                 {
                     ground2MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
                 }
-                //chainsaw machine position
+            }
+            foreach (var o in map.ObjectGroups["FlyingMonster"].Objects)
+            {
+                //drone position
                 if (o.Name.Equals("fly_mon"))
                 {
-                    ground2MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    flyMonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
                 }
             }
             foreach (var o in map.ObjectGroups["Boss"].Objects)
@@ -264,6 +270,11 @@ namespace ScifiDruid.GameScreen
 
             //player.Initial(startRect);
             player.Initial(bossState);
+
+            Vector2 guardianSize = new Vector2(49, 55);
+            List<Vector2> guardianAnimateList = new List<Vector2>() { new Vector2(10, 2), new Vector2(67, 2), new Vector2(4, 59), new Vector2(61, 59) };
+            guardian = new Guardian(guardianTex, new Vector2(bossState.X, bossState.Y), guardianSize, guardianAnimateList);
+
 
             //create enemy on position
             allEnemies = new List<Enemy>();
@@ -325,7 +336,7 @@ namespace ScifiDruid.GameScreen
                 speed = 1.2f,
             };
             //spawn boss
-            boss.Initial(bossRect, player, boss_event);
+            boss.Initial(bossRect, player);
 
             //add to all enemy for
             allEnemies.AddRange(gunPoliceEnemies);
@@ -356,6 +367,7 @@ namespace ScifiDruid.GameScreen
 
             //button and rock wall
             switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage2Tileset/specialProps2");
+            guardianTex = content.Load<Texture2D>("Pictures/Play/Characters/Guardian/birdTex");
 
             //bg music and sfx
             stage2Theme = content.Load<Song>("Songs/Stage2Screen/Stage2Theme");
@@ -377,6 +389,7 @@ namespace ScifiDruid.GameScreen
                 {
                     if (!Keyboard.GetState().IsKeyDown(Keys.Escape))
                     {
+                        guardian.Update(gameTime);
                         //all enemy
                         foreach (RangeEnemy gun in gunPoliceEnemies)
                         {
@@ -478,6 +491,7 @@ namespace ScifiDruid.GameScreen
                     {
                         melee.Draw(spriteBatch);
                     }
+                    guardian.Draw(spriteBatch);
 
                     //draw boss animation
                     boss.Draw(spriteBatch);

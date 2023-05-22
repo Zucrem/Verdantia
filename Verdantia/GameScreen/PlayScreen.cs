@@ -38,13 +38,22 @@ namespace ScifiDruid.GameScreen
 
         //all stage texture
         //all stage
-        protected Texture2D switch_wall_Tex;
+        protected Texture2D switch_wall_Tex, guardianTex;
+        protected Texture2D playerPortrait, birdPortrait, soulBirdPortrait, crocPortrait, soulCrocPortrait, lionPortrait, lionCrocPortrait;
+
         //stage 1
         protected Texture2D flameMechTex, chainsawMechTex, lucasBossTex;
+        //dialog 
+
+
         //stage 2
         protected Texture2D meleePoliceTex, gunPoliceTex, droneTex, janeBossTex, janeAmmoTex;
+        //dialog 
+
+
         //stage 3
         protected Texture2D tentacleTex, shieldDogTex, eyeBallTex, doctorBossTex, doctorAmmoTex;
+        //dialog 
 
 
         private FrameCounter _frameCounter = new FrameCounter();

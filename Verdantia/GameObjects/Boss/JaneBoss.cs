@@ -116,7 +116,7 @@ namespace ScifiDruid.GameObjects
             END
         }
 
-        public override void Initial(Rectangle spawnPosition, Player player, Rectangle fieldBoss)
+        public void Initial(Rectangle spawnPosition, Player player)
         {
             this.player = player;
 

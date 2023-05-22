@@ -346,7 +346,7 @@ namespace ScifiDruid.GameObjects
             {
                 action2 = true;
                 curBossStatus = BossStatus.ACTION2_1;
-                drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(62), ConvertUnits.ToSimUnits(28), 0, enemyHitBox.Position, 0, BodyType.Dynamic, "SkillBoss");
+                drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(62), ConvertUnits.ToSimUnits(28), 0, enemyHitBox.Position + new Vector2(0, -0.8f), 0, BodyType.Dynamic, "SkillBoss");
                 drillBody.IgnoreCollisionWith(enemyHitBox);
                 drillBody.IsSensor = true;
                 drillBody.IgnoreGravity = true;

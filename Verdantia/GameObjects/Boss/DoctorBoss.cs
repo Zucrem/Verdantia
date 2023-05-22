@@ -11,6 +11,8 @@ namespace ScifiDruid.GameObjects
 {
     public class DoctorBoss : Boss
     {
+        private Rectangle fieldBoss;
+
         //framestate for dead animation
         private int frameState;
         private bool repeat;
@@ -298,7 +300,7 @@ namespace ScifiDruid.GameObjects
                     allframes = spriteVector.Count();
                     break;
                 case BossStatus.DEAD:
-                    delay = 300f;
+                    delay = 600f;
                     spriteVector = deadSpriteVector;
                     spriteSize = new Vector2(deadSize.X, deadSize.Y);
                     allframes = spriteVector.Count();
