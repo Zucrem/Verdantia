@@ -19,6 +19,10 @@ using Box2DNet.Common;
 using System.Security.Cryptography;
 using Microsoft.Xna.Framework.Input;
 using static ScifiDruid.GameObjects.Player;
+using Verdantia.GameObjects;
+using static ScifiDruid.Singleton;
+using static ScifiDruid.GameObjects.JaneBoss;
+using static ScifiDruid.GameObjects.LucasBoss;
 
 namespace ScifiDruid.GameScreen
 {
@@ -63,6 +67,9 @@ namespace ScifiDruid.GameScreen
 
         private Vector2 wall_size = new Vector2(32, 192);
         private Vector2 wall_textureSize = new Vector2(0, 0);
+
+        //check if boss dead
+        private bool bossDead = false;
         public override void Initial()
         {
             base.Initial();
@@ -201,8 +208,8 @@ namespace ScifiDruid.GameScreen
 
             //create player on position
 
-            //player.Initial(startRect);
-            player.Initial(bossState);
+            player.Initial(startRect);
+            //player.Initial(bossState);
 
 
             //range enemy
@@ -257,7 +264,8 @@ namespace ScifiDruid.GameScreen
             boss = new LucasBoss(lucasBossTex,whiteTex)
             {
                 size = new Vector2(196, 186),
-                health = 6,
+                //health = 6,
+                health = 1,
                 speed = 1.2f,
             };
             //spawn boss
@@ -307,7 +315,11 @@ namespace ScifiDruid.GameScreen
         {
             if (play)
             {
-                if (gamestate == GameState.PLAY)
+                if (gamestate == GameState.OPENING || gamestate == GameState.END)
+                {
+                    //guardian.Update(gameTime);
+                }
+                if (gamestate == GameState.PLAY || gamestate == GameState.END)
                 {
                     if (!Keyboard.GetState().IsKeyDown(Keys.Escape))
                     {
@@ -325,10 +337,19 @@ namespace ScifiDruid.GameScreen
                         //boss
                         boss.Update(gameTime);
 
-                        //check if boss death then
-                        if (!boss.isAlive && created_boss)
+                        //check if boss death then change to END state
+                        if (boss.IsBossDead() && !bossDead)
                         {
-                            MediaPlayer.Stop();
+                            bossDead = true;
+                            MediaPlayer.Stop(); 
+                            MediaPlayer.Play(stage1Theme);
+                        }
+
+
+                        if (boss.IsBossEnd() && bossDead)
+                        {
+                            //set player to inactive
+                            gamestate = GameState.END;
                         }
 
                         //switch button
@@ -358,6 +379,11 @@ namespace ScifiDruid.GameScreen
                             //create block to block player
                             Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(wallblock.Width), ConvertUnits.ToSimUnits(wallblock.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(wallblock.X, wallblock.Y)));
                             body.UserData = "Ground";
+
+                            //endRect at boss state
+                            Body endRectBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(endRect.Width), ConvertUnits.ToSimUnits(endRect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(endRect.X, endRect.Y)));
+                            endRectBody.UserData = "Ground";
+
                             created_boss = true;
 
                             //player Song
@@ -377,6 +403,9 @@ namespace ScifiDruid.GameScreen
                         }
                     }
                 }
+                if (gamestate == GameState.END)
+                {
+                }
             }
             base.Update(gameTime);
         }
@@ -386,7 +415,12 @@ namespace ScifiDruid.GameScreen
             //draw tileset for map1
             if (play)
             {
-                if (gamestate == GameState.START || gamestate == GameState.PLAY)
+                if (gamestate == GameState.OPENING || gamestate == GameState.END)
+                {
+                    //guardian.Draw(spriteBatch);
+                }
+
+                if (gamestate == GameState.START || gamestate == GameState.OPENING || gamestate == GameState.PLAY || gamestate == GameState.END)
                 {
                     tilemapManager.Draw(spriteBatch);
 

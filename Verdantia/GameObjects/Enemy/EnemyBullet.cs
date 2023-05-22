@@ -36,7 +36,6 @@ namespace ScifiDruid.GameObjects
         //animation
         private int bulletSizeX;
         private int bulletSizeY;
-        private Vector2 bulletSize;
 
         private Vector2 bulletAliveSize;
         private Vector2 bulletDeadSize;
@@ -54,7 +53,7 @@ namespace ScifiDruid.GameObjects
         private int bulletDistance;
 
         //all sprite position in spritesheet
-        protected Rectangle sourceRect;
+        private Rectangle sourceRect;
 
         //srpite to run
         private Vector2 spriteSize;

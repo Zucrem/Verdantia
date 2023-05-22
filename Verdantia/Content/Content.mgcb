@@ -13,6 +13,18 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin ../../../../../Downloads/J Sprite/JaneSheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../../Downloads/J Sprite/JaneSheet.png;Pictures/Play/Characters/Boss/JaneSheet.png
+
 #begin Fonts/alagard.ttf
 /copy:Fonts/alagard.ttf
 
@@ -229,18 +241,6 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/Characters/Boss/DrSheet.png
 
-#begin Pictures/Play/Characters/Boss/JaneSheet.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Pictures/Play/Characters/Boss/JaneSheet.png
-
 #begin Pictures/Play/Characters/Boss/LucasSheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -421,6 +421,30 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/Dialog/dialogBox.png
 
+#begin Pictures/Play/Dialog/doctorPortrait.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Dialog/doctorPortrait.png
+
+#begin Pictures/Play/Dialog/janePortrait.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Dialog/janePortrait.png
+
 #begin Pictures/Play/Dialog/lionPortrait.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -432,6 +456,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/Dialog/lionPortrait.png
+
+#begin Pictures/Play/Dialog/lucasPortrait.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Dialog/lucasPortrait.png
 
 #begin Pictures/Play/Dialog/soulBirdPortrait.png
 /importer:TextureImporter
@@ -456,6 +492,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/Dialog/soulCrocPortrait.png
+
+#begin Pictures/Play/Dialog/soulLionPortrait.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Dialog/soulLionPortrait.png
 
 #begin Pictures/Play/PlayScreen/Black.png
 /importer:TextureImporter
@@ -817,6 +865,18 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/StageScreen/Stage2Tileset/tileset2.png
 
+#begin Pictures/Play/StageScreen/Stage3Tileset/tileset3.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/StageScreen/Stage3Tileset/tileset3.png
+
 #begin Pictures/Splash/SplashScreen/Black.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -877,6 +937,18 @@
 /processorParam:Quality=Best
 /build:Songs/Stage3Screen/Stage3Theme.mp3
 
+#begin Sounds/Button/clicksound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Button/clicksound.wav
+
+#begin Sounds/Button/hoverSound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Button/hoverSound.wav
+
 #begin Stage1.tmx
 /copy:Stage1.tmx
 
@@ -888,4 +960,10 @@
 
 #begin Stage2.tsx
 /copy:Stage2.tsx
+
+#begin Stage3.tmx
+/copy:Stage3.tmx
+
+#begin Stage3.tsx
+/copy:Stage3.tsx
 

@@ -242,7 +242,7 @@ namespace ScifiDruid.GameObjects
                     touchGround = false;
                 }
 
-                if ( (IsContact(hitBox, "Enemy") || IsContact(hitBox, "SkillBoss")) && playerStatus != PlayerStatus.DASH)
+                if ( (IsContact(hitBox, "Enemy") || IsContact(hitBox, "SkillBoss") || IsContact(hitBox, "Wall")) && playerStatus != PlayerStatus.DASH)
                 {
                     GotHit();
                 }

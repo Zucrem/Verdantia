@@ -74,7 +74,7 @@ namespace ScifiDruid.GameObjects
             textureHeight = (int)size.Y;
             textureWidth = (int)size.X;
 
-            enemyHitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(spawnPosition.X, spawnPosition.Y - 1)), 0, BodyType.Dynamic, "Enemy");
+            enemyHitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(spawnPosition.X, spawnPosition.Y)), 0, BodyType.Dynamic, "Enemy");
             enemyHitBox.FixedRotation = true;
             enemyHitBox.Friction = 1.0f;
             enemyHitBox.AngularDamping = 2.0f;
