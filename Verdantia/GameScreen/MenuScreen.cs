@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using System.Diagnostics;
+using Verdantia;
 
 namespace ScifiDruid.GameScreen
 {
@@ -60,13 +61,16 @@ namespace ScifiDruid.GameScreen
         private float masterBGM = Singleton.Instance.bgMusicVolume;
         private float masterSFX = Singleton.Instance.soundMasterVolume;
 
+        private MenuScreenBG mainBG;
         public void Initial()
         {
+            //bg
+            mainBG = new MenuScreenBG(bgTex);
             //main menu button
-            newGameButton = new Button(newGameTex, new Vector2(273, 293), new Vector2(160, 80));
-            continueButton = new Button(continueTex, new Vector2(273, 622), new Vector2(160, 80));
-            settingButton = new Button(settingTex, new Vector2(273, 410), new Vector2(160, 60));
-            exitButton = new Button(exitTex, new Vector2(273, 505), new Vector2(100, 45));
+            newGameButton = new Button(newGameTex, new Vector2(56, 392), new Vector2(144, 32));
+            continueButton = new Button(continueTex, new Vector2(56, 454), new Vector2(276, 32));
+            settingButton = new Button(settingTex, new Vector2(56, 520), new Vector2(264, 32));
+            exitButton = new Button(exitTex, new Vector2(56, 628), new Vector2(140, 32));
 
             //setting button
             arrowLeftBGButton = new Button(arrowLbgTex, new Vector2(525, 320), new Vector2(40, 40));
@@ -92,10 +96,10 @@ namespace ScifiDruid.GameScreen
 
             //all pic for button
             //mainscreen pic
-            newGameTex = content.Load<Texture2D>("Pictures/Main/MainMenu/PlayButton");
-            continueTex = content.Load<Texture2D>("Pictures/Main/MainMenu/PlayButton");
-            settingTex = content.Load<Texture2D>("Pictures/Main/MainMenu/SettingButton");
-            exitTex = content.Load<Texture2D>("Pictures/Main/MainMenu/ExitButton");
+            newGameTex = content.Load<Texture2D>("Pictures/Main/MainMenu/playHold");
+            continueTex = content.Load<Texture2D>("Pictures/Main/MainMenu/continueHold");
+            settingTex = content.Load<Texture2D>("Pictures/Main/MainMenu/settingHold");
+            exitTex = content.Load<Texture2D>("Pictures/Main/MainMenu/exitHold");
             //setting pic
             backSettingTex = content.Load<Texture2D>("Pictures/Main/Setting/DoneButton");
             arrowLbgTex = content.Load<Texture2D>("Pictures/Main/Setting/ArrowButton");
@@ -140,12 +144,14 @@ namespace ScifiDruid.GameScreen
             switch (screen)
             {
                 case StateScreen.MAINSCREEN:
+                    mainBG.Update(gameTime);
                     // Click start new game
                     if (newGameButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                     {
-                        //Singleton.Instance.levelState = LevelState.FOREST;
+                        Singleton.Instance.stageunlock = 1;
+                        Singleton.Instance.levelState = LevelState.FOREST;
                         //Singleton.Instance.levelState = LevelState.CITY;
-                        Singleton.Instance.levelState = LevelState.LAB;
+                        //Singleton.Instance.levelState = LevelState.LAB;
                         ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
 
                     }
@@ -331,8 +337,8 @@ namespace ScifiDruid.GameScreen
             switch (screen)
             {
                 case StateScreen.MAINSCREEN:
-                    spriteBatch.Draw(bgTex, Vector2.Zero, Color.White);//bg
-                    spriteBatch.Draw(logoTex, new Vector2(865, 130), new Color(255, 255, 255, 255));
+                    //bg
+                    mainBG.Draw(spriteBatch);
                     newGameButton.Draw(spriteBatch);
                     continueButton.Draw(spriteBatch);
                     settingButton.Draw(spriteBatch);

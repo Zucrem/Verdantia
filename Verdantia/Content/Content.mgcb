@@ -121,7 +121,7 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Main/MainMenu/Black.png
 
-#begin Pictures/Main/MainMenu/ExitButton.png
+#begin Pictures/Main/MainMenu/continueHold.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -131,7 +131,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Main/MainMenu/ExitButton.png
+/build:Pictures/Main/MainMenu/continueHold.png
+
+#begin Pictures/Main/MainMenu/exitHold.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Main/MainMenu/exitHold.png
 
 #begin Pictures/Main/MainMenu/GameLogo.png
 /importer:TextureImporter
@@ -145,7 +157,7 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Main/MainMenu/GameLogo.png
 
-#begin Pictures/Main/MainMenu/MainMenuBG.jpg
+#begin Pictures/Main/MainMenu/MainMenuBG.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -155,9 +167,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Main/MainMenu/MainMenuBG.jpg
+/build:Pictures/Main/MainMenu/MainMenuBG.png
 
-#begin Pictures/Main/MainMenu/PlayButton.png
+#begin Pictures/Main/MainMenu/playHold.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -167,9 +179,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Main/MainMenu/PlayButton.png
+/build:Pictures/Main/MainMenu/playHold.png
 
-#begin Pictures/Main/MainMenu/SettingButton.png
+#begin Pictures/Main/MainMenu/settingHold.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -179,7 +191,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Main/MainMenu/SettingButton.png
+/build:Pictures/Main/MainMenu/settingHold.png
 
 #begin Pictures/Main/Setting/ArrowButton.png
 /importer:TextureImporter
