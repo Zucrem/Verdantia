@@ -369,10 +369,12 @@ namespace ScifiDruid.GameScreen
                                 if (Singleton.Instance.levelState == LevelState.FOREST)
                                 {
                                     Singleton.Instance.levelState = LevelState.CITY;
+                                    Singleton.Instance.stageunlock = 2;
                                 }
                                 else if (Singleton.Instance.levelState == LevelState.CITY)
                                 {
                                     Singleton.Instance.levelState = LevelState.LAB;
+                                    Singleton.Instance.stageunlock = 3;
                                 }
                                 play = false;
                             }
@@ -416,6 +418,7 @@ namespace ScifiDruid.GameScreen
                                 {
                                     Singleton.Instance.levelState = LevelState.LAB;
                                 }
+                                resetWorld();
                                 changeScreen = true;
                             }
                             //Restart
@@ -444,12 +447,12 @@ namespace ScifiDruid.GameScreen
                             if (restartButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
                                 resetWorld();
-
                                 changeScreen = true;
                             }
                             //Exit
                             if (exitWLButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
+                                resetWorld();
                                 confirmExit = true;
                                 Singleton.Instance.levelState = LevelState.NULL;
                             }
@@ -569,6 +572,7 @@ namespace ScifiDruid.GameScreen
                 {
                     if (yesConfirmButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                     {
+                        resetWorld();
                         changeScreen = true;
                     }
                     if (noConfirmButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))

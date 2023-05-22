@@ -14,11 +14,12 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/ConfirmExit/Yes.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/ConfirmExit/YesGlow.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/Black.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/ExitButton.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/continueHold.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/exitHold.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/GameLogo.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/MainMenuBG.jpg</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/PlayButton.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/SettingButton.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/MainMenuBG.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/playHold.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/settingHold.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/Setting/ArrowButton.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/Setting/ArrowRButton.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/Setting/DoneButton.png</File>
@@ -90,6 +91,7 @@
   </SourceFiles>
   <DestFiles>
     <File>Pictures/Play/Characters/Boss/JaneSheet.png</File>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
