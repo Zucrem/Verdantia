@@ -458,10 +458,11 @@ namespace ScifiDruid.GameScreen
 
                 if (gamestate == GameState.START || gamestate == GameState.OPENING || gamestate == GameState.PLAY || gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS || gamestate == GameState.END)
                 {
+                    tilemapManager.Draw(spriteBatch);
+
                     //draw player animation
                     player.Draw(spriteBatch);
 
-                    tilemapManager.Draw(spriteBatch);
                     if (!fadeFinish)
                     {
                         spriteBatch.Draw(blackTex, Vector2.Zero, colorStart);

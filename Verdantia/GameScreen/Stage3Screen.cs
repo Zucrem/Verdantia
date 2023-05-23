@@ -526,11 +526,6 @@ namespace ScifiDruid.GameScreen
             //draw tileset for map 3
             if (play)
             {
-                //draw dialog box, spacebar text and skip text
-                if (gamestate == GameState.OPENING || gamestate == GameState.INTROBOSS || gamestate == GameState.END)
-                {
-                    spriteBatch.Draw(dialogBoxTex, new Rectangle(0, 522, 1092, 192), new Rectangle(0, 0, 1092, 192), Color.White);
-                }
                 //Dialog OPENING
                 if (gamestate == GameState.OPENING)
                 {
@@ -574,10 +569,11 @@ namespace ScifiDruid.GameScreen
 
                 if (gamestate == GameState.START || gamestate == GameState.OPENING || gamestate == GameState.PLAY || gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS || gamestate == GameState.END)
                 {
+                    tilemapManager.Draw(spriteBatch);
+
                     //draw player animation
                     player.Draw(spriteBatch);
 
-                    tilemapManager.Draw(spriteBatch);
                     if (!fadeFinish)
                     {
                         spriteBatch.Draw(blackTex, Vector2.Zero, colorStart);
