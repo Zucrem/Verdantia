@@ -455,7 +455,7 @@ namespace ScifiDruid.GameObjects
             }
         }
 
-        public bool isBossEnd()
+        public bool IsBossEnd()
         {
             if (curBossStatus == JaneStatus.END)
             {

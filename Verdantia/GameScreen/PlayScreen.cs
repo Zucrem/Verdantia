@@ -280,6 +280,9 @@ namespace ScifiDruid.GameScreen
                 //resume music
                 MediaPlayer.Resume();
 
+                //important to make everything move in the world
+                Singleton.Instance.world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
+
                 //update player
                 player.Update(gameTime);
                 if (gamestate == GameState.PLAY || gamestate == GameState.BOSS)
@@ -327,7 +330,6 @@ namespace ScifiDruid.GameScreen
                         }
                         break;
                     case GameState.PLAY:
-                        Singleton.Instance.world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
 
                         //camera update for scroll
                         Matrix lastScreen = camera.Follow(player.position, endmaptileX, endmaptileX);
@@ -359,7 +361,6 @@ namespace ScifiDruid.GameScreen
                         }
                         break;
                     case GameState.BOSS:
-
                         break;
                     case GameState.END:
                         //if skip the story dialog

@@ -73,6 +73,8 @@ namespace ScifiDruid.GameScreen
 
         //state 1 dialog
         private int openingDialog = 1;
+        private int introBossDialog = 1;
+        private int endDialog = 1;
         public override void Initial()
         {
             base.Initial();
@@ -318,7 +320,7 @@ namespace ScifiDruid.GameScreen
             base.Update(gameTime);
             if (play)
             {
-                //stage 1
+                //stage 1 dialog
                 if (gamestate == GameState.OPENING)
                 {
                     //change dialog
@@ -327,6 +329,23 @@ namespace ScifiDruid.GameScreen
                         openingDialog++;
                     }
                 }
+                if (gamestate == GameState.INTROBOSS)
+                {
+                    //change dialog
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                    {
+                        introBossDialog++;
+                    }
+                }
+                if (gamestate == GameState.END)
+                {
+                    //change dialog
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                    {
+                        endDialog++;
+                    }
+                }
+
                 if (gamestate == GameState.OPENING || gamestate == GameState.END)
                 {
                     //guardian.Update(gameTime);
@@ -378,7 +397,7 @@ namespace ScifiDruid.GameScreen
 
                         //set player to inactive before boss
                         player.playerStatus = PlayerStatus.IDLE;
-                        //player.isAlive = false;
+                        player.isAlive = false;
                     }
                 }
                 if (gamestate == GameState.PLAY || gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS)
@@ -390,7 +409,6 @@ namespace ScifiDruid.GameScreen
                 {
                     if (!created_boss && boss_area)
                     {
-                        Debug.WriteLine("Start Boss State");
                         //player active after this
                         player.isAlive = true;
                         boss.isAlive = true;
@@ -405,7 +423,6 @@ namespace ScifiDruid.GameScreen
                     //check if boss death then change to END state
                     if (boss.IsBossDead() && !bossDead)
                     {
-                        Debug.WriteLine("Boss Dead");
                         bossDead = true;
                         MediaPlayer.Stop();
                         MediaPlayer.Play(stage1Theme);
@@ -413,7 +430,6 @@ namespace ScifiDruid.GameScreen
 
                     if (boss.IsBossEnd() && bossDead)
                     {
-                        Debug.WriteLine("Boss Gone");
                         //set player to inactive
                         gamestate = GameState.END;
                     }
@@ -428,7 +444,40 @@ namespace ScifiDruid.GameScreen
         {
             //draw tileset for map1
             if (play)
-            {   
+            {
+                //draw dialog box, spacebar text and skip text
+                if (gamestate == GameState.OPENING || gamestate == GameState.INTROBOSS || gamestate == GameState.END)
+                {
+                    //draw
+                }
+                //Dialog OPENING
+                if (gamestate == GameState.OPENING)
+                {
+                    switch (openingDialog)
+                    {
+                        case 1:
+                            break;
+                    }
+                }
+                //Dialog INTROBOSS
+                if (gamestate == GameState.INTROBOSS)
+                {
+                    switch (introBossDialog)
+                    {
+                        case 1:
+                            break;
+                    }
+                }
+                //Dialog END
+                if (gamestate == GameState.END)
+                {
+                    switch (endDialog)
+                    {
+                        case 1:
+                            break;
+                    }
+                }
+
                 if (gamestate == GameState.OPENING || gamestate == GameState.END)
                 {
                     //guardian.Draw(spriteBatch);
