@@ -695,22 +695,6 @@ namespace ScifiDruid.GameScreen
             Singleton.Instance.world.Clear();
         }
 
-        public override void DrawFixScreen(SpriteBatch spriteBatch)
-        {
-            if (play)
-            {
-                //background
-                //spriteBatch.Draw(blackTex, Vector2.Zero, Color.White);
-                spriteBatch.Draw(whiteTex, Vector2.Zero, Color.Black);
-
-                int mana = (int)Player.mana;
-                int health = (int)Player.health;
-
-                spriteBatch.DrawString(mediumfonts, health.ToString(), new Vector2(1, 1), Color.Black);
-                spriteBatch.DrawString(mediumfonts, mana.ToString(), new Vector2(1, 65), Color.Black);
-
-            }
-        }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
