@@ -11,6 +11,8 @@ namespace ScifiDruid.GameObjects
 {
     public class DoctorBoss : Boss
     {
+        private Rectangle fieldBoss;
+
         //framestate for dead animation
         private int frameState;
         private bool repeat;
@@ -37,10 +39,10 @@ namespace ScifiDruid.GameObjects
         protected List<Vector2> action3SpriteVector;
         protected List<Vector2> deadSpriteVector;
 
-        private BossStatus preBossStatus;
-        private BossStatus curBossStatus;
+        private DoctorStatus preBossStatus;
+        private DoctorStatus curBossStatus;
 
-        private enum BossStatus
+        private enum DoctorStatus
         {
             IDLE,
             ACTION1,
@@ -55,25 +57,25 @@ namespace ScifiDruid.GameObjects
             this.texture = texture;
 
             idleSize = new Vector2(38, 88);
-            action1Size = new Vector2(60, 82);
-            action2Size = new Vector2(62, 86);
-            action3Size = new Vector2(60, 82);
-            deadSize = new Vector2(32, 82);
+            action1Size = new Vector2(60, 88);
+            action2Size = new Vector2(62, 88);
+            action3Size = new Vector2(60, 88);
+            deadSize = new Vector2(38, 88);
 
             //idle spritevector
             idleSpriteVector = new List<Vector2>() { new Vector2(14, 2), new Vector2(100, 2), new Vector2(186, 2)};
 
             //action1 spritevector
-            action1SpriteVector = new List<Vector2>() { new Vector2(272, 8), new Vector2(358, 8), new Vector2(452, 8)};
+            action1SpriteVector = new List<Vector2>() { new Vector2(272, 2), new Vector2(358, 2), new Vector2(452, 2)};
 
             //action2 spritevector
-            action2SpriteVector = new List<Vector2>() { new Vector2(0, 116), new Vector2(86, 116)};
+            action2SpriteVector = new List<Vector2>() { new Vector2(0, 114), new Vector2(86, 114)};
 
             //action3 spritevector
-            action3SpriteVector = new List<Vector2>() { new Vector2(272, 8), new Vector2(358, 8), new Vector2(452, 8) };
+            action3SpriteVector = new List<Vector2>() { new Vector2(272, 2), new Vector2(358, 2), new Vector2(452, 2) };
 
             //dead spritevector
-            deadSpriteVector = new List<Vector2>() { new Vector2(194, 120), new Vector2(280, 120) };
+            deadSpriteVector = new List<Vector2>() { new Vector2(191, 114), new Vector2(277, 114) };
 
             frames = 0;
 
@@ -111,7 +113,7 @@ namespace ScifiDruid.GameObjects
 
             if (isAlive)
             {
-                CheckPlayerPosition(gameTime);
+                CheckPlayerPosition(gameTime,1);
 
                 takeDMG(1, "Bullet");
 
@@ -120,7 +122,7 @@ namespace ScifiDruid.GameObjects
                     enemyHitBox.UserData = "Died";
                     isAlive = false;
                     enemyHitBox.Dispose();
-                    curBossStatus = BossStatus.DEAD;
+                    curBossStatus = DoctorStatus.DEAD;
                 }
             }
 
@@ -130,7 +132,7 @@ namespace ScifiDruid.GameObjects
             //if dead animation animationEnd
             if (animationDead)
             {
-                curBossStatus = BossStatus.END;
+                curBossStatus = DoctorStatus.END;
             }
 
             //animation
@@ -142,7 +144,7 @@ namespace ScifiDruid.GameObjects
 
             ChangeAnimationStatus();
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (curBossStatus == BossStatus.DEAD)
+            if (curBossStatus == DoctorStatus.DEAD)
             {
                 if (elapsed >= delay)
                 {
@@ -185,12 +187,12 @@ namespace ScifiDruid.GameObjects
 
                 //timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                if (skillTime <= 0 && curBossStatus == BossStatus.IDLE)
+                if (skillTime <= 0 && curBossStatus == DoctorStatus.IDLE)
                 {
                     randomAction = rand.Next(1, 6);
                     skillTime = 5;
                 }
-                else if (curBossStatus == BossStatus.IDLE)
+                else if (curBossStatus == DoctorStatus.IDLE)
                 {
                     skillTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
@@ -216,7 +218,7 @@ namespace ScifiDruid.GameObjects
             action1 = true;
             //clear random action number
             //do animation1
-            curBossStatus = BossStatus.ACTION1;
+            curBossStatus = DoctorStatus.ACTION1;
             //do normal walking left and right
             timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -228,7 +230,7 @@ namespace ScifiDruid.GameObjects
                         timeElapsed = 0f;
                         action1 = false;
                         charDirection = SpriteEffects.FlipHorizontally;
-                        curBossStatus = BossStatus.IDLE;
+                        curBossStatus = DoctorStatus.IDLE;
                         randomAction = 0;
                         break;
                     case SpriteEffects.FlipHorizontally:
@@ -256,7 +258,7 @@ namespace ScifiDruid.GameObjects
             if (!action2)
             {
                 action2 = true;
-                curBossStatus = BossStatus.ACTION2;
+                curBossStatus = DoctorStatus.ACTION2;
             }
         }
 
@@ -265,7 +267,7 @@ namespace ScifiDruid.GameObjects
             if (!action3)
             {
                 action3 = true;
-                curBossStatus = BossStatus.ACTION3;
+                curBossStatus = DoctorStatus.ACTION3;
             }
         }
 
@@ -273,32 +275,32 @@ namespace ScifiDruid.GameObjects
         {
             switch (curBossStatus)
             {
-                case BossStatus.IDLE:
+                case DoctorStatus.IDLE:
                     delay = 200f;
                     spriteVector = idleSpriteVector;
                     spriteSize = new Vector2(idleSize.X, idleSize.Y);
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.ACTION1:
+                case DoctorStatus.ACTION1:
                     delay = 200f;
                     spriteVector = action1SpriteVector;
                     spriteSize = new Vector2(action1Size.X, action1Size.Y);
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.ACTION2:
+                case DoctorStatus.ACTION2:
                     delay = 300f;
                     spriteVector = action2SpriteVector;
                     spriteSize = new Vector2(action2Size.X, action2Size.Y);
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.ACTION3:
+                case DoctorStatus.ACTION3:
                     delay = 300f;
                     spriteSize = new Vector2(action3Size.X, action3Size.Y);
                     spriteVector = action3SpriteVector;
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.DEAD:
-                    delay = 300f;
+                case DoctorStatus.DEAD:
+                    delay = 600f;
                     spriteVector = deadSpriteVector;
                     spriteSize = new Vector2(deadSize.X, deadSize.Y);
                     allframes = spriteVector.Count();
@@ -311,6 +313,30 @@ namespace ScifiDruid.GameObjects
             if (!animationDead)
             {
                 spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bossOrigin, 1f, charDirection, 0f);
+            }
+        }
+
+        public bool IsBossDead()
+        {
+            if (curBossStatus == DoctorStatus.DEAD)
+            {
+                return true; 
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool IsBossEnd()
+        {
+            if (curBossStatus == DoctorStatus.END)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
     }

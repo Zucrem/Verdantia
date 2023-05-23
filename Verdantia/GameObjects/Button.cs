@@ -45,8 +45,8 @@ namespace ScifiDruid.GameObjects
         {
             ContentManager content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
             // Sounds
-            /*clickSound = content.Load<SoundEffect>("Sounds/clickSound");
-            whileHoveringSound = content.Load<SoundEffect>("Sounds/hoverSound");*/
+            clickSound = content.Load<SoundEffect>("Sounds/Button/clickSound");
+            whileHoveringSound = content.Load<SoundEffect>("Sounds/Button/hoverSound");
         }
         public bool IsWhileHovering(MouseState mouseState)
         {
@@ -72,7 +72,7 @@ namespace ScifiDruid.GameObjects
                     //after hovering it will not hover anymore, so it could create sound when click, but when it cant hovering at the start = no sound
                     if (noHover)
                     {
-                        //clickSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                        clickSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                     }
                     //lastclickTime = TotalTime of program that time
                     Singleton.Instance.lastClickTime = (int)gameTime.TotalGameTime.TotalMilliseconds;
@@ -92,7 +92,7 @@ namespace ScifiDruid.GameObjects
                 {
                     if (!noHover)
                     {
-                        //whileHoveringSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                        whileHoveringSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                         noHover = true;
                     }
                     spriteBatch.Draw(texture, bounds, Color.LightGray);
@@ -118,7 +118,7 @@ namespace ScifiDruid.GameObjects
                 {
                     if (!noHover)
                     {
-                        //whileHoveringSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                        whileHoveringSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                         noHover = true;
                     }
                     spriteBatch.Draw(hoverTexture, bounds, Color.White);

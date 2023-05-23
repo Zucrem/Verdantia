@@ -41,12 +41,14 @@ namespace ScifiDruid.GameObjects
         private int countBounce = 0;
 
         //for animation
+
         private Vector2 idleSize;
         private Vector2 action1Size;
         private Vector2 action2_1Size;
         private Vector2 action2_2Size;
         private Vector2 action3Size;
         private Vector2 deadSize;
+        
         private List<Vector2> idleSpriteVector;
         private List<Vector2> action1SpriteVector;
         private List<Vector2> action2_1SpriteVector;
@@ -54,10 +56,10 @@ namespace ScifiDruid.GameObjects
         private List<Vector2> action3SpriteVector;
         private List<Vector2> deadSpriteVector;
 
-        private BossStatus preBossStatus;
-        private BossStatus curBossStatus;
+        private LucasStatus preBossStatus;
+        private LucasStatus curBossStatus;
 
-        private enum BossStatus
+        private enum LucasStatus
         {
             IDLE,
             ACTION1,
@@ -72,7 +74,6 @@ namespace ScifiDruid.GameObjects
         {
             this.texture = texture;
             this.drillTexture = drillTexture;
-
 
             idleSize = new Vector2(196, 186);
             action1Size = new Vector2(228, 185);
@@ -122,8 +123,8 @@ namespace ScifiDruid.GameObjects
 
             skillTime = 5;
 
-            curBossStatus = BossStatus.IDLE;
-            preBossStatus = BossStatus.IDLE;
+            curBossStatus = LucasStatus.IDLE;
+            preBossStatus = LucasStatus.IDLE;
         }
 
         public override void Update(GameTime gameTime)
@@ -133,9 +134,9 @@ namespace ScifiDruid.GameObjects
 
             if (isAlive)
             {
-                CheckPlayerPosition(gameTime);
+                CheckPlayerPosition(gameTime,1);
 
-                takeDMG(1, "Bullet");
+                //takeDMG(1, "Bullet");
 
                 if (health <= 0)
                 {
@@ -146,7 +147,7 @@ namespace ScifiDruid.GameObjects
                     {
                         drillBody.Dispose();
                     }
-                    curBossStatus = BossStatus.DEAD;
+                    curBossStatus = LucasStatus.DEAD;
                 }
             }
 
@@ -156,7 +157,7 @@ namespace ScifiDruid.GameObjects
             //if dead animation animationEnd
             if (animationDead)
             {
-                curBossStatus = BossStatus.END;
+                curBossStatus = LucasStatus.END;
             }
 
             //animation
@@ -170,7 +171,7 @@ namespace ScifiDruid.GameObjects
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             switch (curBossStatus)
             {
-                case BossStatus.IDLE:
+                case LucasStatus.IDLE:
                     if (elapsed >= delay)
                     {
                         if (frames >= allframes - 1)
@@ -184,7 +185,7 @@ namespace ScifiDruid.GameObjects
                         elapsed = 0;
                     }
                     break;
-                case BossStatus.DEAD:
+                case LucasStatus.DEAD:
                     if (elapsed >= delay)
                     {
                         if (frames >= allframes - 1 && frameState != 2)
@@ -205,7 +206,7 @@ namespace ScifiDruid.GameObjects
                     }
                     break;
 
-                case BossStatus.ACTION1:
+                case LucasStatus.ACTION1:
                     if (elapsed >= delay)
                     {
                         if (frames >= allframes - 1)
@@ -242,14 +243,15 @@ namespace ScifiDruid.GameObjects
 
                 //timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                if (skillTime <= 0 && curBossStatus == BossStatus.IDLE)
+                if (skillTime <= 0 && curBossStatus == LucasStatus.IDLE)
                 {
-                    randomAction = rand.Next(1, 6);
-                    //randomAction = 3;
+                    //randomAction = rand.Next(1, 6);
+                    randomAction = 3;
+                    //randomAction = 2;
 
                     skillTime = 5;
                 }
-                else if (curBossStatus == BossStatus.IDLE)
+                else if (curBossStatus == LucasStatus.IDLE)
                 {
                     skillTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
@@ -282,7 +284,7 @@ namespace ScifiDruid.GameObjects
 
         public override void Walk()
         {
-            if (curBossStatus != BossStatus.IDLE)
+            if (curBossStatus != LucasStatus.IDLE)
             {
                 return;
             }
@@ -304,7 +306,7 @@ namespace ScifiDruid.GameObjects
             action1 = true;
             //clear random action number
             //do animation1
-            curBossStatus = BossStatus.ACTION1;
+            curBossStatus = LucasStatus.ACTION1;
             //do normal walking left and right
             timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -322,7 +324,7 @@ namespace ScifiDruid.GameObjects
                         break;
                 }
                 action1 = false;
-                curBossStatus = BossStatus.IDLE;
+                curBossStatus = LucasStatus.IDLE;
                 randomAction = 0;
             }
             else
@@ -345,8 +347,8 @@ namespace ScifiDruid.GameObjects
             if (!action2)
             {
                 action2 = true;
-                curBossStatus = BossStatus.ACTION2_1;
-                drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(62), ConvertUnits.ToSimUnits(28), 0, enemyHitBox.Position, 0, BodyType.Dynamic, "SkillBoss");
+                curBossStatus = LucasStatus.ACTION2_1;
+                drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(62), ConvertUnits.ToSimUnits(28), 0, enemyHitBox.Position + new Vector2(0, 0.3f), 0, BodyType.Dynamic, "SkillBoss");
                 drillBody.IgnoreCollisionWith(enemyHitBox);
                 drillBody.IsSensor = true;
                 drillBody.IgnoreGravity = true;
@@ -365,25 +367,28 @@ namespace ScifiDruid.GameObjects
             {
                 if (IsContact(drillBody, "Ground"))
                 {
-                    curBossStatus = BossStatus.ACTION2_2;
+                    curBossStatus = LucasStatus.ACTION2_2;
                     drillBody.IsSensor = false;
                     drillBody.RestoreCollisionWith(enemyHitBox);
                     switch (bossSkilDirection)
                     {
                         case SpriteEffects.None:
                             enemyHitBox.ApplyForce(new Vector2(80 * speed, 0));
+                            //drillBody.IsStatic = true;
                             break;
                         case SpriteEffects.FlipHorizontally:
                             enemyHitBox.ApplyForce(new Vector2(-80 * speed, 0));
+                            //drillBody.IsStatic = true;
                             break;
                     }
+                    //drillBody.IsSensor = true;
                 }
 
                 if (IsContact(enemyHitBox, "SkillBoss"))
                 {
                     drillBody.Dispose();
                     //drillBody.RestoreCollisionWith(enemyHitBox);
-                    curBossStatus = BossStatus.IDLE;
+                    curBossStatus = LucasStatus.IDLE;
                     randomAction = 0;
                     action2 = false;
 
@@ -406,8 +411,8 @@ namespace ScifiDruid.GameObjects
             if (!action3)
             {
                 action3 = true;
-                curBossStatus = BossStatus.ACTION3;
-                drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(56), ConvertUnits.ToSimUnits(56), 0, enemyHitBox.Position, 0, BodyType.Dynamic, "SkillBoss");
+                curBossStatus = LucasStatus.ACTION3;
+                drillBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(56), ConvertUnits.ToSimUnits(56), 0, enemyHitBox.Position + new Vector2(0, -0.2f), 0, BodyType.Dynamic, "SkillBoss");
                 drillBody.IgnoreCollisionWith(enemyHitBox);
                 drillBody.IsSensor = true;
                 drillBody.IgnoreGravity = true;
@@ -426,8 +431,7 @@ namespace ScifiDruid.GameObjects
             {
                 if (IsContact(drillBody, "Ground"))
                 {
-                    countBounce++;
-                    if (countBounce >= 4)
+                    if (countBounce > 3)
                     {
                         switch (bossSkilDirection)
                         {
@@ -439,23 +443,23 @@ namespace ScifiDruid.GameObjects
                                 break;
                         }
                     }
-                    drillBody.IsSensor = false;
                     drillBody.RestoreCollisionWith(enemyHitBox);
                     switch (bossSkilDirection)
                     {
                         case SpriteEffects.None:
-                            drillBody.ApplyLinearImpulse(new Vector2(-0.1f * speed, 0));
+                            drillBody.ApplyLinearImpulse(new Vector2(-1.8f * speed, 0));
                             break;
                         case SpriteEffects.FlipHorizontally:
-                            drillBody.ApplyLinearImpulse(new Vector2(0.1f * speed, 0));
+                            drillBody.ApplyLinearImpulse(new Vector2(1.8f * speed, 0));
                             break;
                     }
+                    countBounce++;
                 }
 
                 if (IsContact(enemyHitBox, "SkillBoss"))
                 {
                     drillBody.Dispose();
-                    curBossStatus = BossStatus.IDLE;
+                    curBossStatus = LucasStatus.IDLE;
                     randomAction = 0;
                     action3 = false;
                 }
@@ -466,37 +470,37 @@ namespace ScifiDruid.GameObjects
         {
             switch (curBossStatus)
             {
-                case BossStatus.IDLE:
+                case LucasStatus.IDLE:
                     delay = 200f;
                     spriteVector = idleSpriteVector;
                     spriteSize = new Vector2(idleSize.X, idleSize.Y);
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.ACTION1:
+                case LucasStatus.ACTION1:
                     delay = 200f;
                     spriteVector = action1SpriteVector;
                     spriteSize = new Vector2(action1Size.X, action1Size.Y);
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.ACTION2_1:
+                case LucasStatus.ACTION2_1:
                     delay = 300f;
                     spriteVector = action2_1SpriteVector;
                     spriteSize = new Vector2(action2_1Size.X, action2_1Size.Y);
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.ACTION2_2:
+                case LucasStatus.ACTION2_2:
                     delay = 300f;
                     spriteVector = action2_2SpriteVector;
                     spriteSize = new Vector2(action2_2Size.X, action2_2Size.Y);
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.ACTION3:
+                case LucasStatus.ACTION3:
                     delay = 300f;
                     spriteVector = action3SpriteVector;
                     spriteSize = new Vector2(action3Size.X, action3Size.Y);
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.DEAD:
+                case LucasStatus.DEAD:
                     delay = 300f;
                     spriteVector = deadSpriteVector;
                     spriteSize = new Vector2(deadSize.X, deadSize.Y);
@@ -511,16 +515,42 @@ namespace ScifiDruid.GameObjects
             {
                 spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bossOrigin, 1f, charDirection, 0f);
 
-                if (action2)
+                //if boss not ded yet
+                if (!IsBossDead())
                 {
-                    spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(drillBody.Position), new Rectangle(50, 1262, 62, 28), Color.White, 0, new Vector2(62 / 2, 28 / 2), 1, bossSkilDirection, 0f);
-                }
-                else if (action3)
-                {
-                    spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(drillBody.Position), new Rectangle(152, 1248, 56, 56), Color.White, 0, new Vector2(56 / 2, 56 / 2), 1, bossSkilDirection, 0f);
+                    if (action2)
+                    {
+                        spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(drillBody.Position), new Rectangle(50, 1262, 62, 28), Color.White, 0, new Vector2(62 / 2, 28 / 2), 1, bossSkilDirection, 0f);
+                    }
+                    else if (action3)
+                    {
+                        spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(drillBody.Position), new Rectangle(152, 1248, 56, 56), Color.White, 0, new Vector2(56 / 2, 56 / 2), 1, bossSkilDirection, 0f);
+                    }
                 }
             }
+        }
+        public bool IsBossDead()
+        {
+            if (curBossStatus == LucasStatus.DEAD)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
+        public bool IsBossEnd()
+        {
+            if (curBossStatus == LucasStatus.END)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

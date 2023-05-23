@@ -55,7 +55,7 @@ namespace ScifiDruid.GameObjects
             BULLETEND
         }
 
-        public JaneBullet(Texture2D texture, Vector2 position, Enemy enemy, SpriteEffects charDirection) : base(texture)
+        public JaneBullet(Texture2D texture, Vector2 position, Enemy self, SpriteEffects charDirection) : base(texture)
         {
             this.texture = texture;
             this.charDirection = charDirection;
@@ -69,7 +69,8 @@ namespace ScifiDruid.GameObjects
             //create wall hitbox
             bulletBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bulletSizeX), ConvertUnits.ToSimUnits(bulletSizeY), 0, position, 0, BodyType.Dynamic, "EnemyBullet");
             bulletBody.IgnoreGravity = true;
-            bulletBody.IgnoreCollisionWith(enemy.enemyHitBox);
+            bulletBody.IsSensor = true;
+            bulletBody.IgnoreCollisionWith(self.enemyHitBox);
 
             //animation
             bulletSize = new Vector2(bulletSizeX, bulletSizeY);
@@ -80,10 +81,10 @@ namespace ScifiDruid.GameObjects
             switch (charDirection)
             {
                 case SpriteEffects.None:
-                    bulletBody.Position += new Vector2(-1f, 0);
+                    bulletBody.Position += new Vector2(0.5f, 0);
                     break;
                 case SpriteEffects.FlipHorizontally:
-                    bulletBody.Position += new Vector2(1f, 0);
+                    bulletBody.Position += new Vector2(-0.5f, 0);
                     break;
             }
 
@@ -95,14 +96,13 @@ namespace ScifiDruid.GameObjects
             switch (charDirection)
             {
                 case SpriteEffects.None:
-                    bulletBody.ApplyForce(new Vector2(-bulletSpeed, 0));
-                    bossBulletStatus = BulletStatus.BULLETALIVE;
+                    bulletBody.ApplyForce(new Vector2(bulletSpeed, 0));
                     break;
                 case SpriteEffects.FlipHorizontally:
-                    bulletBody.ApplyForce(new Vector2(bulletSpeed, 0));
-                    bossBulletStatus = BulletStatus.BULLETALIVE;
+                    bulletBody.ApplyForce(new Vector2(-bulletSpeed, 0));
                     break;
             }
+            bossBulletStatus = BulletStatus.BULLETALIVE;
         }
 
         public void Update()
@@ -113,11 +113,12 @@ namespace ScifiDruid.GameObjects
                 bossBulletStatus = BulletStatus.BULLETEND;
             }
 
+            if (preStatus != bossBulletStatus)
+            {
+                frames = 0;
+            }
+
             sourceRect = new Rectangle((int)spriteVector.X, (int)spriteVector.Y, (int)spriteSize.X, (int)spriteSize.Y);
-        }
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bulletOrigin, 1f, charDirection, 0f);
         }
 
         public bool IsContact()
@@ -162,6 +163,11 @@ namespace ScifiDruid.GameObjects
             }
 
             return false;
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(bulletBody.Position), new Rectangle(0,0,bulletSizeX,bulletSizeY), Color.White, 0, bulletOrigin, 1f, charDirection, 0f);
         }
     }
 }

@@ -36,7 +36,6 @@ namespace ScifiDruid.GameObjects
         //animation
         private int bulletSizeX;
         private int bulletSizeY;
-        private Vector2 bulletSize;
 
         private Vector2 bulletAliveSize;
         private Vector2 bulletDeadSize;
@@ -54,7 +53,7 @@ namespace ScifiDruid.GameObjects
         private int bulletDistance;
 
         //all sprite position in spritesheet
-        protected Rectangle sourceRect;
+        private Rectangle sourceRect;
 
         //srpite to run
         private Vector2 spriteSize;
@@ -84,12 +83,15 @@ namespace ScifiDruid.GameObjects
         List<Vector2> bulletSize = new List<Vector2>() { new Vector2(3, 14), new Vector2(27, 14) };
         List<List<Vector2>> bulletAliveSpriteList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(244, 92)},new List<Vector2>() { new Vector2(306, 92), new Vector2(382, 92), new Vector2(450, 92)}};
 
-        //stage2
+        //stage3
         //range
-        List<Vector2> bulletSize = new List<Vector2>() { new Vector2(9, 3), new Vector2(8, 13) };
-        List<List<Vector2>> bulletAliveSpriteList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(245, 264)},new List<Vector2>() { new Vector2(276, 260), new Vector2(305, 260)} };
+        List<Vector2> bulletSize = new List<Vector2>() { new Vector2(14, 6), new Vector2(14, 24)};
+        List<List<Vector2>> bulletAliveSpriteList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(1138, 12)},new List<Vector2>() { new Vector2(1194, 184), new Vector2(1254, 4)} };
 
         //drone
+        List<Vector2> bulletSize = new List<Vector2>() { new Vector2(16, 8), new Vector2(12, 14)};
+        List<List<Vector2>> bulletAliveSpriteList = new List<List<Vector2>>() { new List<Vector2>() {  new Vector2(385, 34)},new List<Vector2>() { new Vector2(415, 31), new Vector2(439, 31)} };
+
         */
         public EnemyBullet(Texture2D texture, Vector2 position, Enemy enemy, SpriteEffects charDirection, List<Vector2> bulletSpriteSize, List<List<Vector2>> bulletSpriteList, int speed) : base(texture)
         {

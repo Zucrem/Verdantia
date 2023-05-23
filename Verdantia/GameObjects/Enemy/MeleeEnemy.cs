@@ -32,14 +32,16 @@ namespace ScifiDruid.GameObjects
 
         //for animation
         protected Vector2 idleSize;
+        protected Vector2 walkSize;
         protected Vector2 runSize;
         protected Vector2 detectPlayerSize;
         protected Vector2 deadSize;
 
-        private List<Vector2> idleSpriteVector = new List<Vector2>();
-        private List<Vector2> runSpriteVector = new List<Vector2>();
-        private List<Vector2> detectPlayerSpriteVector = new List<Vector2>();
-        private List<Vector2> deadSpriteVector = new List<Vector2>();
+        private List<Vector2> idleSpriteVector;
+        private List<Vector2> walkSpriteVector;
+        private List<Vector2> runSpriteVector;
+        private List<Vector2> detectPlayerSpriteVector;
+        private List<Vector2> deadSpriteVector;
 
 
         private EnemyStatus preStatus;
@@ -47,6 +49,7 @@ namespace ScifiDruid.GameObjects
         private enum EnemyStatus
         {
             IDLE,
+            WALK,
             RUN,
             DETECT,
             DEAD,
@@ -57,14 +60,16 @@ namespace ScifiDruid.GameObjects
             this.texture = texture;
 
             idleSize = sizeList[0];
-            runSize = sizeList[1];
-            detectPlayerSize = sizeList[2];
-            deadSize = sizeList[3];
+            walkSize = sizeList[1];
+            runSize = sizeList[2];
+            detectPlayerSize = sizeList[3];
+            deadSize = sizeList[4];
 
             idleSpriteVector = animateList[0];
-            runSpriteVector = animateList[1];
-            detectPlayerSpriteVector = animateList[2];
-            deadSpriteVector = animateList[3];
+            walkSpriteVector = animateList[1];
+            runSpriteVector = animateList[2];
+            detectPlayerSpriteVector = animateList[3];
+            deadSpriteVector = animateList[4];
 
             frames = 0;
         }
@@ -83,12 +88,8 @@ namespace ScifiDruid.GameObjects
 
             if (isAlive)
             {
-                CheckPlayerPosition(gameTime);
-
-
-
-                takeDMG(1, "Bullet");
-
+                CheckPlayerPosition(gameTime, 1);
+                
                 if (health <= 0)
                 {
                     enemyHitBox.UserData = "Died";
@@ -124,6 +125,20 @@ namespace ScifiDruid.GameObjects
             switch (curStatus)
             {
                 case EnemyStatus.IDLE:
+                    if (elapsed >= delay)
+                    {
+                        if (frames >= allframes - 1)
+                        {
+                            frames = 0;
+                        }
+                        else
+                        {
+                            frames++;
+                        }
+                        elapsed = 0;
+                    }
+                    break;
+                case EnemyStatus.WALK:
                     if (elapsed >= delay)
                     {
                         if (frames >= allframes - 1)
@@ -291,7 +306,6 @@ namespace ScifiDruid.GameObjects
         }
         private void EnemyAlertWalking()
         {
-
             //player on (right ,mid,left)
             //got to that direction of player
             //stop when player go out of detect area
@@ -308,7 +322,8 @@ namespace ScifiDruid.GameObjects
                     charDirection = SpriteEffects.None;
                 }
 
-                enemyHitBox.ApplyForce(new Vector2(150 * speed, 0));
+            enemyHitBox.ApplyForce(new Vector2(150 * speed, 0));
+
             }
             else if (playerPosition.X - position.X < -1 && (xspawnPosition - enemyHitBox.Position.X) < pathWalkLength)
             {
@@ -321,7 +336,7 @@ namespace ScifiDruid.GameObjects
                 {
                     charDirection = SpriteEffects.FlipHorizontally;
                 }
-                enemyHitBox.ApplyForce(new Vector2(-150 * speed, 0));
+                enemyHitBox.ApplyForce(new Vector2(-120 * speed, 0));
 
             }
             //do alert condition follow Player and Track Player down to death
@@ -347,8 +362,14 @@ namespace ScifiDruid.GameObjects
                     spriteSize = new Vector2(idleSize.X, idleSize.Y);
                     allframes = spriteVector.Count();
                     break;
-                case EnemyStatus.RUN:
+                case EnemyStatus.WALK:
                     delay = 200f;
+                    spriteVector = walkSpriteVector;
+                    spriteSize = new Vector2(walkSize.X, walkSize.Y);
+                    allframes = spriteVector.Count();
+                    break;
+                case EnemyStatus.RUN:
+                    delay = 150f;
                     spriteVector = runSpriteVector;
                     spriteSize = new Vector2(runSize.X, runSize.Y);
                     allframes = spriteVector.Count();

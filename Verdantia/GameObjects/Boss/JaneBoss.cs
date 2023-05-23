@@ -6,11 +6,14 @@ using Box2DNet.Factories;
 using Box2DNet;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Diagnostics;
 
 namespace ScifiDruid.GameObjects
 {
     public class JaneBoss : Boss
     {
+        Texture2D bomb;
+
         //framestate for dead animation
         private int frameState;
         private bool repeat;
@@ -22,8 +25,6 @@ namespace ScifiDruid.GameObjects
         private float movingTime = 3.4f;
 
         //boss size
-        private Vector2 idleSize;
-
         private Vector2 shootGunSize;
         private Vector2 shootPlasmaSize;
 
@@ -33,8 +34,6 @@ namespace ScifiDruid.GameObjects
         private Vector2 dashInSize;
         private Vector2 dashOutSize;
         private Vector2 punchSize;
-
-        private Vector2 deadSize;
 
         //boolean to do action
         private bool action1 = false;
@@ -57,52 +56,21 @@ namespace ScifiDruid.GameObjects
         private List<Vector2> punchSpriteVector;
         private List<Vector2> deadSpriteVector;
 
+        private List<Body> rockets;
+        private List<JaneBullet> bulletLists;
+        private Body beam;
 
-        private BossStatus preBossStatus;
-        private BossStatus curBossStatus;
+        public BossStatus preBossStatus;
+        public BossStatus curBossStatus;
 
-        public JaneBoss(Texture2D texture) : base(texture)
-        {
-            this.texture = texture;
+        private float skillTime;
+        private int countTeleport;
 
-            idleSize = new Vector2(74, 112);
-            shootGunSize = new Vector2(74, 112);
-            shootPlasmaSize = new Vector2(88, 88);
-            action2Size = new Vector2(84, 110);
-            prepareSize = new Vector2(78, 98);
-            dashInSize = new Vector2(78, 98);
-            dashOutSize = new Vector2(90, 104);
-            punchSize = new Vector2(92, 120);
-            deadSize = new Vector2(74, 112);
+        private Rectangle fieldBoss;
 
-            //idle spritevector
-            idleSpriteVector = new List<Vector2>() { new Vector2(8, 0), new Vector2(140, 0), new Vector2(256, 0)};
-
-            //action1 spritevector
-            shootGunSpriteVector = new List<Vector2>() { new Vector2(372, 0), new Vector2(488, 0)};
-            shootPlasmaSpriteVector = new List<Vector2>() { new Vector2(0, 170), new Vector2(134, 170), new Vector2(256, 170)};
-
-            //action2 spritevector
-            callDownBombSpriteVector = new List<Vector2>() { new Vector2(362, 148), new Vector2(478, 148), new Vector2(584, 148)};
-
-            //action3 spritevector
-            prepareSpriteVector = new List<Vector2>() { new Vector2(0, 298) };
-            dashInSpriteVector = new List<Vector2>() { new Vector2(134, 298), new Vector2(251, 298), new Vector2(363, 298) };
-            dashOutSpriteVector = new List<Vector2>() { new Vector2(488, 292), new Vector2(589, 294), new Vector2(707, 294) };
-            punchSpriteVector = new List<Vector2>() { new Vector2(4, 426), new Vector2(114, 426), new Vector2(242, 426) };
-
-            //dead spritevector
-            deadSpriteVector = new List<Vector2>() { new Vector2(368, 434), new Vector2(472, 434)};
-
-            frames = 0;
-
-            //animation dead state
-            frameState = 0;
-            repeat = false;
-        }
 
         //Action all states
-        private enum BossStatus
+        private enum JaneStatus
         {
             IDLE,
             SHOOTGUN,
@@ -116,9 +84,57 @@ namespace ScifiDruid.GameObjects
             END
         }
 
-        public override void Initial(Rectangle spawnPosition, Player player, Rectangle fieldBoss)
+        private JaneStatus preBossStatus;
+        private JaneStatus curBossStatus;
+
+        public JaneBoss(Texture2D texture, Texture2D bomb) : base(texture)
+        {
+            this.texture = texture;
+            this.bomb = bomb;
+
+            idleSize = new Vector2(74, 112);
+            shootGunSize = new Vector2(74, 112);
+            shootPlasmaSize = new Vector2(88, 112);
+            action2Size = new Vector2(88, 112);
+            prepareSize = new Vector2(78, 112);
+            dashInSize = new Vector2(78, 98);
+            dashOutSize = new Vector2(90, 112);
+            punchSize = new Vector2(90, 112);
+            deadSize = new Vector2(74, 112);
+
+            //idle spritevector
+            idleSpriteVector = new List<Vector2>() { new Vector2(8, 0), new Vector2(140, 0), new Vector2(256, 0) };
+
+            //action1 spritevector
+            shootGunSpriteVector = new List<Vector2>() { new Vector2(372, 0), new Vector2(488, 0)};
+            shootPlasmaSpriteVector = new List<Vector2>() { new Vector2(0, 146), new Vector2(134, 146), new Vector2(256, 146)};
+
+            //action2 spritevector
+            callDownBombSpriteVector = new List<Vector2>() { new Vector2(358, 146), new Vector2(474, 146), new Vector2(580, 146)};
+
+
+            //action3 spritevector
+            prepareSpriteVector = new List<Vector2>() { new Vector2(0, 284) };
+            dashInSpriteVector = new List<Vector2>() { new Vector2(134, 294), new Vector2(251, 294), new Vector2(363, 294) };
+            dashOutSpriteVector = new List<Vector2>() { new Vector2(475, 284), new Vector2(589, 286), new Vector2(707, 286) };
+            punchSpriteVector = new List<Vector2>() { new Vector2(4, 434), new Vector2(112, 434), new Vector2(250, 434) };
+
+            //dead spritevector
+            deadSpriteVector = new List<Vector2>() { new Vector2(368, 434), new Vector2(472, 434) };
+
+            frames = 0;
+
+            //animation dead state
+            frameState = 0;
+            repeat = false;
+        }
+
+
+
+        public void Initial(Rectangle spawnPosition, Player player)
         {
             this.player = player;
+            this.fieldBoss = fieldBoss;
 
             textureHeight = (int)size.Y;
             textureWidth = (int)size.X;
@@ -137,8 +153,12 @@ namespace ScifiDruid.GameObjects
 
             skillTime = 5;
 
-            curBossStatus = BossStatus.IDLE;
-            preBossStatus = BossStatus.IDLE;
+            curBossStatus = JaneStatus.IDLE;
+            preBossStatus = JaneStatus.IDLE;
+
+            rockets = new List<Body>();
+            bulletLists = new List<JaneBullet>();
+
         }
 
         public override void Update(GameTime gameTime)
@@ -148,7 +168,7 @@ namespace ScifiDruid.GameObjects
 
             if (isAlive)
             {
-                CheckPlayerPosition(gameTime);
+                CheckPlayerPosition(gameTime, 1);
 
                 takeDMG(1, "Bullet");
 
@@ -157,7 +177,7 @@ namespace ScifiDruid.GameObjects
                     enemyHitBox.UserData = "Died";
                     isAlive = false;
                     enemyHitBox.Dispose();
-                    curBossStatus = BossStatus.DEAD;
+                    curBossStatus = JaneStatus.DEAD;
                 }
             }
 
@@ -167,7 +187,7 @@ namespace ScifiDruid.GameObjects
             //if dead animation animationEnd
             if (animationDead)
             {
-                curBossStatus = BossStatus.END;
+                curBossStatus = JaneStatus.END;
             }
 
             //animation
@@ -181,7 +201,7 @@ namespace ScifiDruid.GameObjects
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             switch (curBossStatus)
             {
-                case BossStatus.IDLE:
+                case JaneStatus.IDLE:
                     if (elapsed >= delay)
                     {
                         if (frames >= allframes - 1)
@@ -195,7 +215,7 @@ namespace ScifiDruid.GameObjects
                         elapsed = 0;
                     }
                     break;
-                case BossStatus.DEAD:
+                case JaneStatus.DEAD:
                     if (elapsed >= delay)
                     {
                         if (frames < allframes - 1)
@@ -210,7 +230,7 @@ namespace ScifiDruid.GameObjects
                         elapsed = 0;
                     }
                     break;
-                case BossStatus.SHOOTGUN:
+                case JaneStatus.SHOOTGUN:
                     if (elapsed >= delay)
                     {
                         if (frames >= allframes - 1)
@@ -224,7 +244,7 @@ namespace ScifiDruid.GameObjects
                         elapsed = 0;
                     }
                     break;
-                case BossStatus.SHOOTPLASMA:
+                case JaneStatus.SHOOTPLASMA:
                     if (elapsed >= delay)
                     {
                         if (frames < allframes - 1)
@@ -234,7 +254,7 @@ namespace ScifiDruid.GameObjects
                         elapsed = 0;
                     }
                     break;
-                case BossStatus.CALLDOWNBOMB:
+                case JaneStatus.CALLDOWNBOMB:
                     if (elapsed >= delay)
                     {
                         if (frames >= allframes - 1)
@@ -248,7 +268,7 @@ namespace ScifiDruid.GameObjects
                         elapsed = 0;
                     }
                     break;
-                case BossStatus.PREPARE:
+                case JaneStatus.PREPARE:
                     if (elapsed >= delay)
                     {
                         if (frames >= allframes - 1)
@@ -285,12 +305,13 @@ namespace ScifiDruid.GameObjects
 
                 //timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                if (skillTime <= 0 && curBossStatus == BossStatus.IDLE)
+                if (skillTime <= 0 && curBossStatus == JaneStatus.IDLE)
                 {
-                    randomAction = rand.Next(1, 6);
+                    //randomAction = rand.Next(1, 6);
+                    randomAction = 3;
                     skillTime = 5;
                 }
-                else if (curBossStatus == BossStatus.IDLE)
+                else if (curBossStatus == JaneStatus.IDLE)
                 {
                     skillTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
@@ -299,13 +320,13 @@ namespace ScifiDruid.GameObjects
                 switch (randomAction)
                 {
                     case 1:
-                        //Skill1();
+                        Skill1();
                         break;
                     case 2:
-                        //Skill2();
+                        Skill2();
                         break;
                     case 3:
-                        //Skill3();
+                        Skill3();
                         break;
                 }
             }
@@ -313,56 +334,83 @@ namespace ScifiDruid.GameObjects
 
         public void Skill1()
         {
-            if (!action1)
+            if (skillTime <= 0 && bulletLists.Count < 3)
             {
                 action1 = true;
-                curBossStatus = BossStatus.CALLDOWNBOMB;
+                curBossStatus = BossStatus.SHOOTGUN;
+                JaneBullet bullet = new JaneBullet(bomb, enemyHitBox.Position, this, charDirection);
+                skillTime = 1;
+                bulletLists.Add(bullet);
+                bulletLists[bulletLists.Count - 1].Shoot(gameTime);
             }
 
-            //clear random action number
-            //do animation1
-            curBossStatus = BossStatus.IDLE;
-            //do normal walking left and right
-            timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (timeElapsed >= movingTime)
+            if (skillTime <= 0 && bulletLists.Count == 3 && curBossStatus == BossStatus.SHOOTGUN)
             {
+                curBossStatus = JaneStatus.SHOOTPLASMA;
+                skillTime = 2;
+            }
+            else if (skillTime <= 0 && bulletLists.Count == 3 && curBossStatus == BossStatus.SHOOTPLASMA && beam == null)
+            {
+                Vector2 positionBeam = new Vector2(0, 0);
+
                 switch (charDirection)
                 {
                     case SpriteEffects.None:
-                        timeElapsed = 0f;
-                        action1 = false;
-                        charDirection = SpriteEffects.FlipHorizontally;
-                        curBossStatus = BossStatus.IDLE;
-                        randomAction = 0;
+                        positionBeam = enemyHitBox.Position + new Vector2(10, -0.5f);
                         break;
                     case SpriteEffects.FlipHorizontally:
-                        timeElapsed = 0f;
-                        charDirection = SpriteEffects.None;
+                        positionBeam = enemyHitBox.Position + new Vector2(-10, -0.5f);
                         break;
                 }
+
+                beam = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(1200), ConvertUnits.ToSimUnits(shootPlasmaSize.Y), 1, positionBeam, 0, BodyType.Static, "SkillBoss");
+                beam.IsSensor = true;
+                skillTime = 1;
             }
-            else
+            else if (skillTime <= 0 && beam != null)
             {
-                switch (charDirection)
-                {
-                    case SpriteEffects.None:
-                        enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
-                        break;
-                    case SpriteEffects.FlipHorizontally:
-                        enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
-                        break;
-                }
+                beam.Dispose();
+                beam = null;
+                curBossStatus = BossStatus.IDLE;
+                action1 = false;
+                randomAction = 0;
+            }
+
+            if (skillTime > 0)
+            {
+                skillTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
         }
 
         public void Skill2()
         {
-            if (!action2)
+            if (skillTime <= 0 && rockets.Count < 2)
             {
                 action2 = true;
-                curBossStatus = BossStatus.CALLDOWNBOMB;
+                curBossStatus = JaneStatus.CALLDOWNBOMB;
+                Body dropRocket = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(prepareSize.X), ConvertUnits.ToSimUnits(prepareSize.Y), 1, playerPosition + new Vector2(0, -5), 0, BodyType.Dynamic, "SKillBoss");
+
+                skillTime = 3;
+                rockets.Add(dropRocket);
             }
+            else if (skillTime > 0)
+            {
+                skillTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            else
+            {
+                foreach (var item in rockets)
+                {
+                    item.Dispose();
+                }
+                rockets.Clear();
+                curBossStatus = BossStatus.IDLE;
+                randomAction = 0
+            }
+
+            //clear random action number
+            //do animation1
+
         }
 
         public void Skill3()
@@ -370,63 +418,156 @@ namespace ScifiDruid.GameObjects
             if (!action3)
             {
                 action3 = true;
-                curBossStatus = BossStatus.PREPARE;
+                curBossStatus = JaneStatus.PREPARE;
+                skillTime = 1;
             }
+
+            if (skillTime > 0)
+            {
+                skillTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+            if (skillTime <= 0)
+            {
+                if (curBossStatus == BossStatus.PREPARE && countTeleport == 0)
+                {
+                    curBossStatus = BossStatus.DASHIN;
+                    countTeleport++;
+                    skillTime = 0.5f;
+                }
+                else if (curBossStatus == BossStatus.DASHIN && countTeleport == 1)
+                {
+                    switch (charDirection)
+                    {
+                        case SpriteEffects.None:
+                            enemyHitBox.Position = playerPosition + new Vector2(-1, 0);
+                            curBossStatus = BossStatus.DASHOUT;
+                            break;
+                        case SpriteEffects.FlipHorizontally:
+                            enemyHitBox.Position = playerPosition + new Vector2(1f, 0);
+                            curBossStatus = BossStatus.DASHOUT;
+                            break;
+                    }
+                    skillTime = 0.5f;
+                }
+                else if (curBossStatus == BossStatus.DASHOUT)
+                {
+                    curBossStatus = BossStatus.PUNCH;
+                    if (enemyHitBox.Position.X - player.position.X < 3)
+                    {
+                        player.GotHit(Player.KnockbackStatus.LEFT);
+                    }
+                    else if (enemyHitBox.Position.X - player.position.X < -3)
+                    {
+                        player.GotHit(Player.KnockbackStatus.RIGHT);
+                    }
+                    skillTime = 0.5f;
+                }
+                else if (curBossStatus == BossStatus.PUNCH)
+                {
+                    countTeleport++;
+                    curBossStatus = BossStatus.DASHIN;
+                    skillTime = 0.5f;
+                }
+                else if (curBossStatus == BossStatus.DASHIN && countTeleport == 2)
+                {
+                    curBossStatus = BossStatus.DASHOUT;
+                    //enemyHitBox.Position = new Vector2(ConvertUnits.ToSimUnits(fieldBoss.X),enemyHitBox.Position.Y);
+                    if (ConvertUnits.ToSimUnits(fieldBoss.X) - enemyHitBox.Position.X < 0 )
+                    {
+                        enemyHitBox.Position = new Vector2(ConvertUnits.ToSimUnits(fieldBoss.X) + ConvertUnits.ToSimUnits((fieldBoss.Width / 2) - 100), enemyHitBox.Position.Y);
+                    }
+                    else
+                    {
+                        enemyHitBox.Position = new Vector2(ConvertUnits.ToSimUnits(fieldBoss.X) - ConvertUnits.ToSimUnits((fieldBoss.Width / 2) - 100), enemyHitBox.Position.Y);
+                        charDirection = SpriteEffects.None;
+                    }
+                    skillTime = 0.5f;
+                }
+                else if (curBossStatus == BossStatus.DASHOUT && countTeleport == 2)
+                {
+                    curBossStatus = BossStatus.IDLE;
+                    action3 = false;
+                    randomAction = 0;
+                }
+            }
+        }
+
+        public void DashOut()
+        {
+
+        }
+
+        public void DashIn()
+        {
+
+        }
+
+        public void Prepare()
+        {
+            curBossStatus = BossStatus.DASHIN;
+            countTeleport++;
+            skillTime = 0.5f;
+        }
+
+        public void Punch()
+        {
+
         }
 
         public override void ChangeAnimationStatus()
         {
             switch (curBossStatus)
             {
-                case BossStatus.IDLE:
+                case JaneStatus.IDLE:
                     delay = 300f;
                     spriteVector = idleSpriteVector;
                     spriteSize = new Vector2(idleSize.X, idleSize.Y);
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.SHOOTGUN:
+                case JaneStatus.SHOOTGUN:
                     delay = 200f;
                     spriteVector = shootGunSpriteVector;
                     spriteSize = new Vector2(shootGunSize.X, shootGunSize.Y);
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.SHOOTPLASMA:
+                case JaneStatus.SHOOTPLASMA:
                     delay = 200f;
                     spriteVector = shootPlasmaSpriteVector;
                     spriteSize = new Vector2(shootPlasmaSize.X, shootPlasmaSize.Y);
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.CALLDOWNBOMB:
+                case JaneStatus.CALLDOWNBOMB:
                     delay = 300f;
                     spriteVector = callDownBombSpriteVector;
                     spriteSize = new Vector2(action2Size.X, action2Size.Y);
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.PREPARE:
+                case JaneStatus.PREPARE:
                     delay = 300f;
                     spriteSize = prepareSize;
                     spriteVector = prepareSpriteVector;
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.DASHIN:
+                case JaneStatus.DASHIN:
                     delay = 300f;
                     spriteSize = dashInSize;
                     spriteVector = dashInSpriteVector;
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.DASHOUT:
+                case JaneStatus.DASHOUT:
                     delay = 300f; 
                     spriteSize = dashOutSize;
                     spriteVector = dashOutSpriteVector;
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.PUNCH:
+                case JaneStatus.PUNCH:
                     delay = 300f; 
                     spriteSize = punchSize;
                     spriteVector = punchSpriteVector;
                     allframes = spriteVector.Count();
                     break;
-                case BossStatus.DEAD:
+                case JaneStatus.DEAD:
                     delay = 300f;
                     spriteVector = deadSpriteVector;
                     spriteSize = new Vector2(deadSize.X, deadSize.Y);
@@ -440,6 +581,51 @@ namespace ScifiDruid.GameObjects
             if (!animationDead)
             {
                 spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bossOrigin, 1f, charDirection, 0f);
+            }
+
+            if (action2)
+            {
+                foreach (Body item in rockets)
+                {
+                    spriteBatch.Draw(bomb, ConvertUnits.ToDisplayUnits(item.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(100)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(100))), Color.White, 0, new Vector2(prepareSize.X / 2, prepareSize.Y / 2), 1f, SpriteEffects.None, 0f);
+                }
+            }
+
+            if (action1)
+            {
+                foreach (JaneBullet bullet in bulletLists)
+                {
+                    bullet.Draw(spriteBatch);
+                }
+
+                if (beam != null)
+                {
+                    spriteBatch.Draw(bomb, ConvertUnits.ToDisplayUnits(beam.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(1200)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(shootPlasmaSize.Y))), Color.White, 0, new Vector2(1200 / 2, shootPlasmaSize.Y / 2), 1f, SpriteEffects.None, 0f);
+                }
+            }
+        }
+
+        public bool IsBossDead()
+        {
+            if (curBossStatus == JaneStatus.DEAD)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool IsBossEnd()
+        {
+            if (curBossStatus == JaneStatus.END)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
     }

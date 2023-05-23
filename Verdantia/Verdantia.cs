@@ -79,15 +79,20 @@ namespace ScifiDruid
 
         protected override void Draw(GameTime gameTime)
         {
+            //draw bg
             _spriteBatch.Begin();
             ScreenManager.Instance.DrawFixScreen(_spriteBatch);
             _spriteBatch.End();
 
-            _spriteBatch.Begin(transformMatrix : Singleton.Instance.tfMatrix);
+            //draw map
+            _spriteBatch.Begin(transformMatrix: Singleton.Instance.tfMatrix);
             ScreenManager.Instance.Draw(_spriteBatch);
             _spriteBatch.End();
 
-            
+            //draw hud
+            _spriteBatch.Begin();
+            ScreenManager.Instance.DrawHUD(_spriteBatch);
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
