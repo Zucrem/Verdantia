@@ -70,7 +70,7 @@ namespace ScifiDruid.GameObjects
             BULLETEND
         }
 
-        public PlayerBullet(Texture2D texture, Vector2 position, Player player, SpriteEffects charDirection,bool isShootup) : base(texture)
+        public PlayerBullet(Texture2D texture, Vector2 position, Player player, SpriteEffects charDirection, bool isShootup) : base(texture)
         {
             this.texture = texture;
             this.charDirection = charDirection;
@@ -79,10 +79,10 @@ namespace ScifiDruid.GameObjects
             this.player = player;
         }
 
-        public void CreateBullet(bool isCroc)
+        public void CreateBullet(bool isCroc, String userData)
         {
             //build object
-            bulletBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bulletSizeX), ConvertUnits.ToSimUnits(bulletSizeY), 0, position, 0, BodyType.Dynamic, "Bullet");
+            bulletBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bulletSizeX), ConvertUnits.ToSimUnits(bulletSizeY), 0, position, 0, BodyType.Dynamic, userData);
             bulletBody.IgnoreGravity = true;
             bulletBody.IgnoreCollisionWith(player.hitBox);
             bulletBody.IsSensor = true;
@@ -146,7 +146,6 @@ namespace ScifiDruid.GameObjects
                 }
             }
             bulletStatus = BulletStatus.BULLETALIVE;
-
         }
 
         public override void Update(GameTime gameTime)
@@ -192,7 +191,7 @@ namespace ScifiDruid.GameObjects
             preStatus = bulletStatus;
         }
 
-        public bool IsContact()
+        public bool IsContact(bool isHitEnemy)
         {
             ContactEdge contactEdge = bulletBody.ContactList;
             while (contactEdge != null)
@@ -204,15 +203,20 @@ namespace ScifiDruid.GameObjects
 
                 bool contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals("Ground"));
                 bool contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals("Ground"));
-                bool contactGround = contactA || contactB;
 
-                contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals("Enemy"));
-                contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals("Enemy"));
-                bool contactEnemy = contactA || contactB;
-
-                if (contactFixture.IsTouching && (contactGround || contactEnemy))
+                //If set to true it will Detect Enemy
+                if (isHitEnemy)
                 {
-                    bulletBody.Dispose();
+                    contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals("Enemy"));
+                    contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals("Enemy"));
+                }
+
+                if (contactFixture.IsTouching && (contactA || contactB))
+                {
+                    if (!bulletBody.UserData.Equals("Croc"))
+                    {
+                        bulletBody.Dispose();
+                    }
                     return true;
                 }
 
@@ -236,13 +240,6 @@ namespace ScifiDruid.GameObjects
             return false;
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            if (!animationDead)
-            {
-                spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(bulletBody.Position), sourceRect, Color.White, rotation, bulletOrigin, 1f, charDirection, 0f);
-            }
-        }
         public void ChangeBulletAnimationStatus()
         {
             switch (bulletStatus)
@@ -259,6 +256,14 @@ namespace ScifiDruid.GameObjects
                     spriteSize = bulletDeadSize;
                     allframes = bulletDeadCount;
                     break;
+            }
+        }
+        
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            if (!animationDead)
+            {
+                spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(bulletBody.Position), sourceRect, Color.White, rotation, bulletOrigin, 1f, charDirection, 0f);
             }
         }
     }

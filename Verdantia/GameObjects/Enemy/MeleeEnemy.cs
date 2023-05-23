@@ -82,12 +82,8 @@ namespace ScifiDruid.GameObjects
 
             if (isAlive)
             {
-                CheckPlayerPosition(gameTime);
+                CheckPlayerPosition(gameTime, 1);
                 
-
-
-                takeDMG(1,"Bullet");
-
                 if (health <= 0)
                 {
                     enemyHitBox.UserData = "Died";

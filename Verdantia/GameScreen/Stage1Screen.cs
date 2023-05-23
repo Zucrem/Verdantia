@@ -19,6 +19,8 @@ using Box2DNet.Common;
 using System.Security.Cryptography;
 using Microsoft.Xna.Framework.Input;
 using static ScifiDruid.GameObjects.Player;
+using static ScifiDruid.Singleton;
+using static ScifiDruid.Managers.ScreenManager;
 
 namespace ScifiDruid.GameScreen
 {
@@ -198,7 +200,6 @@ namespace ScifiDruid.GameScreen
                 body.Friction = 0.3f;
             }
 
-
             //create player on position
 
             //player.Initial(startRect);
@@ -342,6 +343,14 @@ namespace ScifiDruid.GameScreen
                             boss_area = true;
                             MediaPlayer.Stop();
 
+                            foreach (Body body in Singleton.Instance.world.BodyList)
+                            {
+                                if (body.UserData.Equals("Boss_event"))
+                                {
+                                    body.Dispose();
+                                }
+                            }
+
                             //set player to inactive before boss
                             player.playerStatus = PlayerStatus.IDLE;
                             player.isAlive = false;
@@ -375,6 +384,15 @@ namespace ScifiDruid.GameScreen
                         {
                             stage_wall.wallHitBox.Dispose();
                         }
+
+                        if (boss.curBossStatus == LucasBoss.BossStatus.END)
+                        {
+                            Singleton.Instance.levelState = LevelState.CITY;
+                            changeScreen = true;
+                            play = false;
+                            ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
+                        }
+
                     }
                 }
             }

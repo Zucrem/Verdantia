@@ -156,11 +156,11 @@ namespace ScifiDruid.GameObjects
             return false;
         }
 
-        public void CheckPlayerPosition(GameTime gameTime)
+        public void CheckPlayerPosition(GameTime gameTime,int checkPosTime)
         {
             if (playerCheckTime <= 0)
             {
-                playerCheckTime = 1;
+                playerCheckTime = checkPosTime;
                 playerPosition = player.position;
                 if (playerPosition.X - position.X < 6 && playerPosition.X - position.X > -6 && playerPosition.Y - position.Y < 3 && playerPosition.Y - position.Y > -3)
                 {

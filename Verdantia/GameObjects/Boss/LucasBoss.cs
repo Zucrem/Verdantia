@@ -50,10 +50,10 @@ namespace ScifiDruid.GameObjects
         protected List<Vector2> action2_2SpriteVector;
         protected List<Vector2> action3SpriteVector;
 
-        private BossStatus preBossStatus;
-        private BossStatus curBossStatus;
+        public BossStatus preBossStatus;
+        public BossStatus curBossStatus;
 
-        private enum BossStatus
+        public enum BossStatus
         {
             IDLE,
             ACTION1,
@@ -68,7 +68,6 @@ namespace ScifiDruid.GameObjects
         {
             this.texture = texture;
             this.drillTexture = drillTexture;
-
 
             idleSize = new Vector2(196, 186);
             action1Size = new Vector2(228, 185);
@@ -129,9 +128,9 @@ namespace ScifiDruid.GameObjects
 
             if (isAlive)
             {
-                CheckPlayerPosition(gameTime);
+                CheckPlayerPosition(gameTime,1);
 
-                takeDMG(1, "Bullet");
+                //takeDMG(1, "Bullet");
 
                 if (health <= 0)
                 {
@@ -240,8 +239,9 @@ namespace ScifiDruid.GameObjects
 
                 if (skillTime <= 0 && curBossStatus == BossStatus.IDLE)
                 {
-                    randomAction = rand.Next(1, 6);
-                    //randomAction = 3;
+                    //randomAction = rand.Next(1, 6);
+                    randomAction = 3;
+                    //randomAction = 2;
 
                     skillTime = 5;
                 }
@@ -368,11 +368,14 @@ namespace ScifiDruid.GameObjects
                     {
                         case SpriteEffects.None:
                             enemyHitBox.ApplyForce(new Vector2(80 * speed, 0));
+                            //drillBody.IsStatic = true;
                             break;
                         case SpriteEffects.FlipHorizontally:
                             enemyHitBox.ApplyForce(new Vector2(-80 * speed, 0));
+                            //drillBody.IsStatic = true;
                             break;
                     }
+                    //drillBody.IsSensor = true;
                 }
 
                 if (IsContact(enemyHitBox, "SkillBoss"))
@@ -422,8 +425,7 @@ namespace ScifiDruid.GameObjects
             {
                 if (IsContact(drillBody, "Ground"))
                 {
-                    countBounce++;
-                    if (countBounce >= 4)
+                    if (countBounce > 3)
                     {
                         switch (bossSkilDirection)
                         {
@@ -435,17 +437,17 @@ namespace ScifiDruid.GameObjects
                                 break;
                         }
                     }
-                    drillBody.IsSensor = false;
                     drillBody.RestoreCollisionWith(enemyHitBox);
                     switch (bossSkilDirection)
                     {
                         case SpriteEffects.None:
-                            drillBody.ApplyLinearImpulse(new Vector2(-0.1f * speed, 0));
+                            drillBody.ApplyLinearImpulse(new Vector2(-1.8f * speed, 0));
                             break;
                         case SpriteEffects.FlipHorizontally:
-                            drillBody.ApplyLinearImpulse(new Vector2(0.1f * speed, 0));
+                            drillBody.ApplyLinearImpulse(new Vector2(1.8f * speed, 0));
                             break;
                     }
+                    countBounce++;
                 }
 
                 if (IsContact(enemyHitBox, "SkillBoss"))

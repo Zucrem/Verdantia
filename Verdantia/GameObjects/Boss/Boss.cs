@@ -10,7 +10,6 @@ namespace ScifiDruid.GameObjects
         protected Rectangle bossSourceRec; //where read
         protected Vector2 bossOrigin;  //start draw boss point
 
-
         public float skillTime;
 
         protected SpriteEffects bossSkilDirection;
@@ -20,7 +19,6 @@ namespace ScifiDruid.GameObjects
             this.texture = texture;
         }
 
-        
 
         public virtual void Initial(Rectangle spawnPosition,Player player, Rectangle fieldBoss)
         {
