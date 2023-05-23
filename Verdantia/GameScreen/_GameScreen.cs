@@ -31,6 +31,10 @@ namespace ScifiDruid.GameScreen
         {
 
         }
+        public virtual void DrawHUD(SpriteBatch spriteBatch)
+        {
+
+        }
         public virtual void DrawFixScreen(SpriteBatch spriteBatch)
         {
 

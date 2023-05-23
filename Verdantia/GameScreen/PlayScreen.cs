@@ -19,6 +19,7 @@ using TiledSharp;
 using System.ComponentModel.DataAnnotations;
 using Box2DNet.Content;
 using Microsoft.Xna.Framework.Audio;
+using Verdantia.GameObjects;
 
 namespace ScifiDruid.GameScreen
 {
@@ -38,9 +39,12 @@ namespace ScifiDruid.GameScreen
 
         //all stage texture
         //all stage
-        protected Texture2D switch_wall_Tex, guardianTex;
-        protected Texture2D playerPortrait, birdPortrait, soulBirdPortrait, crocPortrait, soulCrocPortrait, lionPortrait, lionCrocPortrait;
-
+        //GameObject
+        protected Texture2D switch_wall_Tex;
+        protected Texture2D birdTex, crocTex, lionTex;
+        //Portrait for dialog
+        protected Texture2D dialogBoxTex, birdPortraitTex, soulBirdPortraitTex, crocPortraitTex, soulCrocPortraitTex, lionPortraitTex, soulLionPortraitTex;
+        protected Texture2D bossPortraitTex;
         //stage 1
         protected Texture2D flameMechTex, chainsawMechTex, lucasBossTex;
         //dialog 
@@ -140,6 +144,14 @@ namespace ScifiDruid.GameScreen
 
         private bool worldReset = false;
 
+        //stage dialog
+        protected int openingDialog = 1;
+        protected int introBossDialog = 1;
+        protected int endDialog = 1;
+
+        protected int openingDialogCount;
+        protected int introDialogCount;
+        protected int endDialogCount;
         protected enum GameState 
         { 
             START, OPENING, PLAY, INTROBOSS, BOSS, END, WIN, LOSE, PAUSE, EXIT
@@ -196,6 +208,21 @@ namespace ScifiDruid.GameScreen
             //background
             whiteTex = content.Load<Texture2D>("Pictures/Play/PlayScreen/White");
             greenTex = content.Load<Texture2D>("Pictures/Play/PlayScreen/Green");
+
+            //dialog
+            dialogBoxTex = content.Load<Texture2D>("Pictures/Play/Dialog/dialogBox");
+            //guardian portrait
+            birdPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/birdPortriat");
+            soulBirdPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/soulBirdPortrait");
+            crocPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/crocPortriat");
+            soulCrocPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/soulCrocPortrait");
+            lionPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/lionPortrait");
+            soulLionPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/soulLionPortrait");
+
+            //guardian texture
+            birdTex = content.Load<Texture2D>("Pictures/Play/Characters/Guardian/birdTex");
+            crocTex = content.Load<Texture2D>("Pictures/Play/Characters/Guardian/crocTex");
+            lionTex = content.Load<Texture2D>("Pictures/Play/Characters/Guardian/lionTex");
 
             //pause screen
             pausePopUpPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/pausePopUpBG");
@@ -324,7 +351,7 @@ namespace ScifiDruid.GameScreen
                         break;
                     case GameState.OPENING:
                         //if skip the story dialog
-                        if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                        if (Keyboard.GetState().IsKeyDown(Keys.Enter) || openingDialog == openingDialogCount)
                         {
                             gamestate = GameState.PLAY;
                         }
@@ -355,7 +382,7 @@ namespace ScifiDruid.GameScreen
                         }
                         break;
                     case GameState.INTROBOSS:
-                        if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                        if (Keyboard.GetState().IsKeyDown(Keys.Enter) || introBossDialog == introDialogCount)
                         {
                             gamestate = GameState.BOSS;
                         }
@@ -364,7 +391,7 @@ namespace ScifiDruid.GameScreen
                         break;
                     case GameState.END:
                         //if skip the story dialog
-                        if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                        if (Keyboard.GetState().IsKeyDown(Keys.Enter) || endDialog == endDialogCount)
                         {
                             if (Singleton.Instance.levelState == LevelState.LAB)
                             {
@@ -668,23 +695,6 @@ namespace ScifiDruid.GameScreen
             Singleton.Instance.world.Clear();
         }
 
-        public override void DrawFixScreen(SpriteBatch spriteBatch)
-        {
-            if (play)
-            {
-                //background
-                //spriteBatch.Draw(blackTex, Vector2.Zero, Color.White);
-                spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
-
-                int mana = (int)Player.mana;
-                int health = (int)Player.health;
-
-                spriteBatch.DrawString(mediumfonts, health.ToString(), new Vector2(1, 1), Color.Black);
-                spriteBatch.DrawString(mediumfonts, mana.ToString(), new Vector2(1, 65), Color.Black);
-
-            }
-        }
-
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (play)
@@ -816,6 +826,38 @@ namespace ScifiDruid.GameScreen
                 {
                     spriteBatch.Draw(blackTex, Vector2.Zero, Color.Black);
                 }
+            }
+        }
+
+        public override void DrawFixScreen(SpriteBatch spriteBatch)
+        {
+            if (play)
+            {
+                //background
+                //spriteBatch.Draw(blackTex, Vector2.Zero, Color.White);
+                spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
+            }
+        }
+        public override void DrawHUD(SpriteBatch spriteBatch)
+        {
+            if (play)
+            {
+                if (play)
+                {
+                    //draw dialog box, spacebar text and skip text
+                    if (gamestate == GameState.OPENING || gamestate == GameState.INTROBOSS || gamestate == GameState.END)
+                    {
+                        spriteBatch.Draw(dialogBoxTex, new Rectangle(0, 528, 1092, 192), new Rectangle(0, 0, 1092, 192), Color.White);
+
+                        fontSize = smallfonts.MeasureString("Press Spacebar to next");
+                        spriteBatch.DrawString(smallfonts, "Press Spacebar to next", new Vector2(797, 690), Color.White);
+                    }
+                }
+                int mana = (int)Player.mana;
+                int health = (int)Player.health;
+
+                spriteBatch.DrawString(mediumfonts, health.ToString(), new Vector2(1, 1), Color.Black);
+                spriteBatch.DrawString(mediumfonts, mana.ToString(), new Vector2(1, 65), Color.Black);
             }
         }
     }

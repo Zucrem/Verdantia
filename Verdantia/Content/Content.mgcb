@@ -421,6 +421,18 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/Dialog/birdPortriat.png
 
+#begin Pictures/Play/Dialog/crocPortriat.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Dialog/crocPortriat.png
+
 #begin Pictures/Play/Dialog/dialogBox.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -876,6 +888,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/StageScreen/Stage2Tileset/tileset2.png
+
+#begin Pictures/Play/StageScreen/Stage3Tileset/specialProps3.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/StageScreen/Stage3Tileset/specialProps3.png
 
 #begin Pictures/Play/StageScreen/Stage3Tileset/tileset3.png
 /importer:TextureImporter

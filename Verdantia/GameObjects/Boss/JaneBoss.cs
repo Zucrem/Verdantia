@@ -94,29 +94,30 @@ namespace ScifiDruid.GameObjects
 
             idleSize = new Vector2(74, 112);
             shootGunSize = new Vector2(74, 112);
-            shootPlasmaSize = new Vector2(88, 88);
-            action2Size = new Vector2(84, 110);
-            prepareSize = new Vector2(78, 98);
+            shootPlasmaSize = new Vector2(88, 112);
+            action2Size = new Vector2(88, 112);
+            prepareSize = new Vector2(78, 112);
             dashInSize = new Vector2(78, 98);
-            dashOutSize = new Vector2(90, 104);
-            punchSize = new Vector2(92, 120);
+            dashOutSize = new Vector2(90, 112);
+            punchSize = new Vector2(90, 112);
             deadSize = new Vector2(74, 112);
 
             //idle spritevector
             idleSpriteVector = new List<Vector2>() { new Vector2(8, 0), new Vector2(140, 0), new Vector2(256, 0) };
 
             //action1 spritevector
-            shootGunSpriteVector = new List<Vector2>() { new Vector2(372, 0), new Vector2(488, 0) };
-            shootPlasmaSpriteVector = new List<Vector2>() { new Vector2(0, 170), new Vector2(134, 170), new Vector2(256, 170) };
+            shootGunSpriteVector = new List<Vector2>() { new Vector2(372, 0), new Vector2(488, 0)};
+            shootPlasmaSpriteVector = new List<Vector2>() { new Vector2(0, 146), new Vector2(134, 146), new Vector2(256, 146)};
 
             //action2 spritevector
-            callDownBombSpriteVector = new List<Vector2>() { new Vector2(362, 148), new Vector2(478, 148), new Vector2(584, 148) };
+            callDownBombSpriteVector = new List<Vector2>() { new Vector2(358, 146), new Vector2(474, 146), new Vector2(580, 146)};
+
 
             //action3 spritevector
-            prepareSpriteVector = new List<Vector2>() { new Vector2(0, 298) };
-            dashInSpriteVector = new List<Vector2>() { new Vector2(134, 298), new Vector2(251, 298), new Vector2(363, 298) };
-            dashOutSpriteVector = new List<Vector2>() { new Vector2(488, 292), new Vector2(589, 294), new Vector2(707, 294) };
-            punchSpriteVector = new List<Vector2>() { new Vector2(4, 426), new Vector2(114, 426), new Vector2(242, 426) };
+            prepareSpriteVector = new List<Vector2>() { new Vector2(0, 284) };
+            dashInSpriteVector = new List<Vector2>() { new Vector2(134, 294), new Vector2(251, 294), new Vector2(363, 294) };
+            dashOutSpriteVector = new List<Vector2>() { new Vector2(475, 284), new Vector2(589, 286), new Vector2(707, 286) };
+            punchSpriteVector = new List<Vector2>() { new Vector2(4, 434), new Vector2(112, 434), new Vector2(250, 434) };
 
             //dead spritevector
             deadSpriteVector = new List<Vector2>() { new Vector2(368, 434), new Vector2(472, 434) };
