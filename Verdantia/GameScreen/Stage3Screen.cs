@@ -87,14 +87,14 @@ namespace ScifiDruid.GameScreen
         //check boss state
         private bool bossDead = false;
 
-        //state 3 dialog
-        private int openingDialog = 1;
-        private int introBossDialog = 1;
-        private int endDialog = 1;
-
         public override void Initial()
         {
             base.Initial();
+
+            openingDialogCount = 2;
+            introDialogCount = 2;
+            endDialogCount = 2;
+
             Player.level3Unlock = true;
 
             //map size
@@ -278,13 +278,13 @@ namespace ScifiDruid.GameScreen
             //range enemy
             shieldDogEnemies = new List<RangeEnemy>();
             shieldDogPositionList = ground1MonsterRects.Count();
-            List<Vector2> shieldDogSizeList = new List<Vector2>() { new Vector2(64, 47), new Vector2(64, 47), new Vector2(64, 47), new Vector2(69, 47) };
-            List<List<Vector2>> shieldDogAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0) }, new List<Vector2>() { new Vector2(0, 0), new Vector2(147, 0), new Vector2(297, 0) }, new List<Vector2>() { new Vector2(0, 0), new Vector2(457, 0) }, new List<Vector2>() { new Vector2(0, 85), new Vector2(141, 85), new Vector2(291, 85) } };
+            List<Vector2> shieldDogSizeList = new List<Vector2>() { new Vector2(128, 94), new Vector2(128, 94), new Vector2(128, 94), new Vector2(138, 94) };
+            List<List<Vector2>> shieldDogAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0) }, new List<Vector2>() { new Vector2(0, 0), new Vector2(294, 0), new Vector2(594, 0) }, new List<Vector2>() { new Vector2(0, 0), new Vector2(914, 0) }, new List<Vector2>() { new Vector2(0, 170), new Vector2(282, 170), new Vector2(582, 170) } };
             for (int i = 0; i < shieldDogPositionList; i++)
             {
                 shieldDog = new RangeEnemy(shieldDogTex, shieldDogSizeList, shieldDogAnimateList)
                 {
-                    size = new Vector2(64, 47),
+                    size = new Vector2(128, 94),
                     health = 3,
                     speed = 0.1f,
                 };
@@ -362,9 +362,9 @@ namespace ScifiDruid.GameScreen
 
             //button and rock wall
             switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage2Tileset/specialProps2");
-            //guardianTex = content.Load<Texture2D>("Pictures/Play/Characters/Guardian/birdTex");
-            //guardianTex = content.Load<Texture2D>("Pictures/Play/Characters/Guardian/crocTex");
-            //guardianTex = content.Load<Texture2D>("Pictures/Play/Characters/Guardian/lionTex");
+
+            //boss dialog
+            bossPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/doctorPortrait");
 
             //bg music and sfx
             stage3Theme = content.Load<Song>("Songs/Stage3Screen/Stage3Theme");
@@ -516,16 +516,16 @@ namespace ScifiDruid.GameScreen
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void DrawFixScreen(SpriteBatch spriteBatch)
+        {
+            base.DrawFixScreen(spriteBatch);
+        }
+
+        public override void DrawHUD(SpriteBatch spriteBatch)
         {
             //draw tileset for map 3
             if (play)
             {
-                //draw dialog box, spacebar text and skip text
-                if (gamestate == GameState.OPENING || gamestate == GameState.INTROBOSS || gamestate == GameState.END)
-                {
-                    //draw
-                }
                 //Dialog OPENING
                 if (gamestate == GameState.OPENING)
                 {
@@ -553,7 +553,15 @@ namespace ScifiDruid.GameScreen
                             break;
                     }
                 }
+            }
+            base.DrawHUD(spriteBatch);
+        }
 
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            //draw tileset for map 3
+            if (play)
+            {
                 if (gamestate == GameState.OPENING || gamestate == GameState.END)
                 {
                     //guardian.Draw(spriteBatch);
@@ -561,10 +569,11 @@ namespace ScifiDruid.GameScreen
 
                 if (gamestate == GameState.START || gamestate == GameState.OPENING || gamestate == GameState.PLAY || gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS || gamestate == GameState.END)
                 {
+                    tilemapManager.Draw(spriteBatch);
+
                     //draw player animation
                     player.Draw(spriteBatch);
 
-                    tilemapManager.Draw(spriteBatch);
                     if (!fadeFinish)
                     {
                         spriteBatch.Draw(blackTex, Vector2.Zero, colorStart);

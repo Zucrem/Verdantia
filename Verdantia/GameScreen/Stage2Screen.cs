@@ -94,14 +94,14 @@ namespace ScifiDruid.GameScreen
 
         //check if boss dead
         private bool bossDead = false;
-
-        //state 2 dialog
-        private int openingDialog = 1;
-        private int introBossDialog = 1;
-        private int endDialog = 1;
         public override void Initial()
         {
             base.Initial();
+
+            openingDialogCount = 2;
+            introDialogCount = 2;
+            endDialogCount = 2;
+
             Player.level2Unlock = true;
 
             //map size
@@ -291,7 +291,7 @@ namespace ScifiDruid.GameScreen
             //lion
             //Vector2 guardianSize = new Vector2(86, 76);
             //List<Vector2> guardianAnimateList = new List<Vector2>() { new Vector2(0, 0), new Vector2(0, 77), new Vector2(0, 153) };
-            guardian = new Guardian(guardianTex, guardianSize, guardianAnimateList);
+            guardian = new Guardian(birdTex, guardianSize, guardianAnimateList);
             guardian.FlyInitial(bossState);
 
 
@@ -386,10 +386,10 @@ namespace ScifiDruid.GameScreen
 
             //button and rock wall
             switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage2Tileset/specialProps2");
+
+            //boss dialog
+            bossPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/janePortrait");
             //guardian
-            guardianTex = content.Load<Texture2D>("Pictures/Play/Characters/Guardian/birdTex");
-            //guardianTex = content.Load<Texture2D>("Pictures/Play/Characters/Guardian/crocTex");
-            //guardianTex = content.Load<Texture2D>("Pictures/Play/Characters/Guardian/lionTex");
 
             //bg music and sfx
             stage2Theme = content.Load<Song>("Songs/Stage2Screen/Stage2Theme");
@@ -543,17 +543,16 @@ namespace ScifiDruid.GameScreen
                 }
             }
         }
+        public override void DrawFixScreen(SpriteBatch spriteBatch)
+        {
+            base.DrawFixScreen(spriteBatch);
+        }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void DrawHUD(SpriteBatch spriteBatch)
         {
             //draw tileset for map 2
             if (play)
             {
-                //draw dialog box, spacebar text and skip text
-                if (gamestate == GameState.OPENING || gamestate == GameState.INTROBOSS || gamestate == GameState.END)
-                {
-                    //draw
-                }
                 //Dialog OPENING
                 if (gamestate == GameState.OPENING)
                 {
@@ -581,17 +580,25 @@ namespace ScifiDruid.GameScreen
                             break;
                     }
                 }
-
+            }
+            base.DrawHUD(spriteBatch);
+        }
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            //draw tileset for map 2
+            if (play)
+            {
                 if (gamestate == GameState.OPENING || gamestate == GameState.END)
                 {
                     guardian.Draw(spriteBatch);
                 }
                 if (gamestate == GameState.START || gamestate == GameState.OPENING || gamestate == GameState.PLAY || gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS || gamestate == GameState.END)
                 {
+                    tilemapManager.Draw(spriteBatch);
+
                     //draw player animation
                     player.Draw(spriteBatch);
 
-                    tilemapManager.Draw(spriteBatch);
                     if (!fadeFinish)
                     {
                         spriteBatch.Draw(blackTex, Vector2.Zero, colorStart);
@@ -630,8 +637,8 @@ namespace ScifiDruid.GameScreen
                     boss.Draw(spriteBatch);
                 }
             }
-
             base.Draw(spriteBatch);
+
         }
     }
 }

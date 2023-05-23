@@ -77,6 +77,11 @@ namespace ScifiDruid.Managers
             currentScreen.DrawFixScreen(spriteBatch);
         }
 
+        public void DrawHUD(SpriteBatch spriteBatch)
+        {
+            currentScreen.DrawHUD(spriteBatch);
+        }
+
         private static ScreenManager instance;
         public static ScreenManager Instance
         {
