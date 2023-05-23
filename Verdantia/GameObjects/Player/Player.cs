@@ -247,9 +247,9 @@ namespace ScifiDruid.GameObjects
                     touchGround = false;
                 }
 
-                if ( (IsContact(hitBox, "Enemy") || IsContact(hitBox, "SkillBoss") || IsContact(hitBox, "Wall")) && playerStatus != PlayerStatus.DASH)
+                if ( (IsContact(hitBox, "Enemy") || IsContact(hitBox, "SkillBoss")) && playerStatus != PlayerStatus.DASH)
                 {
-                    GotHit();
+                    GotHit(knockbackStatus);
                 }
 
                 else if (hitCooldown > 0)
@@ -541,7 +541,6 @@ namespace ScifiDruid.GameObjects
                     if (bullet.IsContact(false))
                     {
                         bullet.bulletStatus = PlayerBullet.BulletStatus.BULLETEND;
-                        Debug.WriteLine("Contact");
                     }
                     //if animation end
                     if (bullet.bulletStatus == PlayerBullet.BulletStatus.BULLETEND)
@@ -701,14 +700,8 @@ namespace ScifiDruid.GameObjects
                 lionBody = null;
             }
 
-            if (currentKeyState.IsKeyDown(Keys.H) && oldKeyState.IsKeyUp(Keys.H))
-            {
-                Debug.WriteLine(Singleton.Instance.world.BodyList.Count);
-            }
-
             //Do damge to every enemy that contact with lionBody
             if (lionBody != null)
-                //Debug.WriteLine(IsContact(lionBody, "Enemy"));
 
                 if (lionBody != null && skill3Active <= 0 && IsContact(lionBody, "Enemy"))
                 {
@@ -810,18 +803,9 @@ namespace ScifiDruid.GameObjects
                 bool fixtureA_Check = fixtureA.UserData != null && fixtureA.UserData.Equals(contact);
                 bool fixtureB_Check = fixtureB.UserData != null && fixtureB.UserData.Equals(contact);
 
-                if (lionBody != null && contactFixture.IsTouching)
-                {
-                    //Debug.WriteLine("A" + fixtureA_Check);
-                    //Debug.WriteLine("DataA : " + fixtureA.UserData);
-                    //Debug.WriteLine("DataB : " + fixtureB.UserData);
-                }
-
-
                 // Check if the contact fixture is the ground
                 if (contactFixture.IsTouching && (fixtureA_Check || fixtureB_Check))
                 {
-                    //Debug.WriteLine("First");
                     //if Contact thing in parameter it will return True
                     foreach (Enemy item in Singleton.Instance.enemiesInWorld)
                     {
@@ -839,12 +823,10 @@ namespace ScifiDruid.GameObjects
                             }
                             else
                             {
-                                //Debug.WriteLine("SS");
                                 return false;
                             }
                         }
                     }
-                    Debug.WriteLine("Second");
                     foreach (Body body in Singleton.Instance.world.BodyList)
                     {
                         if (body.UserData == null || (!body.UserData.Equals("Enemy") && !body.UserData.Equals("SkillBoss")) || !(body.BodyId == fixtureA.BodyId || body.BodyId == fixtureB.BodyId))
@@ -861,7 +843,6 @@ namespace ScifiDruid.GameObjects
                             knockbackStatus = KnockbackStatus.RIGHT;
                         }
                     }
-                    //Debug.WriteLine("Third");
                     return true;
                 }
 

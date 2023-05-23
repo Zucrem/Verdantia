@@ -67,7 +67,7 @@ namespace ScifiDruid.GameObjects
             bulletDistance = 10;
 
             //create wall hitbox
-            bulletBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bulletSizeX), ConvertUnits.ToSimUnits(bulletSizeY), 0, position, 0, BodyType.Dynamic, "EnemyBullet");
+            bulletBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bulletSizeX), ConvertUnits.ToSimUnits(bulletSizeY), 0, position, 0, BodyType.Dynamic, "SkillBoss");
             bulletBody.IgnoreGravity = true;
             bulletBody.IsSensor = true;
             bulletBody.IgnoreCollisionWith(self.enemyHitBox);
@@ -107,16 +107,16 @@ namespace ScifiDruid.GameObjects
 
         public void Update()
         {
-            //if dead animation animationEnd
-            if (animationDead)
-            {
-                bossBulletStatus = BulletStatus.BULLETEND;
-            }
+            ////if dead animation animationEnd
+            //if (animationDead)
+            //{
+            //    bossBulletStatus = BulletStatus.BULLETEND;
+            //}
 
-            if (preStatus != bossBulletStatus)
-            {
-                frames = 0;
-            }
+            //if (preStatus != bossBulletStatus)
+            //{
+            //    frames = 0;
+            //}
 
             sourceRect = new Rectangle((int)spriteVector.X, (int)spriteVector.Y, (int)spriteSize.X, (int)spriteSize.Y);
         }
