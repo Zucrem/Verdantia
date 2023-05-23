@@ -57,7 +57,7 @@ namespace ScifiDruid.GameObjects
 
         //bullet status
         private SymbolStatus preStatus;
-        private SymbolStatus curStatus;
+        public SymbolStatus curStatus;
 
         private bool animationDead = false;
         public enum SymbolStatus
@@ -127,6 +127,7 @@ namespace ScifiDruid.GameObjects
                 }
                 elapsed = 0;
             }
+
             if (allframes != 0)
             {
                 sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);

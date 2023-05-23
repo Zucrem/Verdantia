@@ -19,6 +19,7 @@ using Box2DNet;
 using Box2DNet.Dynamics.Contacts;
 using System.Data;
 using System.Reflection.Metadata;
+using Box2DNet.Collision;
 
 namespace ScifiDruid.GameObjects
 {
@@ -118,7 +119,7 @@ namespace ScifiDruid.GameObjects
         private int textureWidth, textureHeight;
 
         //animation
-        private PlayerAnimation playerAnimation; 
+        private PlayerAnimation playerAnimation;
         private PlayerSkillAnimation playerSkillAnimation;
         //check if animation animationEnd or not
         private bool animationEnd;
@@ -132,6 +133,10 @@ namespace ScifiDruid.GameObjects
         private bool playerDead = false;
 
         private bool isCroc = false;
+
+        public int lionDmg;
+        public int bulletDmg;
+        public int crocDmg;
 
         public enum PlayerStatus
         {
@@ -153,8 +158,8 @@ namespace ScifiDruid.GameObjects
 
         public enum KnockbackStatus
         {
-            FONT,
-            BACK
+            RIGHT,
+            LEFT
         }
 
         public Player(Texture2D texture, Texture2D bulletTexture, Texture2D lionSKill) : base(texture)
@@ -262,6 +267,16 @@ namespace ScifiDruid.GameObjects
                     hitBox.GravityScale = 1;
                 }
 
+                if ((IsContact(hitBox, "Enemy") || IsContact(hitBox, "SkillBoss")) && playerStatus != PlayerStatus.DASH)
+                {
+                    GotHit(knockbackStatus);
+                }
+
+                else if (hitCooldown > 0)
+                {
+                    hitCooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+
                 if (hitCooldown <= 0)
                 {
                     foreach (Body item in Singleton.Instance.world.BodyList)
@@ -269,6 +284,35 @@ namespace ScifiDruid.GameObjects
                         if (item.UserData.Equals("Enemy") || item.UserData.Equals("SkillBoss"))
                         {
                             hitBox.RestoreCollisionWith(item);
+                        }
+                    }
+                }
+
+                if (bulletList.Count > 0)
+                {
+                    foreach (PlayerBullet bullet in bulletList)
+                    {
+                        //Do damge to every enemy that contact with lionBody
+                        if (bullet.bulletBody != null && IsContact(bullet.bulletBody, "Enemy"))
+                        {
+                            bullet.bulletStatus = PlayerBullet.BulletStatus.BULLETEND;
+                            if (enemyContract.Count > 0)
+                            {
+                                foreach (Enemy enemy in enemyContract)
+                                {
+                                    if (bullet.bulletBody.UserData.Equals("Bullet"))
+                                    {
+                                        enemy.takeDMG(1, "Bullet");
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        enemy.takeDMG(3, "Croc");
+                                        continue;
+                                    }
+                                }
+                                enemyContract.Clear();
+                            }
                         }
                     }
                 }
@@ -291,7 +335,7 @@ namespace ScifiDruid.GameObjects
             if ((IsContact(hitBox, "Dead") || (hitCooldown <= 1.7 && touchGround && Player.health == 0)) && playerDead == false)
             {
                 isAlive = false;
-                playerStatus = PlayerStatus.DEAD; 
+                playerStatus = PlayerStatus.DEAD;
                 //playerDeadSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                 playerDead = true;
             }
@@ -398,24 +442,8 @@ namespace ScifiDruid.GameObjects
                     bulletDistance = 10,
                 };
                 playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Shoot");
-
-                if (isCroc)
-                {
-                    bullet.bulletSpeed = 600;
-                    bullet.bulletSizeX = 52;
-                    bullet.bulletSizeY = 39;
-                    bullet.bulletDistance = 10;
-                    bullet.CreateBullet(isCroc);
-                    isCroc = false;
-                }
-                else
-                {
-                    bullet.CreateBullet(isCroc);
-                }
-
+                bullet.CreateBullet(isCroc, "Bullet");
                 bulletList.Add(bullet);
-                //bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0.43f *  playerDirectionInt , -0.12f), this, charDirection , isCroc, isShootup));
-
                 Player.isAttack = true;
                 attackAnimationTime = 0.3f;
                 attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
@@ -436,7 +464,7 @@ namespace ScifiDruid.GameObjects
                     bulletSizeY = 9,
                     bulletDistance = 10,
                 };
-                bullet.CreateBullet(false);
+                bullet.CreateBullet(false, "Bullet");
                 bulletList.Add(bullet);
 
                 //bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0, -1f), this, charDirection, isShootup));
@@ -488,7 +516,7 @@ namespace ScifiDruid.GameObjects
                             break;
                     }
                 }
-                
+
             }
 
             if (bulletList.Count == 0)
@@ -505,12 +533,15 @@ namespace ScifiDruid.GameObjects
                     {
                         if (bullet.bulletStatus != PlayerBullet.BulletStatus.BULLETEND)
                         {
+                            bulletList.Remove(bullet);
                             bullet.bulletStatus = PlayerBullet.BulletStatus.BULLETDEAD;
+                            break;
                         }
                     }
-                    if (bullet.IsContact())
+                    if (bullet.IsContact(false))
                     {
                         bullet.bulletStatus = PlayerBullet.BulletStatus.BULLETEND;
+                        Debug.WriteLine("Contact");
                     }
                     //if animation end
                     if (bullet.bulletStatus == PlayerBullet.BulletStatus.BULLETEND)
@@ -634,14 +665,22 @@ namespace ScifiDruid.GameObjects
 
         public void LionSkill()
         {
-
             if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press && skill3Cooldown <= 0)
             {
                 lionBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(500), ConvertUnits.ToSimUnits(200), 0, hitBox.Position + new Vector2(0, textureHeight / 2), 0, BodyType.Static, "Lion");
                 lionBody.IgnoreCollisionWith(hitBox);
+
+                //foreach (Body item in Singleton.Instance.world.BodyList)
+                //{
+                //    if (!item.UserData.Equals("Enemy"))
+                //    {
+                //        lionBody.IgnoreCollisionWith(item);
+                //    }
+                //}
+
                 lionBody.IsSensor = true;
 
-                skill3Cooldown = skill3CoolTime;
+                skill3Cooldown = 1;
                 skill3Time = 1;
                 press = true;
 
@@ -651,8 +690,9 @@ namespace ScifiDruid.GameObjects
             //Time Active for 1 sec
             if (lionBody != null && skill3Time > 0)
             {
+
                 lionBody.Position = hitBox.Position;
-                skill3Time -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                //skill3Time -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             else if (lionBody != null)
             {
@@ -661,19 +701,26 @@ namespace ScifiDruid.GameObjects
                 lionBody = null;
             }
 
-            //Do damge to every enemy that contact with lionBody
-            if (lionBody != null && skill3Active <= 0 && IsContact(lionBody, "Enemy"))
+            if (currentKeyState.IsKeyDown(Keys.H) && oldKeyState.IsKeyUp(Keys.H))
             {
-                if (enemyContract != null)
-                {
-                    foreach (Enemy enemy in enemyContract)
-                    {
-                        enemy.takeDMG(4, "Lion");
-                    }
-                    //lionBody.Dispose();
-                }
+                Debug.WriteLine(Singleton.Instance.world.BodyList.Count);
             }
 
+            //Do damge to every enemy that contact with lionBody
+            if (lionBody != null)
+                //Debug.WriteLine(IsContact(lionBody, "Enemy"));
+
+                if (lionBody != null && skill3Active <= 0 && IsContact(lionBody, "Enemy"))
+                {
+                    if (enemyContract != null)
+                    {
+                        foreach (Enemy enemy in enemyContract)
+                        {
+                            enemy.takeDMG(4, "Lion");
+                        }
+                        //lionBody.Dispose();
+                    }
+                }
         }
 
         public void CrocodileSkill()
@@ -687,14 +734,34 @@ namespace ScifiDruid.GameObjects
                 playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Croc");
             }
 
-            if (!isAlive && skill2Cooldown > 0)
+            if (skill2Cooldown > 0 && isCroc)
             {
-                playerStatus = PlayerStatus.RUN;
-                hitBox.ApplyForce(new Vector2(10, 0));
+                if (playerSkillAnimation.curStatus == PlayerSkillAnimation.SymbolStatus.SYMBOLEND && skill2Cooldown > 0)
+                {
+                    PlayerBullet bullet = new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0.43f * playerDirectionInt, -0.12f), this, charDirection, isShootup)
+                    {
+                        bulletSpeed = 600,
+                        bulletSizeX = 52,
+                        bulletSizeY = 39,
+                        bulletDistance = 10,
+                    };
+                    bullet.CreateBullet(isCroc, "Croc");
+                    bulletList.Add(bullet);
+                    playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Shoot");
+                    Player.isAttack = true;
+                    attackAnimationTime = 0.3f;
+                    attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
+                    attackTime = 5;
+                    bulletList[bulletList.Count - 1].Shoot();
+                    //Player.mana -= 5;
+
+                    isCroc = false;
+                    //return;
+                }
             }
         }
 
-        public void GotHit()
+        public void GotHit(KnockbackStatus knockback)
         {
             if (hitCooldown <= 0)
             {
@@ -703,12 +770,12 @@ namespace ScifiDruid.GameObjects
                     Player.health--;
                 }
 
-                switch (knockbackStatus)
+                switch (knockback)
                 {
-                    case KnockbackStatus.FONT:
+                    case KnockbackStatus.RIGHT:
                         hitBox.ApplyLinearImpulse(new Vector2(hitBox.Mass * (speed - 6), -hitBox.Mass * jumpHigh));
                         break;
-                    case KnockbackStatus.BACK:
+                    case KnockbackStatus.LEFT:
                         hitBox.ApplyLinearImpulse(new Vector2(-hitBox.Mass * (speed - 6), -hitBox.Mass * jumpHigh));
                         break;
                 }
@@ -730,7 +797,7 @@ namespace ScifiDruid.GameObjects
 
         }
 
-        public bool IsContact(Body box, String contact)
+        public bool IsContact(Body box, string contact)
         {
             ContactEdge contactEdge = box.ContactList;
             while (contactEdge != null)
@@ -743,14 +810,23 @@ namespace ScifiDruid.GameObjects
                 bool fixtureA_Check = fixtureA.UserData != null && fixtureA.UserData.Equals(contact);
                 bool fixtureB_Check = fixtureB.UserData != null && fixtureB.UserData.Equals(contact);
 
+                if (lionBody != null && contactFixture.IsTouching)
+                {
+                    //Debug.WriteLine("A" + fixtureA_Check);
+                    //Debug.WriteLine("DataA : " + fixtureA.UserData);
+                    //Debug.WriteLine("DataB : " + fixtureB.UserData);
+                }
+
+
                 // Check if the contact fixture is the ground
                 if (contactFixture.IsTouching && (fixtureA_Check || fixtureB_Check))
                 {
+                    //Debug.WriteLine("First");
                     //if Contact thing in parameter it will return True
                     foreach (Enemy item in Singleton.Instance.enemiesInWorld)
                     {
                         //if Doesn't use skill lion now it will not process in foreach
-                        if (lionBody == null)
+                        if (lionBody == null && !box.UserData.Equals("Croc") && !box.UserData.Equals("Bullet"))
                         {
                             break;
                         }
@@ -763,29 +839,29 @@ namespace ScifiDruid.GameObjects
                             }
                             else
                             {
-                                Debug.WriteLine("SS");
+                                //Debug.WriteLine("SS");
                                 return false;
                             }
                         }
                     }
-
+                    Debug.WriteLine("Second");
                     foreach (Body body in Singleton.Instance.world.BodyList)
                     {
-                        if (body.UserData == null || ( !body.UserData.Equals("Enemy") && !body.UserData.Equals("SkillBoss") ) || !(body.BodyId == fixtureA.BodyId || body.BodyId == fixtureB.BodyId))
+                        if (body.UserData == null || (!body.UserData.Equals("Enemy") && !body.UserData.Equals("SkillBoss")) || !(body.BodyId == fixtureA.BodyId || body.BodyId == fixtureB.BodyId))
                         {
                             continue;
                         }
 
                         if (body.Position.X - box.Position.X > 0)
                         {
-                            knockbackStatus = KnockbackStatus.BACK;
+                            knockbackStatus = KnockbackStatus.LEFT;
                         }
                         else
                         {
-                            knockbackStatus = KnockbackStatus.FONT;
+                            knockbackStatus = KnockbackStatus.RIGHT;
                         }
                     }
-
+                    //Debug.WriteLine("Third");
                     return true;
                 }
 
@@ -819,6 +895,11 @@ namespace ScifiDruid.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            if (lionBody != null)
+            {
+                spriteBatch.Draw(lionTexture, ConvertUnits.ToDisplayUnits(lionBody.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(500)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(200))), Color.White, 0, new Vector2(500 / 2, 200 / 2), 1, SpriteEffects.None, 0);
+            }
+
             //draw player
             if (!animationEnd)
             {
@@ -830,10 +911,7 @@ namespace ScifiDruid.GameObjects
                 playerAnimation.Draw(spriteBatch, playerOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
             }
 
-            if (lionBody != null)
-            {
-                spriteBatch.Draw(lionTexture, ConvertUnits.ToDisplayUnits(lionBody.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(500)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(200))), Color.Black, 0, new Vector2(500 / 2, 200 / 2), 1, SpriteEffects.None, 0);
-            }
+            
             //if shoot
             /*if (_bulletBody != null && !_bulletBody.IsDisposed)
             {

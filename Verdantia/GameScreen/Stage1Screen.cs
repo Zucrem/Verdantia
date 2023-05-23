@@ -18,11 +18,11 @@ using Box2DNet.Content;
 using Box2DNet.Common;
 using System.Security.Cryptography;
 using Microsoft.Xna.Framework.Input;
-using static ScifiDruid.GameObjects.Player;
 using Verdantia.GameObjects;
 using static ScifiDruid.Singleton;
 using static ScifiDruid.GameObjects.JaneBoss;
 using static ScifiDruid.GameObjects.LucasBoss;
+using static ScifiDruid.GameObjects.Player;
 
 namespace ScifiDruid.GameScreen
 {
@@ -209,7 +209,6 @@ namespace ScifiDruid.GameScreen
                 body.Restitution = 0.0f;
                 body.Friction = 0.3f;
             }
-
 
             //create player on position
 
