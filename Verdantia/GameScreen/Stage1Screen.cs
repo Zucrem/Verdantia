@@ -71,13 +71,15 @@ namespace ScifiDruid.GameScreen
         //check if boss dead
         private bool bossDead = false;
 
-        //state 1 dialog
-        private int openingDialog = 1;
-        private int introBossDialog = 1;
-        private int endDialog = 1;
+        //time 
+        private int time;
         public override void Initial()
         {
             base.Initial();
+
+            openingDialogCount = 2;
+            introDialogCount = 2;
+            endDialogCount = 2;
 
             //map size
             startmaptileX = 10f;
@@ -213,8 +215,8 @@ namespace ScifiDruid.GameScreen
 
             //create player on position
 
-            //player.Initial(startRect);
-            player.Initial(bossState);
+            player.Initial(startRect);
+            //player.Initial(bossState);
 
 
             //range enemy
@@ -302,6 +304,9 @@ namespace ScifiDruid.GameScreen
 
             //button and rock wall
             switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage1Tileset/specialProps1");
+
+            //boss dialog
+            bossPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/lucasPortrait");
 
             //bg music and sfx
             stage1Theme = content.Load<Song>("Songs/Stage1Screen/Stage1Theme");
@@ -445,38 +450,6 @@ namespace ScifiDruid.GameScreen
             //draw tileset for map1
             if (play)
             {
-                //draw dialog box, spacebar text and skip text
-                if (gamestate == GameState.OPENING || gamestate == GameState.INTROBOSS || gamestate == GameState.END)
-                {
-                    //draw
-                }
-                //Dialog OPENING
-                if (gamestate == GameState.OPENING)
-                {
-                    switch (openingDialog)
-                    {
-                        case 1:
-                            break;
-                    }
-                }
-                //Dialog INTROBOSS
-                if (gamestate == GameState.INTROBOSS)
-                {
-                    switch (introBossDialog)
-                    {
-                        case 1:
-                            break;
-                    }
-                }
-                //Dialog END
-                if (gamestate == GameState.END)
-                {
-                    switch (endDialog)
-                    {
-                        case 1:
-                            break;
-                    }
-                }
 
                 if (gamestate == GameState.OPENING || gamestate == GameState.END)
                 {
@@ -523,9 +496,51 @@ namespace ScifiDruid.GameScreen
                     boss.Draw(spriteBatch);
                 }
             }
-
             base.Draw(spriteBatch);
+        }
 
+        public override void DrawFixScreen(SpriteBatch spriteBatch)
+        {
+            base.DrawFixScreen(spriteBatch);
+        }
+        public override void DrawHUD(SpriteBatch spriteBatch)
+        {
+            base.DrawHUD(spriteBatch);
+            if (play)
+            {
+                //Dialog OPENING
+                if (gamestate == GameState.OPENING)
+                {
+                    switch (openingDialog)
+                    {
+                        case 1:
+                            fontSize = smallfonts.MeasureString("Gale");
+                            spriteBatch.DrawString(smallfonts, "Gale", new Vector2(100, 540), Color.White);
+
+                            fontSize = smallfonts.MeasureString("Help me");
+                            spriteBatch.DrawString(smallfonts, "Help me", new Vector2(41, 593), Color.White);
+                            break;
+                    }
+                }
+                //Dialog INTROBOSS
+                if (gamestate == GameState.INTROBOSS)
+                {
+                    switch (introBossDialog)
+                    {
+                        case 1:
+                            break;
+                    }
+                }
+                //Dialog END
+                if (gamestate == GameState.END)
+                {
+                    switch (endDialog)
+                    {
+                        case 1:
+                            break;
+                    }
+                }
+            }
         }
     }
 }
