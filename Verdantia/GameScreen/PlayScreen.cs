@@ -86,6 +86,7 @@ namespace ScifiDruid.GameScreen
 
         //Game state
         protected bool play = true;
+        protected GameState prestate;
         protected GameState gamestate;
         //change to go another screen
         protected bool nextScreen = false;
@@ -141,7 +142,7 @@ namespace ScifiDruid.GameScreen
 
         protected enum GameState 
         { 
-            START, OPENING, PLAY, END, WIN, LOSE, PAUSE, EXIT
+            START, OPENING, PLAY, INTROBOSS, BOSS, END, WIN, LOSE, PAUSE, EXIT
         }
 
         public virtual void Initial()
@@ -281,14 +282,18 @@ namespace ScifiDruid.GameScreen
 
                 //update player
                 player.Update(gameTime);
-
-                //if want to pause
-                if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                if (gamestate == GameState.PLAY || gamestate == GameState.BOSS)
                 {
-                    play = false;
-                    gamestate = GameState.PAUSE;
+                    player.Action();
                 }
 
+                //if want to pause
+                if (Keyboard.GetState().IsKeyDown(Keys.Escape) && gamestate != GameState.START)
+                {
+                    play = false;
+                    prestate = gamestate;
+                    gamestate = GameState.PAUSE;
+                }
                 //game state
                 switch (gamestate)
                 {
@@ -344,15 +349,17 @@ namespace ScifiDruid.GameScreen
                         else
                         {
                             Singleton.Instance.tfMatrix = lastScreen;
+                            gamestate = GameState.INTROBOSS;
                         }
-
-                        player.Action();
-
-                        if (player.playerStatus == Player.PlayerStatus.END)
+                        break;
+                    case GameState.INTROBOSS:
+                        if (Keyboard.GetState().IsKeyDown(Keys.Enter))
                         {
-                            play = false;
-                            gamestate = GameState.LOSE;
+                            gamestate = GameState.BOSS;
                         }
+                        break;
+                    case GameState.BOSS:
+
                         break;
                     case GameState.END:
                         //if skip the story dialog
@@ -380,6 +387,11 @@ namespace ScifiDruid.GameScreen
                             }
                         }
                         break;
+                }
+                if (player.playerStatus == Player.PlayerStatus.END)
+                {
+                    play = false;
+                    gamestate = GameState.LOSE;
                 }
             }
             else
@@ -468,11 +480,7 @@ namespace ScifiDruid.GameScreen
                             if (continueButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
                                 play = true;
-                                gamestate = GameState.PLAY;
-
-                                //camera update for scroll back to normal
-                                //block after image
-                                Singleton.Instance.tfMatrix = camera.Follow(player.position, startmaptileX, endmaptileX);
+                                gamestate = prestate;
                             }
                             //Restart
                             if (restartButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
@@ -680,8 +688,8 @@ namespace ScifiDruid.GameScreen
         {
             if (play)
             {
-                //in PlayScreen only
-                if (gamestate == GameState.PLAY)
+                //in play and boss state only
+                if (gamestate == GameState.PLAY || gamestate == GameState.BOSS)
                 {
                     if (Player.isAttack)
                     {
