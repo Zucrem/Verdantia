@@ -41,12 +41,14 @@ namespace ScifiDruid.GameObjects
         private int countBounce = 0;
 
         //for animation
+
         private Vector2 idleSize;
         private Vector2 action1Size;
         private Vector2 action2_1Size;
         private Vector2 action2_2Size;
         private Vector2 action3Size;
         private Vector2 deadSize;
+        
         private List<Vector2> idleSpriteVector;
         private List<Vector2> action1SpriteVector;
         private List<Vector2> action2_1SpriteVector;
@@ -72,7 +74,6 @@ namespace ScifiDruid.GameObjects
         {
             this.texture = texture;
             this.drillTexture = drillTexture;
-
 
             idleSize = new Vector2(196, 186);
             action1Size = new Vector2(228, 185);
@@ -133,9 +134,9 @@ namespace ScifiDruid.GameObjects
 
             if (isAlive)
             {
-                CheckPlayerPosition(gameTime);
+                CheckPlayerPosition(gameTime,1);
 
-                takeDMG(1, "Bullet");
+                //takeDMG(1, "Bullet");
 
                 if (health <= 0)
                 {
@@ -244,8 +245,9 @@ namespace ScifiDruid.GameObjects
 
                 if (skillTime <= 0 && curBossStatus == LucasStatus.IDLE)
                 {
-                    randomAction = rand.Next(1, 6);
-                    //randomAction = 3;
+                    //randomAction = rand.Next(1, 6);
+                    randomAction = 3;
+                    //randomAction = 2;
 
                     skillTime = 5;
                 }
@@ -371,12 +373,15 @@ namespace ScifiDruid.GameObjects
                     switch (bossSkilDirection)
                     {
                         case SpriteEffects.None:
-                            enemyHitBox.ApplyForce(new Vector2(3 * speed, 0));
+                            enemyHitBox.ApplyForce(new Vector2(80 * speed, 0));
+                            //drillBody.IsStatic = true;
                             break;
                         case SpriteEffects.FlipHorizontally:
-                            enemyHitBox.ApplyForce(new Vector2(-3 * speed, 0));
+                            enemyHitBox.ApplyForce(new Vector2(-80 * speed, 0));
+                            //drillBody.IsStatic = true;
                             break;
                     }
+                    //drillBody.IsSensor = true;
                 }
 
                 if (IsContact(enemyHitBox, "SkillBoss"))
@@ -426,8 +431,7 @@ namespace ScifiDruid.GameObjects
             {
                 if (IsContact(drillBody, "Ground"))
                 {
-                    countBounce++;
-                    if (countBounce >= 4)
+                    if (countBounce > 3)
                     {
                         switch (bossSkilDirection)
                         {
@@ -439,17 +443,17 @@ namespace ScifiDruid.GameObjects
                                 break;
                         }
                     }
-                    drillBody.IsSensor = false;
                     drillBody.RestoreCollisionWith(enemyHitBox);
                     switch (bossSkilDirection)
                     {
                         case SpriteEffects.None:
-                            drillBody.ApplyLinearImpulse(new Vector2(-3f * speed, 0));
+                            drillBody.ApplyLinearImpulse(new Vector2(-1.8f * speed, 0));
                             break;
                         case SpriteEffects.FlipHorizontally:
-                            drillBody.ApplyLinearImpulse(new Vector2(3f * speed, 0));
+                            drillBody.ApplyLinearImpulse(new Vector2(1.8f * speed, 0));
                             break;
                     }
+                    countBounce++;
                 }
 
                 if (IsContact(enemyHitBox, "SkillBoss"))

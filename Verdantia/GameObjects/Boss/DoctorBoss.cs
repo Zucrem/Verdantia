@@ -113,7 +113,7 @@ namespace ScifiDruid.GameObjects
 
             if (isAlive)
             {
-                CheckPlayerPosition(gameTime);
+                CheckPlayerPosition(gameTime,1);
 
                 takeDMG(1, "Bullet");
 
