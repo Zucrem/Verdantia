@@ -368,7 +368,7 @@ namespace ScifiDruid.GameObjects
                 if (IsContact(drillBody, "Ground"))
                 {
                     curBossStatus = LucasStatus.ACTION2_2;
-                    drillBody.IsSensor = false;
+                    drillBody.LinearVelocity = Vector2.Zero;
                     drillBody.RestoreCollisionWith(enemyHitBox);
                     switch (bossSkilDirection)
                     {

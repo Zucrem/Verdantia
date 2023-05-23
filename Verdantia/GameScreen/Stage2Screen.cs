@@ -279,8 +279,8 @@ namespace ScifiDruid.GameScreen
 
             //create player on position
 
-            player.Initial(startRect);
-            //player.Initial(bossState);
+            //player.Initial(startRect);
+            player.Initial(bossState);
 
             //bird
             Vector2 guardianSize = new Vector2(49, 55);
@@ -355,7 +355,7 @@ namespace ScifiDruid.GameScreen
                 speed = 1.2f,
             };
             //spawn boss
-            boss.Initial(bossRect, player);
+            boss.Initial(bossRect, player,boss_event);
 
             //add to all enemy for
             allEnemies.AddRange(gunPoliceEnemies);

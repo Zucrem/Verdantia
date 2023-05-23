@@ -68,6 +68,10 @@ namespace ScifiDruid.GameObjects
             this.texture = texture;
         }
 
+        public virtual void Initial(Rectangle spawnPosition, Player player)
+        {
+
+        }
 
         public bool GotHit(String dmgType)
         {
