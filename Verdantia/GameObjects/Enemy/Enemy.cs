@@ -6,6 +6,10 @@ using Box2DNet.Dynamics.Contacts;
 using Box2DNet.Dynamics;
 using Microsoft.Xna.Framework.Input;
 using static ScifiDruid.GameObjects.Player;
+using System.Diagnostics;
+using Box2DNet.Factories;
+using Box2DNet;
+using static ScifiDruid.Singleton;
 
 namespace ScifiDruid.GameObjects
 {
@@ -16,6 +20,7 @@ namespace ScifiDruid.GameObjects
 
         protected Player player;
         protected Vector2 playerPosition;
+        protected Boolean isIdle = false;
 
         private Rectangle enemyDestRect;  //where postion
         private Rectangle enemySourceRec; //where read
@@ -63,11 +68,48 @@ namespace ScifiDruid.GameObjects
         //check player position
         protected float playerCheckTime;
 
+        public List<Body> bodyList;
+
+        protected float pathWalkLength;
+        protected float xspawnPosition;
+
         public Enemy(Texture2D texture) : base(texture)
         {
             this.texture = texture;
         }
+        public virtual void Initial(Rectangle spawnPosition, Player player)
+        {
+            this.player = player;
 
+            textureHeight = (int)size.Y;
+            textureWidth = (int)size.X;
+
+            enemyHitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(spawnPosition.X, spawnPosition.Y - 1)), 0, BodyType.Dynamic, "Enemy");
+            enemyHitBox.FixedRotation = true;
+            enemyHitBox.Friction = 1.0f;
+            enemyHitBox.AngularDamping = 2.0f;
+            enemyHitBox.LinearDamping = 2.0f;
+
+            pathWalkLength = ConvertUnits.ToSimUnits((spawnPosition.Width / 2) - 64);
+            xspawnPosition = ConvertUnits.ToSimUnits(spawnPosition.X);
+
+            isAlive = true;
+
+            // heading direction
+            if (Singleton.Instance.levelState == LevelState.FOREST)
+            {
+                charDirection = SpriteEffects.FlipHorizontally;
+            }
+            else
+            {
+                charDirection = SpriteEffects.None;
+            }
+
+            enemyOrigin = new Vector2(textureWidth / 2, textureHeight / 2);
+
+            bodyList = new List<Body>();
+
+        }
 
         public bool GotHit(String dmgType)
         {
@@ -93,7 +135,7 @@ namespace ScifiDruid.GameObjects
             return false;
         }
 
-        public void takeDMG(int dmg,String dmgType)
+        public void takeDMG(int dmg, String dmgType)
         {
             if (GotHit(dmgType))
             {
@@ -104,6 +146,7 @@ namespace ScifiDruid.GameObjects
 
         public bool IsContact(Body box, String contact)
         {
+
             ContactEdge contactEdge = box.ContactList;
             while (contactEdge != null)
             {
@@ -116,12 +159,36 @@ namespace ScifiDruid.GameObjects
                 bool fixtureB_Check = fixtureB.UserData != null && fixtureB.UserData.Equals(contact);
 
 
-                // Check if the contact fixture is the ground
+
+                if (box.UserData.Equals("Enemy")&&contact.Equals("Enemy")) {
+
+                    // Check if the contact fixture is the ground
+                    if (contactFixture.IsTouching && (fixtureA_Check))
+                    {
+                        //if Contact thing in parameter it will return True
+                        if (!bodyList.Contains(fixtureA))
+                        {
+                            bodyList.Add(fixtureA);
+                        }
+                    }
+                    else if (contactFixture.IsTouching && (fixtureB_Check))
+                    {
+                        if (!bodyList.Contains(fixtureB))
+                        {
+                            bodyList.Add(fixtureB);
+                        }
+                    }
+                    if (bodyList.Count > 1) { Debug.WriteLine("helo");  return true; }
+
+                    return false;
+                }
+                
                 if (contactFixture.IsTouching && (fixtureA_Check || fixtureB_Check))
                 {
                     //if Contact thing in parameter it will return True
                     return true;
                 }
+                
 
                 contactEdge = contactEdge.Next;
             }
@@ -151,6 +218,16 @@ namespace ScifiDruid.GameObjects
         public virtual void Walk() { }
 
         public virtual void ChangeAnimationStatus() { }
+
+        public void IsIdle()
+        {
+            Random random = new Random();
+            if (random.Next(500) == 1)
+            {
+                isIdle = true;
+            }
+            else { isIdle = false; }
+        }
     }
 }
 

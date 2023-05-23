@@ -26,10 +26,9 @@ namespace ScifiDruid.GameObjects
         //attribute using for moving of boss
         private float timeElapsed;
         private bool isMovingLeft = true;
-        private float movingTime = 3.4f;
+        private float idleTime = 0;
 
-        private float pathWalkLength;
-        private float xspawnPosition;
+
 
         //for animation
         protected Vector2 idleSize;
@@ -70,36 +69,9 @@ namespace ScifiDruid.GameObjects
             frames = 0;
         }
 
-        public void Initial(Rectangle spawnPosition, Player player)
+        public override void Initial(Rectangle spawnPosition, Player player)
         {
-            this.player = player;
-
-            textureHeight = (int)size.Y;
-            textureWidth = (int)size.X;
-
-            enemyHitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(spawnPosition.X, spawnPosition.Y - 1)), 0, BodyType.Dynamic, "Enemy");
-            enemyHitBox.FixedRotation = true;
-            enemyHitBox.Friction = 1.0f;
-            enemyHitBox.AngularDamping = 2.0f;
-            enemyHitBox.LinearDamping = 2.0f;
-
-            pathWalkLength = ConvertUnits.ToSimUnits((spawnPosition.Width / 2) - 64);
-            xspawnPosition = ConvertUnits.ToSimUnits(spawnPosition.X);
-
-            isAlive = true;
-
-            // heading direction
-            if (Singleton.Instance.levelState == LevelState.FOREST)
-            {
-                charDirection = SpriteEffects.FlipHorizontally;
-            }
-            else
-            {
-                charDirection = SpriteEffects.None;
-            }
-
-            enemyOrigin = new Vector2(textureWidth / 2, textureHeight / 2);  //draw in the middle
-
+            base.Initial(spawnPosition, player);
             curStatus = EnemyStatus.RUN;
             preStatus = EnemyStatus.RUN;
         }
@@ -112,10 +84,10 @@ namespace ScifiDruid.GameObjects
             if (isAlive)
             {
                 CheckPlayerPosition(gameTime);
-                
 
 
-                takeDMG(1,"Bullet");
+
+                takeDMG(1, "Bullet");
 
                 if (health <= 0)
                 {
@@ -222,13 +194,43 @@ namespace ScifiDruid.GameObjects
             {
                 EnemyWalking();
             }
-            
+
         }
 
         private void EnemyWalking()
         {
             //do normal walking left and right
-            curStatus = EnemyStatus.RUN;
+            if (IsContact(enemyHitBox, "Enemy"))
+            {
+                foreach (var item in bodyList)
+                {
+                    if (enemyHitBox.BodyId != item.BodyId)
+                    {
+                        Debug.WriteLine("position item =" + item.Position.X + "\n" + "position enemyhitbox " + enemyHitBox.Position.X);
+                        if (item.Position.X - enemyHitBox.Position.X > 0)
+                        {
+                            isMovingLeft= true;
+                            bodyList.Clear();
+                            break;
+                        }
+                        else
+                        {
+                            isMovingLeft= false;
+                            bodyList.Clear();
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            if (idleTime == 0)
+            {
+                IsIdle();
+            }
+            
+
+
+            curStatus = EnemyStatus.IDLE;
 
             if ((xspawnPosition - enemyHitBox.Position.X) > pathWalkLength && isMovingLeft)
             {
@@ -239,29 +241,48 @@ namespace ScifiDruid.GameObjects
                 isMovingLeft = !isMovingLeft;
             }
 
-            if (isMovingLeft)
+            if (!isIdle)
             {
-                if (Singleton.Instance.levelState == LevelState.FOREST)
+
+
+                if (isMovingLeft)
                 {
-                    charDirection = SpriteEffects.None;
+                    if (Singleton.Instance.levelState == LevelState.FOREST)
+                    {
+                        charDirection = SpriteEffects.None;
+                    }
+                    else
+                    {
+                        charDirection = SpriteEffects.FlipHorizontally;
+                    }
+                    enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
                 }
                 else
                 {
-                    charDirection = SpriteEffects.FlipHorizontally;
+                    if (Singleton.Instance.levelState == LevelState.FOREST)
+                    {
+                        charDirection = SpriteEffects.FlipHorizontally;
+                    }
+                    else
+                    {
+                        charDirection = SpriteEffects.None;
+                    }
+                    enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
                 }
-                enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
             }
             else
             {
-                if (Singleton.Instance.levelState == LevelState.FOREST)
+
+                if (idleTime < 5)
                 {
-                    charDirection = SpriteEffects.FlipHorizontally;
+                    idleTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
                 else
                 {
-                    charDirection = SpriteEffects.None;
+                    isIdle = false;
+                    idleTime = 0;
                 }
-                enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
+
             }
 
 
@@ -276,7 +297,7 @@ namespace ScifiDruid.GameObjects
             //stop when player go out of detect area
             curStatus = EnemyStatus.RUN;
 
-            if (playerPosition.X - position.X > 1)
+            if (playerPosition.X - position.X > 1 && (xspawnPosition - enemyHitBox.Position.X) > pathWalkLength * -1)
             {
                 if (Singleton.Instance.levelState == LevelState.FOREST)
                 {
@@ -286,10 +307,10 @@ namespace ScifiDruid.GameObjects
                 {
                     charDirection = SpriteEffects.None;
                 }
-                    
+
                 enemyHitBox.ApplyForce(new Vector2(150 * speed, 0));
             }
-            else if (playerPosition.X - position.X < -1)
+            else if (playerPosition.X - position.X < -1 && (xspawnPosition - enemyHitBox.Position.X) < pathWalkLength)
             {
 
                 if (Singleton.Instance.levelState == LevelState.FOREST)
