@@ -14,11 +14,18 @@ using ScifiDruid.Managers;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Input;
 using static ScifiDruid.GameObjects.Player;
+using Verdantia.GameObjects;
+using static ScifiDruid.Singleton;
+using static ScifiDruid.GameObjects.DoctorBoss;
+using static ScifiDruid.GameObjects.JaneBoss;
 
 namespace ScifiDruid.GameScreen
 {
     class Stage2Screen : PlayScreen
     {
+        //create guardian tex
+        private Guardian guardian;
+
         //create switch and wall
         private SwitchWall switch_wall1;
         private StageObject stage_wall1;
@@ -37,15 +44,15 @@ namespace ScifiDruid.GameScreen
         private List<Enemy> allEnemies;
         private JaneBoss boss;
 
-        /*private RangeEnemy flameMech;
-        private List<RangeEnemy> flameMechEnemies;
-        private int flameMechPositionList;
-        private int flameMechCount;
+        private RangeEnemy gunPolice;
+        private List<RangeEnemy> gunPoliceEnemies;
+        private int gunPolicePositionList;
+        private int gunPoliceCount;
 
-        private MeleeEnemy chainsawMech;
-        private List<MeleeEnemy> chainsawMechEnemies;
-        private int chainsawMechPositionList;
-        private int chainsawMechCount;*/
+        private MeleeEnemy meleePolice;
+        private List<MeleeEnemy> meleePoliceEnemies;
+        private int meleePolicePositionList;
+        private int meleePoliceCount;
 
         //special occasion position
         //if boss event
@@ -84,6 +91,14 @@ namespace ScifiDruid.GameScreen
 
         private Vector2 panel_size = new Vector2(64, 6);
         private Vector2 panel_textureSize = new Vector2(64, 66);
+
+        //check if boss dead
+        private bool bossDead = false;
+
+        //state 2 dialog
+        private int openingDialog = 1;
+        private int introBossDialog = 1;
+        private int endDialog = 1;
         public override void Initial()
         {
             base.Initial();
@@ -97,7 +112,6 @@ namespace ScifiDruid.GameScreen
             Player.mana = 100;
             Player.maxHealth = 5;
             Player.maxMana = 100;
-            Player.level2Unlock = false;
             Player.level3Unlock = false;
             //create tileset for map1
             map = new TmxMap("Content/Stage2.tmx");
@@ -211,20 +225,23 @@ namespace ScifiDruid.GameScreen
             }
             foreach (var o in map.ObjectGroups["GroundMonster"].Objects)
             {
-                //flamethrower machine position
+                //gun police machine position
                 if (o.Name.Equals("ground_mon_1"))
                 {
                     ground1MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
                 }
-                //chainsaw machine position
+                //melee police position
                 if (o.Name.Equals("ground_mon_2"))
                 {
                     ground2MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
                 }
-                //chainsaw machine position
+            }
+            foreach (var o in map.ObjectGroups["FlyingMonster"].Objects)
+            {
+                //drone position
                 if (o.Name.Equals("fly_mon"))
                 {
-                    ground2MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    flyMonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
                 }
             }
             foreach (var o in map.ObjectGroups["Boss"].Objects)
@@ -262,60 +279,73 @@ namespace ScifiDruid.GameScreen
 
             //create player on position
 
-            //player.Initial(startRect);
-            player.Initial(bossState);
+            player.Initial(startRect);
+            //player.Initial(bossState);
+
+            //bird
+            Vector2 guardianSize = new Vector2(49, 55);
+            List<Vector2> guardianAnimateList = new List<Vector2>() { new Vector2(10, 2), new Vector2(67, 2), new Vector2(4, 59), new Vector2(61, 59) };
+            //croc
+            //Vector2 guardianSize = new Vector2(193, 37);
+            //List<Vector2> guardianAnimateList = new List<Vector2>() { new Vector2(4, 0) };
+            //lion
+            //Vector2 guardianSize = new Vector2(86, 76);
+            //List<Vector2> guardianAnimateList = new List<Vector2>() { new Vector2(0, 0), new Vector2(0, 77), new Vector2(0, 153) };
+            guardian = new Guardian(guardianTex, guardianSize, guardianAnimateList);
+            guardian.FlyInitial(bossState);
+
 
             //create enemy on position
             allEnemies = new List<Enemy>();
 
-            /*
+            
             //range enemy
-            flameMechEnemies = new List<RangeEnemy>();
-            flameMechPositionList = ground1MonsterRects.Count();
-            List<Vector2> flameMechSizeList = new List<Vector2>() { new Vector2(112, 86), new Vector2(112, 86) };
-            List<List<Vector2>> flameMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(112, 0) }, new List<Vector2>() { new Vector2(0, 108), new Vector2(112, 108) } };
-            for (int i = 0; i < flameMechPositionList; i++)
+            gunPoliceEnemies = new List<RangeEnemy>();
+            gunPolicePositionList = ground1MonsterRects.Count();
+            List<Vector2> gunPoliceSizeList = new List<Vector2>() { new Vector2(46, 92), new Vector2(46, 92), new Vector2(46, 92), new Vector2(99, 92)};
+            List<List<Vector2>> gunPoliceAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(119, 0), new Vector2(228, 1) }, new List<Vector2>() { new Vector2(337, 0), new Vector2(0, 111), new Vector2(119, 111), new Vector2(227, 111) } , new List<Vector2>() { new Vector2(0, 226), new Vector2(116, 226) } , new List<Vector2>() { new Vector2(0, 355), new Vector2(116, 355), new Vector2(227, 353), new Vector2(326, 352), new Vector2(435, 357) } };
+            for (int i = 0; i < gunPolicePositionList; i++)
             {
-                flameMech = new RangeEnemy(flameMechTex, flameMechSizeList, flameMechAnimateList)
+                gunPolice = new RangeEnemy(gunPoliceTex, gunPoliceSizeList, gunPoliceAnimateList)
                 {
-                    size = new Vector2(112, 86),
+                    size = new Vector2(46, 92),
                     health = 3,
-                    speed = 0.22f,
+                    speed = 0.1f,
                 };
-                flameMechEnemies.Add(flameMech);
+                gunPoliceEnemies.Add(gunPolice);
             }
 
             //create enemy position
-            flameMechCount = 0;
-            foreach (RangeEnemy chainsawBot in flameMechEnemies)
+            gunPoliceCount = 0;
+            foreach (RangeEnemy gun in gunPoliceEnemies)
             {
-                chainsawBot.Initial(ground1MonsterRects[flameMechCount], player);
-                flameMechCount++;
+                gun.Initial(ground1MonsterRects[gunPoliceCount], player);
+                gunPoliceCount++;
             }
 
             //melee enemy
-            chainsawMechEnemies = new List<MeleeEnemy>();
-            chainsawMechPositionList = ground2MonsterRects.Count();
-            List<Vector2> chainsawMechSizeList = new List<Vector2>() { new Vector2(118, 100), new Vector2(136, 100), new Vector2(136, 100), new Vector2(118, 100) };
-            List<List<Vector2>> chainsawMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(144, 0) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 254), new Vector2(142, 254) } };
-            for (int i = 0; i < chainsawMechPositionList; i++)
+            meleePoliceEnemies = new List<MeleeEnemy>();
+            meleePolicePositionList = ground2MonsterRects.Count();
+            List<Vector2> meleePoliceSizeList = new List<Vector2>() { new Vector2(55, 94), new Vector2(44, 94), new Vector2(44, 94), new Vector2(74, 109), new Vector2(99, 94) };
+            List<List<Vector2>> meleePoliceAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(107, 0), new Vector2(214, 0), new Vector2(321, 1) }, new List<Vector2>() { new Vector2(428, 2), new Vector2(0, 135), new Vector2(108, 135), new Vector2(219, 135), new Vector2(328, 135), new Vector2(423, 135) }, new List<Vector2>() { new Vector2(428, 2), new Vector2(0, 135), new Vector2(108, 135), new Vector2(219, 135), new Vector2(328, 135), new Vector2(423, 135) }, new List<Vector2>() { new Vector2(0, 270), new Vector2(97, 270), new Vector2(214, 270), new Vector2(318, 270) }, new List<Vector2>() { new Vector2(0, 406), new Vector2(100, 406), new Vector2(249, 406), new Vector2(375, 406), new Vector2(501, 406) } };
+            for (int i = 0; i < meleePolicePositionList; i++)
             {
-                chainsawMech = new MeleeEnemy(chainsawMechTex, chainsawMechSizeList, chainsawMechAnimateList)
+                meleePolice = new MeleeEnemy(meleePoliceTex, meleePoliceSizeList, meleePoliceAnimateList)
                 {
-                    size = new Vector2(118, 100),
+                    size = new Vector2(44, 94),
                     health = 4,
-                    speed = 0.22f,
+                    speed = 0.1f,
                 };
-                chainsawMechEnemies.Add(chainsawMech);
+                meleePoliceEnemies.Add(meleePolice);
             }
 
             //create enemy position
-            chainsawMechCount = 0;
-            foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
+            meleePoliceCount = 0;
+            foreach (MeleeEnemy melee in meleePoliceEnemies)
             {
-                chainsawBot.Initial(ground2MonsterRects[chainsawMechCount], player);
-                chainsawMechCount++;
-            }*/
+                melee.Initial(ground2MonsterRects[meleePoliceCount], player);
+                meleePoliceCount++;
+            }
 
             //create boss on position
             boss = new JaneBoss(janeBossTex,whiteTex)
@@ -325,11 +355,11 @@ namespace ScifiDruid.GameScreen
                 speed = 1.2f,
             };
             //spawn boss
-            boss.Initial(bossRect, player, boss_event);
+            boss.Initial(bossRect, player);
 
             //add to all enemy for
-            //allEnemies.AddRange(flameMechEnemies);
-            //allEnemies.AddRange(chainsawMechEnemies);
+            allEnemies.AddRange(gunPoliceEnemies);
+            allEnemies.AddRange(meleePoliceEnemies);
             allEnemies.Add(boss);
 
             //switch event
@@ -356,6 +386,10 @@ namespace ScifiDruid.GameScreen
 
             //button and rock wall
             switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage2Tileset/specialProps2");
+            //guardian
+            guardianTex = content.Load<Texture2D>("Pictures/Play/Characters/Guardian/birdTex");
+            //guardianTex = content.Load<Texture2D>("Pictures/Play/Characters/Guardian/crocTex");
+            //guardianTex = content.Load<Texture2D>("Pictures/Play/Characters/Guardian/lionTex");
 
             //bg music and sfx
             stage2Theme = content.Load<Song>("Songs/Stage2Screen/Stage2Theme");
@@ -371,121 +405,211 @@ namespace ScifiDruid.GameScreen
 
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
             if (play)
             {
-                if (gamestate == GameState.PLAY)
+                //stage 2 dialog
+                if (gamestate == GameState.OPENING)
                 {
-                    if (!Keyboard.GetState().IsKeyDown(Keys.Escape))
+                    //change dialog
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
                     {
-                        //all enemy
-                        /*foreach (RangeEnemy flamewBot in flameMechEnemies)
-                        {
-                            flamewBot.Update(gameTime);
-                            flamewBot.Action();
-                        }
-                        foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
-                        {
-                            chainsawBot.Update(gameTime);
-                            chainsawBot.Action();
-                        }*/
-                        //boss
-                        boss.Update(gameTime);
-
-                        //check if boss death then
-                        if (!boss.isAlive && created_boss)
-                        {
-                            MediaPlayer.Stop();
-                        }
-
-                        //switch button
-                        switch_wall1.Update(gameTime);
-                        switch_wall2.Update(gameTime);
-                        //stage wall
-                        stage_wall1.Update(gameTime);
-                        stage_wall2.Update(gameTime);
-
-                        //if player get into boss state
-                        if (!created_boss && player.IsContact(player.hitBox, "Boss_event"))
-                        {
-                            boss_area = true;
-                            MediaPlayer.Stop();
-
-                            //set player to inactive before boss
-                            player.playerStatus = PlayerStatus.IDLE;
-                            player.isAlive = false;
-                        }
-
-                        //if player is in boss area just spawn
-                        Matrix lastScreen = camera.Follow(player.position, endmaptileX, endmaptileX);
-                        if (!created_boss && boss_area && Singleton.Instance.tfMatrix.M41 == lastScreen.M41)
-                        {
-                            //player active after this
-                            player.isAlive = true;
-                            boss.isAlive = true;
-                            boss.skillTime = 5;
-                            //create block to block player
-                            Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(wallblock.Width), ConvertUnits.ToSimUnits(wallblock.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(wallblock.X, wallblock.Y)));
-                            body.UserData = "Ground";
-                            created_boss = true;
-
-                            //player Song
-                            MediaPlayer.Play(janeTheme);
-                        }
-
-                        //switch event
-                        //press switch button
-                        if (!isOpenSwitch1 && switch_wall1.pressSwitch)
-                        {
-                            isOpenSwitch1 = true;
-                        }
-
-                        if (!isOpenSwitch2 && switch_wall2.pressSwitch)
-                        {
-                            isOpenSwitch2 = true;
-                        }
-
-                        //after open switch = clear wall
-                        if (isOpenSwitch1)
-                        {
-                            stage_wall1.wallHitBox.Dispose();
-                        }
-
-                        if (isOpenSwitch2)
-                        {
-                            stage_wall2.wallHitBox.Dispose();
-                        }
+                        openingDialog++;
                     }
                 }
+                if (gamestate == GameState.INTROBOSS)
+                {
+                    //change dialog
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                    {
+                        introBossDialog++;
+                    }
+                }
+                if (gamestate == GameState.END)
+                {
+                    //change dialog
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                    {
+                        endDialog++;
+                    }
+                }
+
+                if (gamestate == GameState.OPENING || gamestate == GameState.END)
+                {
+                    guardian.Update(gameTime);
+                }
+
+                if (gamestate == GameState.PLAY)
+                {
+                    //all enemy
+                    foreach (RangeEnemy gun in gunPoliceEnemies)
+                    {
+                        gun.Update(gameTime);
+                        gun.Action();
+                    }
+                    foreach (MeleeEnemy melee in meleePoliceEnemies)
+                    {
+                        melee.Update(gameTime);
+                        melee.Action();
+                    }
+
+                    //switch button
+                    switch_wall1.Update(gameTime);
+                    switch_wall2.Update(gameTime);
+                    //stage wall
+                    stage_wall1.Update(gameTime);
+                    stage_wall2.Update(gameTime);
+
+                    //switch event
+                    //press switch button
+                    if (!isOpenSwitch1 && switch_wall1.pressSwitch)
+                    {
+                        isOpenSwitch1 = true;
+                    }
+
+                    if (!isOpenSwitch2 && switch_wall2.pressSwitch)
+                    {
+                        isOpenSwitch2 = true;
+                    }
+
+                    //after open switch = clear wall
+                    if (isOpenSwitch1)
+                    {
+                        stage_wall1.wallHitBox.Dispose();
+                    }
+
+                    if (isOpenSwitch2)
+                    {
+                        stage_wall2.wallHitBox.Dispose();
+                    }
+
+                    //if player get into boss state
+                    if (!created_boss && player.IsContact(player.hitBox, "Boss_event"))
+                    {
+                        //create block to block player
+                        Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(wallblock.Width), ConvertUnits.ToSimUnits(wallblock.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(wallblock.X, wallblock.Y)));
+                        body.UserData = "Ground";
+
+                        //endRect at boss state
+                        Body endRectBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(endRect.Width), ConvertUnits.ToSimUnits(endRect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(endRect.X, endRect.Y)));
+                        endRectBody.UserData = "Ground";
+
+                        boss_area = true;
+                        MediaPlayer.Stop();
+
+                        //set player to inactive before boss
+                        player.playerStatus = PlayerStatus.IDLE;
+                        player.isAlive = false;
+                    }
+                }
+
+                if (gamestate == GameState.PLAY || gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS)
+                {
+                    //boss
+                    boss.Update(gameTime);
+                }
+
+                if (gamestate == GameState.BOSS)
+                {
+                    if (!created_boss && boss_area)
+                    {
+                        //player active after this
+                        player.isAlive = true;
+                        boss.isAlive = true;
+                        boss.skillTime = 5;
+
+                        created_boss = true;
+
+                        //player Song
+                        MediaPlayer.Play(janeTheme);
+                    }
+
+                    //check if boss death then change to END state
+                    if (boss.IsBossDead() && !bossDead)
+                    {
+                        bossDead = true;
+                        MediaPlayer.Stop();
+                        MediaPlayer.Play(stage2Theme);
+                    }
+
+                    if (boss.IsBossEnd() && bossDead)
+                    {
+                        //set player to inactive
+                        gamestate = GameState.END;
+                    }
+                }
+                if (gamestate == GameState.END)
+                {
+                }
             }
-            base.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            //draw tileset for map1
+            //draw tileset for map 2
             if (play)
             {
-                if (gamestate == GameState.START || gamestate == GameState.PLAY)
+                //draw dialog box, spacebar text and skip text
+                if (gamestate == GameState.OPENING || gamestate == GameState.INTROBOSS || gamestate == GameState.END)
                 {
-                    tilemapManager.Draw(spriteBatch);
-
-                    //draw enemy animation
-                    /*foreach (RangeEnemy flameBot in flameMechEnemies)
+                    //draw
+                }
+                //Dialog OPENING
+                if (gamestate == GameState.OPENING)
+                {
+                    switch (openingDialog)
                     {
-                        flameBot.Draw(spriteBatch);
+                        case 1:
+                            break;
                     }
-                    foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
+                }
+                //Dialog INTROBOSS
+                if (gamestate == GameState.INTROBOSS)
+                {
+                    switch (introBossDialog)
                     {
-                        chainsawBot.Draw(spriteBatch);
-                    }*/
+                        case 1:
+                            break;
+                    }
+                }
+                //Dialog END
+                if (gamestate == GameState.END)
+                {
+                    switch (endDialog)
+                    {
+                        case 1:
+                            break;
+                    }
+                }
 
-                    //draw boss animation
-                    boss.Draw(spriteBatch);
-
+                if (gamestate == GameState.OPENING || gamestate == GameState.END)
+                {
+                    guardian.Draw(spriteBatch);
+                }
+                if (gamestate == GameState.START || gamestate == GameState.OPENING || gamestate == GameState.PLAY || gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS || gamestate == GameState.END)
+                {
                     //draw player animation
                     player.Draw(spriteBatch);
 
-                    ////draw switch animation
+                    tilemapManager.Draw(spriteBatch);
+                    if (!fadeFinish)
+                    {
+                        spriteBatch.Draw(blackTex, Vector2.Zero, colorStart);
+                    }
+                }
+                if (gamestate == GameState.PLAY)
+                {
+                    //draw enemy animation
+                    foreach (RangeEnemy gun in gunPoliceEnemies)
+                    {
+                        gun.Draw(spriteBatch);
+                    }
+                    foreach (MeleeEnemy melee in meleePoliceEnemies)
+                    {
+                        melee.Draw(spriteBatch);
+                    }
+
+                    //draw switch animation
                     switch_wall1.Draw(spriteBatch);
                     switch_wall2.Draw(spriteBatch);
                     //draw wall1
@@ -498,11 +622,12 @@ namespace ScifiDruid.GameScreen
                     {
                         stage_wall2.Draw(spriteBatch);
                     }
+                }
 
-                    if (!fadeFinish)
-                    {
-                        spriteBatch.Draw(blackTex, Vector2.Zero, colorStart);
-                    }
+                if (gamestate == GameState.PLAY || gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS)
+                {
+                    //draw boss animation
+                    boss.Draw(spriteBatch);
                 }
             }
 

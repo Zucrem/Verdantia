@@ -247,6 +247,16 @@ namespace ScifiDruid.GameObjects
                     touchGround = false;
                 }
 
+                if ( (IsContact(hitBox, "Enemy") || IsContact(hitBox, "SkillBoss") || IsContact(hitBox, "Wall")) && playerStatus != PlayerStatus.DASH)
+                {
+                    GotHit();
+                }
+
+                else if (hitCooldown > 0)
+                {
+                    hitCooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+
                 if (!touchGround)
                 {
                     hitBox.LinearVelocity = new Vector2(hitBox.LinearVelocity.X * 0.97f, hitBox.LinearVelocity.Y);

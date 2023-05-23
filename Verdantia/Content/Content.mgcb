@@ -109,7 +109,7 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Main/MainMenu/Black.png
 
-#begin Pictures/Main/MainMenu/ExitButton.png
+#begin Pictures/Main/MainMenu/continueHold.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -119,7 +119,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Main/MainMenu/ExitButton.png
+/build:Pictures/Main/MainMenu/continueHold.png
+
+#begin Pictures/Main/MainMenu/exitHold.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Main/MainMenu/exitHold.png
 
 #begin Pictures/Main/MainMenu/GameLogo.png
 /importer:TextureImporter
@@ -133,7 +145,7 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Main/MainMenu/GameLogo.png
 
-#begin Pictures/Main/MainMenu/MainMenuBG.jpg
+#begin Pictures/Main/MainMenu/MainMenuBG.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -143,9 +155,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Main/MainMenu/MainMenuBG.jpg
+/build:Pictures/Main/MainMenu/MainMenuBG.png
 
-#begin Pictures/Main/MainMenu/PlayButton.png
+#begin Pictures/Main/MainMenu/playHold.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -155,9 +167,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Main/MainMenu/PlayButton.png
+/build:Pictures/Main/MainMenu/playHold.png
 
-#begin Pictures/Main/MainMenu/SettingButton.png
+#begin Pictures/Main/MainMenu/settingHold.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -167,7 +179,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Main/MainMenu/SettingButton.png
+/build:Pictures/Main/MainMenu/settingHold.png
 
 #begin Pictures/Main/Setting/ArrowButton.png
 /importer:TextureImporter
@@ -265,6 +277,18 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/Characters/Enemy/chainsawMech.png
 
+#begin Pictures/Play/Characters/Enemy/EyeBall.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Characters/Enemy/EyeBall.png
+
 #begin Pictures/Play/Characters/Enemy/flameMech.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -313,6 +337,66 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/Characters/Enemy/RangePolice.png
 
+#begin Pictures/Play/Characters/Enemy/ShieldDog.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Characters/Enemy/ShieldDog.png
+
+#begin Pictures/Play/Characters/Enemy/Tentacle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Characters/Enemy/Tentacle.png
+
+#begin Pictures/Play/Characters/Guardian/birdTex.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Characters/Guardian/birdTex.png
+
+#begin Pictures/Play/Characters/Guardian/crocTex.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Characters/Guardian/crocTex.png
+
+#begin Pictures/Play/Characters/Guardian/lionTex.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Characters/Guardian/lionTex.png
+
 #begin Pictures/Play/Characters/Player/keeperSheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -324,6 +408,114 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/Characters/Player/keeperSheet.png
+
+#begin Pictures/Play/Dialog/birdPortriat.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Dialog/birdPortriat.png
+
+#begin Pictures/Play/Dialog/dialogBox.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Dialog/dialogBox.png
+
+#begin Pictures/Play/Dialog/doctorPortrait.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Dialog/doctorPortrait.png
+
+#begin Pictures/Play/Dialog/janePortrait.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Dialog/janePortrait.png
+
+#begin Pictures/Play/Dialog/lionPortrait.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Dialog/lionPortrait.png
+
+#begin Pictures/Play/Dialog/lucasPortrait.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Dialog/lucasPortrait.png
+
+#begin Pictures/Play/Dialog/soulBirdPortrait.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Dialog/soulBirdPortrait.png
+
+#begin Pictures/Play/Dialog/soulCrocPortrait.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Dialog/soulCrocPortrait.png
+
+#begin Pictures/Play/Dialog/soulLionPortrait.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Dialog/soulLionPortrait.png
 
 #begin Pictures/Play/PlayScreen/Black.png
 /importer:TextureImporter
@@ -685,6 +877,18 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/StageScreen/Stage2Tileset/tileset2.png
 
+#begin Pictures/Play/StageScreen/Stage3Tileset/tileset3.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/StageScreen/Stage3Tileset/tileset3.png
+
 #begin Pictures/Splash/SplashScreen/Black.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -745,17 +949,17 @@
 /processorParam:Quality=Best
 /build:Songs/Stage3Screen/Stage3Theme.mp3
 
-#begin Sounds/Player/PlayerDead.wav
+#begin Sounds/Button/clicksound.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Sounds/Player/PlayerDead.wav
+/build:Sounds/Button/clicksound.wav
 
-#begin Sounds/Player/PlayerJump.wav
+#begin Sounds/Button/hoverSound.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Sounds/Player/PlayerJump.wav
+/build:Sounds/Button/hoverSound.wav
 
 #begin Stage1.tmx
 /copy:Stage1.tmx
@@ -768,4 +972,10 @@
 
 #begin Stage2.tsx
 /copy:Stage2.tsx
+
+#begin Stage3.tmx
+/copy:Stage3.tmx
+
+#begin Stage3.tsx
+/copy:Stage3.tsx
 
