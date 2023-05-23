@@ -334,7 +334,6 @@ namespace ScifiDruid.GameObjects
         {
             if (currentKeyState.IsKeyDown(Keys.Left))
             {
-                Debug.WriteLine("left");
                 hitBox.ApplyForce(new Vector2(-hitBox.Mass * speed, 0));
                 charDirection = SpriteEffects.None;
 
@@ -346,7 +345,6 @@ namespace ScifiDruid.GameObjects
             }
             if (currentKeyState.IsKeyDown(Keys.Right))
             {
-                Debug.WriteLine("right");
                 hitBox.ApplyForce(new Vector2(hitBox.Mass * speed, 0));
                 charDirection = SpriteEffects.FlipHorizontally;
 

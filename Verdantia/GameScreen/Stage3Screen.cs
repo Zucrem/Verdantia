@@ -16,6 +16,7 @@ using Microsoft.Xna.Framework.Input;
 using static ScifiDruid.GameObjects.Player;
 using Verdantia.GameObjects;
 using static ScifiDruid.GameObjects.DoctorBoss;
+using System.Diagnostics;
 
 namespace ScifiDruid.GameScreen
 {
@@ -85,6 +86,12 @@ namespace ScifiDruid.GameScreen
 
         //check boss state
         private bool bossDead = false;
+
+        //state 3 dialog
+        private int openingDialog = 1;
+        private int introBossDialog = 1;
+        private int endDialog = 1;
+
         public override void Initial()
         {
             base.Initial();
@@ -373,126 +380,199 @@ namespace ScifiDruid.GameScreen
 
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
             if (play)
             {
+                //stage 3 dialog
+                if (gamestate == GameState.OPENING)
+                {
+                    //change dialog
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                    {
+                        openingDialog++;
+                    }
+                }
+                if (gamestate == GameState.INTROBOSS)
+                {
+                    //change dialog
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                    {
+                        introBossDialog++;
+                    }
+                }
+                if (gamestate == GameState.END)
+                {
+                    //change dialog
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                    {
+                        endDialog++;
+                    }
+                }
+
                 if (gamestate == GameState.OPENING || gamestate == GameState.END)
                 {
                     //guardian.Update(gameTime);
                 }
-                if (gamestate == GameState.PLAY || gamestate == GameState.END)
+                if (gamestate == GameState.PLAY)
                 {
-                    if (!Keyboard.GetState().IsKeyDown(Keys.Escape))
+                    //all enemy
+                    foreach (RangeEnemy dog in shieldDogEnemies)
                     {
-                        //all enemy
-                        foreach (RangeEnemy dog in shieldDogEnemies)
-                        {
-                            dog.Update(gameTime);
-                            dog.Action();
-                        }
-                        foreach (MeleeEnemy tentacle in meleeTentacleEnemies)
-                        {
-                            tentacle.Update(gameTime);
-                            tentacle.Action();
-                        }
-                        //boss
-                        boss.Update(gameTime);
+                        dog.Update(gameTime);
+                        dog.Action();
+                    }
+                    foreach (MeleeEnemy tentacle in meleeTentacleEnemies)
+                    {
+                        tentacle.Update(gameTime);
+                        tentacle.Action();
+                    }
 
-                        //check if boss death then change to END state
-                        if (boss.IsBossDead() && !bossDead)
-                        {
-                            bossDead = true;
-                            MediaPlayer.Stop();
-                            MediaPlayer.Play(stage3Theme);
-                        }
-                        if (boss.IsBossEnd() && bossDead)
-                        {
-                            //set player to inactive
-                            player.playerStatus = PlayerStatus.IDLE;
-                            player.isAlive = false;
-                            gamestate = GameState.END;
-                        }
+                    //switch button
+                    /*switch_wall1.Update(gameTime);
+                    switch_wall2.Update(gameTime);
+                    //stage wall
+                    stage_wall1.Update(gameTime);
+                    stage_wall2.Update(gameTime);*/
 
-                        //switch button
-                        /*switch_wall1.Update(gameTime);
-                        switch_wall2.Update(gameTime);
-                        //stage wall
-                        stage_wall1.Update(gameTime);
-                        stage_wall2.Update(gameTime);*/
+                    //switch event
+                    //press switch button
+                    /*if (!isOpenSwitch1 && switch_wall1.pressSwitch)
+                    {
+                        isOpenSwitch1 = true;
+                    }
 
-                        //if player get into boss state
-                        if (!created_boss && player.IsContact(player.hitBox, "Boss_event"))
-                        {
-                            boss_area = true;
-                            MediaPlayer.Stop();
+                    if (!isOpenSwitch2 && switch_wall2.pressSwitch)
+                    {
+                        isOpenSwitch2 = true;
+                    }
 
-                            //set player to inactive before boss
-                            player.playerStatus = PlayerStatus.IDLE;
-                            player.isAlive = false;
-                        }
+                    //after open switch = clear wall
+                    if (isOpenSwitch1)
+                    {
+                        stage_wall1.wallHitBox.Dispose();
+                    }
 
-                        //if player is in boss area just spawn
-                        Matrix lastScreen = camera.Follow(player.position, endmaptileX, endmaptileX);
-                        if (!created_boss && boss_area && Singleton.Instance.tfMatrix.M41 == lastScreen.M41)
-                        {
-                            //player active after this
-                            player.isAlive = true;
-                            boss.isAlive = true;
-                            boss.skillTime = 5;
-                            //create block to block player
-                            Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(wallblock.Width), ConvertUnits.ToSimUnits(wallblock.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(wallblock.X, wallblock.Y)));
-                            body.UserData = "Ground";
-                            created_boss = true;
+                    if (isOpenSwitch2)
+                    {
+                        stage_wall2.wallHitBox.Dispose();
+                    }*/
 
-                            //endRect at boss state
-                            Body endRectBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(endRect.Width), ConvertUnits.ToSimUnits(endRect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(endRect.X, endRect.Y)));
-                            endRectBody.UserData = "Ground";
+                    //if player get into boss state
+                    if (!created_boss && player.IsContact(player.hitBox, "Boss_event"))
+                    {
+                        //create block to block player
+                        Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(wallblock.Width), ConvertUnits.ToSimUnits(wallblock.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(wallblock.X, wallblock.Y)));
+                        body.UserData = "Ground";
 
-                            //player Song
-                            MediaPlayer.Play(doctorTheme);
-                        }
+                        //endRect at boss state
+                        Body endRectBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(endRect.Width), ConvertUnits.ToSimUnits(endRect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(endRect.X, endRect.Y)));
+                        endRectBody.UserData = "Ground";
 
-                        //switch event
-                        //press switch button
-                        /*if (!isOpenSwitch1 && switch_wall1.pressSwitch)
-                        {
-                            isOpenSwitch1 = true;
-                        }
+                        boss_area = true;
+                        MediaPlayer.Stop();
 
-                        if (!isOpenSwitch2 && switch_wall2.pressSwitch)
-                        {
-                            isOpenSwitch2 = true;
-                        }
-
-                        //after open switch = clear wall
-                        if (isOpenSwitch1)
-                        {
-                            stage_wall1.wallHitBox.Dispose();
-                        }
-
-                        if (isOpenSwitch2)
-                        {
-                            stage_wall2.wallHitBox.Dispose();
-                        }*/
+                        //set player to inactive before boss
+                        player.playerStatus = PlayerStatus.IDLE;
+                        player.isAlive = false;
                     }
                 }
+                if (gamestate == GameState.PLAY || gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS)
+                {
+                    //boss
+                    boss.Update(gameTime);
+                }
+                if (gamestate == GameState.BOSS)
+                {
+                    if (!created_boss && boss_area)
+                    {
+                        //player active after this
+                        player.isAlive = true;
+                        boss.isAlive = true;
+                        boss.skillTime = 5;
+
+                        created_boss = true;
+
+                        //player Song
+                        MediaPlayer.Play(doctorTheme);
+                    }
+
+                    //check if boss death then change to END state
+                    if (boss.IsBossDead() && !bossDead)
+                    {
+                        bossDead = true;
+                        MediaPlayer.Stop();
+                        MediaPlayer.Play(stage3Theme);
+                    }
+
+                    if (boss.IsBossEnd() && bossDead)
+                    {
+                        //set player to inactive
+                        gamestate = GameState.END;
+                    }
+                }
+                if (gamestate == GameState.END)
+                {
+                }
             }
-            base.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            //draw tileset for map1
+            //draw tileset for map 3
             if (play)
             {
+                //draw dialog box, spacebar text and skip text
+                if (gamestate == GameState.OPENING || gamestate == GameState.INTROBOSS || gamestate == GameState.END)
+                {
+                    //draw
+                }
+                //Dialog OPENING
+                if (gamestate == GameState.OPENING)
+                {
+                    switch (openingDialog)
+                    {
+                        case 1:
+                            break;
+                    }
+                }
+                //Dialog INTROBOSS
+                if (gamestate == GameState.INTROBOSS)
+                {
+                    switch (introBossDialog)
+                    {
+                        case 1:
+                            break;
+                    }
+                }
+                //Dialog END
+                if (gamestate == GameState.END)
+                {
+                    switch (endDialog)
+                    {
+                        case 1:
+                            break;
+                    }
+                }
+
                 if (gamestate == GameState.OPENING || gamestate == GameState.END)
                 {
                     //guardian.Draw(spriteBatch);
                 }
 
-                if (gamestate == GameState.START || gamestate == GameState.OPENING || gamestate == GameState.PLAY || gamestate == GameState.END)
+                if (gamestate == GameState.START || gamestate == GameState.OPENING || gamestate == GameState.PLAY || gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS || gamestate == GameState.END)
                 {
-                    tilemapManager.Draw(spriteBatch);
+                    //draw player animation
+                    player.Draw(spriteBatch);
 
+                    tilemapManager.Draw(spriteBatch);
+                    if (!fadeFinish)
+                    {
+                        spriteBatch.Draw(blackTex, Vector2.Zero, colorStart);
+                    }
+                }
+
+                if (gamestate == GameState.PLAY)
+                {
                     //draw enemy animation
                     foreach (RangeEnemy dog in shieldDogEnemies)
                     {
@@ -502,12 +582,6 @@ namespace ScifiDruid.GameScreen
                     {
                         tentacle.Draw(spriteBatch);
                     }
-
-                    //draw boss animation
-                    boss.Draw(spriteBatch);
-
-                    //draw player animation
-                    player.Draw(spriteBatch);
 
                     ////draw switch animation
                     /*switch_wall1.Draw(spriteBatch);
@@ -522,11 +596,12 @@ namespace ScifiDruid.GameScreen
                     {
                         stage_wall2.Draw(spriteBatch);
                     }*/
+                }
 
-                    if (!fadeFinish)
-                    {
-                        spriteBatch.Draw(blackTex, Vector2.Zero, colorStart);
-                    }
+                if (gamestate == GameState.PLAY || gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS)
+                {
+                    //draw boss animation
+                    boss.Draw(spriteBatch);
                 }
             }
 
