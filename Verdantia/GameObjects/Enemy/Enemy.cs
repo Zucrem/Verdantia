@@ -178,7 +178,7 @@ namespace ScifiDruid.GameObjects
                             bodyList.Add(fixtureB);
                         }
                     }
-                    if (bodyList.Count > 1) { Debug.WriteLine("helo");  return true; }
+                    if (bodyList.Count > 1) { return true; }
 
                     return false;
                 }

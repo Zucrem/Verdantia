@@ -159,6 +159,14 @@ namespace ScifiDruid.GameScreen
 
         public virtual void Initial()
         {
+            player = new Player(playerTex, bullet, whiteTex)
+            {
+                name = "Player Character",
+                size = new Vector2(46, 94),
+                //speed = 13,
+                speed = 50,
+                jumpHigh = 10.5f,
+            };
 
             gamestate = GameState.START;
 

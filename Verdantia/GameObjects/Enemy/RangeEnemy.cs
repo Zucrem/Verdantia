@@ -199,7 +199,6 @@ namespace ScifiDruid.GameObjects
                 {
                     if (enemyHitBox.BodyId != item.BodyId)
                     {
-                        Debug.WriteLine("position item =" + item.Position.X + "\n" + "position enemyhitbox " + enemyHitBox.Position.X);
                         if (item.Position.X - enemyHitBox.Position.X > 0)
                         {
                             isMovingLeft = true;
@@ -289,9 +288,7 @@ namespace ScifiDruid.GameObjects
             //player on (right ,mid,left)
             //got to that direction of player
             //stop when player go out of detect area
-            Debug.WriteLine("this is xspawposiito  =" + xspawnPosition + "\n" + "enemyhitboxposition" + enemyHitBox.Position.X + "\n" + "pathwalkLength" + pathWalkLength);
             bool bboo = (xspawnPosition - enemyHitBox.Position.X) < pathWalkLength;
-            Debug.WriteLine("is right =" +bboo);
             if (playerPosition.X - position.X > 2 && (xspawnPosition - enemyHitBox.Position.X) > pathWalkLength * -1)//(xspawnPosition - enemyHitBox.Position.X) > pathWalkLength*-1
             {
                 if (Singleton.Instance.levelState == LevelState.FOREST)

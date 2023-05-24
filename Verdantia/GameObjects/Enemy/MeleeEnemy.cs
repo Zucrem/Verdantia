@@ -199,6 +199,7 @@ namespace ScifiDruid.GameObjects
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
             preStatus = curStatus;
         }
+
         public override void Action()
         {
             if (isAlive && isPlayerinArea)
@@ -221,7 +222,6 @@ namespace ScifiDruid.GameObjects
                 {
                     if (enemyHitBox.BodyId != item.BodyId)
                     {
-                      
                         if (item.Position.X - enemyHitBox.Position.X > 0)
                         {
                             isMovingLeft= true;
@@ -304,6 +304,7 @@ namespace ScifiDruid.GameObjects
 
 
         }
+        
         private void EnemyAlertWalking()
         {
             //player on (right ,mid,left)
@@ -371,8 +372,6 @@ namespace ScifiDruid.GameObjects
             //do alert condition follow Player and Track Player down to death
         }
 
-
-
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (!animationDead)
@@ -417,5 +416,6 @@ namespace ScifiDruid.GameObjects
                     break;
             }
         }
+    
     }
 }
