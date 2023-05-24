@@ -667,7 +667,7 @@ namespace ScifiDruid.GameObjects
 
         public void LionSkill()
         {
-            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press && skill3Cooldown <= 0)
+            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press && skill3Cooldown <= 0 && Player.level3Unlock)
             {
                 lionBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(500), ConvertUnits.ToSimUnits(200), 0, hitBox.Position + new Vector2(0, textureHeight / 2), 0, BodyType.Static, "Lion");
                 lionBody.IgnoreCollisionWith(hitBox);
@@ -721,7 +721,7 @@ namespace ScifiDruid.GameObjects
 
         public void CrocodileSkill()
         {
-            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Down) && !press && skill2Cooldown <= 0)
+            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Down) && !press && skill2Cooldown <= 0 && Player.level2Unlock)
             {
                 //isAlive = false;
                 press = true;

@@ -76,16 +76,8 @@ namespace ScifiDruid.GameScreen
         {
             base.Initial();
             
-            player = new Player(playerTex, bullet, whiteTex)
-            {
-                name = "Player Character",
-                size = new Vector2(46, 94),
-                //speed = 13,
-                speed = 50,
-                //speed = 40,
-                jumpHigh = 10.5f,
-            };
-            Debug.WriteLine("DD");
+            
+
             openingDialogCount = 2;
             introDialogCount = 2;
             endDialogCount = 2;
@@ -94,12 +86,13 @@ namespace ScifiDruid.GameScreen
             startmaptileX = 10f;
             endmaptileX = 170f;
 
-            Player.health = 5;
-            Player.mana = 100;
             Player.maxHealth = 5;
             Player.maxMana = 100;
+            Player.health = maxHealth;
+            Player.mana = maxMana;
             Player.level2Unlock = false;
             Player.level3Unlock = false;
+
             //create tileset for map1
             map = new TmxMap("Content/Stage1.tmx");
             tilesetStage1 = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage1Tileset/" + map.Tilesets[0].Name.ToString());
