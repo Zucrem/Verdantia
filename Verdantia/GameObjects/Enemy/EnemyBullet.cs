@@ -30,8 +30,8 @@ namespace ScifiDruid.GameObjects
         public Body bulletBody;
 
         //animation
-        private int bulletSizeX;
-        private int bulletSizeY;
+        public int bulletSizeX;
+        public int bulletSizeY;
 
         private Vector2 bulletAliveSize;
         private Vector2 bulletDeadSize;
@@ -45,8 +45,8 @@ namespace ScifiDruid.GameObjects
         private int frames = 0;
         private int allframes;
 
-        private int bulletSpeed;
-        private int bulletDistance;
+        public int bulletSpeed;
+        public int bulletDistance;
 
         //all sprite position in spritesheet
         private Rectangle sourceRect;
@@ -61,6 +61,10 @@ namespace ScifiDruid.GameObjects
         private bool isShootup;
         private Enemy self; //Use to not collide with enemy
 
+        private List<Vector2> bulletSize;
+        private List<List<Vector2>> bulletAliveSpriteList;
+
+
         public enum BulletStatus
         {
             BULLETALIVE,
@@ -68,28 +72,7 @@ namespace ScifiDruid.GameObjects
             BULLETEND
         }
 
-        /*//stage1
-        List<Vector2> bulletSize = new List<Vector2>() { new Vector2(26, 30), new Vector2(26, 30) };
-        List<List<Vector2>> bulletAliveSpriteList = new List<List<Vector2>>(){ new List<Vector2>(){new Vector2(265,38)}, new List<Vector2>() { new Vector2(304, 38)}};
 
-        //stage2
-        //range
-        List<Vector2> bulletSize = new List<Vector2>() { new Vector2(9, 3), new Vector2(8, 13) };
-        List<List<Vector2>> bulletAliveSpriteList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(245, 264)},new List<Vector2>() { new Vector2(276, 260), new Vector2(305, 260)} };
-
-        //drone
-        List<Vector2> bulletSize = new List<Vector2>() { new Vector2(3, 14), new Vector2(27, 14) };
-        List<List<Vector2>> bulletAliveSpriteList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(244, 92)},new List<Vector2>() { new Vector2(306, 92), new Vector2(382, 92), new Vector2(450, 92)}};
-
-        //stage3
-        //range
-        List<Vector2> bulletSize = new List<Vector2>() { new Vector2(14, 6), new Vector2(14, 24)};
-        List<List<Vector2>> bulletAliveSpriteList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(1138, 12)},new List<Vector2>() { new Vector2(1194, 184), new Vector2(1254, 4)} };
-
-        //drone
-        List<Vector2> bulletSize = new List<Vector2>() { new Vector2(16, 8), new Vector2(12, 14)};
-        List<List<Vector2>> bulletAliveSpriteList = new List<List<Vector2>>() { new List<Vector2>() {  new Vector2(385, 34)},new List<Vector2>() { new Vector2(415, 31), new Vector2(439, 31)} };
-        */
 
         public EnemyBullet(Texture2D texture, Vector2 position, Enemy self, SpriteEffects charDirection) : base(texture)
         {
@@ -99,7 +82,7 @@ namespace ScifiDruid.GameObjects
             this.self = self;
         }
 
-        public void CreateBullet()
+        public void CreateBullet(int worldLevel, bool isdrone)
         {
             //build object
             bulletBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bulletSizeX), ConvertUnits.ToSimUnits(bulletSizeY), 0, position, 0, BodyType.Dynamic, "EnemyBullet");
@@ -108,14 +91,74 @@ namespace ScifiDruid.GameObjects
             bulletBody.IsSensor = true;
 
             //animation
-            bulletDeadSize = new Vector2(16, 21);
+            enemyBulletStatus = BulletStatus.BULLETALIVE;
+            preStatus= BulletStatus.BULLETALIVE;
 
-            bulletAliveRectVector = new List<Vector2>() { new Vector2(0, 13), new Vector2(62, 13), new Vector2(120, 13) };
-            bulletDeadRectVector = new List<Vector2>() { new Vector2(170, 7), new Vector2(210, 8) };
 
-            bulletAliveSize = new Vector2(bulletSizeX, bulletSizeY);
-            bulletAliveCount = bulletAliveRectVector.Count();
-            bulletDeadCount = bulletDeadRectVector.Count();
+
+
+            switch (worldLevel)
+            {
+                case 1:
+                    //stage1
+                    bulletSize = new List<Vector2>() { new Vector2(26, 30), new Vector2(26, 30) };
+                    bulletAliveSpriteList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(265, 38) }, new List<Vector2>() { new Vector2(304, 38) } };
+                    bulletAliveRectVector = bulletAliveSpriteList[0];
+                    bulletDeadRectVector = bulletAliveSpriteList[1];
+                    bulletAliveSize = bulletSize[0];
+                    bulletDeadSize = bulletSize[1];
+                    break;
+
+                case 2:
+                    //stage2
+
+                    if (!isdrone)
+                    {
+                        //range
+                        bulletSize = new List<Vector2>() { new Vector2(9, 3), new Vector2(8, 13) };
+                        bulletAliveSpriteList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(245, 264) }, new List<Vector2>() { new Vector2(276, 260), new Vector2(305, 260) } };
+                        bulletAliveRectVector = bulletAliveSpriteList[0];
+                        bulletDeadRectVector = bulletAliveSpriteList[1];
+                        bulletAliveSize = bulletSize[0];
+                        bulletDeadSize = bulletSize[1];
+                    }
+                    else
+                    {
+                        //drone
+                        bulletSize = new List<Vector2>() { new Vector2(3, 14), new Vector2(27, 14) };
+                        bulletAliveSpriteList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(244, 92) }, new List<Vector2>() { new Vector2(306, 92), new Vector2(382, 92), new Vector2(450, 92) } };
+                        bulletAliveRectVector = bulletAliveSpriteList[0];
+                        bulletDeadRectVector = bulletAliveSpriteList[1];
+                        bulletAliveSize = bulletSize[0];
+                        bulletDeadSize = bulletSize[1];
+                    }
+                    break;
+
+                case 3:
+                    //stage3
+                    if (!isdrone)
+                    {
+                        //range
+                        bulletSize = new List<Vector2>() { new Vector2(14, 6), new Vector2(14, 24) };
+                        bulletAliveSpriteList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(1138, 12) }, new List<Vector2>() { new Vector2(1194, 184), new Vector2(1254, 4) } };
+                        bulletAliveRectVector = bulletAliveSpriteList[0];
+                        bulletDeadRectVector = bulletAliveSpriteList[1];
+                        bulletAliveSize = bulletSize[0];
+                        bulletDeadSize = bulletSize[1];
+                    }
+                    else
+                    {
+                        //drone
+                        bulletSize = new List<Vector2>() { new Vector2(16, 8), new Vector2(12, 14) };
+                        bulletAliveSpriteList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(385, 34) }, new List<Vector2>() { new Vector2(415, 31), new Vector2(439, 31) } };
+                        bulletAliveRectVector = bulletAliveSpriteList[0];
+                        bulletDeadRectVector = bulletAliveSpriteList[1];
+                        bulletAliveSize = bulletSize[0];
+                        bulletDeadSize = bulletSize[1];
+                    }
+                    break;
+
+            }
 
             switch (charDirection)
             {
@@ -127,11 +170,17 @@ namespace ScifiDruid.GameObjects
                     break;
             }
 
+            bulletAliveSize = new Vector2(bulletSizeX, bulletSizeY);
+            bulletAliveCount = bulletAliveRectVector.Count();
+            bulletDeadCount = bulletDeadRectVector.Count();
+
             bulletOrigin = new Vector2(bulletSizeX / 2, bulletSizeY / 2);
         }
 
         public override void Update(GameTime gameTime)
         {
+            ChangeBulletAnimationStatus();
+            position = bulletBody.Position;
             //if dead animation animationEnd
             if (animationDead)
             {
@@ -175,7 +224,7 @@ namespace ScifiDruid.GameObjects
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
             preStatus = enemyBulletStatus;
         }
-       
+
         public void Shoot()
         {
             switch (charDirection)

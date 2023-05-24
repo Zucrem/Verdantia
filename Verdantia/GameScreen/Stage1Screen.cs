@@ -231,6 +231,11 @@ namespace ScifiDruid.GameScreen
                     size = new Vector2(112, 86),
                     health = 3,
                     speed = 0.22f,
+                    bulletSpeed = 400,
+                    bulletSizeX = 26,
+                    bulletSizeY = 30,
+                    bulletDistance = 10,
+                    isdrone= false,
                 };
                 flameMechEnemies.Add(flameMech);
             }
@@ -475,11 +480,18 @@ namespace ScifiDruid.GameScreen
                     foreach (RangeEnemy flameBot in flameMechEnemies)
                     {
                         flameBot.Draw(spriteBatch);
+                        foreach (EnemyBullet enemybullet in flameBot.bulletList)
+                        {
+                            Debug.WriteLine("Bruh");
+                            enemybullet.Draw(spriteBatch);
+
+                        }
                     }
                     foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
                     {
                         chainsawBot.Draw(spriteBatch);
                     }
+                    
 
                     //draw switch animation
                     switch_wall.Draw(spriteBatch);
