@@ -54,6 +54,8 @@ namespace ScifiDruid.GameObjects
         private Vector2 ballAliveSize = new Vector2(68, 64);
         private List<Vector2> ballAliveAnimateList = new List<Vector2>() { new Vector2(132, 222), new Vector2(216, 222), new Vector2(302, 222) };
 
+        private Enemy enemy;
+
         public enum BallStatus
         {
             BALLALIVE,
@@ -64,6 +66,11 @@ namespace ScifiDruid.GameObjects
         {
             this.texture = texture;
             this.position = position;
+
+        }
+
+        public void Initial(String direction)
+        {
 
             ballSpeed = 400;
 

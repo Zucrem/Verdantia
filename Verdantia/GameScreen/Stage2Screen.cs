@@ -41,7 +41,6 @@ namespace ScifiDruid.GameScreen
         private List<StageObject> panelFallBlocks;
 
         //create enemy
-        private List<Enemy> allEnemies;
         private JaneBoss boss;
 
         private RangeEnemy gunPolice;
@@ -108,10 +107,8 @@ namespace ScifiDruid.GameScreen
             startmaptileX = 10f;
             endmaptileX = 170f;
 
-            Player.health = 5;
-            Player.mana = 100;
-            Player.maxHealth = 5;
-            Player.maxMana = 100;
+            Player.health = Player.maxHealth;
+            Player.mana = Player.maxMana;
             Player.level3Unlock = false;
             //create tileset for map1
             map = new TmxMap("Content/Stage2.tmx");
@@ -276,7 +273,6 @@ namespace ScifiDruid.GameScreen
                 body.Friction = 0.3f;
             }
 
-
             //create player on position
 
             //player.Initial(startRect);
@@ -294,11 +290,6 @@ namespace ScifiDruid.GameScreen
             guardian = new Guardian(birdTex, guardianSize, guardianAnimateList);
             guardian.FlyInitial(bossState);
 
-
-            //create enemy on position
-            allEnemies = new List<Enemy>();
-
-            
             //range enemy
             gunPoliceEnemies = new List<RangeEnemy>();
             gunPolicePositionList = ground1MonsterRects.Count();
@@ -358,9 +349,9 @@ namespace ScifiDruid.GameScreen
             boss.Initial(bossRect, player,boss_event);
 
             //add to all enemy for
-            allEnemies.AddRange(gunPoliceEnemies);
-            allEnemies.AddRange(meleePoliceEnemies);
-            allEnemies.Add(boss);
+            Singleton.Instance.enemiesInWorld.AddRange(gunPoliceEnemies);
+            Singleton.Instance.enemiesInWorld.AddRange(meleePoliceEnemies);
+            Singleton.Instance.enemiesInWorld.Add(boss);
 
             //switch event
             //create switch button on position
@@ -376,10 +367,8 @@ namespace ScifiDruid.GameScreen
 
             stage_wall2 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
             stage_wall2.Initial(sign_wall2);
-
-            //add all enemy for player to know em all
-            player.enemies = allEnemies;
         }
+
         public override void LoadContent()
         {
             base.LoadContent();

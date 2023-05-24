@@ -84,7 +84,7 @@ namespace ScifiDruid.GameObjects
             repeat = false;
         }
 
-        public void Initial(Rectangle spawnPosition, Player player)
+        public override void Initial(Rectangle spawnPosition, Player player)
         {
             this.player = player;
 
@@ -114,8 +114,6 @@ namespace ScifiDruid.GameObjects
             if (isAlive)
             {
                 CheckPlayerPosition(gameTime,1);
-
-                takeDMG(1, "Bullet");
 
                 if (health <= 0)
                 {
@@ -189,7 +187,7 @@ namespace ScifiDruid.GameObjects
 
                 if (skillTime <= 0 && curBossStatus == DoctorStatus.IDLE)
                 {
-                    randomAction = rand.Next(1, 6);
+                    randomAction = rand.Next(1, 4);
                     skillTime = 5;
                 }
                 else if (curBossStatus == DoctorStatus.IDLE)
@@ -216,41 +214,10 @@ namespace ScifiDruid.GameObjects
         public void Skill1()
         {
             action1 = true;
-            //clear random action number
-            //do animation1
             curBossStatus = DoctorStatus.ACTION1;
-            //do normal walking left and right
             timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            
 
-            if (timeElapsed >= movingTime)
-            {
-                switch (charDirection)
-                {
-                    case SpriteEffects.None:
-                        timeElapsed = 0f;
-                        action1 = false;
-                        charDirection = SpriteEffects.FlipHorizontally;
-                        curBossStatus = DoctorStatus.IDLE;
-                        randomAction = 0;
-                        break;
-                    case SpriteEffects.FlipHorizontally:
-                        timeElapsed = 0f;
-                        charDirection = SpriteEffects.None;
-                        break;
-                }
-            }
-            else
-            {
-                switch (charDirection)
-                {
-                    case SpriteEffects.None:
-                        enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
-                        break;
-                    case SpriteEffects.FlipHorizontally:
-                        enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
-                        break;
-                }
-            }
         }
 
         public void Skill2()
@@ -308,14 +275,6 @@ namespace ScifiDruid.GameObjects
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            if (!animationDead)
-            {
-                spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bossOrigin, 1f, charDirection, 0f);
-            }
-        }
-
         public bool IsBossDead()
         {
             if (curBossStatus == DoctorStatus.DEAD)
@@ -337,6 +296,14 @@ namespace ScifiDruid.GameObjects
             else
             {
                 return false;
+            }
+        }
+        
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            if (!animationDead)
+            {
+                spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bossOrigin, 1f, charDirection, 0f);
             }
         }
     }

@@ -4,13 +4,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Box2DNet.Dynamics.Contacts;
 using Box2DNet.Dynamics;
-using Microsoft.Xna.Framework.Input;
 using Box2DNet.Factories;
 using Box2DNet;
-using System.Diagnostics;
-using static ScifiDruid.GameObjects.PlayerSkillAnimation;
 using System.Linq;
-using static ScifiDruid.GameObjects.PlayerBullet;
 
 namespace ScifiDruid.GameObjects
 {
@@ -62,6 +58,8 @@ namespace ScifiDruid.GameObjects
         //time
         private float elapsed;
         private float delay;
+        private bool isShootup;
+        private Enemy self; //Use to not collide with enemy
 
         public enum BulletStatus
         {
@@ -91,37 +89,38 @@ namespace ScifiDruid.GameObjects
         //drone
         List<Vector2> bulletSize = new List<Vector2>() { new Vector2(16, 8), new Vector2(12, 14)};
         List<List<Vector2>> bulletAliveSpriteList = new List<List<Vector2>>() { new List<Vector2>() {  new Vector2(385, 34)},new List<Vector2>() { new Vector2(415, 31), new Vector2(439, 31)} };
-
         */
-        public EnemyBullet(Texture2D texture, Vector2 position, Enemy enemy, SpriteEffects charDirection, List<Vector2> bulletSpriteSize, List<List<Vector2>> bulletSpriteList, int speed) : base(texture)
+
+        public EnemyBullet(Texture2D texture, Vector2 position, Enemy self, SpriteEffects charDirection) : base(texture)
         {
             this.texture = texture;
             this.charDirection = charDirection;
             this.position = position;
+            this.self = self;
+        }
 
-
-            //animation
-            bulletAliveSize = bulletSpriteSize[0];
-            bulletDeadSize = bulletSpriteSize[1];
-
-            bulletAliveRectVector = bulletSpriteList[0];
-            bulletDeadRectVector = bulletSpriteList[1];
-
-            bulletSpeed = speed;
-            bulletSizeX = (int)bulletAliveSize.X;
-            bulletSizeY = (int)bulletAliveSize.Y;
-            bulletDistance = 8;
-
-            //create wall hitbox
+        public void CreateBullet()
+        {
+            //build object
             bulletBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bulletSizeX), ConvertUnits.ToSimUnits(bulletSizeY), 0, position, 0, BodyType.Dynamic, "EnemyBullet");
             bulletBody.IgnoreGravity = true;
-            bulletBody.IgnoreCollisionWith(enemy.enemyHitBox);
+            bulletBody.IgnoreCollisionWith(self.enemyHitBox);
+            bulletBody.IsSensor = true;
 
+            //animation
+            bulletDeadSize = new Vector2(16, 21);
+
+            bulletAliveRectVector = new List<Vector2>() { new Vector2(0, 13), new Vector2(62, 13), new Vector2(120, 13) };
+            bulletDeadRectVector = new List<Vector2>() { new Vector2(170, 7), new Vector2(210, 8) };
+
+            bulletAliveSize = new Vector2(bulletSizeX, bulletSizeY);
+            bulletAliveCount = bulletAliveRectVector.Count();
+            bulletDeadCount = bulletDeadRectVector.Count();
 
             switch (charDirection)
             {
                 case SpriteEffects.None:
-                    bulletBody.Position += new Vector2(-1f, 0);
+                    bulletBody.Position += new Vector2(-0.5f, 0);
                     break;
                 case SpriteEffects.FlipHorizontally:
                     bulletBody.Position += new Vector2(1f, 0);
@@ -129,22 +128,6 @@ namespace ScifiDruid.GameObjects
             }
 
             bulletOrigin = new Vector2(bulletSizeX / 2, bulletSizeY / 2);
-        }
-
-        public void Shoot()
-        {
-            switch (charDirection)
-            {
-                case SpriteEffects.None:
-                    bulletBody.ApplyForce(new Vector2(-bulletSpeed, 0));
-                    enemyBulletStatus = BulletStatus.BULLETALIVE;
-                    break;
-                case SpriteEffects.FlipHorizontally:
-                    bulletBody.ApplyForce(new Vector2(bulletSpeed, 0));
-                    enemyBulletStatus = BulletStatus.BULLETALIVE;
-                    break;
-            }
-            enemyBulletStatus = BulletStatus.BULLETALIVE;
         }
 
         public override void Update(GameTime gameTime)
@@ -192,9 +175,21 @@ namespace ScifiDruid.GameObjects
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
             preStatus = enemyBulletStatus;
         }
-        public override void Draw(SpriteBatch spriteBatch)
+       
+        public void Shoot()
         {
-            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bulletOrigin, 1f, charDirection, 0f);
+            switch (charDirection)
+            {
+                case SpriteEffects.None:
+                    bulletBody.ApplyForce(new Vector2(-bulletSpeed, 0));
+                    enemyBulletStatus = BulletStatus.BULLETALIVE;
+                    break;
+                case SpriteEffects.FlipHorizontally:
+                    bulletBody.ApplyForce(new Vector2(bulletSpeed, 0));
+                    enemyBulletStatus = BulletStatus.BULLETALIVE;
+                    break;
+            }
+            enemyBulletStatus = BulletStatus.BULLETALIVE;
         }
 
         public bool IsContact()
@@ -229,7 +224,6 @@ namespace ScifiDruid.GameObjects
 
         public bool IsOutRange()
         {
-
             if (position.X - bulletBody.Position.X < -bulletDistance || position.X - bulletBody.Position.X > bulletDistance)
             {
                 // The Bullet was Out of range
@@ -258,6 +252,11 @@ namespace ScifiDruid.GameObjects
                     allframes = bulletDeadCount;
                     break;
             }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bulletOrigin, 1f, charDirection, 0f);
         }
     }
 }

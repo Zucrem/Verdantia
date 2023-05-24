@@ -59,7 +59,7 @@ namespace ScifiDruid.GameObjects
         private int attackDelay;
         private int attackMaxTime;
 
-        private float attackTime;
+        private float manaRegenTime;
         private int dashTime;
 
         private bool isShootup;
@@ -68,8 +68,8 @@ namespace ScifiDruid.GameObjects
         public static int health;
         public static float mana;
         public static int money;
-        public static int maxHealth;
-        public static int maxMana;
+        public static int maxHealth = 5;
+        public static int maxMana = 5;
 
         //Count cooldown of action
         private float skill1Cooldown;
@@ -247,7 +247,9 @@ namespace ScifiDruid.GameObjects
                     touchGround = false;
                 }
 
-                if ( (IsContact(hitBox, "Enemy") || IsContact(hitBox, "SkillBoss")) && playerStatus != PlayerStatus.DASH)
+                bool hitByEnemy = (IsContact(hitBox, "Enemy") || IsContact(hitBox, "EnemyBullet"));
+
+                if ( (IsContact(hitBox, "SkillBoss") || hitByEnemy) && playerStatus != PlayerStatus.DASH)
                 {
                     GotHit(knockbackStatus);
                 }
@@ -428,6 +430,7 @@ namespace ScifiDruid.GameObjects
         }
         public void Attack()
         {
+            //Attack animation
             attackDelay = (int)gameTime.TotalGameTime.TotalMilliseconds - attackTimeDelay;
 
             //Normal Shoot left or right
@@ -445,9 +448,9 @@ namespace ScifiDruid.GameObjects
                 bullet.CreateBullet(isCroc, "Bullet");
                 bulletList.Add(bullet);
                 Player.isAttack = true;
-                attackAnimationTime = 0.3f;
-                attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
-                attackTime = 5;
+                attackAnimationTime = 0.3f;//Update Animation
+                attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds; //Delay before shoot again
+                manaRegenTime = 5; //Delay before Regen Mana
                 bulletList[bulletList.Count - 1].Shoot();
                 Player.mana -= 5;
             }
@@ -472,18 +475,18 @@ namespace ScifiDruid.GameObjects
                 Player.isAttack = true;
                 attackAnimationTime = 0.3f;
                 attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
-                attackTime = 5;
+                manaRegenTime = 5;
                 bulletList[bulletList.Count - 1].Shoot();
                 Player.mana -= 5;
             }
 
-            if (attackTime > 0)
+            if (manaRegenTime > 0)
             {
-                attackTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                manaRegenTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
-            else if (attackTime <= 0 && Player.mana < Player.maxMana)
+            else if (manaRegenTime <= 0 && Player.mana < Player.maxMana)
             {
-                attackTime = 0;
+                manaRegenTime = 0;
                 Player.mana += (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
@@ -691,7 +694,7 @@ namespace ScifiDruid.GameObjects
             {
 
                 lionBody.Position = hitBox.Position;
-                //skill3Time -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                skill3Time -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             else if (lionBody != null)
             {
@@ -744,7 +747,7 @@ namespace ScifiDruid.GameObjects
                     Player.isAttack = true;
                     attackAnimationTime = 0.3f;
                     attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
-                    attackTime = 5;
+                    manaRegenTime = 5;
                     bulletList[bulletList.Count - 1].Shoot();
                     //Player.mana -= 5;
 

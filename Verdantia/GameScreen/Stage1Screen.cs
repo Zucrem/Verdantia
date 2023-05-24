@@ -33,7 +33,6 @@ namespace ScifiDruid.GameScreen
         private StageObject stage_wall;
 
         //create enemy
-        private List<Enemy> allEnemies;
         private LucasBoss boss;
 
         private RangeEnemy flameMech;
@@ -76,7 +75,17 @@ namespace ScifiDruid.GameScreen
         public override void Initial()
         {
             base.Initial();
-
+            
+            player = new Player(playerTex, bullet, whiteTex)
+            {
+                name = "Player Character",
+                size = new Vector2(46, 94),
+                //speed = 13,
+                speed = 50,
+                //speed = 40,
+                jumpHigh = 10.5f,
+            };
+            Debug.WriteLine("DD");
             openingDialogCount = 2;
             introDialogCount = 2;
             endDialogCount = 2;
@@ -217,7 +226,6 @@ namespace ScifiDruid.GameScreen
             player.Initial(startRect);
             //player.Initial(bossState);
 
-
             //range enemy
             flameMechEnemies = new List<RangeEnemy>();
             flameMechPositionList = ground1MonsterRects.Count();
@@ -295,8 +303,8 @@ namespace ScifiDruid.GameScreen
                 size = new Vector2(32, 192),
             };
             stage_wall.Initial(rock_wall);
-
         }
+
         public override void LoadContent()
         {
             base.LoadContent();
