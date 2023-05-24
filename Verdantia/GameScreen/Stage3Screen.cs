@@ -37,7 +37,6 @@ namespace ScifiDruid.GameScreen
         private List<StageObject> squashGroup;
 
         //create enemy
-        private List<Enemy> allEnemies;
         private DoctorBoss boss;
 
         private RangeEnemy shieldDog;
@@ -101,10 +100,8 @@ namespace ScifiDruid.GameScreen
             startmaptileX = 10f;
             endmaptileX = 170f;
 
-            Player.health = 5;
-            Player.mana = 100;
-            Player.maxHealth = 5;
-            Player.maxMana = 100;
+            Player.health = maxHealth;
+            Player.mana = maxMana;
             //create tileset for map1
             map = new TmxMap("Content/Stage3.tmx");
             tilesetStage2 = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage3Tileset/" + map.Tilesets[0].Name.ToString());
@@ -124,7 +121,6 @@ namespace ScifiDruid.GameScreen
             ground2MonsterRects = new List<Rectangle>();
             flyMonsterRects = new List<Rectangle>();
             bossRect = new Rectangle();
-
 
             squashBlocksPosition = new List<Rectangle>();
 
@@ -270,11 +266,6 @@ namespace ScifiDruid.GameScreen
             List<Vector2> guardianAnimateList = new List<Vector2>() { new Vector2(10, 2), new Vector2(67, 2), new Vector2(4, 59), new Vector2(61, 59) };
             //guardian = new Guardian(guardianTex, guardianSize, guardianAnimateList);
 
-
-            //create enemy on position
-            allEnemies = new List<Enemy>();
-
-
             //range enemy
             shieldDogEnemies = new List<RangeEnemy>();
             shieldDogPositionList = ground1MonsterRects.Count();
@@ -334,9 +325,9 @@ namespace ScifiDruid.GameScreen
             boss.Initial(bossRect, player);
 
             //add to all enemy for
-            allEnemies.AddRange(shieldDogEnemies);
-            allEnemies.AddRange(meleeTentacleEnemies);
-            allEnemies.Add(boss);
+            Singleton.Instance.enemiesInWorld.AddRange(shieldDogEnemies);
+            Singleton.Instance.enemiesInWorld.AddRange(meleeTentacleEnemies);
+            Singleton.Instance.enemiesInWorld.Add(boss);
 
             //switch event
             //create switch button on position
@@ -352,10 +343,8 @@ namespace ScifiDruid.GameScreen
 
             stage_wall2 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
             stage_wall2.Initial(sign_wall2);*/
-
-            //add all enemy for player to know em all
-            player.enemies = allEnemies;
         }
+
         public override void LoadContent()
         {
             base.LoadContent();

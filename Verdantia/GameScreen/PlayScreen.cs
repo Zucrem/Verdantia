@@ -63,7 +63,7 @@ namespace ScifiDruid.GameScreen
         private FrameCounter _frameCounter = new FrameCounter();
         private float deltaTime;
         private string fps;
-        private Texture2D bullet;
+        protected Texture2D bullet;
         //private Body _groundBody;
 
         //player animation
@@ -182,16 +182,6 @@ namespace ScifiDruid.GameScreen
             //confirm exit button
             yesConfirmButton = new Button(yesConfirmPic1, new Vector2(495, 390), new Vector2(120, 60));
             noConfirmButton = new Button(noConfirmPic1, new Vector2(710, 390), new Vector2(70, 60));
-
-            player = new Player(playerTex, bullet,whiteTex)
-            {
-                name = "Player Character",
-                size = new Vector2(46, 94),
-                //speed = 13,
-                speed = 50,
-                //speed = 40,
-                jumpHigh = 10.5f,
-            };
 
             //camera
             camera = new Camera();
@@ -400,7 +390,7 @@ namespace ScifiDruid.GameScreen
                             }
                             else
                             {
-                                resetWorld();
+                                ResetWorld();
                                 if (Singleton.Instance.levelState == LevelState.FOREST)
                                 {
                                     Singleton.Instance.levelState = LevelState.CITY;
@@ -458,13 +448,13 @@ namespace ScifiDruid.GameScreen
                                 {
                                     Singleton.Instance.levelState = LevelState.LAB;
                                 }
-                                resetWorld();
+                                ResetWorld();
                                 changeScreen = true;
                             }
                             //Restart
                             if (restartButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
-                                resetWorld();
+                                ResetWorld();
                                 changeScreen = true;
                             }
                             //Exit
@@ -486,13 +476,13 @@ namespace ScifiDruid.GameScreen
                             //Restart
                             if (restartButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
-                                resetWorld();
+                                ResetWorld();
                                 changeScreen = true;
                             }
                             //Exit
                             if (exitWLButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
-                                resetWorld();
+                                ResetWorld();
                                 confirmExit = true;
                                 Singleton.Instance.levelState = LevelState.NULL;
                             }
@@ -515,7 +505,7 @@ namespace ScifiDruid.GameScreen
                             {
                                 if (!worldReset)
                                 {
-                                    resetWorld();
+                                    ResetWorld();
                                     worldReset = true;
                                 }
                                 changeScreen = true;
@@ -608,7 +598,7 @@ namespace ScifiDruid.GameScreen
                 {
                     if (yesConfirmButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                     {
-                        resetWorld();
+                        ResetWorld();
                         changeScreen = true;
                     }
                     if (noConfirmButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
@@ -689,12 +679,12 @@ namespace ScifiDruid.GameScreen
             base.Update(gameTime);
         }
 
-        public void resetWorld()
+        public void ResetWorld()
         {
             Singleton.Instance.world.ClearForces();
             Singleton.Instance.world.Clear();
+            Singleton.Instance.enemiesInWorld.Clear();
         }
-
 
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -839,6 +829,7 @@ namespace ScifiDruid.GameScreen
                 spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
             }
         }
+        
         public override void DrawHUD(SpriteBatch spriteBatch)
         {
             if (play)

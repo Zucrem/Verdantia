@@ -67,6 +67,7 @@ namespace ScifiDruid.GameObjects
 
         private Rectangle fieldBoss;
 
+        private Vector2 firstPosition;
 
         //Action all states
         public enum JaneStatus
@@ -124,8 +125,6 @@ namespace ScifiDruid.GameObjects
             frameState = 0;
             repeat = false;
         }
-
-
 
         public override void Initial(Rectangle spawnPosition, Player player , Rectangle fieldBoss)
         {
@@ -293,7 +292,6 @@ namespace ScifiDruid.GameObjects
             preBossStatus = curBossStatus;
         }
 
-
         public override void Action()
         {
             if (isAlive && Player.health > 0)
@@ -303,8 +301,8 @@ namespace ScifiDruid.GameObjects
 
                 if (skillTime <= 0 && curBossStatus == JaneStatus.IDLE)
                 {
-                    randomAction = rand.Next(1, 4);
-                    //randomAction = 1;
+                    //randomAction = rand.Next(1, 4);
+                    randomAction = 3;
                     skillTime = 3;
                 }
                 else if (curBossStatus == JaneStatus.IDLE)
@@ -433,6 +431,7 @@ namespace ScifiDruid.GameObjects
             {
                 action3 = true;
                 curBossStatus = JaneStatus.PREPARE;
+                firstPosition = enemyHitBox.Position;
                 skillTime = 1;
             }
 
@@ -451,6 +450,7 @@ namespace ScifiDruid.GameObjects
                 }
                 else if (curBossStatus == JaneStatus.DASHIN && countTeleport == 1)
                 {
+                    enemyHitBox.IsStatic = true;
                     switch (charDirection)
                     {
                         case SpriteEffects.None:
@@ -467,11 +467,21 @@ namespace ScifiDruid.GameObjects
                 else if (curBossStatus == JaneStatus.DASHOUT && countTeleport == 1)
                 {
                     curBossStatus = JaneStatus.PUNCH;
-                    if (enemyHitBox.Position.X - player.position.X < 3 && enemyHitBox.Position.X - player.position.X > 0 && charDirection == SpriteEffects.FlipHorizontally)
+                    float playerPosX = player.position.X;
+                    float playerPosY = player.position.Y;
+                    float enemyPosX = enemyHitBox.Position.X;
+                    float enemyPosY = enemyHitBox.Position.Y;
+
+                    bool xPositive = enemyPosX - playerPosX < 3 && enemyPosX - playerPosX > 0;
+                    bool xNegative = enemyPosX - playerPosX > -3 && enemyPosX - playerPosX < 0;
+
+                    bool yPositive = enemyPosY - playerPosY < 2 && enemyPosY - playerPosY > -2;
+
+                    if (xPositive && yPositive && charDirection == SpriteEffects.FlipHorizontally)
                     {
                         player.GotHit(Player.KnockbackStatus.LEFT);
                     }
-                    else if (enemyHitBox.Position.X - player.position.X > -3 && enemyHitBox.Position.X - player.position.X < 0 && charDirection == SpriteEffects.None)
+                    else if (xNegative && yPositive && charDirection == SpriteEffects.None)
                     {
                         player.GotHit(Player.KnockbackStatus.RIGHT);
                     }
@@ -485,15 +495,18 @@ namespace ScifiDruid.GameObjects
                 }
                 else if (curBossStatus == JaneStatus.DASHIN && countTeleport == 2)
                 {
+                    enemyHitBox.IsStatic = false;
+
                     curBossStatus = JaneStatus.DASHOUT;
                     //enemyHitBox.Position = new Vector2(ConvertUnits.ToSimUnits(fieldBoss.X),enemyHitBox.Position.Y);
                     if (ConvertUnits.ToSimUnits(fieldBoss.X) - enemyHitBox.Position.X < 0 )
                     {
-                        enemyHitBox.Position = new Vector2(ConvertUnits.ToSimUnits(fieldBoss.X) + ConvertUnits.ToSimUnits((fieldBoss.Width / 2) - 100), enemyHitBox.Position.Y);
+                        enemyHitBox.Position = new Vector2(ConvertUnits.ToSimUnits(fieldBoss.X) + ConvertUnits.ToSimUnits((fieldBoss.Width / 2) - 100), firstPosition.Y);
+                        charDirection = SpriteEffects.FlipHorizontally;
                     }
                     else
                     {
-                        enemyHitBox.Position = new Vector2(ConvertUnits.ToSimUnits(fieldBoss.X) - ConvertUnits.ToSimUnits((fieldBoss.Width / 2) - 100), enemyHitBox.Position.Y);
+                        enemyHitBox.Position = new Vector2(ConvertUnits.ToSimUnits(fieldBoss.X) - ConvertUnits.ToSimUnits((fieldBoss.Width / 2) - 100), firstPosition.Y);
                         charDirection = SpriteEffects.None;
                     }
                     skillTime = 0.5f;
@@ -594,6 +607,30 @@ namespace ScifiDruid.GameObjects
             }
         }
 
+        public bool IsBossDead()
+        {
+            if (curBossStatus == JaneStatus.DEAD)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool IsBossEnd()
+        {
+            if (curBossStatus == JaneStatus.END)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (!animationDead)
@@ -620,30 +657,6 @@ namespace ScifiDruid.GameObjects
                 {
                     spriteBatch.Draw(bomb, ConvertUnits.ToDisplayUnits(beam.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(1200)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(shootPlasmaSize.Y))), Color.White, 0, new Vector2(1200 / 2, shootPlasmaSize.Y / 2), 1f, SpriteEffects.None, 0f);
                 }
-            }
-        }
-
-        public bool IsBossDead()
-        {
-            if (curBossStatus == JaneStatus.DEAD)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public bool IsBossEnd()
-        {
-            if (curBossStatus == JaneStatus.END)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
             }
         }
     }
