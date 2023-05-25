@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/soulLionPortrait.png</SourceFile>
-  <SourceTime>2023-05-24T13:52:58.0915721+07:00</SourceTime>
+  <SourceTime>2023-05-25T20:20:44.3834187+07:00</SourceTime>
   <DestFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/bin/DesktopGL/Pictures/Play/Dialog/soulLionPortrait.xnb</DestFile>
-  <DestTime>2023-05-25T16:17:49.3965514+07:00</DestTime>
+  <DestTime>2023-05-26T00:52:26.517133+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

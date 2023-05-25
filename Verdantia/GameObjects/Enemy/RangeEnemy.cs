@@ -323,6 +323,7 @@ namespace ScifiDruid.GameObjects
             //got to that direction of player
             //stop when player go out of detect area
             Enemyshoot();
+
             if (playerPosition.X - position.X > 2 && (xspawnPosition - enemyHitBox.Position.X) > pathWalkLength * -1)//(xspawnPosition - enemyHitBox.Position.X) > pathWalkLength*-1
             {
                 if (Singleton.Instance.levelState == LevelState.FOREST)

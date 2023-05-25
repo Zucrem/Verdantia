@@ -107,8 +107,6 @@ namespace ScifiDruid.GameScreen
             Player.maxMana = 100;
             Player.health = maxHealth;
             Player.mana = maxMana;
-            Player.level2Unlock = false;
-            Player.level3Unlock = false;
 
             //create tileset for map1
             map = new TmxMap("Content/Stage1.tmx");
@@ -383,6 +381,8 @@ namespace ScifiDruid.GameScreen
         public override void LoadContent()
         {
             base.LoadContent();
+            //bg
+            //stage1BG = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage1Tileset/Stage1BG");
 
             //button and rock wall
             switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage1Tileset/specialProps1");
@@ -552,6 +552,8 @@ namespace ScifiDruid.GameScreen
         public override void DrawFixScreen(SpriteBatch spriteBatch)
         {
             base.DrawFixScreen(spriteBatch);
+            //bg
+            spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
         }
         public override void DrawHUD(SpriteBatch spriteBatch)
         {
@@ -564,7 +566,7 @@ namespace ScifiDruid.GameScreen
                     if (readSign1 || readSign2 || readSign3 || readSign4 || readSign5)
                     {
                         spriteBatch.Draw(dialogBoxTex, new Rectangle(94, 508, 1092, 192), new Rectangle(0, 0, 1092, 192), Color.White);
-                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(132, 525), Color.White);
                         spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
                     }
                     if (readSign1)
@@ -604,7 +606,7 @@ namespace ScifiDruid.GameScreen
                         spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
                     }
 
-                    spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(123, 520), Color.White);
+                    spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(132, 525), Color.White);
                     switch (openingDialog)
                     {
                         case 1:
@@ -648,12 +650,12 @@ namespace ScifiDruid.GameScreen
                     if (introBossDialog == 1 || introBossDialog == 3)
                     {
                         spriteBatch.Draw(bossPortraitTex, new Vector2(874, 290), Color.White);
-                        spriteBatch.DrawString(kongfonts, "Lucas the Lumbersaw", new Vector2(123, 520), Color.White);
+                        spriteBatch.DrawString(kongfonts, "Lucas the Lumbersaw", new Vector2(132, 525), Color.White);
                     }
 
                     if (introBossDialog == 2)
                     {
-                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(132, 525), Color.White);
                         spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
                     }
                     switch (introBossDialog)
@@ -677,18 +679,18 @@ namespace ScifiDruid.GameScreen
                     if (endDialog == 1)
                     {
                         spriteBatch.Draw(bossPortraitTex, new Vector2(874, 290), Color.White);
-                        spriteBatch.DrawString(kongfonts, "Lucas the Lumbersaw", new Vector2(123, 520), Color.White);
+                        spriteBatch.DrawString(kongfonts, "Lucas the Lumbersaw", new Vector2(132, 525), Color.White);
                     }
 
                     if (endDialog == 3)
                     {
-                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(132, 525), Color.White);
                         spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
                     }
 
                     if (endDialog == 2 || endDialog >= 4)
                     {
-                        spriteBatch.DrawString(kongfonts, "Crush the Lake Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.DrawString(kongfonts, "Crush the Lake Guardian", new Vector2(132, 525), Color.White);
                         spriteBatch.Draw(crocPortraitTex, new Vector2(886, 306), Color.White);
                     }
 
