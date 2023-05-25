@@ -60,8 +60,8 @@ namespace ScifiDruid.GameObjects
         Vector2 janeLongShootSize = new Vector2(1200, 100);
         List<Vector2> janeLongShootAnimateList = new List<Vector2>() { new Vector2(0, 0), new Vector2(0, 100), new Vector2(0, 201), new Vector2(0, 301), new Vector2(0, 400), new Vector2(0, 500) };
 
-        Vector2 doctorLongShootSize = new Vector2(386, 49);
-        List<Vector2> doctorLongShootAnimateList = new List<Vector2>() { new Vector2(114, 4), new Vector2(114, 80), new Vector2(114, 140) };
+        Vector2 doctorLongShootSize = new Vector2(1152, 96);
+        List<Vector2> doctorLongShootAnimateList = new List<Vector2>() { new Vector2(240, 8), new Vector2(240, 126), new Vector2(234, 308) };
 
         public enum LongShotStatus
         {
@@ -90,6 +90,8 @@ namespace ScifiDruid.GameObjects
             //animation
             spriteSize = longShotSize;
 
+            allframes = spriteVector.Count;
+
             //create wall hitbox
             longShotBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(longShotSize.X), ConvertUnits.ToSimUnits(longShotSize.Y), 0, position, 0, BodyType.Dynamic, "EnemyBullet");
             longShotBody.IgnoreGravity = true;
@@ -97,7 +99,7 @@ namespace ScifiDruid.GameObjects
             longShotBody.IgnoreCollisionWith(enemy.enemyHitBox);
 
             longShotOrigin = new Vector2(longShotSize.X / 2, longShotSize.Y / 2);
-            scaleSize = 1200f / 386f;
+            //scaleSize = 1200f / 386f;
         }
 
         public override void Update(GameTime gameTime)
@@ -122,6 +124,11 @@ namespace ScifiDruid.GameObjects
                     if (frames < allframes - 1)
                     {
                         frames++;
+                    }
+                    else
+                    {
+                        animationDead = true;
+                        return;
                     }
                 }
                 elapsed = 0;

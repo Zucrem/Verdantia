@@ -398,7 +398,6 @@ namespace ScifiDruid.GameScreen
 
             stage_wall2 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
             stage_wall2.Initial(sign_wall2);
-        }
 
             stage_wall3 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
             stage_wall3.Initial(sign_wall3);
@@ -496,10 +495,6 @@ namespace ScifiDruid.GameScreen
                 fallMove.Initial(fallingBlocks[panelFallMoveCount]);
                 panelFallMoveCount++;
             }
-
-
-            //add all enemy for player to know em all
-            player.enemies = allEnemies;
         }
         public override void LoadContent()
         {

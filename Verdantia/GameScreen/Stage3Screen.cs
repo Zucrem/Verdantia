@@ -250,7 +250,7 @@ namespace ScifiDruid.GameScreen
 
                     Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(boss_event.Width), ConvertUnits.ToSimUnits(boss_event.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(boss_event.X, boss_event.Y)));
                     body.UserData = "Boss_event";
-                    body.IsSensor = true; 
+                    body.IsSensor = true;
                 }
                 if (o.Name.Equals("inv_wall"))
                 {
@@ -370,14 +370,14 @@ namespace ScifiDruid.GameScreen
             }
 
             //create boss on position
-            boss = new DoctorBoss(doctorBossTex,doctorAmmoTex)
+            boss = new DoctorBoss(doctorBossTex, doctorAmmoTex)
             {
                 size = new Vector2(38, 88),
                 health = 6,
                 speed = 1.2f,
             };
             //spawn boss
-            boss.Initial(bossRect, player,boss_event);
+            boss.Initial(bossRect, player, boss_event);
 
             //add to all enemy for
             Singleton.Instance.enemiesInWorld.AddRange(shieldDogEnemies);
@@ -422,6 +422,7 @@ namespace ScifiDruid.GameScreen
 
             stage_wall6 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 192) };
             stage_wall6.Initial(sign_wall6);
+        }
 
         public override void LoadContent()
         {

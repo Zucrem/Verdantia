@@ -51,8 +51,8 @@ namespace ScifiDruid.GameObjects
         private float elapsed;
         private float delay = 200f;
 
-        private Vector2 ballAliveSize = new Vector2(68, 64);
-        private List<Vector2> ballAliveAnimateList = new List<Vector2>() { new Vector2(132, 222), new Vector2(216, 222), new Vector2(302, 222) };
+        private Vector2 ballAliveSize = new Vector2(140, 128);
+        private List<Vector2> ballAliveAnimateList = new List<Vector2>() { new Vector2(240, 444), new Vector2(401, 444), new Vector2(580, 444) };
 
         private Enemy enemy;
 
@@ -71,8 +71,6 @@ namespace ScifiDruid.GameObjects
 
         public void CreateBall()
         {
-            ballSpeed = 400;
-
             //animation
             ballSize = ballAliveSize;
             spriteVector = ballAliveAnimateList;
@@ -89,7 +87,7 @@ namespace ScifiDruid.GameObjects
             ballOrigin = new Vector2(ballSize.X / 2, ballSize.Y / 2);
 
             bossBombStatus = BallStatus.BALLALIVE;
-            ballBody.ApplyLinearImpulse(new Vector2(1, 0));
+            ballBody.ApplyLinearImpulse(new Vector2(2, 0));
         }
 
         public override void Update(GameTime gameTime)

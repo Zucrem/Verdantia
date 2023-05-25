@@ -27,7 +27,8 @@ namespace ScifiDruid.GameObjects
         //boolean to do action
         private bool action1 = false;
         private bool action2 = false;
-        private bool action3 = false;
+
+        private int countLoop;
 
         //for animation
         private Vector2 idleSize;
@@ -48,6 +49,7 @@ namespace ScifiDruid.GameObjects
         private List<DoctorBall> lightningBall;
         private Texture2D skillBossTexture;
         private BossLongShoot redLightning;
+        private DoctorLaser laser;
 
         private float warningSkillTime;
 
@@ -166,6 +168,11 @@ namespace ScifiDruid.GameObjects
                 redLightning.Update(gameTime);
             }
 
+            if (action2 && laser != null)
+            {
+                laser.Update(gameTime);
+            }
+
             ChangeAnimationStatus();
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             if (curBossStatus == DoctorStatus.DEAD)
@@ -209,8 +216,8 @@ namespace ScifiDruid.GameObjects
             {
                 if (skillTime <= 0 && curBossStatus == DoctorStatus.IDLE)
                 {
-                    //randomAction = rand.Next(1, 3);
-                    randomAction = 1;
+                    randomAction = rand.Next(1, 4);
+                    //randomAction = 2;
                     skillTime = 5;
                 }
                 else if (curBossStatus == DoctorStatus.IDLE)
@@ -225,13 +232,16 @@ namespace ScifiDruid.GameObjects
                         Skill1();
                         break;
                     case 2:
+                        Skill1();
+                        break;
+                    case 3:
                         Skill2();
                         break;
                 }
 
                 if (ballDelay <= 0)
                 {
-                    ballDelay = 3.5f;
+                    ballDelay = 3f;
                     Vector2 ballPosition = new Vector2((fieldBoss.X - fieldBoss.Width / 2) + 5, fieldBoss.Y - 10);
                     DoctorBall ball = new DoctorBall(skillBossTexture, ConvertUnits.ToSimUnits(ballPosition), this);
                     ball.CreateBall();
@@ -247,21 +257,6 @@ namespace ScifiDruid.GameObjects
                     lightningBall[0].ballBody.Dispose();
                     lightningBall.RemoveAt(0);
                 }
-                else if (lightningBall.Count > 5)
-                {
-                    /*
-                    if (skillTime <= 0 && curBossStatus == DoctorStatus.IDLE)
-                    {
-                        //randomAction = rand.Next(1, 3);
-                        randomAction = 1;
-                        skillTime = 5;
-                    }
-                    else if (curBossStatus == DoctorStatus.IDLE)
-                    {
-                        skillTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    }*/
-                }
-
             }
             else
             {
@@ -282,19 +277,30 @@ namespace ScifiDruid.GameObjects
                 warningSkillTime = 1;
 
             }
-            else if (warningSkillTime <= 0 )
+            else if (warningSkillTime <= 0 && redLightning == null)
             {
                 Vector2 redLightingPosition = position + new Vector2(-10, 0);
                 redLightning = new BossLongShoot(skillBossTexture, redLightingPosition, this, "Doctor");
-                warningSkillTime = 2;
             }
-            else if (warningSkillTime == 2) { }
+            else if (warningSkillTime <= 0 && redLightning != null)
+            {
+                warningSkillTime = 1;
+                if (countLoop == 1 && redLightning.bossLongShotStatus == BossLongShoot.LongShotStatus.LONGSHOTEND)
+                {
+                    redLightning.longShotBody.Dispose();
+                    redLightning = null;
+                    action1 = false;
+                    randomAction = 0;
+                    curBossStatus = DoctorStatus.IDLE;
+                    countLoop = 0;
+                    return;
+                }
+                countLoop++;
+            }
             else if (warningSkillTime > 0)
             {
                 warningSkillTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
-
-
         }
 
         public void Skill2()
@@ -303,6 +309,30 @@ namespace ScifiDruid.GameObjects
             {
                 action2 = true;
                 curBossStatus = DoctorStatus.ACTION2;
+                warningSkillTime = 1;
+
+            }
+            else if (warningSkillTime <= 0 && laser == null)
+            {
+                Vector2 laserPosition = position + new Vector2(-5, -2.2f);
+                laser = new DoctorLaser(skillBossTexture, laserPosition, this);
+                laser.CreateLaser();
+            }
+            else if (laser != null)
+            {
+                float leftPosition = ConvertUnits.ToSimUnits((fieldBoss.X - fieldBoss.Width / 2) + 150);  
+                if (laser.position.X <= leftPosition)
+                {
+                    laser.laserBody.Dispose();
+                    laser = null;
+                    action2 = false;
+                    randomAction = 0;
+                    curBossStatus = DoctorStatus.IDLE;
+                }
+            }
+            else if (warningSkillTime > 0)
+            {
+                warningSkillTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
         }
 
@@ -386,6 +416,12 @@ namespace ScifiDruid.GameObjects
             {
                 redLightning.Draw(spriteBatch);
             }
+
+            if (action2 && laser != null)
+            {
+                laser.Draw(spriteBatch);
+            }
+
 
         }
     }

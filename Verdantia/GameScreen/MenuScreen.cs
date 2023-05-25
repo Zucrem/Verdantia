@@ -160,11 +160,8 @@ namespace ScifiDruid.GameScreen
                     // Click start new game
                     if (newGameButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                     {
+                        //ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
                         Singleton.Instance.stageunlock = 1;
-                        //Singleton.Instance.levelState = LevelState.FOREST;
-                        //Singleton.Instance.levelState = LevelState.CITY;
-                        Singleton.Instance.levelState = LevelState.LAB;
-                        ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
 
                         screen = StateScreen.INTROGAME;
                     }

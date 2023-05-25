@@ -475,7 +475,7 @@ namespace ScifiDruid.GameScreen
                     switch (gamestate)
                     {
                         case GameState.END:
-                            resetWorld();
+                            ResetWorld();
                             changeScreen = true;
 
                             //Next Screen
@@ -529,7 +529,7 @@ namespace ScifiDruid.GameScreen
                             {
                                 if (!worldReset)
                                 {
-                                    resetWorld();
+                                    ResetWorld();
                                     worldReset = true;
                                 }
                                 changeScreen = true;

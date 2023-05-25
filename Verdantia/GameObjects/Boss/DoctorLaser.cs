@@ -17,7 +17,7 @@ namespace ScifiDruid.GameObjects
     public class DoctorLaser : _GameObject
     {
         protected Texture2D texture; //enemy Texture (Animaiton)
-
+        private Enemy enemy;
         protected GameTime gameTime;
 
         //bullet state
@@ -51,8 +51,8 @@ namespace ScifiDruid.GameObjects
         private float elapsed;
         private float delay = 200f;
 
-        private Vector2 laserAliveSize = new Vector2(28, 324);
-        private List<Vector2> laserAliveAnimateList = new List<Vector2>() { new Vector2(16, 4), new Vector2(62, 4)};
+        private Vector2 laserAliveSize = new Vector2(48, 648);
+        private List<Vector2> laserAliveAnimateList = new List<Vector2>() { new Vector2(8, 8), new Vector2(100, 8) };
 
         public enum LaserStatus
         {
@@ -63,41 +63,35 @@ namespace ScifiDruid.GameObjects
         public DoctorLaser(Texture2D texture, Vector2 position, Enemy enemy) : base(texture)
         {
             this.texture = texture;
+            this.enemy = enemy;
             this.position = position;
+        }
 
-            laserSpeed = 400;
-
-            //create wall hitbox
-            laserBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(laserSize.X), ConvertUnits.ToSimUnits(laserSize.Y), 0, position, 0, BodyType.Dynamic, "EnemyBullet");
-            laserBody.IgnoreGravity = true;
-            laserBody.IgnoreCollisionWith(enemy.enemyHitBox);
-
+        public void CreateLaser()
+        {
+            bossLaserStatus = LaserStatus.LASERALIVE;
+            
             //animation
             laserSize = laserAliveSize;
             spriteVector = laserAliveAnimateList;
 
-            spriteSize = laserSize;
+            //create wall hitbox
+            laserBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(laserSize.X), ConvertUnits.ToSimUnits(laserSize.Y), 0, position, 0, BodyType.Dynamic, "SkillBoss");
+            laserBody.IgnoreGravity = true;
+            laserBody.IsSensor = true;
+            laserBody.IgnoreCollisionWith(enemy.enemyHitBox);
 
-            switch (charDirection)
-            {
-                case SpriteEffects.None:
-                    laserBody.Position += new Vector2(-1f, 0);
-                    break;
-                case SpriteEffects.FlipHorizontally:
-                    laserBody.Position += new Vector2(1f, 0);
-                    break;
-            }
+            spriteSize = laserSize;
+            allframes = spriteVector.Count;
 
             laserOrigin = new Vector2(laserSize.X / 2, laserSize.Y / 2);
+            laserBody.ApplyLinearImpulse(new Vector2(-2 ,0));
         }
 
-        public void Shoot()
-        {
-            bossLaserStatus = LaserStatus.LASERALIVE;
-        }
 
         public override void Update(GameTime gameTime)
         {
+            position = laserBody.Position;
             //if dead animation animationEnd
             if (animationDead)
             {
@@ -126,36 +120,6 @@ namespace ScifiDruid.GameObjects
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, laserOrigin, 1f, charDirection, 0f);
-        }
-
-        public bool IsContact()
-        {
-            ContactEdge contactEdge = laserBody.ContactList;
-            while (contactEdge != null)
-            {
-                Contact contactFixture = contactEdge.Contact;
-
-                Body fixtureA_Body = contactEdge.Contact.FixtureA.Body;
-                Body fixtureB_Body = contactEdge.Contact.FixtureB.Body;
-
-                bool contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals("Ground"));
-                bool contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals("Ground"));
-                bool contactGround = contactA || contactB;
-
-                contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals("Player"));
-                contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals("Player"));
-                bool contactEnemy = contactA || contactB;
-
-                if (contactFixture.IsTouching && (contactGround || contactEnemy))
-                {
-                    laserBody.Dispose();
-                    return true;
-                }
-
-                // Check if the contact fixture is the ground
-                contactEdge = contactEdge.Next;
-            }
-            return false;
         }
     }
 }
