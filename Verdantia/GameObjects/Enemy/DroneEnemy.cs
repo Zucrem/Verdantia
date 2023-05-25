@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Box2DNet.Dynamics;
-using Box2DNet.Factories;
-using Box2DNet;
+﻿using Box2DNet;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using static ScifiDruid.Singleton;
-using System.Diagnostics;
 
 namespace ScifiDruid.GameObjects
 {
-    public class RangeEnemy : Enemy
+    internal class DroneEnemy : Enemy
     {
         //framestate for dead animation
         private int frameState;
@@ -29,7 +28,7 @@ namespace ScifiDruid.GameObjects
         public List<EnemyBullet> bulletList = new List<EnemyBullet>();
 
         private int worldLevel;
-        public bool isdrone;
+        public bool isdrone = true;
 
 
 
@@ -58,7 +57,8 @@ namespace ScifiDruid.GameObjects
             DEAD,
             END
         }
-        public RangeEnemy(Texture2D texture, List<Vector2> sizeList, List<List<Vector2>> animateList) : base(texture)
+
+        public DroneEnemy(Texture2D texture, List<Vector2> sizeList, List<List<Vector2>> animateList) : base(texture)
         {
             this.texture = texture;
 
@@ -71,6 +71,8 @@ namespace ScifiDruid.GameObjects
             walkSpriteVector = animateList[1];
             shootSpriteVector = animateList[2];
             deadSpriteVector = animateList[3];
+
+            enemyHitBox.IgnoreGravity = true;
 
             frames = 0;
 
@@ -97,19 +99,12 @@ namespace ScifiDruid.GameObjects
                     worldLevel = 3;
                     break;
             }
-
         }
 
         public override void Update(GameTime gameTime)
         {
             this.gameTime = gameTime;
             position = enemyHitBox.Position;
-
-
-            foreach (var item in bulletList)
-            {
-                item.Update(gameTime);
-            }
 
             if (isAlive)
             {
@@ -124,7 +119,6 @@ namespace ScifiDruid.GameObjects
                 }
             }
 
-
             //if step on dead block
             if (IsContact(enemyHitBox, "Dead"))
             {
@@ -135,17 +129,9 @@ namespace ScifiDruid.GameObjects
                 enemyHitBox.Dispose();
             }
 
-            //if dead animation animationEnd
             if (animationDead)
             {
                 curStatus = EnemyStatus.END;
-            }
-
-            //animation
-            if (preStatus != curStatus)
-            {
-                frames = 0;
-                frameState = 0;
             }
             ChangeAnimationStatus();
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -211,10 +197,12 @@ namespace ScifiDruid.GameObjects
             }
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
             preStatus = curStatus;
+
         }
+
         public override void Action()
         {
-            if (isAlive && isPlayerinArea)
+            if (isAlive && isPlayerinDroneArea)
             {
                 EnemyAlertWalking();
             }
@@ -226,133 +214,36 @@ namespace ScifiDruid.GameObjects
 
         private void EnemyWalking()
         {
-            if (IsContact(enemyHitBox, "Enemy"))
-            {
-                foreach (var item in bodyList)
-                {
-                    if (enemyHitBox.BodyId != item.BodyId)
-                    {
-                        if (item.Position.X - enemyHitBox.Position.X > 0)
-                        {
-                            isMovingLeft = true;
-                            bodyList.Clear();
-                            break;
-                        }
-                        else
-                        {
-                            isMovingLeft = false;
-                            bodyList.Clear();
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (idleTime == 0)
-            {
-                IsIdle();
-            }
-
-
-
-
-
-
-            //do normal walking left and right
+            //fly left and right 
             if ((xspawnPosition - enemyHitBox.Position.X) > pathWalkLength && isMovingLeft)
             {
+                enemyHitBox.LinearVelocity = Vector2.Zero;
                 isMovingLeft = !isMovingLeft;
             }
             else if ((xspawnPosition - enemyHitBox.Position.X) < pathWalkLength * -1 && !isMovingLeft)
             {
+                enemyHitBox.LinearVelocity = Vector2.Zero;
                 isMovingLeft = !isMovingLeft;
             }
 
-            if (!isIdle)
+            if (isMovingLeft)
             {
-
-                if (isMovingLeft)
-                {
-                    if (Singleton.Instance.levelState == LevelState.FOREST)
-                    {
-                        charDirection = SpriteEffects.None;
-                    }
-                    else
-                    {
-                        charDirection = SpriteEffects.FlipHorizontally;
-                    }
-                    enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
-                }
-                else
-                {
-                    if (Singleton.Instance.levelState == LevelState.FOREST)
-                    {
-                        charDirection = SpriteEffects.FlipHorizontally;
-                    }
-                    else
-                    {
-                        charDirection = SpriteEffects.None;
-                    }
-                    enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
-                }
+                charDirection = SpriteEffects.None;
+                enemyHitBox.ApplyForce(new Vector2(-50 * speed, 0));
             }
             else
             {
-
-                if (idleTime < 5)
-                {
-                    idleTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                }
-                else
-                {
-                    isIdle = false;
-                    idleTime = 0;
-                }
-
+                charDirection = SpriteEffects.None;
+                enemyHitBox.ApplyForce(new Vector2(50 * speed, 0));
             }
 
-
-
-
+            //enemyHitBox.LinearVelocity = Vector2.Zero;  // make drone stop
         }
+
         private void EnemyAlertWalking()
         {
-
-            //player on (right ,mid,left)
-            //got to that direction of player
-            //stop when player go out of detect area
-            shoot();
-            if (playerPosition.X - position.X > 2 && (xspawnPosition - enemyHitBox.Position.X) > pathWalkLength * -1)//(xspawnPosition - enemyHitBox.Position.X) > pathWalkLength*-1
-            {
-                if (Singleton.Instance.levelState == LevelState.FOREST)
-                {
-                    charDirection = SpriteEffects.FlipHorizontally;
-                }
-                else
-                {
-                    charDirection = SpriteEffects.None;
-                }
-                enemyHitBox.ApplyForce(new Vector2(100 * speed, 0));
-            }
-            else if (playerPosition.X - position.X < -2 && (xspawnPosition - enemyHitBox.Position.X) < pathWalkLength)//(xspawnPosition - enemyHitBox.Position.X) < pathWalkLength
-            {
-                if (Singleton.Instance.levelState == LevelState.FOREST)
-                {
-                    charDirection = SpriteEffects.None;
-                }
-                else
-                {
-                    charDirection = SpriteEffects.FlipHorizontally;
-                }
-                enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
-            }
-
-
-            //do alert condition follow Player and Track Player down to death
+            //go to over player head
         }
-
-
-
 
         public override void ChangeAnimationStatus()
         {
@@ -385,7 +276,7 @@ namespace ScifiDruid.GameObjects
             }
         }
 
-        public void shoot()
+        public void shoot()  //ยิงลงไง
         {
             attackTimeEnemy += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -407,10 +298,7 @@ namespace ScifiDruid.GameObjects
 
 
             }
-
-
         }
-
 
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -420,6 +308,6 @@ namespace ScifiDruid.GameObjects
             }
         }
 
+
     }
 }
-

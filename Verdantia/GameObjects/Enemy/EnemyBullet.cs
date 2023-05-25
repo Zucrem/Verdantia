@@ -7,6 +7,7 @@ using Box2DNet.Dynamics;
 using Box2DNet.Factories;
 using Box2DNet;
 using System.Linq;
+using static ScifiDruid.Singleton;
 
 namespace ScifiDruid.GameObjects
 {
@@ -92,7 +93,7 @@ namespace ScifiDruid.GameObjects
 
             //animation
             enemyBulletStatus = BulletStatus.BULLETALIVE;
-            preStatus= BulletStatus.BULLETALIVE;
+            preStatus = BulletStatus.BULLETALIVE;
 
 
 
@@ -159,16 +160,31 @@ namespace ScifiDruid.GameObjects
                     break;
 
             }
-
-            switch (charDirection)
+            if (Singleton.Instance.levelState == LevelState.FOREST)
             {
-                case SpriteEffects.None:
-                    bulletBody.Position += new Vector2(-0.5f, 0);
-                    break;
-                case SpriteEffects.FlipHorizontally:
-                    bulletBody.Position += new Vector2(1f, 0);
-                    break;
+                switch (charDirection)
+                {
+                    case SpriteEffects.None:
+                        bulletBody.Position += new Vector2(-0.5f, 0);
+                        break;
+                    case SpriteEffects.FlipHorizontally:
+                        bulletBody.Position += new Vector2(1f, 0);
+                        break;
+                }
             }
+            else
+            {
+                switch (charDirection)
+                {
+                    case SpriteEffects.None:
+                        bulletBody.Position += new Vector2(0.3f, 0);
+                        break;
+                    case SpriteEffects.FlipHorizontally:
+                        bulletBody.Position += new Vector2(-0.3f, 0);
+                        break;
+                }
+            }
+
 
             bulletAliveSize = new Vector2(bulletSizeX, bulletSizeY);
             bulletAliveCount = bulletAliveRectVector.Count();
@@ -227,17 +243,35 @@ namespace ScifiDruid.GameObjects
 
         public void Shoot()
         {
-            switch (charDirection)
+            if (Singleton.Instance.levelState == LevelState.FOREST)
             {
-                case SpriteEffects.None:
-                    bulletBody.ApplyForce(new Vector2(-bulletSpeed, 0));
-                    enemyBulletStatus = BulletStatus.BULLETALIVE;
-                    break;
-                case SpriteEffects.FlipHorizontally:
-                    bulletBody.ApplyForce(new Vector2(bulletSpeed, 0));
-                    enemyBulletStatus = BulletStatus.BULLETALIVE;
-                    break;
+                switch (charDirection)
+                {
+                    case SpriteEffects.None:
+                        bulletBody.ApplyForce(new Vector2(-bulletSpeed, 0));
+                        enemyBulletStatus = BulletStatus.BULLETALIVE;
+                        break;
+                    case SpriteEffects.FlipHorizontally:
+                        bulletBody.ApplyForce(new Vector2(bulletSpeed, 0));
+                        enemyBulletStatus = BulletStatus.BULLETALIVE;
+                        break;
+                }
             }
+            else
+            {
+                switch (charDirection)
+                {
+                    case SpriteEffects.FlipHorizontally:
+                        bulletBody.ApplyForce(new Vector2(-bulletSpeed, 0));
+                        enemyBulletStatus = BulletStatus.BULLETALIVE;
+                        break;
+                    case SpriteEffects.None:
+                        bulletBody.ApplyForce(new Vector2(bulletSpeed, 0));
+                        enemyBulletStatus = BulletStatus.BULLETALIVE;
+                        break;
+                }
+            }
+
             enemyBulletStatus = BulletStatus.BULLETALIVE;
         }
 
