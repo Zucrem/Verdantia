@@ -27,7 +27,7 @@ namespace ScifiDruid.GameObjects
         protected Vector2 enemyOrigin;  //start draw enemy point
 
         protected bool isPlayerinArea = false;       // to check is player in the area 
-        //protected bool isGoingToFall = false;        // check is there are hole infront of this enemy
+        protected bool isPlayerinDroneArea = false;
 
         public int health;                          // reduce when get hit by bullet
         public int damage;
@@ -206,6 +206,14 @@ namespace ScifiDruid.GameObjects
                     isPlayerinArea = true;
                 }
                 else { isPlayerinArea = false; }
+
+                if(playerPosition.X - position.X < 10 && playerPosition.X - position.X > -10 && playerPosition.Y - position.Y < 10 && playerPosition.Y - position.Y > -10)
+                {
+                    isPlayerinDroneArea = true;
+                } else
+                {
+                    isPlayerinDroneArea = false;
+                }
             }
             else
             {

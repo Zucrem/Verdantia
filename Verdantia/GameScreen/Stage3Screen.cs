@@ -333,6 +333,11 @@ namespace ScifiDruid.GameScreen
                     size = new Vector2(128, 94),
                     health = 3,
                     speed = 0.1f,
+                     bulletSpeed = 400,
+                    bulletSizeX = 4,
+                    bulletSizeY = 6,
+                    bulletDistance = 10,
+                    isdrone = false,
                 };
                 shieldDogEnemies.Add(shieldDog);
             }

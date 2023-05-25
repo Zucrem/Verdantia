@@ -756,9 +756,7 @@ namespace ScifiDruid.GameScreen
                         flameBot.Draw(spriteBatch);
                         foreach (EnemyBullet enemybullet in flameBot.bulletList)
                         {
-                            Debug.WriteLine("Bruh");
                             enemybullet.Draw(spriteBatch);
-
                         }
                     }
                     foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)

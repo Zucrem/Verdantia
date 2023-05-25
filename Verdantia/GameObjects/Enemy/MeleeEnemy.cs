@@ -89,7 +89,7 @@ namespace ScifiDruid.GameObjects
             if (isAlive)
             {
                 CheckPlayerPosition(gameTime, 1);
-                
+
                 if (health <= 0)
                 {
                     enemyHitBox.UserData = "Died";
@@ -224,25 +224,25 @@ namespace ScifiDruid.GameObjects
                     {
                         if (item.Position.X - enemyHitBox.Position.X > 0)
                         {
-                            isMovingLeft= true;
+                            isMovingLeft = true;
                             bodyList.Clear();
                             break;
                         }
                         else
                         {
-                            isMovingLeft= false;
+                            isMovingLeft = false;
                             bodyList.Clear();
                             break;
                         }
                     }
                 }
             }
-            
+
             if (idleTime == 0)
             {
                 IsIdle();
             }
-            
+
 
 
             curStatus = EnemyStatus.WALK;
@@ -304,32 +304,32 @@ namespace ScifiDruid.GameObjects
 
 
         }
-        
+
         private void EnemyAlertWalking()
         {
             //player on (right ,mid,left)
             //got to that direction of player
             //stop when player go out of detect area
-            
-           
-            if(Singleton.Instance.levelState == LevelState.CITY&& playerPosition.X - position.X > 0.7 && (xspawnPosition - enemyHitBox.Position.X) > pathWalkLength * -1) //do attack animation for city level
+
+
+            if (Singleton.Instance.levelState == LevelState.CITY && playerPosition.X - position.X > 0.7 && (xspawnPosition - enemyHitBox.Position.X) > pathWalkLength * -1) //do attack animation for city level
             {
-                
+
                 charDirection = SpriteEffects.None;
-               if(playerPosition.X - position.X <2 && (xspawnPosition - enemyHitBox.Position.X) > pathWalkLength * -1)
+                if (playerPosition.X - position.X < 2 && (xspawnPosition - enemyHitBox.Position.X) > pathWalkLength * -1)
                 {
-                    curStatus= EnemyStatus.DETECT;
+                    curStatus = EnemyStatus.DETECT;
                 }
                 else { curStatus = EnemyStatus.RUN; }
-                
+
                 enemyHitBox.ApplyForce(new Vector2(120 * speed, 0));
                 return;
             }
-            else if(Singleton.Instance.levelState == LevelState.CITY&& playerPosition.X - position.X < -0.7 && (xspawnPosition - enemyHitBox.Position.X) < pathWalkLength)
+            else if (Singleton.Instance.levelState == LevelState.CITY && playerPosition.X - position.X < -0.7 && (xspawnPosition - enemyHitBox.Position.X) < pathWalkLength)
             {
-                
+
                 charDirection = SpriteEffects.FlipHorizontally;
-                if(playerPosition.X - position.X > -2 && (xspawnPosition - enemyHitBox.Position.X) < pathWalkLength)
+                if (playerPosition.X - position.X > -2 && (xspawnPosition - enemyHitBox.Position.X) < pathWalkLength)
                 {
                     curStatus = EnemyStatus.DETECT;
                 }
@@ -338,8 +338,15 @@ namespace ScifiDruid.GameObjects
                 enemyHitBox.ApplyForce(new Vector2(-120 * speed, 0));
                 return;
             }
-            
-            curStatus = EnemyStatus.RUN;
+           /* if (Singleton.Instance.levelState == LevelState.LAB)
+            {
+                curStatus = EnemyStatus.DETECT;
+            }
+            else
+            {
+                curStatus = EnemyStatus.RUN;
+            }*/
+
 
             if (playerPosition.X - position.X > 1 && (xspawnPosition - enemyHitBox.Position.X) > pathWalkLength * -1)  // run(right) to player but not out of area
             {
@@ -378,6 +385,7 @@ namespace ScifiDruid.GameObjects
             {
                 spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, enemyOrigin, 1f, charDirection, 0f);
             }
+
         }
 
         public override void ChangeAnimationStatus()
@@ -416,6 +424,6 @@ namespace ScifiDruid.GameObjects
                     break;
             }
         }
-    
+
     }
 }

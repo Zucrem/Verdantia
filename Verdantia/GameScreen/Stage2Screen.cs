@@ -330,6 +330,11 @@ namespace ScifiDruid.GameScreen
                     size = new Vector2(46, 92),
                     health = 3,
                     speed = 0.1f,
+                    bulletSpeed = 400,
+                    bulletSizeX = 9,
+                    bulletSizeY = 3,
+                    bulletDistance = 10,
+                    isdrone = false,
                 };
                 gunPoliceEnemies.Add(gunPolice);
             }
@@ -825,6 +830,10 @@ namespace ScifiDruid.GameScreen
                     foreach (RangeEnemy gun in gunPoliceEnemies)
                     {
                         gun.Draw(spriteBatch);
+                        foreach (EnemyBullet enemybullet in gun.bulletList)
+                        {
+                            enemybullet.Draw(spriteBatch);
+                        }
                     }
                     foreach (MeleeEnemy melee in meleePoliceEnemies)
                     {
