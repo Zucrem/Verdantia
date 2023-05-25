@@ -463,7 +463,7 @@ namespace ScifiDruid.GameScreen
                     foreach (RangeEnemy dog in shieldDogEnemies)
                     {
                         dog.Update(gameTime);
-                        dog.Action();
+                        dog.Action();                      
                     }
                     foreach (MeleeEnemy tentacle in meleeTentacleEnemies)
                     {
@@ -776,6 +776,10 @@ namespace ScifiDruid.GameScreen
                     foreach (RangeEnemy dog in shieldDogEnemies)
                     {
                         dog.Draw(spriteBatch);
+                        foreach (EnemyBullet dogbullet in dog.bulletList)
+                        {
+                            dogbullet.Draw(spriteBatch);
+                        }
                     }
                     foreach (MeleeEnemy tentacle in meleeTentacleEnemies)
                     {
