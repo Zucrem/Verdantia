@@ -69,7 +69,7 @@ namespace ScifiDruid.GameObjects
         public static float mana;
         public static int money;
         public static int maxHealth = 5;
-        public static int maxMana = 5;
+        public static int maxMana = 100;
 
         //Count cooldown of action
         private float skill1Cooldown;
@@ -219,15 +219,6 @@ namespace ScifiDruid.GameObjects
             }
 
             base.Initial();
-            LoadContent();
-        }
-
-        public void LoadContent()
-        {
-            ContentManager content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
-            //all sound effetc for player
-            //playerDeadSound = content.Load<SoundEffect>("Sounds/Player/PlayerDead");
-            //playerJumpSound = content.Load<SoundEffect>("Sounds/Player/PlayerJump");
         }
 
         public override void Update(GameTime gameTime)
@@ -879,10 +870,10 @@ namespace ScifiDruid.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (lionBody != null)
-            {
-                spriteBatch.Draw(lionTexture, ConvertUnits.ToDisplayUnits(lionBody.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(500)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(200))), Color.White, 0, new Vector2(500 / 2, 200 / 2), 1, SpriteEffects.None, 0);
-            }
+            //if (lionBody != null)
+            //{
+            //    spriteBatch.Draw(lionTexture, ConvertUnits.ToDisplayUnits(lionBody.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(500)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(200))), Color.White, 0, new Vector2(500 / 2, 200 / 2), 1, SpriteEffects.None, 0);
+            //}
 
             //draw player
             if (!animationEnd)
@@ -895,7 +886,6 @@ namespace ScifiDruid.GameObjects
                 playerAnimation.Draw(spriteBatch, playerOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
             }
 
-            
             //if shoot
             /*if (_bulletBody != null && !_bulletBody.IsDisposed)
             {

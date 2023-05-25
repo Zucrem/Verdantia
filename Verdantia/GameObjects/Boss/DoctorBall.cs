@@ -66,45 +66,35 @@ namespace ScifiDruid.GameObjects
         {
             this.texture = texture;
             this.position = position;
-
+            this.enemy = enemy;
         }
 
-        public void Initial(String direction)
+        public void CreateBall()
         {
-
             ballSpeed = 400;
-
-            //create wall hitbox
-            ballBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(ballSize.X), ConvertUnits.ToSimUnits(ballSize.Y), 0, position, 0, BodyType.Dynamic, "EnemyBullet");
-            ballBody.IgnoreGravity = true;
-            ballBody.IgnoreCollisionWith(enemy.enemyHitBox);
 
             //animation
             ballSize = ballAliveSize;
             spriteVector = ballAliveAnimateList;
+            allframes = spriteVector.Count;
 
             spriteSize = ballSize;
 
-            switch (charDirection)
-            {
-                case SpriteEffects.None:
-                    ballBody.Position += new Vector2(-1f, 0);
-                    break;
-                case SpriteEffects.FlipHorizontally:
-                    ballBody.Position += new Vector2(1f, 0);
-                    break;
-            }
+            //create wall hitbox
+            ballBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(ballSize.X), ConvertUnits.ToSimUnits(ballSize.Y), 0, position, 0, BodyType.Dynamic, "SkillBoss");
+            ballBody.IgnoreGravity = true;
+            ballBody.IsSensor = true;
+            ballBody.IgnoreCollisionWith(enemy.enemyHitBox);
 
             ballOrigin = new Vector2(ballSize.X / 2, ballSize.Y / 2);
-        }
 
-        public void Shoot()
-        {
             bossBombStatus = BallStatus.BALLALIVE;
+            ballBody.ApplyLinearImpulse(new Vector2(1, 0));
         }
 
         public override void Update(GameTime gameTime)
         {
+            position = ballBody.Position;
             //if dead animation animationEnd
             if (animationDead)
             {
@@ -130,39 +120,10 @@ namespace ScifiDruid.GameObjects
 
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
         }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, ballOrigin, 1f, charDirection, 0f);
-        }
-
-        public bool IsContact()
-        {
-            ContactEdge contactEdge = ballBody.ContactList;
-            while (contactEdge != null)
-            {
-                Contact contactFixture = contactEdge.Contact;
-
-                Body fixtureA_Body = contactEdge.Contact.FixtureA.Body;
-                Body fixtureB_Body = contactEdge.Contact.FixtureB.Body;
-
-                bool contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals("Ground"));
-                bool contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals("Ground"));
-                bool contactGround = contactA || contactB;
-
-                contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals("Player"));
-                contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals("Player"));
-                bool contactEnemy = contactA || contactB;
-
-                if (contactFixture.IsTouching && (contactGround || contactEnemy))
-                {
-                    ballBody.Dispose();
-                    return true;
-                }
-
-                // Check if the contact fixture is the ground
-                contactEdge = contactEdge.Next;
-            }
-            return false;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace ScifiDruid.GameObjects
 {
     public class JaneBoss : Boss
     {
-        Texture2D bomb;
+        Texture2D ammoTexture;
 
         //framestate for dead animation
         private int frameState;
@@ -56,7 +56,7 @@ namespace ScifiDruid.GameObjects
         private List<Vector2> punchSpriteVector;
         private List<Vector2> deadSpriteVector;
 
-        private List<Body> rockets;
+        private List<JaneBomb> rockets;
         private List<JaneBullet> bulletLists;
         private Body beam;
 
@@ -84,10 +84,10 @@ namespace ScifiDruid.GameObjects
             END
         }
 
-        public JaneBoss(Texture2D texture, Texture2D bomb) : base(texture)
+        public JaneBoss(Texture2D texture, Texture2D ammoTexture) : base(texture)
         {
             this.texture = texture;
-            this.bomb = bomb;
+            this.ammoTexture = ammoTexture;
 
             idleSize = new Vector2(74, 112);
             shootGunSize = new Vector2(74, 112);
@@ -151,7 +151,7 @@ namespace ScifiDruid.GameObjects
             curBossStatus = JaneStatus.IDLE;
             preBossStatus = JaneStatus.IDLE;
 
-            rockets = new List<Body>();
+            rockets = new List<JaneBomb>();
             bulletLists = new List<JaneBullet>();
 
         }
@@ -164,8 +164,6 @@ namespace ScifiDruid.GameObjects
             if (isAlive)
             {
                 CheckPlayerPosition(gameTime, 1);
-
-                takeDMG(1, "Bullet");
 
                 if (health <= 0)
                 {
@@ -302,7 +300,7 @@ namespace ScifiDruid.GameObjects
                 if (skillTime <= 0 && curBossStatus == JaneStatus.IDLE)
                 {
                     //randomAction = rand.Next(1, 4);
-                    randomAction = 3;
+                    randomAction = 2;
                     skillTime = 3;
                 }
                 else if (curBossStatus == JaneStatus.IDLE)
@@ -332,7 +330,7 @@ namespace ScifiDruid.GameObjects
             {
                 action1 = true;
                 curBossStatus = JaneStatus.SHOOTGUN;
-                JaneBullet bullet = new JaneBullet(bomb, enemyHitBox.Position, this, charDirection);
+                JaneBullet bullet = new JaneBullet(ammoTexture, enemyHitBox.Position, this, charDirection);
                 skillTime = 1;
                 bulletLists.Add(bullet);
                 bulletLists[bulletLists.Count - 1].Shoot();
@@ -345,7 +343,7 @@ namespace ScifiDruid.GameObjects
             }
             else if (skillTime <= 0 && bulletLists.Count == 3 && curBossStatus == JaneStatus.SHOOTPLASMA && beam == null)
             {
-                Vector2 positionBeam = new Vector2(0, 0);
+                Vector2 positionBeam = Vector2.Zero;
 
                 switch (charDirection)
                 {
@@ -363,6 +361,11 @@ namespace ScifiDruid.GameObjects
             }
             else if (skillTime <= 0 && beam != null)
             {
+                foreach (var item in bulletLists)
+                {
+                    item.bulletBody.Dispose();
+                }
+                bulletLists.Clear();
                 beam.Dispose();
                 beam = null;
                 curBossStatus = JaneStatus.IDLE;
@@ -383,10 +386,11 @@ namespace ScifiDruid.GameObjects
             {
                 action2 = true;
                 curBossStatus = JaneStatus.CALLDOWNBOMB;
-                Body dropRocket = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(prepareSize.X), ConvertUnits.ToSimUnits(prepareSize.Y), 1, playerPosition + new Vector2(0, -5), 0, BodyType.Dynamic, "SkillBoss");
-                dropRocket.IsSensor = false;
+                JaneBomb dropBomb = new JaneBomb(ammoTexture, playerPosition + new Vector2(0, -10), this, prepareSize);
+                //Body dropRocket = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(prepareSize.X), ConvertUnits.ToSimUnits(prepareSize.Y), 1, , 0, BodyType.Dynamic, "SkillBoss");
+                //dropRocket.IsSensor = false;
                 skillTime = 3;
-                rockets.Add(dropRocket);
+                rockets.Add(dropBomb);
             }
             else if (skillTime > 0)
             {
@@ -396,7 +400,7 @@ namespace ScifiDruid.GameObjects
             {
                 foreach (var item in rockets)
                 {
-                    item.Dispose();
+                    item.bombBody.Dispose();
                 }
                 rockets.Clear();
                 curBossStatus = JaneStatus.IDLE;
@@ -408,14 +412,21 @@ namespace ScifiDruid.GameObjects
             {
                 foreach (var item in rockets)
                 {
-                    if (IsContact(item, "Ground"))
+                    item.Update(gameTime);
+                    if (IsContact(item.bombBody, "Ground"))
                     {
-                        item.IsStatic = true;
+                        item.bossBombStatus = JaneBomb.BombStatus.BOMBDEAD;
+                        item.bombBody.IsStatic = true;
                     }
 
-                    if (IsContact(item, "Player"))
+                    if (IsContact(item.bombBody, "Player"))
                     {
-                        item.IsSensor = true;
+                        item.bombBody.IsSensor = true;
+                    }
+
+                    if (item.bossBombStatus == JaneBomb.BombStatus.BOMBEND)
+                    {
+                        item.bombBody.Dispose();
                     }
                 }
             }
@@ -640,9 +651,10 @@ namespace ScifiDruid.GameObjects
 
             if (action2)
             {
-                foreach (Body item in rockets)
+                foreach (JaneBomb item in rockets)
                 {
-                    spriteBatch.Draw(bomb, ConvertUnits.ToDisplayUnits(item.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(100)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(100))), Color.White, 0, new Vector2(prepareSize.X / 2, prepareSize.Y / 2), 1f, SpriteEffects.None, 0f);
+                    item.Draw(spriteBatch);
+                    //spriteBatch.Draw(ammoTexture, ConvertUnits.ToDisplayUnits(item.bombBody.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(100)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(100))), Color.White, 0, new Vector2(prepareSize.X / 2, prepareSize.Y / 2), 1f, SpriteEffects.None, 0f);
                 }
             }
 
@@ -655,7 +667,7 @@ namespace ScifiDruid.GameObjects
 
                 if (beam != null)
                 {
-                    spriteBatch.Draw(bomb, ConvertUnits.ToDisplayUnits(beam.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(1200)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(shootPlasmaSize.Y))), Color.White, 0, new Vector2(1200 / 2, shootPlasmaSize.Y / 2), 1f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(ammoTexture, ConvertUnits.ToDisplayUnits(beam.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(1200)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(shootPlasmaSize.Y))), Color.White, 0, new Vector2(1200 / 2, shootPlasmaSize.Y / 2), 1f, SpriteEffects.None, 0f);
                 }
             }
         }

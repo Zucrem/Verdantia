@@ -163,8 +163,8 @@ namespace ScifiDruid.GameScreen
             {
                 name = "Player Character",
                 size = new Vector2(46, 94),
-                //speed = 13,
-                speed = 50,
+                speed = 13,
+                //speed = 50,
                 jumpHigh = 10.5f,
             };
 
