@@ -47,7 +47,7 @@ namespace ScifiDruid.Managers
                         float x = j % map.Width * map.TileWidth;
                         float y = (float)Math.Floor(j / (double)map.Width) * map.TileHeight;
                         Rectangle tilesetRec = new Rectangle(tileWidth * column, tileHeight * row, tileWidth, tileHeight);
-                        spriteBatch.Draw(tileset, new Rectangle((int)x, (int)y, tileWidth, tileHeight), tilesetRec, Color.White);
+                        spriteBatch.Draw(tileset, new Rectangle((int)x, (int)y, tileWidth, tileHeight), tilesetRec, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1f);
                     }
                 }
             }

@@ -106,6 +106,7 @@ namespace ScifiDruid.GameObjects
 
         public override void Update(GameTime gameTime)
         {
+            ChangeBombStatus();
             //if dead animation animationEnd
             if (animationDead)
             {
@@ -144,10 +145,7 @@ namespace ScifiDruid.GameObjects
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
             preStatus = bossBombStatus;
         }
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bombOrigin, 1f, charDirection, 0f);
-        }
+
 
         public bool IsContact()
         {
@@ -177,6 +175,29 @@ namespace ScifiDruid.GameObjects
                 contactEdge = contactEdge.Next;
             }
             return false;
+        }
+
+        public void ChangeBombStatus()
+        {
+            switch (bossBombStatus)
+            {
+                case BombStatus.BOMBALIVE:
+                    delay = 200f;
+                    spriteVector = bombAliveAnimateList;
+                    spriteSize = new Vector2(bombAliveSize.X, bombAliveSize.Y);
+                    allframes = spriteVector.Count();
+                    break;
+                case BombStatus.BOMBDEAD:
+                    delay = 200f;
+                    spriteVector = bombDeadAnimateList;
+                    spriteSize = new Vector2(bombDeadSize.X, bombDeadSize.Y);
+                    allframes = spriteVector.Count();
+                    break;
+            }
+        }
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bombOrigin, 1f, charDirection, 0f);
         }
     }
 }

@@ -300,7 +300,7 @@ namespace ScifiDruid.GameObjects
                     allframes = spriteVector.Count();
                     break;
                 case DoctorStatus.DEAD:
-                    delay = 600f;
+                    delay = 900f;
                     spriteVector = deadSpriteVector;
                     spriteSize = new Vector2(deadSize.X, deadSize.Y);
                     allframes = spriteVector.Count();

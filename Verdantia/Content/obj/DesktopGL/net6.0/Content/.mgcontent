@@ -7,22 +7,25 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Fonts/font20.spritefont</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Fonts/font30.spritefont</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Fonts/font60.spritefont</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Fonts/KongFont.spritefont</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/ConfirmExit/ConfirmQuitPopUp.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/ConfirmExit/No.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/ConfirmExit/NoGlow.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/ConfirmExit/Yes.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/ConfirmExit/YesGlow.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/Black.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/continueHold.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/exitHold.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/GameLogo.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/INTROGAME.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/MainMenuBG.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/playHold.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/MainMenu/settingHold.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/Setting/ArrowButton.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/Setting/ArrowRButton.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/Setting/DoneButton.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/Setting/SettingBG.jpg</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/Setting/exitSetting.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/Setting/FULL.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/Setting/leftArrow.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/Setting/MainSettingScreen.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/Setting/MED.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/Setting/MUTE.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Main/Setting/rightArrow.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Boss/DrSheet.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Boss/JaneSheet.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Boss/LucasSheet.png</File>
@@ -38,8 +41,8 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Guardian/crocTex.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Guardian/lionTex.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Player/keeperSheet.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/birdPortriat.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/crocPortriat.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/birdPortrait.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/crocPortrait.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/dialogBox.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/doctorPortrait.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/janePortrait.png</File>
@@ -48,21 +51,34 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/soulBirdPortrait.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/soulCrocPortrait.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/soulLionPortrait.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Hud/crocNotR.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Hud/crocR.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Hud/dashNotR.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Hud/dashR.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Hud/healNotR.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Hud/healR.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Hud/health.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Hud/healthBar.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Hud/lionNotR.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Hud/lionR.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Hud/mana.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Hud/manaBar.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Hud/skillSlot.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Black.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/ConfirmExit/ConfirmExitPopUp.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/ConfirmExit/No.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/ConfirmExit/NoGlow.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/ConfirmExit/Yes.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/ConfirmExit/YesGlow.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Green.jpg</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/GroundSprite.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Pause/Continue.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Pause/ContinueGlow.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Pause/Exit.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Pause/ExitGlow.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Pause/PausePopUpBG.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Pause/Restart.png</File>
-    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Pause/RestartGlow.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Pause/EXIT.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Pause/FULL.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Pause/LeftArrow.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Pause/MED.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Pause/MUTE.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Pause/PAUSEPOPUP.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Pause/RESTART.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Pause/RESUME.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Pause/RightArrow.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Sound/ArrowButton.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/Sound/ArrowRButton.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/PlayScreen/White.png</File>
@@ -92,6 +108,22 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Button/hoverSound.wav</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

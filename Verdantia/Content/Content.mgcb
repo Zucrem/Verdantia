@@ -37,6 +37,19 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/font60.spritefont
 
+#begin Fonts/KongFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/KongFont.spritefont
+
+#begin Fonts/kongtext.ttf
+/copy:Fonts/kongtext.ttf
+
+#begin Fonts/Minitel.ttf
+/copy:Fonts/Minitel.ttf
+
 #begin Pictures/Main/ConfirmExit/ConfirmQuitPopUp.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -61,18 +74,6 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Main/ConfirmExit/No.png
 
-#begin Pictures/Main/ConfirmExit/NoGlow.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Pictures/Main/ConfirmExit/NoGlow.png
-
 #begin Pictures/Main/ConfirmExit/Yes.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -84,18 +85,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Pictures/Main/ConfirmExit/Yes.png
-
-#begin Pictures/Main/ConfirmExit/YesGlow.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Pictures/Main/ConfirmExit/YesGlow.png
 
 #begin Pictures/Main/MainMenu/Black.png
 /importer:TextureImporter
@@ -145,6 +134,18 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Main/MainMenu/GameLogo.png
 
+#begin Pictures/Main/MainMenu/INTROGAME.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Main/MainMenu/INTROGAME.png
+
 #begin Pictures/Main/MainMenu/MainMenuBG.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -181,7 +182,7 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Main/MainMenu/settingHold.png
 
-#begin Pictures/Main/Setting/ArrowButton.png
+#begin Pictures/Main/Setting/exitSetting.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -191,9 +192,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Main/Setting/ArrowButton.png
+/build:Pictures/Main/Setting/exitSetting.png
 
-#begin Pictures/Main/Setting/ArrowRButton.png
+#begin Pictures/Main/Setting/FULL.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -203,9 +204,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Main/Setting/ArrowRButton.png
+/build:Pictures/Main/Setting/FULL.png
 
-#begin Pictures/Main/Setting/DoneButton.png
+#begin Pictures/Main/Setting/leftArrow.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -215,9 +216,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Main/Setting/DoneButton.png
+/build:Pictures/Main/Setting/leftArrow.png
 
-#begin Pictures/Main/Setting/SettingBG.jpg
+#begin Pictures/Main/Setting/MainSettingScreen.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -227,7 +228,43 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Main/Setting/SettingBG.jpg
+/build:Pictures/Main/Setting/MainSettingScreen.png
+
+#begin Pictures/Main/Setting/MED.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Main/Setting/MED.png
+
+#begin Pictures/Main/Setting/MUTE.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Main/Setting/MUTE.png
+
+#begin Pictures/Main/Setting/rightArrow.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Main/Setting/rightArrow.png
 
 #begin Pictures/Play/Characters/Boss/DrSheet.png
 /importer:TextureImporter
@@ -409,7 +446,7 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/Characters/Player/keeperSheet.png
 
-#begin Pictures/Play/Dialog/birdPortriat.png
+#begin Pictures/Play/Dialog/birdPortrait.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -419,9 +456,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Play/Dialog/birdPortriat.png
+/build:Pictures/Play/Dialog/birdPortrait.png
 
-#begin Pictures/Play/Dialog/crocPortriat.png
+#begin Pictures/Play/Dialog/crocPortrait.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -431,7 +468,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Play/Dialog/crocPortriat.png
+/build:Pictures/Play/Dialog/crocPortrait.png
 
 #begin Pictures/Play/Dialog/dialogBox.png
 /importer:TextureImporter
@@ -529,6 +566,162 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/Dialog/soulLionPortrait.png
 
+#begin Pictures/Play/Hud/crocNotR.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Hud/crocNotR.png
+
+#begin Pictures/Play/Hud/crocR.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Hud/crocR.png
+
+#begin Pictures/Play/Hud/dashNotR.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Hud/dashNotR.png
+
+#begin Pictures/Play/Hud/dashR.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Hud/dashR.png
+
+#begin Pictures/Play/Hud/healNotR.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Hud/healNotR.png
+
+#begin Pictures/Play/Hud/healR.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Hud/healR.png
+
+#begin Pictures/Play/Hud/health.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Hud/health.png
+
+#begin Pictures/Play/Hud/healthBar.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Hud/healthBar.png
+
+#begin Pictures/Play/Hud/lionNotR.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Hud/lionNotR.png
+
+#begin Pictures/Play/Hud/lionR.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Hud/lionR.png
+
+#begin Pictures/Play/Hud/mana.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Hud/mana.png
+
+#begin Pictures/Play/Hud/manaBar.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Hud/manaBar.png
+
+#begin Pictures/Play/Hud/skillSlot.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/Hud/skillSlot.png
+
 #begin Pictures/Play/PlayScreen/Black.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -565,18 +758,6 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/PlayScreen/ConfirmExit/No.png
 
-#begin Pictures/Play/PlayScreen/ConfirmExit/NoGlow.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Pictures/Play/PlayScreen/ConfirmExit/NoGlow.png
-
 #begin Pictures/Play/PlayScreen/ConfirmExit/Yes.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -588,18 +769,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/PlayScreen/ConfirmExit/Yes.png
-
-#begin Pictures/Play/PlayScreen/ConfirmExit/YesGlow.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Pictures/Play/PlayScreen/ConfirmExit/YesGlow.png
 
 #begin Pictures/Play/PlayScreen/Green.jpg
 /importer:TextureImporter
@@ -625,7 +794,7 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/PlayScreen/GroundSprite.png
 
-#begin Pictures/Play/PlayScreen/Pause/Continue.png
+#begin Pictures/Play/PlayScreen/Pause/EXIT.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -635,9 +804,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Play/PlayScreen/Pause/Continue.png
+/build:Pictures/Play/PlayScreen/Pause/EXIT.png
 
-#begin Pictures/Play/PlayScreen/Pause/ContinueGlow.png
+#begin Pictures/Play/PlayScreen/Pause/FULL.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -647,9 +816,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Play/PlayScreen/Pause/ContinueGlow.png
+/build:Pictures/Play/PlayScreen/Pause/FULL.png
 
-#begin Pictures/Play/PlayScreen/Pause/Exit.png
+#begin Pictures/Play/PlayScreen/Pause/LeftArrow.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -659,9 +828,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Play/PlayScreen/Pause/Exit.png
+/build:Pictures/Play/PlayScreen/Pause/LeftArrow.png
 
-#begin Pictures/Play/PlayScreen/Pause/ExitGlow.png
+#begin Pictures/Play/PlayScreen/Pause/MED.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -671,9 +840,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Play/PlayScreen/Pause/ExitGlow.png
+/build:Pictures/Play/PlayScreen/Pause/MED.png
 
-#begin Pictures/Play/PlayScreen/Pause/PausePopUpBG.png
+#begin Pictures/Play/PlayScreen/Pause/MUTE.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -683,9 +852,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Play/PlayScreen/Pause/PausePopUpBG.png
+/build:Pictures/Play/PlayScreen/Pause/MUTE.png
 
-#begin Pictures/Play/PlayScreen/Pause/Restart.png
+#begin Pictures/Play/PlayScreen/Pause/PAUSEPOPUP.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -695,9 +864,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Play/PlayScreen/Pause/Restart.png
+/build:Pictures/Play/PlayScreen/Pause/PAUSEPOPUP.png
 
-#begin Pictures/Play/PlayScreen/Pause/RestartGlow.png
+#begin Pictures/Play/PlayScreen/Pause/RESTART.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -707,7 +876,31 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Pictures/Play/PlayScreen/Pause/RestartGlow.png
+/build:Pictures/Play/PlayScreen/Pause/RESTART.png
+
+#begin Pictures/Play/PlayScreen/Pause/RESUME.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/PlayScreen/Pause/RESUME.png
+
+#begin Pictures/Play/PlayScreen/Pause/RightArrow.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/PlayScreen/Pause/RightArrow.png
 
 #begin Pictures/Play/PlayScreen/Sound/ArrowButton.png
 /importer:TextureImporter

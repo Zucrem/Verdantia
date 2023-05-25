@@ -72,10 +72,10 @@ namespace ScifiDruid.GameObjects
         public static int maxMana;
 
         //Count cooldown of action
-        private float skill1Cooldown;
-        private float skill2Cooldown;
-        private float skill3Cooldown;
-        private float dashCooldown;
+        public float skill1Cooldown;
+        public float skill2Cooldown;
+        public float skill3Cooldown;
+        public float dashCooldown;
 
         private float skill3Time;
         private float skill3Active;
@@ -561,9 +561,15 @@ namespace ScifiDruid.GameObjects
                 }
             }
 
-            CrocodileSkill();
+            if (Singleton.Instance.stageunlock > 1)
+            {
+                CrocodileSkill();
+            }
 
-            LionSkill();
+            if (Singleton.Instance.stageunlock > 2)
+            {
+                LionSkill();
+            }
 
             if (press)
             {
