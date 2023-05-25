@@ -22,15 +22,24 @@ namespace ScifiDruid.GameScreen
 {
     class Stage3Screen : PlayScreen
     {
-        //create guardian tex
-        private Guardian guardian;
-
         //create switch and wall
         private SwitchWall switch_wall1;
         private StageObject stage_wall1;
 
         private SwitchWall switch_wall2;
         private StageObject stage_wall2;
+
+        private SwitchWall switch_wall3;
+        private StageObject stage_wall3;
+
+        private SwitchWall switch_wall4;
+        private StageObject stage_wall4;
+
+        private SwitchWall switch_wall5;
+        private StageObject stage_wall5;
+
+        private SwitchWall switch_wall6;
+        private StageObject stage_wall6;
 
         //panel moving and falling
         private StageObject squashBlock;
@@ -64,6 +73,23 @@ namespace ScifiDruid.GameScreen
         private Rectangle sign_wall2;
         private bool isOpenSwitch2 = false;
 
+        private Rectangle switch_button3;
+        private Rectangle sign_wall3;
+        private bool isOpenSwitch3 = false;
+
+
+        private Rectangle switch_button4;
+        private Rectangle sign_wall4;
+        private bool isOpenSwitch4 = false;
+
+        private Rectangle switch_button5;
+        private Rectangle sign_wall5;
+        private bool isOpenSwitch5 = false;
+
+        private Rectangle switch_button6;
+        private Rectangle sign_wall6;
+        private bool isOpenSwitch6 = false;
+
         //special panel
         private Rectangle squashBlockPosition;
         private List<Rectangle> squashBlocksPosition;
@@ -78,21 +104,20 @@ namespace ScifiDruid.GameScreen
         private Vector2 switch_open_textureSize = new Vector2(96, 2);
 
         private Vector2 wall_size = new Vector2(64, 192);
-        private Vector2 wall_textureSize = new Vector2(0, 10);
+        private Vector2 wall_textureSize = new Vector2(0, 0);
 
         private Vector2 panel_size = new Vector2(64, 6);
         private Vector2 panel_textureSize = new Vector2(64, 66);
 
         //check boss state
         private bool bossDead = false;
-
         public override void Initial()
         {
             base.Initial();
 
-            openingDialogCount = 2;
-            introDialogCount = 2;
-            endDialogCount = 2;
+            openingDialogCount = 7;
+            introDialogCount = 9;
+            endDialogCount = 5;
 
             Player.level3Unlock = true;
 
@@ -158,13 +183,12 @@ namespace ScifiDruid.GameScreen
             {
                 if (o.Name.Equals("wall1"))
                 {
-                    sign_wall1 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 125, (int)o.Width, (int)o.Height);
+                    sign_wall1 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 27, (int)o.Width, (int)o.Height);
                 }
                 if (o.Name.Equals("switch1"))
                 {
                     switch_button1 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
                 }
-
                 if (o.Name.Equals("wall2"))
                 {
                     sign_wall2 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 27, (int)o.Width, (int)o.Height);
@@ -173,7 +197,38 @@ namespace ScifiDruid.GameScreen
                 {
                     switch_button2 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
                 }
-
+                if (o.Name.Equals("wall3"))
+                {
+                    sign_wall3 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 27, (int)o.Width, (int)o.Height);
+                }
+                if (o.Name.Equals("switch3"))
+                {
+                    switch_button3 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                }
+                if (o.Name.Equals("wall4"))
+                {
+                    sign_wall4 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 27, (int)o.Width, (int)o.Height);
+                }
+                if (o.Name.Equals("switch4"))
+                {
+                    switch_button4 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                }
+                if (o.Name.Equals("wall5"))
+                {
+                    sign_wall5 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 27, (int)o.Width, (int)o.Height);
+                }
+                if (o.Name.Equals("switch5"))
+                {
+                    switch_button5 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                }
+                if (o.Name.Equals("wall6"))
+                {
+                    sign_wall6 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 27, (int)o.Width, (int)o.Height);
+                }
+                if (o.Name.Equals("switch6"))
+                {
+                    switch_button6 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                }
             }
             foreach (var o in map.ObjectGroups["SquashBlocks"].Objects)
             {
@@ -294,7 +349,7 @@ namespace ScifiDruid.GameScreen
             meleeTentacleEnemies = new List<MeleeEnemy>();
             meleeTentaclePositionList = ground2MonsterRects.Count();
             List<Vector2> meleePoliceSizeList = new List<Vector2>() { new Vector2(49, 83), new Vector2(49, 83), new Vector2(49, 83), new Vector2(123, 111), new Vector2(66, 83) };
-            List<List<Vector2>> meleePoliceAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(1, 28) }, new List<Vector2>() { new Vector2(1, 28), new Vector2(148, 28), new Vector2(298, 28) }, new List<Vector2>() { new Vector2(1, 28), new Vector2(148, 28), new Vector2(298, 28) }, new List<Vector2>() { new Vector2(415, 0), new Vector2(549, 0) }, new List<Vector2>() { new Vector2(0, 140), new Vector2(142, 140), new Vector2(290, 139), new Vector2(446, 139) } };
+            List<List<Vector2>> meleePoliceAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(1, 28) }, new List<Vector2>() { new Vector2(1, 28), new Vector2(148, 28), new Vector2(298, 28) }, new List<Vector2>() { new Vector2(415, 0), new Vector2(549, 0) }, new List<Vector2>() { new Vector2(415, 0), new Vector2(549, 0) }, new List<Vector2>() { new Vector2(0, 140), new Vector2(142, 140), new Vector2(290, 139), new Vector2(446, 139) } };
             for (int i = 0; i < meleeTentaclePositionList; i++)
             {
                 meleeTentacle = new MeleeEnemy(tentacleTex, meleePoliceSizeList, meleePoliceAnimateList)
@@ -331,26 +386,49 @@ namespace ScifiDruid.GameScreen
 
             //switch event
             //create switch button on position
-            /*switch_wall1 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) { size = new Vector2(32, 32) };
+            switch_wall1 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) { size = new Vector2(32, 32) };
             switch_wall1.Initial(switch_button1);
 
             switch_wall2 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) { size = new Vector2(32, 32) };
             switch_wall2.Initial(switch_button2);
 
+            switch_wall3 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) { size = new Vector2(32, 32) };
+            switch_wall3.Initial(switch_button3);
+
+            switch_wall4 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) { size = new Vector2(32, 32) };
+            switch_wall4.Initial(switch_button4);
+
+            switch_wall5 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) { size = new Vector2(32, 32) };
+            switch_wall5.Initial(switch_button5);
+
+            switch_wall6 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) { size = new Vector2(32, 32) };
+            switch_wall6.Initial(switch_button6);
+
             //create wall button on position
-            stage_wall1 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
+            stage_wall1 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 192) };
             stage_wall1.Initial(sign_wall1);
 
-            stage_wall2 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
-            stage_wall2.Initial(sign_wall2);*/
-        }
+            stage_wall2 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 192) };
+            stage_wall2.Initial(sign_wall2);
+
+            stage_wall3 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 192) };
+            stage_wall3.Initial(sign_wall3);
+
+            stage_wall4 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 192) };
+            stage_wall4.Initial(sign_wall4);
+
+            stage_wall5 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 192) };
+            stage_wall5.Initial(sign_wall5);
+
+            stage_wall6 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 192) };
+            stage_wall6.Initial(sign_wall6);
 
         public override void LoadContent()
         {
             base.LoadContent();
 
             //button and rock wall
-            switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage2Tileset/specialProps2");
+            switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage3Tileset/specialProps3");
 
             //boss dialog
             bossPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/doctorPortrait");
@@ -372,36 +450,7 @@ namespace ScifiDruid.GameScreen
             base.Update(gameTime);
             if (play)
             {
-                //stage 3 dialog
-                if (gamestate == GameState.OPENING)
-                {
-                    //change dialog
-                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
-                    {
-                        openingDialog++;
-                    }
-                }
-                if (gamestate == GameState.INTROBOSS)
-                {
-                    //change dialog
-                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
-                    {
-                        introBossDialog++;
-                    }
-                }
-                if (gamestate == GameState.END)
-                {
-                    //change dialog
-                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
-                    {
-                        endDialog++;
-                    }
-                }
 
-                if (gamestate == GameState.OPENING || gamestate == GameState.END)
-                {
-                    //guardian.Update(gameTime);
-                }
                 if (gamestate == GameState.PLAY)
                 {
                     //all enemy
@@ -417,22 +466,45 @@ namespace ScifiDruid.GameScreen
                     }
 
                     //switch button
-                    /*switch_wall1.Update(gameTime);
+                    switch_wall1.Update(gameTime);
                     switch_wall2.Update(gameTime);
+                    switch_wall3.Update(gameTime);
+                    switch_wall4.Update(gameTime);
+                    switch_wall5.Update(gameTime);
+                    switch_wall6.Update(gameTime);
                     //stage wall
                     stage_wall1.Update(gameTime);
-                    stage_wall2.Update(gameTime);*/
+                    stage_wall2.Update(gameTime);
+                    stage_wall3.Update(gameTime);
+                    stage_wall4.Update(gameTime);
+                    stage_wall5.Update(gameTime);
+                    stage_wall6.Update(gameTime);
 
                     //switch event
                     //press switch button
-                    /*if (!isOpenSwitch1 && switch_wall1.pressSwitch)
+                    if (!isOpenSwitch1 && switch_wall1.pressSwitch)
                     {
                         isOpenSwitch1 = true;
                     }
-
                     if (!isOpenSwitch2 && switch_wall2.pressSwitch)
                     {
                         isOpenSwitch2 = true;
+                    }
+                    if (!isOpenSwitch3 && switch_wall3.pressSwitch)
+                    {
+                        isOpenSwitch3 = true;
+                    }
+                    if (!isOpenSwitch4 && switch_wall4.pressSwitch)
+                    {
+                        isOpenSwitch4 = true;
+                    }
+                    if (!isOpenSwitch5 && switch_wall5.pressSwitch)
+                    {
+                        isOpenSwitch5 = true;
+                    }
+                    if (!isOpenSwitch6 && switch_wall6.pressSwitch)
+                    {
+                        isOpenSwitch6 = true;
                     }
 
                     //after open switch = clear wall
@@ -440,11 +512,26 @@ namespace ScifiDruid.GameScreen
                     {
                         stage_wall1.wallHitBox.Dispose();
                     }
-
                     if (isOpenSwitch2)
                     {
                         stage_wall2.wallHitBox.Dispose();
-                    }*/
+                    }
+                    if (isOpenSwitch3)
+                    {
+                        stage_wall3.wallHitBox.Dispose();
+                    }
+                    if (isOpenSwitch4)
+                    {
+                        stage_wall4.wallHitBox.Dispose();
+                    }
+                    if (isOpenSwitch5)
+                    {
+                        stage_wall5.wallHitBox.Dispose();
+                    }
+                    if (isOpenSwitch6)
+                    {
+                        stage_wall6.wallHitBox.Dispose();
+                    }
 
                     //if player get into boss state
                     if (!created_boss && player.IsContact(player.hitBox, "Boss_event"))
@@ -512,38 +599,151 @@ namespace ScifiDruid.GameScreen
 
         public override void DrawHUD(SpriteBatch spriteBatch)
         {
+            base.DrawHUD(spriteBatch);
             //draw tileset for map 3
             if (play)
             {
                 //Dialog OPENING
                 if (gamestate == GameState.OPENING)
                 {
+                    if (openingDialog < 5)
+                    {
+                        spriteBatch.DrawString(kongfonts, "Roark the Wild Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.Draw(soulLionPortraitTex, new Vector2(937, 255), Color.White);
+                    }
+                    if (openingDialog == 5)
+                    {
+                        spriteBatch.DrawString(kongfonts, "Crush the Lake Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.Draw(soulCrocPortraitTex, new Vector2(886, 306), Color.White);
+                    }
+                    if (openingDialog == 6)
+                    {
+                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
+                    }
                     switch (openingDialog)
                     {
                         case 1:
+                            spriteBatch.DrawString(kongfonts, "I'm your spirit now", new Vector2(132, 578), Color.White);
+                            spriteBatch.DrawString(kongfonts, "With my power, You can use the power of the jungle's king's roar", new Vector2(132, 610), Color.White);
+                            break;
+                        case 2:
+                            spriteBatch.DrawString(kongfonts, "When you use it, it can eliminate the robots around us in a short", new Vector2(132, 578), Color.White);
+                            spriteBatch.DrawString(kongfonts, " range within a certain period of time, Press Z and Up arrow to use this skill", new Vector2(132, 610), Color.White);
+                            break;
+                        case 3:
+                            spriteBatch.DrawString(kongfonts, "But this ability is not always active, so use it crefully", new Vector2(132, 578), Color.White);
+                            spriteBatch.DrawString(kongfonts, "Check the skill bar to see when it's active", new Vector2(132, 610), Color.White);
+                            break;
+                        case 4:
+                            spriteBatch.DrawString(kongfonts, "And be careful, this place is strange", new Vector2(132, 578), Color.White);
+                            spriteBatch.DrawString(kongfonts, "I heard the robots everywhere", new Vector2(132, 610), Color.White);
+                            break;
+                        case 5:
+                            spriteBatch.DrawString(kongfonts, "This is terrifying! Look at those things they made, It's so cruel!", new Vector2(132, 578), Color.White);
+                            break;
+                        case 6:
+                            spriteBatch.DrawString(kongfonts, "The tree must be at the end of the laboratory. We better hurry!", new Vector2(132, 578), Color.White);
                             break;
                     }
                 }
                 //Dialog INTROBOSS
                 if (gamestate == GameState.INTROBOSS)
                 {
+                    if (introBossDialog == 1 || introBossDialog == 3 || introBossDialog == 4  || introBossDialog == 6 || introBossDialog == 7)
+                    {
+                        spriteBatch.DrawString(kongfonts, "Viroj the Mad Scientist", new Vector2(123, 520), Color.White);
+                        spriteBatch.Draw(bossPortraitTex, new Vector2(820, 306), Color.White);
+                    }
+                    if (introBossDialog == 2)
+                    {
+                        spriteBatch.DrawString(kongfonts, "Roark the Wild Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.Draw(soulLionPortraitTex, new Vector2(937, 255), Color.White);
+                    }
+                    if (introBossDialog == 5)
+                    {
+                        spriteBatch.DrawString(kongfonts, "Crush the Lake Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.Draw(soulCrocPortraitTex, new Vector2(886, 306), Color.White);
+                    }
+                    if (introBossDialog == 8)
+                    {
+                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
+                    }
                     switch (introBossDialog)
                     {
                         case 1:
+                            spriteBatch.DrawString(kongfonts, "Oh! The precious creatures walked into my lab?! How wonderful!", new Vector2(132, 578), Color.White);
+                            break;
+                        case 2:
+                            spriteBatch.DrawString(kongfonts, "Return the tree to us before we take it by ourself", new Vector2(132, 578), Color.White);
+                            break;
+                        case 3:
+                            spriteBatch.DrawString(kongfonts, "Don't be hasty. Aren't you going to see what this tree can do? It's amazing", new Vector2(132, 578), Color.White);
+                            spriteBatch.DrawString(kongfonts, "The energy from the tree is a source of unlimited power", new Vector2(132, 610), Color.White);
+                            break;
+                        case 4:
+                            spriteBatch.DrawString(kongfonts, "These energies have helped me invent many great things", new Vector2(132, 578), Color.White);
+                            spriteBatch.DrawString(kongfonts, "Why should I giving it back to you", new Vector2(132, 610), Color.White);
+                            break;
+                        case 5:
+                            spriteBatch.DrawString(kongfonts, "Because it's belong to the forest, you psycho", new Vector2(132, 578), Color.White);
+                            spriteBatch.DrawString(kongfonts, "You have no right to steal it from our forest", new Vector2(132, 610), Color.White);
+                            break;
+                        case 6:
+                            spriteBatch.DrawString(kongfonts, "Damn creatures talked to much", new Vector2(132, 578), Color.White);
+                            spriteBatch.DrawString(kongfonts, "Fine, if you want it, come and get it from me", new Vector2(132, 610), Color.White);
+                            break;
+                        case 7:
+                            spriteBatch.DrawString(kongfonts, "But if you cant, I will catch you for my experiment", new Vector2(132, 578), Color.White);
+                            spriteBatch.DrawString(kongfonts, "Muahahaha, be prepared!", new Vector2(132, 610), Color.White);
+                            break;
+                        case 8:
+                            spriteBatch.DrawString(kongfonts, "I feel strange about this man, it seems like there's a tree power inside him", new Vector2(132, 578), Color.White);
+                            spriteBatch.DrawString(kongfonts, "Focus, this guy is tough. If we lose, the tree earth will be gone forever", new Vector2(132, 610), Color.White);
                             break;
                     }
                 }
                 //Dialog END
                 if (gamestate == GameState.END)
                 {
+                    if (endDialog == 1)
+                    {
+                        spriteBatch.DrawString(kongfonts, "Viroj the Mad Scientist", new Vector2(123, 520), Color.White);
+                        spriteBatch.Draw(bossPortraitTex, new Vector2(820, 306), Color.White);
+                    }
+                    if (endDialog == 2)
+                    {
+                        spriteBatch.DrawString(kongfonts, "Roark the Wild Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.Draw(soulLionPortraitTex, new Vector2(937, 255), Color.White);
+                    }
+                    if (endDialog == 3)
+                    {
+                        spriteBatch.DrawString(kongfonts, "Crush the Lake Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.Draw(soulCrocPortraitTex, new Vector2(886, 306), Color.White);
+                    }
+                    if (endDialog == 4)
+                    {
+                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
+                    }
                     switch (endDialog)
                     {
                         case 1:
+                            spriteBatch.DrawString(kongfonts, "Noooooooooo, I lost to the animals.", new Vector2(132, 578), Color.White);
+                            break;
+                        case 2:
+                            spriteBatch.DrawString(kongfonts, "We actually did it!", new Vector2(132, 578), Color.White);
+                            break;
+                        case 3:
+                            spriteBatch.DrawString(kongfonts, "Without this man, Earth will be more peaceful", new Vector2(132, 578), Color.White);
+                            break;
+                        case 4:
+                            spriteBatch.DrawString(kongfonts, "Indeed. Now its time to do the thing we need to do", new Vector2(132, 578), Color.White);
                             break;
                     }
                 }
             }
-            base.DrawHUD(spriteBatch);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -551,11 +751,6 @@ namespace ScifiDruid.GameScreen
             //draw tileset for map 3
             if (play)
             {
-                if (gamestate == GameState.OPENING || gamestate == GameState.END)
-                {
-                    //guardian.Draw(spriteBatch);
-                }
-
                 if (gamestate == GameState.START || gamestate == GameState.OPENING || gamestate == GameState.PLAY || gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS || gamestate == GameState.END)
                 {
                     tilemapManager.Draw(spriteBatch);
@@ -582,18 +777,38 @@ namespace ScifiDruid.GameScreen
                     }
 
                     ////draw switch animation
-                    /*switch_wall1.Draw(spriteBatch);
+                    switch_wall1.Draw(spriteBatch);
                     switch_wall2.Draw(spriteBatch);
-                    //draw wall1
+                    switch_wall3.Draw(spriteBatch);
+                    switch_wall4.Draw(spriteBatch);
+                    switch_wall5.Draw(spriteBatch);
+                    switch_wall6.Draw(spriteBatch);
+                    //draw wall
                     if (!isOpenSwitch1)
                     {
                         stage_wall1.Draw(spriteBatch);
                     }
-                    //draw wall2
+                    //draw wall
                     if (!isOpenSwitch2)
                     {
                         stage_wall2.Draw(spriteBatch);
-                    }*/
+                    }
+                    if (!isOpenSwitch3)
+                    {
+                        stage_wall3.Draw(spriteBatch);
+                    }
+                    if (!isOpenSwitch4)
+                    {
+                        stage_wall4.Draw(spriteBatch);
+                    }
+                    if (!isOpenSwitch5)
+                    {
+                        stage_wall5.Draw(spriteBatch);
+                    }
+                    if (!isOpenSwitch6)
+                    {
+                        stage_wall6.Draw(spriteBatch);
+                    }
                 }
 
                 if (gamestate == GameState.PLAY || gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS)

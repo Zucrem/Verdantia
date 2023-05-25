@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Code/Verdantia/Verdantia/Content/Songs/Stage1Screen/Stage1Theme.mp3</SourceFile>
-  <SourceTime>2023-05-23T23:06:50.0298105+07:00</SourceTime>
-  <DestFile>D:/Code/Verdantia/Verdantia/Content/bin/DesktopGL/Content/Songs/Stage1Screen/Stage1Theme.xnb</DestFile>
-  <DestTime>2023-05-24T17:30:19.3024578+07:00</DestTime>
+  <SourceFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Songs/Stage1Screen/Stage1Theme.mp3</SourceFile>
+  <SourceTime>2023-05-24T09:55:49.65829+07:00</SourceTime>
+  <DestFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/bin/DesktopGL/Content/Songs/Stage1Screen/Stage1Theme.xnb</DestFile>
+  <DestTime>2023-05-24T10:18:26.8466651+07:00</DestTime>
   <Importer>Mp3Importer</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>SongProcessor</Processor>
@@ -15,6 +15,6 @@
   <Dependencies />
   <BuildAsset />
   <BuildOutput>
-    <string>D:/Code/Verdantia/Verdantia/Content/bin/DesktopGL/Content/Songs/Stage1Screen/Stage1Theme.ogg</string>
+    <string>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/bin/DesktopGL/Content/Songs/Stage1Screen/Stage1Theme.ogg</string>
   </BuildOutput>
 </PipelineBuildEvent>

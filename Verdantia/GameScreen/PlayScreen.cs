@@ -20,6 +20,8 @@ using System.ComponentModel.DataAnnotations;
 using Box2DNet.Content;
 using Microsoft.Xna.Framework.Audio;
 using Verdantia.GameObjects;
+using System.Threading;
+using System.Diagnostics.Metrics;
 
 namespace ScifiDruid.GameScreen
 {
@@ -31,9 +33,9 @@ namespace ScifiDruid.GameScreen
         //all all texture
         protected Texture2D blackTex, whiteTex, greenTex;
         protected Texture2D arrowLeftBGPic, arrowRightBGPic, arrowLeftSFXPic, arrowRightSFXPic;//sound setting pic
-        protected Texture2D pausePopUpPic, continueButtonPic, restartButtonPic, exitButtonPic, continueButtonPic2, restartButtonPic2, exitButtonPic2;//for pause setting hovering
+        protected Texture2D pausePopUpPic, continueButtonPic, restartButtonPic, exitButtonPic, muteTex, medTex, highTex;//for pause setting hovering
         protected Texture2D restartWLPic, nextButtonPic, backWLPic, DefeatSignPic, VictorySignPic;//win or lose
-        protected Texture2D confirmExitPopUpPic, noConfirmPic1, yesConfirmPic1, noConfirmPic2, yesConfirmPic2;//for confirm
+        protected Texture2D confirmExitPopUpPic, noConfirmPic, yesConfirmPic;//for confirm
 
         protected Texture2D playerTex;
 
@@ -42,23 +44,17 @@ namespace ScifiDruid.GameScreen
         //GameObject
         protected Texture2D switch_wall_Tex;
         protected Texture2D birdTex, crocTex, lionTex;
+        //HUD
+        protected Texture2D healthBarTex, healthTex, manaBarTex, manaTex, skillBoxTex, healRTex, healNotRTex, dashRTex, dashNotRTex, crocRTex, crocNotRTex, lionRTex, lionNotRTex;
         //Portrait for dialog
         protected Texture2D dialogBoxTex, birdPortraitTex, soulBirdPortraitTex, crocPortraitTex, soulCrocPortraitTex, lionPortraitTex, soulLionPortraitTex;
         protected Texture2D bossPortraitTex;
         //stage 1
         protected Texture2D flameMechTex, chainsawMechTex, lucasBossTex;
-        //dialog 
-
-
         //stage 2
         protected Texture2D meleePoliceTex, gunPoliceTex, droneTex, janeBossTex, janeAmmoTex;
-        //dialog 
-
-
         //stage 3
         protected Texture2D tentacleTex, shieldDogTex, eyeBallTex, doctorBossTex, doctorAmmoTex;
-        //dialog 
-
 
         private FrameCounter _frameCounter = new FrameCounter();
         private float deltaTime;
@@ -104,7 +100,7 @@ namespace ScifiDruid.GameScreen
 
         //fonts
         //private SpriteFont Alagan
-        protected SpriteFont smallfonts, mediumfonts, bigfonts;//กำหนดชื่อ font
+        protected SpriteFont smallfonts, mediumfonts, bigfonts, kongfonts;//กำหนดชื่อ font
         protected Vector2 fontSize;//ขนาด font จาก SpriteFont
 
         //sound 
@@ -152,6 +148,11 @@ namespace ScifiDruid.GameScreen
         protected int openingDialogCount;
         protected int introDialogCount;
         protected int endDialogCount;
+
+
+        //delay when press to change dialog GameState
+        private float pressTime;
+        private float pressTimeDelay = 1;
         protected enum GameState 
         { 
             START, OPENING, PLAY, INTROBOSS, BOSS, END, WIN, LOSE, PAUSE, EXIT
@@ -171,9 +172,9 @@ namespace ScifiDruid.GameScreen
             gamestate = GameState.START;
 
             //create button on pause
-            continueButton = new Button(continueButtonPic, new Vector2((Singleton.Instance.Dimensions.X / 2) - 107, 370), new Vector2(215, 50));
-            restartButton = new Button(restartButtonPic, new Vector2((Singleton.Instance.Dimensions.X / 2) - 82, 455), new Vector2(165, 50));
-            exitButton = new Button(exitButtonPic, new Vector2((Singleton.Instance.Dimensions.X / 2) - 50, 540), new Vector2(100, 50));
+            continueButton = new Button(continueButtonPic, new Vector2(507, 238), new Vector2(203, 32));
+            restartButton = new Button(restartButtonPic, new Vector2(487, 318), new Vector2(239, 32));
+            exitButton = new Button(exitButtonPic, new Vector2(539, 562), new Vector2(131, 32));
 
             //create button win or lose screen
             nextButton = new Button(nextButtonPic, new Vector2(540, 430), new Vector2(200, 60));//create Button after win
@@ -181,15 +182,14 @@ namespace ScifiDruid.GameScreen
             exitWLButton = new Button(backWLPic, new Vector2(540, 591), new Vector2(200, 60));//create Button after win
 
             //setting button
-            arrowLeftBGButton = new Button(arrowLeftBGPic, new Vector2(570, 200), new Vector2(40, 40));
-            arrowRightBGButton = new Button(arrowRightBGPic, new Vector2(675, 200), new Vector2(40, 40));
-            arrowLeftSFXButton = new Button(arrowLeftSFXPic, new Vector2(570, 305), new Vector2(40, 40));
-            arrowRightSFXButton = new Button(arrowRightSFXPic, new Vector2(675, 305), new Vector2(40, 40));
-
+            arrowLeftBGButton = new Button(arrowLeftBGPic, new Vector2(584, 389), new Vector2(32, 56));
+            arrowRightBGButton = new Button(arrowRightBGPic, new Vector2(842, 389), new Vector2(32, 56));
+            arrowLeftSFXButton = new Button(arrowLeftSFXPic, new Vector2(584, 469), new Vector2(32, 56));
+            arrowRightSFXButton = new Button(arrowRightSFXPic, new Vector2(842, 469), new Vector2(32, 56));
 
             //confirm exit button
-            yesConfirmButton = new Button(yesConfirmPic1, new Vector2(495, 390), new Vector2(120, 60));
-            noConfirmButton = new Button(noConfirmPic1, new Vector2(710, 390), new Vector2(70, 60));
+            yesConfirmButton = new Button(yesConfirmPic, new Vector2(401, 452), new Vector2(190, 68));
+            noConfirmButton = new Button(noConfirmPic, new Vector2(670, 452), new Vector2(190, 68));
 
             //camera
             camera = new Camera();
@@ -210,9 +210,9 @@ namespace ScifiDruid.GameScreen
             //dialog
             dialogBoxTex = content.Load<Texture2D>("Pictures/Play/Dialog/dialogBox");
             //guardian portrait
-            birdPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/birdPortriat");
+            birdPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/birdPortrait");
             soulBirdPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/soulBirdPortrait");
-            crocPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/crocPortriat");
+            crocPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/crocPortrait");
             soulCrocPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/soulCrocPortrait");
             lionPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/lionPortrait");
             soulLionPortraitTex = content.Load<Texture2D>("Pictures/Play/Dialog/soulLionPortrait");
@@ -223,19 +223,20 @@ namespace ScifiDruid.GameScreen
             lionTex = content.Load<Texture2D>("Pictures/Play/Characters/Guardian/lionTex");
 
             //pause screen
-            pausePopUpPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/pausePopUpBG");
+            pausePopUpPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/PAUSEPOPUP");
             //all button on pausescreen
-            continueButtonPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/Continue");
-            exitButtonPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/Exit");
-            restartButtonPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/Restart");
-            continueButtonPic2 = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/ContinueGlow");
-            exitButtonPic2 = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/ExitGlow");
-            restartButtonPic2 = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/RestartGlow");
+            continueButtonPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/RESUME");
+            exitButtonPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/EXIT");
+            restartButtonPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/RESTART");
 
-            arrowLeftBGPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/Sound/ArrowButton");
-            arrowRightBGPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/Sound/ArrowRButton");
-            arrowLeftSFXPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/Sound/ArrowButton");
-            arrowRightSFXPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/Sound/ArrowRButton");
+            arrowLeftBGPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/LeftArrow");
+            arrowRightBGPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/RightArrow");
+            arrowLeftSFXPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/LeftArrow");
+            arrowRightSFXPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/RightArrow");
+
+            muteTex = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/MUTE");
+            medTex = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/MED");
+            highTex = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/FULL");
 
             //add button when win or lose
             nextButtonPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/WinLose/Next");
@@ -246,15 +247,35 @@ namespace ScifiDruid.GameScreen
 
             //confirmExit pic
             confirmExitPopUpPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/ConfirmExit/ConfirmExitPopUp");
-            yesConfirmPic1 = content.Load<Texture2D>("Pictures/Play/PlayScreen/ConfirmExit/Yes");
-            noConfirmPic1 = content.Load<Texture2D>("Pictures/Play/PlayScreen/ConfirmExit/No");
-            yesConfirmPic2 = content.Load<Texture2D>("Pictures/Play/PlayScreen/ConfirmExit/YesGlow");
-            noConfirmPic2 = content.Load<Texture2D>("Pictures/Play/PlayScreen/ConfirmExit/NoGlow");
+            yesConfirmPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/ConfirmExit/Yes");
+            noConfirmPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/ConfirmExit/No");
+
+            //Hud pic
+            healthBarTex = content.Load<Texture2D>("Pictures/Play/Hud/healthBar");
+            healthTex = content.Load<Texture2D>("Pictures/Play/Hud/health");
+
+            manaBarTex = content.Load<Texture2D>("Pictures/Play/Hud/manaBar");
+            manaTex = content.Load<Texture2D>("Pictures/Play/Hud/mana");
+
+            skillBoxTex = content.Load<Texture2D>("Pictures/Play/Hud/skillSlot");
+
+            healRTex = content.Load<Texture2D>("Pictures/Play/Hud/healR");
+            healNotRTex = content.Load<Texture2D>("Pictures/Play/Hud/healNotR");
+
+            dashRTex = content.Load<Texture2D>("Pictures/Play/Hud/dashR");
+            dashNotRTex = content.Load<Texture2D>("Pictures/Play/Hud/dashNotR");
+
+            crocRTex = content.Load<Texture2D>("Pictures/Play/Hud/crocR");
+            crocNotRTex = content.Load<Texture2D>("Pictures/Play/Hud/crocNotR");
+
+            lionRTex = content.Load<Texture2D>("Pictures/Play/Hud/lionR");
+            lionNotRTex = content.Load<Texture2D>("Pictures/Play/Hud/lionNotR");
 
             //fonts
             smallfonts = content.Load<SpriteFont>("Fonts/font20");
             bigfonts = content.Load<SpriteFont>("Fonts/font60");
             mediumfonts = content.Load<SpriteFont>("Fonts/font30");
+            kongfonts = content.Load<SpriteFont>("Fonts/KongFont");
 
             //player asset and bullet
             playerTex = content.Load<Texture2D>("Pictures/Play/Characters/Player/keeperSheet");
@@ -293,6 +314,9 @@ namespace ScifiDruid.GameScreen
 
         public override void Update(GameTime gameTime)
         {
+            //delay dialog time
+            pressTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
             //sound
             MediaPlayer.Volume = Singleton.Instance.bgMusicVolume;
 
@@ -349,6 +373,12 @@ namespace ScifiDruid.GameScreen
                         break;
                     case GameState.OPENING:
                         //if skip the story dialog
+                        //change dialog
+                        if (Keyboard.GetState().IsKeyDown(Keys.Space) && pressTime > pressTimeDelay)
+                        {
+                            openingDialog++;
+                            pressTime = 0;
+                        }
                         if (Keyboard.GetState().IsKeyDown(Keys.Enter) || openingDialog == openingDialogCount)
                         {
                             gamestate = GameState.PLAY;
@@ -384,10 +414,22 @@ namespace ScifiDruid.GameScreen
                         {
                             gamestate = GameState.BOSS;
                         }
+                        //change dialog
+                        if (Keyboard.GetState().IsKeyDown(Keys.Space) && pressTime > pressTimeDelay)
+                        {
+                            introBossDialog++;
+                            pressTime = 0;
+                        }
                         break;
                     case GameState.BOSS:
                         break;
                     case GameState.END:
+                        //change dialog
+                        if (Keyboard.GetState().IsKeyDown(Keys.Space) && pressTime > pressTimeDelay)
+                        {
+                            endDialog++;
+                            pressTime = 0;
+                        }
                         //if skip the story dialog
                         if (Keyboard.GetState().IsKeyDown(Keys.Enter) || endDialog == endDialogCount)
                         {
@@ -433,6 +475,7 @@ namespace ScifiDruid.GameScreen
                     switch (gamestate)
                     {
                         case GameState.END:
+                            resetWorld();
                             changeScreen = true;
 
                             //Next Screen
@@ -460,7 +503,7 @@ namespace ScifiDruid.GameScreen
                                 changeScreen = true;
                             }
                             //Restart
-                            if (restartButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
+                            if (restartWLButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
                                 ResetWorld();
                                 changeScreen = true;
@@ -482,9 +525,13 @@ namespace ScifiDruid.GameScreen
                         case GameState.LOSE:
                             MediaPlayer.Stop();
                             //Restart
-                            if (restartButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
+                            if (restartWLButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
-                                ResetWorld();
+                                if (!worldReset)
+                                {
+                                    resetWorld();
+                                    worldReset = true;
+                                }
                                 changeScreen = true;
                             }
                             //Exit
@@ -682,7 +729,6 @@ namespace ScifiDruid.GameScreen
             fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
 
             _frameCounter.Update(deltaTime);
-
             
             base.Update(gameTime);
         }
@@ -721,7 +767,7 @@ namespace ScifiDruid.GameScreen
                     }
                     else
                     {
-                        spriteBatch.Draw(greenTex, Vector2.Zero, Color.White);
+                        spriteBatch.Draw(blackTex, Vector2.Zero, Color.White);
                     }
                     //game state
                     switch (gamestate)
@@ -746,55 +792,46 @@ namespace ScifiDruid.GameScreen
                             exitWLButton.Draw(spriteBatch);
                             break;
                         case GameState.PAUSE:
-                            spriteBatch.Draw(pausePopUpPic, new Vector2((Singleton.Instance.Dimensions.X - pausePopUpPic.Width) / 2, (Singleton.Instance.Dimensions.Y - pausePopUpPic.Height) / 2), new Color(255, 255, 255, 255));
-                            fontSize = mediumfonts.MeasureString("Pause");
-                            spriteBatch.DrawString(mediumfonts, "Pause", new Vector2(((Singleton.Instance.Dimensions.X - fontSize.X) / 2), 70), new Color(33, 35, 60, 255));
+                            spriteBatch.Draw(pausePopUpPic, new Vector2(300,60), new Color(255, 255, 255, 255));
+
                             //BGM
-                            fontSize = mediumfonts.MeasureString("Musics");
-                            spriteBatch.DrawString(mediumfonts, "Musics", new Vector2(((Singleton.Instance.Dimensions.X - fontSize.X) / 2), 155), Color.Gray);
+                            spriteBatch.DrawString(mediumfonts, "Musics", new Vector2(400, 400), Color.White);
+
+                            //SFX
+                            spriteBatch.DrawString(mediumfonts, "Sounds", new Vector2(400, 480), Color.White);
 
                             arrowLeftBGButton.Draw(spriteBatch);
                             arrowRightBGButton.Draw(spriteBatch);
 
-                            //SFX
-                            fontSize = mediumfonts.MeasureString("Sounds");
-                            spriteBatch.DrawString(mediumfonts, "Sounds", new Vector2(((Singleton.Instance.Dimensions.X - fontSize.X) / 2), 255), Color.Gray);
-
                             arrowLeftSFXButton.Draw(spriteBatch);
                             arrowRightSFXButton.Draw(spriteBatch);
 
-                            continueButton.Draw(spriteBatch, continueButtonPic2);// Click Arrow BGM button
-                            restartButton.Draw(spriteBatch, restartButtonPic2);
-                            exitButton.Draw(spriteBatch, exitButtonPic2);
+                            continueButton.Draw(spriteBatch, continueButtonPic);
+                            restartButton.Draw(spriteBatch, restartButtonPic);
+                            exitButton.Draw(spriteBatch, exitButtonPic);
                             switch (Singleton.Instance.bgmState)
                             {
                                 case AudioState.MUTE:
-                                    fontSize = smallfonts.MeasureString("MUTE");
-                                    spriteBatch.DrawString(smallfonts, "MUTE", new Vector2(((Singleton.Instance.Dimensions.X - fontSize.X) / 2) + 5, 208), Color.Gray);
+                                    spriteBatch.Draw(muteTex, new Vector2(634, 389), Color.White);
                                     break;
                                 case AudioState.MEDIUM:
-                                    fontSize = smallfonts.MeasureString("MED");
-                                    spriteBatch.DrawString(smallfonts, "MED", new Vector2(((Singleton.Instance.Dimensions.X - fontSize.X) / 2) + 5, 208), Color.Gray);
+                                    spriteBatch.Draw(medTex, new Vector2(634, 389), Color.White);
                                     break;
                                 case AudioState.FULL:
-                                    fontSize = smallfonts.MeasureString("FULL");
-                                    spriteBatch.DrawString(smallfonts, "FULL", new Vector2(((Singleton.Instance.Dimensions.X - fontSize.X) / 2) + 5, 208), Color.Gray);
+                                    spriteBatch.Draw(highTex, new Vector2(634, 389), Color.White);
                                     break;
                             }
                             // Click Arrow SFX button
                             switch (Singleton.Instance.sfxState)
                             {
                                 case AudioState.MUTE:
-                                    fontSize = smallfonts.MeasureString("MUTE");
-                                    spriteBatch.DrawString(smallfonts, "MUTE", new Vector2(((Singleton.Instance.Dimensions.X - fontSize.X) / 2) + 5, 313), Color.Gray);
+                                    spriteBatch.Draw(muteTex, new Vector2(634, 469), Color.White);
                                     break;
                                 case AudioState.MEDIUM:
-                                    fontSize = smallfonts.MeasureString("MED");
-                                    spriteBatch.DrawString(smallfonts, "MED", new Vector2(((Singleton.Instance.Dimensions.X - fontSize.X) / 2) + 5, 313), Color.Gray);
+                                    spriteBatch.Draw(medTex, new Vector2(634, 469), Color.White);
                                     break;
                                 case AudioState.FULL:
-                                    fontSize = smallfonts.MeasureString("FULL");
-                                    spriteBatch.DrawString(smallfonts, "FULL", new Vector2(((Singleton.Instance.Dimensions.X - fontSize.X) / 2) + 5, 313), Color.Gray);
+                                    spriteBatch.Draw(highTex, new Vector2(634, 469), Color.White);
                                     break;
                             }
                             break;
@@ -802,16 +839,10 @@ namespace ScifiDruid.GameScreen
                 }
                 else if (confirmExit)
                 {
-                    spriteBatch.Draw(confirmExitPopUpPic, new Vector2((Singleton.Instance.Dimensions.X - confirmExitPopUpPic.Width) / 2, (Singleton.Instance.Dimensions.Y - confirmExitPopUpPic.Height) / 2), new Color(255, 255, 255, 255));
-                    fontSize = mediumfonts.MeasureString("Exit");
-                    spriteBatch.DrawString(mediumfonts, "Exit", new Vector2(((Singleton.Instance.Dimensions.X - fontSize.X) / 2), 193), new Color(33, 35, 60, 255));
-                    fontSize = mediumfonts.MeasureString("Are you sure");
-                    spriteBatch.DrawString(mediumfonts, "Are you sure", new Vector2((Singleton.Instance.Dimensions.X - fontSize.X) / 2, 270), Color.DarkGray);
-                    fontSize = mediumfonts.MeasureString("you want to exit?");
-                    spriteBatch.DrawString(mediumfonts, "you want to exit?", new Vector2((Singleton.Instance.Dimensions.X - fontSize.X) / 2, 325), Color.DarkGray);
-
-                    noConfirmButton.Draw(spriteBatch, noConfirmPic2);
-                    yesConfirmButton.Draw(spriteBatch, yesConfirmPic2);
+                    spriteBatch.Draw(blackTex, Vector2.Zero, Color.White);
+                    spriteBatch.Draw(confirmExitPopUpPic, new Vector2(439, 224), Color.White);
+                    noConfirmButton.Draw(spriteBatch, noConfirmPic);
+                    yesConfirmButton.Draw(spriteBatch, yesConfirmPic);
                 }
 
                 if (changeScreen)
@@ -842,22 +873,93 @@ namespace ScifiDruid.GameScreen
         {
             if (play)
             {
-                if (play)
+                //draw dialog box, spacebar text and skip text
+                if (gamestate == GameState.OPENING || gamestate == GameState.INTROBOSS || gamestate == GameState.END)
                 {
-                    //draw dialog box, spacebar text and skip text
-                    if (gamestate == GameState.OPENING || gamestate == GameState.INTROBOSS || gamestate == GameState.END)
-                    {
-                        spriteBatch.Draw(dialogBoxTex, new Rectangle(0, 528, 1092, 192), new Rectangle(0, 0, 1092, 192), Color.White);
+                    spriteBatch.Draw(dialogBoxTex, new Rectangle(94, 508, 1092, 192), new Rectangle(0, 0, 1092, 192), Color.White);
 
-                        fontSize = smallfonts.MeasureString("Press Spacebar to next");
-                        spriteBatch.DrawString(smallfonts, "Press Spacebar to next", new Vector2(797, 690), Color.White);
+                    spriteBatch.DrawString(kongfonts, "Press Spacebar", new Vector2(988, 667), Color.White);
+                }
+
+                if (gamestate == GameState.PLAY || gamestate == GameState.BOSS)
+                {
+                    int mana = (int)Player.mana;
+                    int health = (int)Player.health;
+
+                    //HUD
+                    //Health Bar
+                    spriteBatch.Draw(healthBarTex, new Rectangle(1, 1, 338, 86), Color.White);
+                    if (health != 0)
+                    {
+                        for (int i = 0; i < health; i++)
+                        {
+                            spriteBatch.Draw(healthTex, new Rectangle((i * 36) + 73, 43, 32, 28), Color.White);
+                        }
+                    }
+                    //mana Bar
+                    double manaRatio = ((double)mana / 100) * 200;//mana percent per 100 * manaTex.length
+                    spriteBatch.Draw(manaBarTex, new Rectangle(1, 95, 216, 56), Color.White);
+                    spriteBatch.Draw(manaTex, new Rectangle(9, 103, (int)manaRatio, 40), Color.White);
+
+                    //all skill
+                    //lion skill
+                    spriteBatch.Draw(skillBoxTex, new Rectangle(1, 160, 62, 56), Color.White);
+                    if (Singleton.Instance.stageunlock < 3)
+                    {
+                        spriteBatch.Draw(lionNotRTex, new Rectangle(14, 171, 36, 34), Color.White);
+                    }
+                    else
+                    {
+                        if (player.skill3Cooldown <= 0)
+                        {
+                            spriteBatch.Draw(lionRTex, new Rectangle(14, 171, 36, 34), Color.White);
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(lionNotRTex, new Rectangle(14, 171, 36, 34), Color.White);
+                        }
+                    }
+
+                    //croc skill
+                    spriteBatch.Draw(skillBoxTex, new Rectangle(68, 160, 62, 56), Color.White);
+                    if (Singleton.Instance.stageunlock < 2)
+                    {
+                        spriteBatch.Draw(crocNotRTex, new Rectangle(78, 178, 42, 20), Color.White);
+                    }
+                    else
+                    {
+                        if (player.skill2Cooldown <= 0)
+                        {
+                            spriteBatch.Draw(crocRTex, new Rectangle(78, 178, 42, 20), Color.White);
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(crocNotRTex, new Rectangle(78, 178, 42, 20), Color.White);
+                        }
+                    }
+
+                    //dash skill
+                    spriteBatch.Draw(skillBoxTex, new Rectangle(135, 160, 62, 56), Color.White);
+                    if (player.dashCooldown <= 0)
+                    {
+                        spriteBatch.Draw(dashRTex, new Rectangle(152, 182, 30, 14), Color.White);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(dashNotRTex, new Rectangle(152, 182, 30, 14), Color.White);
+                    }
+
+                    //heal skill
+                    spriteBatch.Draw(skillBoxTex, new Rectangle(202, 160, 62, 56), Color.White);
+                    if (player.skill1Cooldown <= 0)
+                    {
+                        spriteBatch.Draw(healRTex, new Rectangle(210, 175, 44, 26), Color.White);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(healNotRTex, new Rectangle(210, 175, 44, 26), Color.White);
                     }
                 }
-                int mana = (int)Player.mana;
-                int health = (int)Player.health;
-
-                spriteBatch.DrawString(mediumfonts, health.ToString(), new Vector2(1, 1), Color.Black);
-                spriteBatch.DrawString(mediumfonts, mana.ToString(), new Vector2(1, 65), Color.Black);
             }
         }
     }

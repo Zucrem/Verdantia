@@ -11,14 +11,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static ScifiDruid.GameObjects.JaneBomb;
 
 namespace Verdantia.GameObjects
 {
     public class Guardian : _GameObject
     {
         private Texture2D texture;
-        private GameTime gameTime;
 
         private Body guardianBody;
 
@@ -64,22 +62,15 @@ namespace Verdantia.GameObjects
             spriteVector = guardianRectVector;
             allframes = spriteVector.Count();
         }
-
-        public void FlyInitial(Rectangle spawnPosition)
+        public void Initial(Rectangle spawnPosition)
         {
             guardianBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(guardianSizeX), ConvertUnits.ToSimUnits(guardianSizeY), 1f, ConvertUnits.ToSimUnits(new Vector2(spawnPosition.X, spawnPosition.Y)), 0, BodyType.Dynamic, "Guardian");
             guardianBody.IsSensor = true;
             guardianBody.IgnoreGravity = true;
         }
-        public void GroundInitial(Rectangle spawnPosition)
-        {
-            guardianBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(guardianSizeX), ConvertUnits.ToSimUnits(guardianSizeY), 1f, ConvertUnits.ToSimUnits(new Vector2(spawnPosition.X, spawnPosition.Y)), 0, BodyType.Dynamic, "Guardian");
-            guardianBody.IsSensor = true;
-        }
 
         public override void Update(GameTime gameTime)
         {
-            this.gameTime = gameTime;
             position = guardianBody.Position;
 
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;

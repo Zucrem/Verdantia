@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using System.Diagnostics;
 using Verdantia;
+using System.Threading;
 
 namespace ScifiDruid.GameScreen
 {
@@ -21,10 +22,10 @@ namespace ScifiDruid.GameScreen
         private Color _Color = new Color(250, 250, 250, 0);
 
         //all picture
-        private Texture2D bgTex, blackTex, settingbgTex;//background
+        private Texture2D bgTex, blackTex, settingbgTex,introTex;//background
         private Texture2D logoTex, newGameTex, continueTex, settingTex, exitTex;//mainmenu pic
-        private Texture2D arrowLbgTex, arrowRbgTex, arrowLsfxTex, arrowRsfxTex, backSettingTex, selectStageTex;//setting pic
-        private Texture2D confirmQuitPopUpTex, yesText1, noText1, yesText2, noText2;//exit confirmed pic
+        private Texture2D arrowLbgTex, arrowRbgTex, arrowLsfxTex, arrowRsfxTex, backSettingTex, selectStageTex, muteTex, medTex, highTex;//setting pic
+        private Texture2D confirmQuitPopUpTex, yesText, noText;//exit confirmed pic
 
         //all button
         private Button newGameButton, continueButton, settingButton, exitButton;//mainmenu button
@@ -46,7 +47,7 @@ namespace ScifiDruid.GameScreen
             MAINSCREEN,
             SETTINGSCREEN,
             QUITSCREEN,
-            SELECTSTAGESCREEN
+            INTROGAME
         }
 
         //check if press arrow at howtoplay screen
@@ -73,16 +74,16 @@ namespace ScifiDruid.GameScreen
             exitButton = new Button(exitTex, new Vector2(56, 628), new Vector2(140, 32));
 
             //setting button
-            arrowLeftBGButton = new Button(arrowLbgTex, new Vector2(525, 320), new Vector2(40, 40));
-            arrowRightBGButton = new Button(arrowRbgTex, new Vector2(705, 320), new Vector2(40, 40));
-            arrowLeftSFXButton = new Button(arrowLsfxTex, new Vector2(525, 440), new Vector2(40, 40));
-            arrowRightSFXButton = new Button(arrowRsfxTex, new Vector2(705, 440), new Vector2(40, 40));
+            arrowLeftBGButton = new Button(arrowLbgTex, new Vector2(664, 244), new Vector2(32, 56));
+            arrowRightBGButton = new Button(arrowRbgTex, new Vector2(968, 244), new Vector2(32, 56));
+            arrowLeftSFXButton = new Button(arrowLsfxTex, new Vector2(664, 334), new Vector2(32, 56));
+            arrowRightSFXButton = new Button(arrowRsfxTex, new Vector2(968, 334), new Vector2(32, 56));
 
-            backSettingButton = new Button(backSettingTex, new Vector2(980, 570), new Vector2(150, 60));
+            backSettingButton = new Button(backSettingTex, new Vector2(1156, 60), new Vector2(60, 60));
 
             //confirm Exit button
-            yesButton = new Button(yesText1, new Vector2(495, 390), new Vector2(120, 60));
-            noButton = new Button(noText1, new Vector2(710, 390), new Vector2(70, 60));
+            yesButton = new Button(yesText, new Vector2(401, 452), new Vector2(190, 68));
+            noButton = new Button(noText, new Vector2(670, 452), new Vector2(190, 68));
         }
         public override void LoadContent()
         {
@@ -92,7 +93,8 @@ namespace ScifiDruid.GameScreen
             logoTex = content.Load<Texture2D>("Pictures/Main/MainMenu/GameLogo");
             bgTex = content.Load<Texture2D>("Pictures/Main/MainMenu/MainMenuBG");
             blackTex = content.Load<Texture2D>("Pictures/Main/MainMenu/Black");
-            settingbgTex = content.Load<Texture2D>("Pictures/Main/Setting/SettingBG");
+            settingbgTex = content.Load<Texture2D>("Pictures/Main/Setting/MainSettingScreen");
+            introTex = content.Load<Texture2D>("Pictures/Main/MainMenu/INTROGAME");
 
             //all pic for button
             //mainscreen pic
@@ -101,18 +103,19 @@ namespace ScifiDruid.GameScreen
             settingTex = content.Load<Texture2D>("Pictures/Main/MainMenu/settingHold");
             exitTex = content.Load<Texture2D>("Pictures/Main/MainMenu/exitHold");
             //setting pic
-            backSettingTex = content.Load<Texture2D>("Pictures/Main/Setting/DoneButton");
-            arrowLbgTex = content.Load<Texture2D>("Pictures/Main/Setting/ArrowButton");
-            arrowRbgTex = content.Load<Texture2D>("Pictures/Main/Setting/ArrowRButton");
-            arrowLsfxTex = content.Load<Texture2D>("Pictures/Main/Setting/ArrowButton");
-            arrowRsfxTex = content.Load<Texture2D>("Pictures/Main/Setting/ArrowRButton");
+            backSettingTex = content.Load<Texture2D>("Pictures/Main/Setting/exitSetting");
+            arrowLbgTex = content.Load<Texture2D>("Pictures/Main/Setting/leftArrow");
+            arrowRbgTex = content.Load<Texture2D>("Pictures/Main/Setting/rightArrow");
+            arrowLsfxTex = content.Load<Texture2D>("Pictures/Main/Setting/leftArrow");
+            arrowRsfxTex = content.Load<Texture2D>("Pictures/Main/Setting/rightArrow");
+            muteTex = content.Load<Texture2D>("Pictures/Main/Setting/MUTE");
+            medTex = content.Load<Texture2D>("Pictures/Main/Setting/MED");
+            highTex = content.Load<Texture2D>("Pictures/Main/Setting/FULL");
 
             //confirmQuit pic
             confirmQuitPopUpTex = content.Load<Texture2D>("Pictures/Main/ConfirmExit/ConfirmQuitPopUp");
-            yesText1 = content.Load<Texture2D>("Pictures/Main/ConfirmExit/Yes");
-            noText1 = content.Load<Texture2D>("Pictures/Main/ConfirmExit/No");
-            yesText2 = content.Load<Texture2D>("Pictures/Main/ConfirmExit/YesGlow");
-            noText2 = content.Load<Texture2D>("Pictures/Main/ConfirmExit/NoGlow");
+            yesText = content.Load<Texture2D>("Pictures/Main/ConfirmExit/Yes");
+            noText = content.Load<Texture2D>("Pictures/Main/ConfirmExit/No");
 
             // Fonts
             smallfonts = content.Load<SpriteFont>("Fonts/font20");
@@ -143,6 +146,15 @@ namespace ScifiDruid.GameScreen
             Singleton.Instance.MouseCurrent = Mouse.GetState();
             switch (screen)
             {
+                case StateScreen.INTROGAME:
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                    {
+                        //Singleton.Instance.levelState = LevelState.FOREST;
+                        Singleton.Instance.levelState = LevelState.CITY;
+                        //Singleton.Instance.levelState = LevelState.LAB;
+                        ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
+                    }
+                    break;
                 case StateScreen.MAINSCREEN:
                     mainBG.Update(gameTime);
                     // Click start new game
@@ -154,6 +166,7 @@ namespace ScifiDruid.GameScreen
                         Singleton.Instance.levelState = LevelState.LAB;
                         ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
 
+                        screen = StateScreen.INTROGAME;
                     }
                     // Click start continue game
                     if (continueButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
@@ -336,6 +349,11 @@ namespace ScifiDruid.GameScreen
             //draw in each screen
             switch (screen)
             {
+                case StateScreen.INTROGAME:
+                    spriteBatch.Draw(blackTex, Vector2.Zero, Color.White);
+                    spriteBatch.Draw(introTex, new Vector2(179, 76), Color.White);
+                    spriteBatch.DrawString(mediumfonts, "Press Spacebar", new Vector2(878, 667), Color.White);
+                    break;
                 case StateScreen.MAINSCREEN:
                     //bg
                     mainBG.Draw(spriteBatch);
@@ -345,18 +363,12 @@ namespace ScifiDruid.GameScreen
                     exitButton.Draw(spriteBatch);
                     break;
                 case StateScreen.SETTINGSCREEN:
-                    spriteBatch.Draw(settingbgTex, Vector2.Zero, Color.White);
+                    spriteBatch.Draw(blackTex, Vector2.Zero, Color.White);
+                    spriteBatch.Draw(settingbgTex, new Vector2(112, 60), Color.White);
                     backSettingButton.Draw(spriteBatch);
-                    spriteBatch.DrawString(bigfonts, "Setting", new Vector2(550, 165), Color.Gray);
-
-                    //BGM
-                    spriteBatch.DrawString(mediumfonts, "Musics", new Vector2(300, 324), Color.Gray);
 
                     arrowLeftBGButton.Draw(spriteBatch);
                     arrowRightBGButton.Draw(spriteBatch);
-
-                    //SFX
-                    spriteBatch.DrawString(mediumfonts, "Sounds", new Vector2(300, 444), Color.Gray);
 
                     arrowLeftSFXButton.Draw(spriteBatch);
                     arrowRightSFXButton.Draw(spriteBatch);
@@ -365,39 +377,35 @@ namespace ScifiDruid.GameScreen
                     switch (Singleton.Instance.bgmState)
                     {
                         case AudioState.MUTE:
-                            spriteBatch.DrawString(mediumfonts, "MUTE", new Vector2(585, 324), Color.Gray);
+                            spriteBatch.Draw(muteTex, new Vector2(736, 244), Color.White);
                             break;
                         case AudioState.MEDIUM:
-                            spriteBatch.DrawString(mediumfonts, "MED", new Vector2(585, 324), Color.Gray);
+                            spriteBatch.Draw(medTex, new Vector2(736, 244), Color.White);
                             break;
                         case AudioState.FULL:
-                            spriteBatch.DrawString(mediumfonts, "FULL", new Vector2(585, 324), Color.Gray);
+                            spriteBatch.Draw(highTex, new Vector2(736, 244), Color.White);
                             break;
                     }
                     // Click Arrow SFX button
                     switch (Singleton.Instance.sfxState)
                     {
                         case AudioState.MUTE:
-                            spriteBatch.DrawString(mediumfonts, "MUTE", new Vector2(580, 444), Color.Gray);
+                            spriteBatch.Draw(muteTex, new Vector2(736, 334), Color.White);
                             break;
                         case AudioState.MEDIUM:
-                            spriteBatch.DrawString(mediumfonts, "MED", new Vector2(580, 444), Color.Gray);
+                            spriteBatch.Draw(medTex, new Vector2(736, 334), Color.White);
                             break;
                         case AudioState.FULL:
-                            spriteBatch.DrawString(mediumfonts, "FULL", new Vector2(580, 445), Color.Gray);
+                            spriteBatch.Draw(highTex, new Vector2(736, 334), Color.White);
                             break;
                     }
                     break;
                 case StateScreen.QUITSCREEN:
                     spriteBatch.Draw(blackTex, Vector2.Zero, new Color(255, 255, 255, 210));
-                    spriteBatch.Draw(confirmQuitPopUpTex, new Vector2((Singleton.Instance.Dimensions.X - confirmQuitPopUpTex.Width) / 2, (Singleton.Instance.Dimensions.Y - confirmQuitPopUpTex.Height) / 2), new Color(255, 255, 255, 255));
-                    fontSize = mediumfonts.MeasureString("Are you sure");
-                    spriteBatch.DrawString(mediumfonts, "Are you sure", new Vector2((Singleton.Instance.Dimensions.X - fontSize.X) / 2, 255), Color.DarkGray);
-                    fontSize = mediumfonts.MeasureString("you want to quit?");
-                    spriteBatch.DrawString(mediumfonts, "you want to quit?", new Vector2((Singleton.Instance.Dimensions.X - fontSize.X) / 2, 310), Color.DarkGray);
+                    spriteBatch.Draw(confirmQuitPopUpTex, new Vector2(436, 224), new Color(255, 255, 255, 255));
 
-                    noButton.Draw(spriteBatch, noText2);
-                    yesButton.Draw(spriteBatch, yesText2);
+                    noButton.Draw(spriteBatch, noText);
+                    yesButton.Draw(spriteBatch, yesText);
                     break;
             }
 

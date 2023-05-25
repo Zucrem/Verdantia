@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Code/Verdantia/Verdantia/Content/Pictures/Play/Characters/Boss/JaneSheet.png</SourceFile>
-  <SourceTime>2023-05-23T23:06:49.9790834+07:00</SourceTime>
-  <DestFile>D:/Code/Verdantia/Verdantia/Content/bin/DesktopGL/Content/Pictures/Play/Characters/Boss/JaneSheet.xnb</DestFile>
-  <DestTime>2023-05-24T17:30:10.8673698+07:00</DestTime>
+  <SourceFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Characters/Boss/JaneSheet.png</SourceFile>
+  <SourceTime>2023-05-24T09:55:49.6128265+07:00</SourceTime>
+  <DestFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/bin/DesktopGL/Content/Pictures/Play/Characters/Boss/JaneSheet.xnb</DestFile>
+  <DestTime>2023-05-24T10:18:23.0754125+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

@@ -352,7 +352,7 @@ namespace ScifiDruid.GameObjects
                     charDirection = SpriteEffects.None;
                 }
 
-            enemyHitBox.ApplyForce(new Vector2(120 * speed, 0));
+                enemyHitBox.ApplyForce(new Vector2(120 * speed, 0));
 
             }
             else if (playerPosition.X - position.X < -1 && (xspawnPosition - enemyHitBox.Position.X) < pathWalkLength) // run(left) to player but not out of area
