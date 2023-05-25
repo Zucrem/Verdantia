@@ -339,7 +339,7 @@ namespace ScifiDruid.GameScreen
             }
 
             //create boss on position
-            boss = new JaneBoss(janeBossTex,whiteTex)
+            boss = new JaneBoss(janeBossTex, janeAmmoTex)
             {
                 size = new Vector2(74, 112),
                 health = 6,

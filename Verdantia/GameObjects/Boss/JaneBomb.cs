@@ -60,6 +60,7 @@ namespace ScifiDruid.GameObjects
 
         private Vector2 bombDeadSize = new Vector2(114, 108);
         private List<Vector2> bombDeadAnimateList = new List<Vector2>() { new Vector2(100, 774), new Vector2(224, 774), new Vector2(367, 774), new Vector2(507, 778) };
+
         public enum BombStatus
         {
             BOMBALIVE,
@@ -67,18 +68,17 @@ namespace ScifiDruid.GameObjects
             BOMBEND
         }
 
-        public JaneBomb(Texture2D texture, Vector2 position, Enemy enemy) : base(texture)
+        public JaneBomb(Texture2D texture, Vector2 position, Enemy enemy,Vector2 bombSize) : base(texture)
         {
             this.texture = texture;
             this.position = position;
 
-            bombSpeed = 400;
-            bombDistance = 10;
-
             //create wall hitbox
             bombBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bombSize.X), ConvertUnits.ToSimUnits(bombSize.Y), 0, position, 0, BodyType.Dynamic, "EnemyBullet");
-            bombBody.IgnoreGravity = true;
             bombBody.IgnoreCollisionWith(enemy.enemyHitBox);
+            bombBody.IsSensor = true;
+
+            bossBombStatus = BombStatus.BOMBALIVE;
 
             //animation
             bombSize = bombAliveSize;
@@ -86,26 +86,13 @@ namespace ScifiDruid.GameObjects
 
             spriteSize = bombSize;
 
-            switch (charDirection)
-            {
-                case SpriteEffects.None:
-                    bombBody.Position += new Vector2(-1f, 0);
-                    break;
-                case SpriteEffects.FlipHorizontally:
-                    bombBody.Position += new Vector2(1f, 0);
-                    break;
-            }
-
             bombOrigin = new Vector2(bombSize.X / 2, bombSize.Y / 2);
-        }
-
-        public void Shoot()
-        {
-            bossBombStatus = BombStatus.BOMBALIVE;
         }
 
         public override void Update(GameTime gameTime)
         {
+            ChangeBombStatus();
+            position = bombBody.Position;
             //if dead animation animationEnd
             if (animationDead)
             {
@@ -144,12 +131,27 @@ namespace ScifiDruid.GameObjects
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
             preStatus = bossBombStatus;
         }
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bombOrigin, 1f, charDirection, 0f);
-        }
 
-        public bool IsContact()
+        public void ChangeBombStatus()
+        {
+            switch (bossBombStatus)
+            {
+                case BombStatus.BOMBALIVE:
+                    delay = 200f;
+                    spriteVector = bombAliveAnimateList;
+                    spriteSize = new Vector2(bombAliveSize.X, bombAliveSize.Y);
+                    allframes = spriteVector.Count();
+                    break;
+                case BombStatus.BOMBDEAD:
+                    delay = 200f;
+                    spriteVector = bombDeadAnimateList;
+                    spriteSize = new Vector2(bombDeadSize.X, bombDeadSize.Y);
+                    allframes = spriteVector.Count();
+                    break;
+            }
+        }
+        
+        public bool IsContact(String contact)
         {
             ContactEdge contactEdge = bombBody.ContactList;
             while (contactEdge != null)
@@ -159,15 +161,11 @@ namespace ScifiDruid.GameObjects
                 Body fixtureA_Body = contactEdge.Contact.FixtureA.Body;
                 Body fixtureB_Body = contactEdge.Contact.FixtureB.Body;
 
-                bool contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals("Ground"));
-                bool contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals("Ground"));
+                bool contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals(contact));
+                bool contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals(contact));
                 bool contactGround = contactA || contactB;
 
-                contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals("Player"));
-                contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals("Player"));
-                bool contactEnemy = contactA || contactB;
-
-                if (contactFixture.IsTouching && (contactGround || contactEnemy))
+                if (contactFixture.IsTouching && contactGround)
                 {
                     bombBody.Dispose();
                     return true;
@@ -178,6 +176,15 @@ namespace ScifiDruid.GameObjects
             }
             return false;
         }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            if (bossBombStatus != BombStatus.BOMBEND)
+            {
+                spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bombOrigin, 1f, charDirection, 0f);
+            }
+        }
+
     }
 }
 

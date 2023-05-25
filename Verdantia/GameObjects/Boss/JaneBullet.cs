@@ -49,6 +49,8 @@ namespace ScifiDruid.GameObjects
         private Vector2 spriteSize;
         private Vector2 spriteVector;
 
+        private SpriteEffects ammoDirect;
+
         public enum BulletStatus
         {
             BULLETALIVE,
@@ -88,6 +90,8 @@ namespace ScifiDruid.GameObjects
                     break;
             }
 
+            sourceRect = new Rectangle((int)spriteVector.X, (int)spriteVector.Y, (int)spriteSize.X, (int)spriteSize.Y);
+
             bulletOrigin = new Vector2(bulletSizeX / 2, bulletSizeY / 2);
         }
 
@@ -97,77 +101,19 @@ namespace ScifiDruid.GameObjects
             {
                 case SpriteEffects.None:
                     bulletBody.ApplyForce(new Vector2(bulletSpeed, 0));
+                    ammoDirect = SpriteEffects.FlipHorizontally;
                     break;
                 case SpriteEffects.FlipHorizontally:
                     bulletBody.ApplyForce(new Vector2(-bulletSpeed, 0));
+                    ammoDirect = SpriteEffects.None;
                     break;
             }
             bossBulletStatus = BulletStatus.BULLETALIVE;
         }
 
-        public void Update()
-        {
-            ////if dead animation animationEnd
-            //if (animationDead)
-            //{
-            //    bossBulletStatus = BulletStatus.BULLETEND;
-            //}
-
-            //if (preStatus != bossBulletStatus)
-            //{
-            //    frames = 0;
-            //}
-
-            sourceRect = new Rectangle((int)spriteVector.X, (int)spriteVector.Y, (int)spriteSize.X, (int)spriteSize.Y);
-        }
-
-        public bool IsContact()
-        {
-            ContactEdge contactEdge = bulletBody.ContactList;
-            while (contactEdge != null)
-            {
-                Contact contactFixture = contactEdge.Contact;
-
-                Body fixtureA_Body = contactEdge.Contact.FixtureA.Body;
-                Body fixtureB_Body = contactEdge.Contact.FixtureB.Body;
-
-                bool contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals("Ground"));
-                bool contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals("Ground"));
-                bool contactGround = contactA || contactB;
-
-                contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals("Player"));
-                contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals("Player"));
-                bool contactEnemy = contactA || contactB;
-
-                if (contactFixture.IsTouching && (contactGround || contactEnemy))
-                {
-                    bulletBody.Dispose();
-                    return true;
-                }
-
-                // Check if the contact fixture is the ground
-                contactEdge = contactEdge.Next;
-            }
-            return false;
-        }
-
-        public bool IsOutRange()
-        {
-
-            if (position.X - bulletBody.Position.X < -bulletDistance || position.X - bulletBody.Position.X > bulletDistance)
-            {
-                // The Bullet was Out of range
-                bulletBody.Dispose();
-                bossBulletStatus = BulletStatus.BULLETEND;
-                return true;
-            }
-
-            return false;
-        }
-
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(bulletBody.Position), new Rectangle(0,0,bulletSizeX,bulletSizeY), Color.White, 0, bulletOrigin, 1f, charDirection, 0f);
+            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(bulletBody.Position), sourceRect, Color.White, 0, bulletOrigin, 1f, ammoDirect, 0f);
         }
     }
 }

@@ -259,8 +259,8 @@ namespace ScifiDruid.GameScreen
             }
 
             //create player on position
-            player.Initial(startRect);
-            //player.Initial(bossState);
+            //player.Initial(startRect);
+            player.Initial(bossState);
 
             Vector2 guardianSize = new Vector2(49, 55);
             List<Vector2> guardianAnimateList = new List<Vector2>() { new Vector2(10, 2), new Vector2(67, 2), new Vector2(4, 59), new Vector2(61, 59) };
@@ -315,14 +315,14 @@ namespace ScifiDruid.GameScreen
             }
 
             //create boss on position
-            boss = new DoctorBoss(doctorBossTex)
+            boss = new DoctorBoss(doctorBossTex,doctorAmmoTex)
             {
                 size = new Vector2(38, 88),
                 health = 6,
                 speed = 1.2f,
             };
             //spawn boss
-            boss.Initial(bossRect, player);
+            boss.Initial(bossRect, player,boss_event);
 
             //add to all enemy for
             Singleton.Instance.enemiesInWorld.AddRange(shieldDogEnemies);
