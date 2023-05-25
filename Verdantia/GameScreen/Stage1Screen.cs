@@ -107,8 +107,6 @@ namespace ScifiDruid.GameScreen
             Player.maxMana = 100;
             Player.health = maxHealth;
             Player.mana = maxMana;
-            Player.level2Unlock = false;
-            Player.level3Unlock = false;
 
             //create tileset for map1
             map = new TmxMap("Content/Stage1.tmx");

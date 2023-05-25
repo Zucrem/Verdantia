@@ -664,18 +664,10 @@ namespace ScifiDruid.GameObjects
 
         public void LionSkill()
         {
-            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press && skill3Cooldown <= 0 && Player.level3Unlock)
+            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press && skill3Cooldown <= 0 && Singleton.Instance.stageunlock > 2)
             {
                 lionBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(500), ConvertUnits.ToSimUnits(200), 0, hitBox.Position + new Vector2(0, textureHeight / 2), 0, BodyType.Static, "Lion");
                 lionBody.IgnoreCollisionWith(hitBox);
-
-                //foreach (Body item in Singleton.Instance.world.BodyList)
-                //{
-                //    if (!item.UserData.Equals("Enemy"))
-                //    {
-                //        lionBody.IgnoreCollisionWith(item);
-                //    }
-                //}
 
                 lionBody.IsSensor = true;
 
@@ -718,7 +710,7 @@ namespace ScifiDruid.GameObjects
 
         public void CrocodileSkill()
         {
-            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Down) && !press && skill2Cooldown <= 0 && Player.level2Unlock)
+            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Down) && !press && skill2Cooldown <= 0 && Singleton.Instance.stageunlock > 1)
             {
                 //isAlive = false;
                 press = true;
@@ -858,10 +850,24 @@ namespace ScifiDruid.GameObjects
             {
                 Contact contactFixture = contactEdge.Contact;
 
+                Body fixtureA = contactEdge.Contact.FixtureA.Body;
+                Body fixtureB = contactEdge.Contact.FixtureB.Body;
+
+                bool fixtureACheck = fixtureA.UserData != null && fixtureA.UserData.Equals("Ground");
+                bool fixtureBCheck = fixtureB.UserData != null && fixtureB.UserData.Equals("Ground");
+
+                bool standOnPlatformA = fixtureA.UserData != null && fixtureA.UserData.Equals("Platform");
+                bool standOnPlatformB = fixtureA.UserData != null && fixtureB.UserData.Equals("Platform");
+
+
                 // Check if the contact fixture is the ground
-                if (contactFixture.IsTouching && contactEdge.Contact.FixtureA.Body.UserData != null && contactEdge.Contact.FixtureA.Body.UserData.Equals("Ground"))
+                if (contactFixture.IsTouching && (fixtureACheck || fixtureBCheck || standOnPlatformA || standOnPlatformB))
                 {
                     Vector2 normal = contactFixture.Manifold.LocalNormal;
+                    if ((standOnPlatformA || standOnPlatformB) && normal.Y > 0f)
+                    {
+                        return true;
+                    }
                     if (normal.Y < 0f)
                     {
                         return true;
@@ -876,11 +882,6 @@ namespace ScifiDruid.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            //if (lionBody != null)
-            //{
-            //    spriteBatch.Draw(lionTexture, ConvertUnits.ToDisplayUnits(lionBody.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(500)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(200))), Color.White, 0, new Vector2(500 / 2, 200 / 2), 1, SpriteEffects.None, 0);
-            //}
-
             //draw player
             if (!animationEnd)
             {
@@ -892,11 +893,6 @@ namespace ScifiDruid.GameObjects
                 playerAnimation.Draw(spriteBatch, playerOrigin, charDirection, ConvertUnits.ToDisplayUnits(position));
             }
 
-            //if shoot
-            /*if (_bulletBody != null && !_bulletBody.IsDisposed)
-            {
-                bullet.Draw(spriteBatch);
-            }*/
             base.Draw(spriteBatch);
         }
     }

@@ -19,11 +19,15 @@ using static ScifiDruid.Singleton;
 using static ScifiDruid.GameObjects.DoctorBoss;
 using static ScifiDruid.GameObjects.JaneBoss;
 using System.Diagnostics;
+using Box2DNet.Dynamics.Joints;
 
 namespace ScifiDruid.GameScreen
 {
     class Stage2Screen : PlayScreen
     {
+
+        bool d;
+
         //create guardian tex
         private Guardian lion_guardian;
 
@@ -128,7 +132,7 @@ namespace ScifiDruid.GameScreen
 
             Player.health = Player.maxHealth;
             Player.mana = Player.maxMana;
-            Player.level3Unlock = false;
+
             //create tileset for map1
             map = new TmxMap("Content/Stage2.tmx");
             tilesetStage2 = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage2Tileset/" + map.Tilesets[0].Name.ToString());
@@ -317,12 +321,12 @@ namespace ScifiDruid.GameScreen
             lion_guardian = new Guardian(lionTex, guardianSize, guardianAnimateList);
             lion_guardian.Initial(lionRect);
 
-            
+
             //range enemy
             gunPoliceEnemies = new List<RangeEnemy>();
             gunPolicePositionList = ground1MonsterRects.Count();
-            List<Vector2> gunPoliceSizeList = new List<Vector2>() { new Vector2(46, 92), new Vector2(46, 92), new Vector2(46, 92), new Vector2(99, 92)};
-            List<List<Vector2>> gunPoliceAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(119, 0), new Vector2(228, 1) }, new List<Vector2>() { new Vector2(337, 0), new Vector2(0, 111), new Vector2(119, 111), new Vector2(227, 111) } , new List<Vector2>() { new Vector2(0, 226), new Vector2(116, 226) } , new List<Vector2>() { new Vector2(0, 355), new Vector2(116, 355), new Vector2(227, 353), new Vector2(326, 352), new Vector2(435, 357) } };
+            List<Vector2> gunPoliceSizeList = new List<Vector2>() { new Vector2(46, 92), new Vector2(46, 92), new Vector2(46, 92), new Vector2(99, 92) };
+            List<List<Vector2>> gunPoliceAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(119, 0), new Vector2(228, 1) }, new List<Vector2>() { new Vector2(337, 0), new Vector2(0, 111), new Vector2(119, 111), new Vector2(227, 111) }, new List<Vector2>() { new Vector2(0, 226), new Vector2(116, 226) }, new List<Vector2>() { new Vector2(0, 355), new Vector2(116, 355), new Vector2(227, 353), new Vector2(326, 352), new Vector2(435, 357) } };
             for (int i = 0; i < gunPolicePositionList; i++)
             {
                 gunPolice = new RangeEnemy(gunPoliceTex, gunPoliceSizeList, gunPoliceAnimateList)
@@ -380,7 +384,7 @@ namespace ScifiDruid.GameScreen
                 speed = 1.2f,
             };
             //spawn boss
-            boss.Initial(bossRect, player,boss_event);
+            boss.Initial(bossRect, player, boss_event);
 
             //add to all enemy for
             Singleton.Instance.enemiesInWorld.AddRange(gunPoliceEnemies);
@@ -389,17 +393,17 @@ namespace ScifiDruid.GameScreen
 
             //switch event
             //create switch button on position
-            switch_wall1 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) {size = new Vector2(32, 32)};
+            switch_wall1 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) { size = new Vector2(32, 32) };
             switch_wall1.Initial(switch_button1);
 
-            switch_wall2 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) {size = new Vector2(32, 32)};
+            switch_wall2 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) { size = new Vector2(32, 32) };
             switch_wall2.Initial(switch_button2);
 
             switch_wall3 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) { size = new Vector2(32, 32) };
             switch_wall3.Initial(switch_button3);
 
             //create wall button on position
-            stage_wall1 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) {size = new Vector2(64, 182)};
+            stage_wall1 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
             stage_wall1.Initial(sign_wall1);
 
             stage_wall2 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
@@ -409,15 +413,15 @@ namespace ScifiDruid.GameScreen
             stage_wall3.Initial(sign_wall3);
 
             //panel
-
+            /*
             //create up down block in map 2
-            /*foreach (Rectangle rect in movingUDBlocks)
+            foreach (Rectangle rect in movingUDBlocks)
             {
                 Vector2 udPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
                 //Singleton.Instance.world.Step(0.001f);
 
                 Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(64), ConvertUnits.ToSimUnits(6), 1f, udPosition);
-                body.UserData = "UpDown";
+                body.UserData = "Ground";
                 body.Restitution = 0.0f;
                 body.Friction = 0.3f;
             }
@@ -429,44 +433,48 @@ namespace ScifiDruid.GameScreen
                 //Singleton.Instance.world.Step(0.001f);
 
                 Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(64), ConvertUnits.ToSimUnits(6), 1f, lrPosition);
-                body.UserData = "LeftRight";
+                body.UserData = "Ground";
                 body.Restitution = 0.0f;
                 body.Friction = 0.3f;
-            }*/
+            }
 
             //create falling block in map 2
             foreach (Rectangle rect in fallingBlocks)
             {
-                Vector2 fallingPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
+                //Vector2 fallingPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
                 //Singleton.Instance.world.Step(0.001f);
 
-                Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(64), ConvertUnits.ToSimUnits(6), 1f, fallingPosition, 0, BodyType.Dynamic);
-                body.UserData = "StepFall";
-                body.Restitution = 0.0f;
-                body.Friction = 0.3f;
-                body.IgnoreGravity = true;
-            }
+                //Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(64), ConvertUnits.ToSimUnits(6), 1f, fallingPosition, 0, BodyType.Dynamic);
+                //body.UserData = "Ground";
+                //body.Restitution = 0.0f;
+                //body.Friction = 0.3f;
+                //body.IgnoreGravity = true;
+                //body.IsSensor = true;
+            }*/
 
             //Left Right
-            /*panelLRMoveBlocks = new List<StageObject>();
+            panelLRMoveBlocks = new List<StageObject>();
             panelLRMovePositionList = movingLRBlocks.Count();
             for (int i = 0; i < panelLRMovePositionList; i++)
             {
-                panelLRMove = new StageObject(switch_wall_Tex, panel_size, panel_textureSize) { 
-                    size = new Vector2(64, 6) 
+                panelLRMove = new StageObject(switch_wall_Tex, panel_size, panel_textureSize)
+                {
+                    size = new Vector2(64, 6)
                 };
                 panelLRMoveBlocks.Add(panelLRMove);
             }
+
             //create LR position
             panelLRMoveCount = 0;
             foreach (StageObject lrMove in panelLRMoveBlocks)
             {
                 lrMove.Initial(movingLRBlocks[panelLRMoveCount]);
+                lrMove.wallHitBox.UserData = "Platform";
                 panelLRMoveCount++;
-            }*/
+            }
 
             //Up Down
-            /*panelUDMoveBlocks = new List<StageObject>();
+            panelUDMoveBlocks = new List<StageObject>();
             panelUDMovePositionList = movingUDBlocks.Count();
             for (int i = 0; i < panelUDMovePositionList; i++)
             {
@@ -476,13 +484,16 @@ namespace ScifiDruid.GameScreen
                 };
                 panelUDMoveBlocks.Add(panelUDMove);
             }
+
             //create UD position
             panelUDMoveCount = 0;
             foreach (StageObject udMove in panelUDMoveBlocks)
             {
                 udMove.Initial(movingUDBlocks[panelUDMoveCount]);
+                udMove.wallHitBox.UserData = "Platform";
                 panelUDMoveCount++;
-            }*/
+            }
+
             //falling
             panelFallMoveBlocks = new List<StageObject>();
             panelFallMovePositionList = fallingBlocks.Count();
@@ -494,11 +505,15 @@ namespace ScifiDruid.GameScreen
                 };
                 panelFallMoveBlocks.Add(panelFallMove);
             }
+
             //create Fall position
             panelFallMoveCount = 0;
             foreach (StageObject fallMove in panelFallMoveBlocks)
             {
                 fallMove.Initial(fallingBlocks[panelFallMoveCount]);
+                fallMove.wallHitBox.IsStatic = false;
+                fallMove.wallHitBox.IgnoreGravity = true;
+                fallMove.wallHitBox.UserData = "Platform";
                 panelFallMoveCount++;
             }
         }
@@ -568,19 +583,51 @@ namespace ScifiDruid.GameScreen
                     stage_wall3.Update(gameTime);
 
                     //update panel
-                    /*foreach (StageObject lrMove in panelLRMoveBlocks)
+                    foreach (StageObject lrMove in panelLRMoveBlocks)
                     {
                         lrMove.Update(gameTime);
+
+                        float maxPositionX = Math.Clamp(lrMove.wallHitBox.Position.X, ConvertUnits.ToSimUnits(lrMove.spawnPosition.X - lrMove.spawnPosition.Width/2), ConvertUnits.ToSimUnits(lrMove.spawnPosition.X + lrMove.spawnPosition.Width / 2));
+
+                        if (lrMove.wallHitBox.Position.X <= ConvertUnits.ToSimUnits(lrMove.spawnPosition.X - lrMove.spawnPosition.Width / 2))
+                        {
+                            d = true;
+                        }
+                        else if(lrMove.wallHitBox.Position.X >= ConvertUnits.ToSimUnits(lrMove.spawnPosition.X + lrMove.spawnPosition.Width / 2))
+                        {
+                            d = false;
+                        }
+
+                        if (d)
+                        {
+                            maxPositionX += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        }
+                        else
+                        {
+                            maxPositionX -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        }
+
+                        lrMove.wallHitBox.SetTransform(new Vector2(maxPositionX, ConvertUnits.ToSimUnits(lrMove.spawnPosition.Y)),0);
+                        player.hitBox.ApplyForce(Vector2.Zero);
+                        //lrMove.wallHitBox.Position = new Vector2(maxPositionX, ConvertUnits.ToSimUnits(lrMove.spawnPosition.Y));
                     }
+
                     foreach (StageObject udMove in panelUDMoveBlocks)
                     {
                         udMove.Update(gameTime);
-                    }*/
+                    }
+
                     foreach (StageObject fallMove in panelFallMoveBlocks)
                     {
                         fallMove.Update(gameTime);
-                    }
+                        //Debug.WriteLine(fallMove.wallHitBox.UserData);
 
+                        float positionX = ConvertUnits.ToSimUnits(fallMove.spawnPosition.X);
+                        fallMove.wallHitBox.Position = new Vector2(positionX, fallMove.wallHitBox.Position.Y);
+
+                        float fallingY = Math.Clamp(fallMove.wallHitBox.LinearVelocity.Y, 0, 5f);
+                        fallMove.wallHitBox.LinearVelocity = new Vector2(0, fallingY);
+                    }
 
                     //switch event
                     //press switch button
@@ -722,7 +769,7 @@ namespace ScifiDruid.GameScreen
                         spriteBatch.DrawString(kongfonts, "Jane the Security", new Vector2(132, 525), Color.White);
                     }
 
-                    if (introBossDialog == 2) 
+                    if (introBossDialog == 2)
                     {
                         spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(132, 525), Color.White);
                         spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
@@ -866,14 +913,16 @@ namespace ScifiDruid.GameScreen
                     }
 
                     //all panel
-                    /*foreach (StageObject lrMove in panelLRMoveBlocks)
+                    foreach (StageObject lrMove in panelLRMoveBlocks)
                     {
                         lrMove.Draw(spriteBatch);
                     }
+
                     foreach (StageObject udMove in panelUDMoveBlocks)
                     {
                         udMove.Draw(spriteBatch);
-                    }*/
+                    }
+
                     foreach (StageObject fallMove in panelFallMoveBlocks)
                     {
                         fallMove.Draw(spriteBatch);
