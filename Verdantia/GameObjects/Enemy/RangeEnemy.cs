@@ -29,7 +29,7 @@ namespace ScifiDruid.GameObjects
         public List<EnemyBullet> bulletList = new List<EnemyBullet>();
 
         private int worldLevel;
-        public bool isdrone;
+        public bool isdrone = false;
 
 
 
@@ -106,13 +106,14 @@ namespace ScifiDruid.GameObjects
             position = enemyHitBox.Position;
 
 
-            foreach (var item in bulletList)
-            {
-                item.Update(gameTime);
-            }
+
 
             if (isAlive)
             {
+                foreach (var item in bulletList)
+                {
+                    item.Update(gameTime);
+                }
                 CheckPlayerPosition(gameTime, 1);
 
                 if (health <= 0)
@@ -321,8 +322,8 @@ namespace ScifiDruid.GameObjects
             //player on (right ,mid,left)
             //got to that direction of player
             //stop when player go out of detect area
+            Enemyshoot();
 
-            //shoot();
             if (playerPosition.X - position.X > 2 && (xspawnPosition - enemyHitBox.Position.X) > pathWalkLength * -1)//(xspawnPosition - enemyHitBox.Position.X) > pathWalkLength*-1
             {
                 if (Singleton.Instance.levelState == LevelState.FOREST)
@@ -386,15 +387,22 @@ namespace ScifiDruid.GameObjects
             }
         }
 
-        public void shoot()
+        public void Enemyshoot()
         {
             attackTimeEnemy += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (attackTimeEnemy > attackTimeDelayEnemy)
             {
+                Vector2 bulletpositionPlus = Vector2.Zero;
+                if(Singleton.Instance.levelState == LevelState.LAB)
+                {
+                    bulletpositionPlus = new Vector2(0,-0.58f);
+                }else if(Singleton.Instance.levelState == LevelState.CITY)
+                {
+                    bulletpositionPlus = new Vector2(0, -0.1f);
+                }
 
-
-                EnemyBullet bullet = new EnemyBullet(this.texture, enemyHitBox.Position, this, charDirection)
+                EnemyBullet bullet = new EnemyBullet(this.texture, enemyHitBox.Position+bulletpositionPlus, this, charDirection)
                 {
                     bulletSpeed = this.bulletSpeed,
                     bulletDistance = this.bulletDistance,

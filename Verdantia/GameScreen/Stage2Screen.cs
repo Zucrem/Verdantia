@@ -70,6 +70,11 @@ namespace ScifiDruid.GameScreen
         private int meleePolicePositionList;
         private int meleePoliceCount;
 
+        private DroneEnemy flyingDrone;
+        private List<DroneEnemy> flyingDroneEnemies;
+        private int flyingDronePositionList;
+        private int flyingDroneCount;
+
         //special occasion position
         //guardian event
         private Rectangle lionRect;
@@ -338,7 +343,7 @@ namespace ScifiDruid.GameScreen
                     bulletSizeX = 9,
                     bulletSizeY = 3,
                     bulletDistance = 10,
-                    isdrone = false,
+                    
                 };
                 gunPoliceEnemies.Add(gunPolice);
             }
@@ -373,6 +378,34 @@ namespace ScifiDruid.GameScreen
             {
                 melee.Initial(ground2MonsterRects[meleePoliceCount], player);
                 meleePoliceCount++;
+            }
+
+            //drone enemy***
+            flyingDroneEnemies = new List<DroneEnemy>();
+            flyingDronePositionList = flyMonsterRects.Count();
+            List<Vector2> flyingDroneSizeList = new List<Vector2>() { new Vector2(92, 56), new Vector2(92, 56), new Vector2(92, 56), new Vector2(92, 56) };
+            List<List<Vector2>> flyingDroneAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0) }, new List<Vector2>() { new Vector2(0, 0), new Vector2(97, 0) }, new List<Vector2>() { new Vector2(200, 0), new Vector2(303, 0), new Vector2(0, 69), new Vector2(97, 69) }, new List<Vector2>() { new Vector2(97, 69), new Vector2(97, 69), new Vector2(97, 69) } };
+            for (int i = 0; i < flyingDronePositionList; i++)
+            {
+                flyingDrone = new DroneEnemy(droneTex, flyingDroneSizeList, flyingDroneAnimateList)  
+                {
+                    size = new Vector2(44, 94),
+                    health = 4,
+                    speed = 0.1f,
+                    bulletSpeed = 400,
+                    bulletSizeX = 3,
+                    bulletSizeY = 14,
+                    bulletDistance = 10,
+                };
+                flyingDroneEnemies.Add(flyingDrone);
+            }
+
+            //create enemy position
+            flyingDroneCount = 0;
+            foreach (DroneEnemy drone in flyingDroneEnemies)
+            {
+                drone.Initial(flyMonsterRects[flyingDroneCount], player);
+                flyingDroneCount++;
             }
 
             //create boss on position
@@ -571,6 +604,11 @@ namespace ScifiDruid.GameScreen
                     {
                         melee.Update(gameTime);
                         melee.Action();
+                    }
+                    foreach (DroneEnemy drone in flyingDroneEnemies)
+                    {
+                        drone.Update(gameTime);
+                        drone.Action();
                     }
 
                     //switch button
@@ -890,6 +928,16 @@ namespace ScifiDruid.GameScreen
                     foreach (MeleeEnemy melee in meleePoliceEnemies)
                     {
                         melee.Draw(spriteBatch);
+                    }
+
+                    foreach (DroneEnemy drone in flyingDroneEnemies)
+                    {
+                        drone.Draw(spriteBatch);
+                        foreach (EnemyBullet dronebullet in drone.bulletList)
+                        {
+                            
+                            dronebullet.Draw(spriteBatch);
+                        }
                     }
 
                     //draw switch animation

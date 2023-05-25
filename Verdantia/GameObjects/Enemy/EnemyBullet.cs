@@ -65,6 +65,8 @@ namespace ScifiDruid.GameObjects
         private List<Vector2> bulletSize;
         private List<List<Vector2>> bulletAliveSpriteList;
 
+        public bool isdrone;
+
 
         public enum BulletStatus
         {
@@ -95,7 +97,7 @@ namespace ScifiDruid.GameObjects
             enemyBulletStatus = BulletStatus.BULLETALIVE;
             preStatus = BulletStatus.BULLETALIVE;
 
-
+            this.isdrone = isdrone;
 
 
             switch (worldLevel)
@@ -243,6 +245,12 @@ namespace ScifiDruid.GameObjects
 
         public void Shoot()
         {
+            if (isdrone)
+            {
+                bulletBody.ApplyForce(new Vector2(0, bulletSpeed));
+                rotation = MathHelper.ToRadians(90);
+                charDirection = SpriteEffects.FlipVertically;
+            }
             if (Singleton.Instance.levelState == LevelState.FOREST)
             {
                 switch (charDirection)
@@ -270,6 +278,7 @@ namespace ScifiDruid.GameObjects
                         enemyBulletStatus = BulletStatus.BULLETALIVE;
                         break;
                 }
+
             }
 
             enemyBulletStatus = BulletStatus.BULLETALIVE;
