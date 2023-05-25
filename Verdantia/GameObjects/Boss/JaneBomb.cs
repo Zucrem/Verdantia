@@ -17,7 +17,7 @@ namespace ScifiDruid.GameObjects
     public class JaneBomb : _GameObject
     {
         protected Texture2D texture; //enemy Texture (Animaiton)
-
+        private Enemy enemy;
         protected GameTime gameTime;
 
         //bullet state
@@ -31,9 +31,10 @@ namespace ScifiDruid.GameObjects
         private bool animationDead = false;
 
         public Body bombBody;
+        public Body explosiveBody;
 
         //animation
-        private Vector2 bombSize;
+        public Vector2 bombSize;
         //sprite to run
         private Vector2 spriteSize;
         private List<Vector2> spriteVector;
@@ -68,15 +69,11 @@ namespace ScifiDruid.GameObjects
             BOMBEND
         }
 
-        public JaneBomb(Texture2D texture, Vector2 position, Enemy enemy,Vector2 bombSize) : base(texture)
+        public JaneBomb(Texture2D texture, Vector2 position, Enemy enemy) : base(texture)
         {
             this.texture = texture;
+            this.enemy = enemy;
             this.position = position;
-
-            //create wall hitbox
-            bombBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bombSize.X), ConvertUnits.ToSimUnits(bombSize.Y), 0, position, 0, BodyType.Dynamic, "EnemyBullet");
-            bombBody.IgnoreCollisionWith(enemy.enemyHitBox);
-            bombBody.IsSensor = true;
 
             bossBombStatus = BombStatus.BOMBALIVE;
 
@@ -86,13 +83,37 @@ namespace ScifiDruid.GameObjects
 
             spriteSize = bombSize;
 
+            //create wall hitbox
+            bombBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bombSize.X), ConvertUnits.ToSimUnits(bombSize.Y), 0, position, 0, BodyType.Dynamic, "SkillBoss");
+            bombBody.IgnoreCollisionWith(enemy.enemyHitBox);
+            bombBody.IsSensor = true;
+
             bombOrigin = new Vector2(bombSize.X / 2, bombSize.Y / 2);
+        }
+
+        public void CreateExplosive(Vector2 ExplosivePosition)
+        {
+            //animation
+            bombSize = bombDeadSize;
+            spriteVector = bombDeadAnimateList;
+
+            //create wall hitbox
+            explosiveBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(bombSize.X), ConvertUnits.ToSimUnits(bombSize.Y), 0, ExplosivePosition, 0, BodyType.Static, "SkillBoss");
+            explosiveBody.IgnoreCollisionWith(enemy.enemyHitBox);
+            explosiveBody.IsSensor = true;
         }
 
         public override void Update(GameTime gameTime)
         {
             ChangeBombStatus();
-            position = bombBody.Position;
+            if (explosiveBody != null)
+            {
+                position = explosiveBody.Position;
+            }
+            else
+            {
+                position = bombBody.Position;
+            }
             //if dead animation animationEnd
             if (animationDead)
             {
@@ -119,7 +140,7 @@ namespace ScifiDruid.GameObjects
                     {
                         frames++;
                     }
-                    else if (frames >= allframes - 1)
+                    else
                     {
                         animationDead = true;
                         return;
@@ -149,32 +170,6 @@ namespace ScifiDruid.GameObjects
                     allframes = spriteVector.Count();
                     break;
             }
-        }
-        
-        public bool IsContact(String contact)
-        {
-            ContactEdge contactEdge = bombBody.ContactList;
-            while (contactEdge != null)
-            {
-                Contact contactFixture = contactEdge.Contact;
-
-                Body fixtureA_Body = contactEdge.Contact.FixtureA.Body;
-                Body fixtureB_Body = contactEdge.Contact.FixtureB.Body;
-
-                bool contactA = (fixtureA_Body.UserData != null && fixtureA_Body.UserData.Equals(contact));
-                bool contactB = (fixtureB_Body.UserData != null && fixtureB_Body.UserData.Equals(contact));
-                bool contactGround = contactA || contactB;
-
-                if (contactFixture.IsTouching && contactGround)
-                {
-                    bombBody.Dispose();
-                    return true;
-                }
-
-                // Check if the contact fixture is the ground
-                contactEdge = contactEdge.Next;
-            }
-            return false;
         }
 
         public override void Draw(SpriteBatch spriteBatch)

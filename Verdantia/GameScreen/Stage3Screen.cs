@@ -119,8 +119,6 @@ namespace ScifiDruid.GameScreen
             introDialogCount = 9;
             endDialogCount = 5;
 
-            Player.level3Unlock = true;
-
             //map size
             startmaptileX = 10f;
             endmaptileX = 170f;
