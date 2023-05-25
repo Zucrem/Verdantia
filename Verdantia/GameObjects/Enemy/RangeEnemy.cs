@@ -22,6 +22,17 @@ namespace ScifiDruid.GameObjects
         private int randomAction;
         private float idleTime = 0;
 
+        public int bulletSizeX;
+        public int bulletSizeY;
+
+        public int bulletSpeed;
+        public int bulletDistance;
+
+        public List<EnemyBullet> bulletList = new List<EnemyBullet>();
+
+        private int worldLevel;
+        public bool isdrone;
+
 
 
         //for animation
@@ -38,6 +49,9 @@ namespace ScifiDruid.GameObjects
 
         private EnemyStatus preStatus;
         private EnemyStatus curStatus;
+
+        private float attackTimeDelayEnemy = 2;     //time of delay //plz set enemy delay time
+        private float attackTimeEnemy;          //timer for delay          
         private enum EnemyStatus
         {
             IDLE,
@@ -72,12 +86,32 @@ namespace ScifiDruid.GameObjects
             base.Initial(spawnPosition, player);
             curStatus = EnemyStatus.WALK;
             preStatus = EnemyStatus.WALK;
+            
+            switch (Singleton.Instance.levelState)
+            {
+                case LevelState.FOREST:
+                    worldLevel = 1;
+                    break;
+                case LevelState.CITY:
+                    worldLevel = 2;
+                    break;
+                case LevelState.LAB:
+                    worldLevel = 3;
+                    break;
+            }
+
         }
 
         public override void Update(GameTime gameTime)
         {
             this.gameTime = gameTime;
             position = enemyHitBox.Position;
+            
+
+            foreach (var item in bulletList)
+            {
+                item.Update(gameTime);
+            }
 
             if (isAlive)
             {
@@ -91,6 +125,7 @@ namespace ScifiDruid.GameObjects
                     curStatus = EnemyStatus.DEAD;
                 }
             }
+
 
             //if step on dead block
             if (IsContact(enemyHitBox, "Dead"))
@@ -288,7 +323,7 @@ namespace ScifiDruid.GameObjects
             //player on (right ,mid,left)
             //got to that direction of player
             //stop when player go out of detect area
-            bool bboo = (xspawnPosition - enemyHitBox.Position.X) < pathWalkLength;
+            shoot();
             if (playerPosition.X - position.X > 2 && (xspawnPosition - enemyHitBox.Position.X) > pathWalkLength * -1)//(xspawnPosition - enemyHitBox.Position.X) > pathWalkLength*-1
             {
                 if (Singleton.Instance.levelState == LevelState.FOREST)
@@ -319,13 +354,7 @@ namespace ScifiDruid.GameObjects
         }
 
 
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            if (!animationDead)
-            {
-                spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, enemyOrigin, 1f, charDirection, 0f);
-            }
-        }
+
 
         public override void ChangeAnimationStatus()
         {
@@ -357,6 +386,41 @@ namespace ScifiDruid.GameObjects
                     break;
             }
         }
+
+        public void shoot()
+        {
+            attackTimeEnemy += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (attackTimeEnemy > attackTimeDelayEnemy)
+            {
+                EnemyBullet bullet = new EnemyBullet(this.texture, enemyHitBox.Position, this, charDirection)
+                {
+                    bulletSpeed = this.bulletSpeed,
+                    bulletDistance = this.bulletDistance,
+                    bulletSizeX = this.bulletSizeX,
+                    bulletSizeY = this.bulletSizeY,
+                };
+                
+
+                bullet.CreateBullet(worldLevel,isdrone);
+                bulletList.Add(bullet);
+                bulletList[bulletList.Count - 1].Shoot();
+                attackTimeEnemy = 0;
+
+            }
+
+
+        }
+
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            if (!animationDead)
+            {
+                spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, enemyOrigin, 1f, charDirection, 0f);
+            }
+        }
+
     }
 }
 
