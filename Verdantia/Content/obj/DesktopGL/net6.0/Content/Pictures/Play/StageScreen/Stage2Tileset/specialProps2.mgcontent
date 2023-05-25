@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Code/Verdantia/Verdantia/Content/Pictures/Play/StageScreen/Stage2Tileset/specialProps2.png</SourceFile>
-  <SourceTime>2023-05-19T18:29:31.7658439+07:00</SourceTime>
-  <DestFile>D:/Code/Verdantia/Verdantia/Content/bin/DesktopGL/Content/Pictures/Play/StageScreen/Stage2Tileset/specialProps2.xnb</DestFile>
-  <DestTime>2023-05-24T17:30:12.7829491+07:00</DestTime>
+  <SourceFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/StageScreen/Stage2Tileset/specialProps2.png</SourceFile>
+  <SourceTime>2023-05-20T16:46:56.515265+07:00</SourceTime>
+  <DestFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/bin/DesktopGL/Content/Pictures/Play/StageScreen/Stage2Tileset/specialProps2.xnb</DestFile>
+  <DestTime>2023-05-25T20:21:49.9497486+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

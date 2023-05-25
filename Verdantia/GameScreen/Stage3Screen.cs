@@ -353,7 +353,7 @@ namespace ScifiDruid.GameScreen
             //melee enemy
             meleeTentacleEnemies = new List<MeleeEnemy>();
             meleeTentaclePositionList = ground2MonsterRects.Count();
-            List<Vector2> meleePoliceSizeList = new List<Vector2>() { new Vector2(49, 83), new Vector2(49, 83), new Vector2(49, 83), new Vector2(123, 111), new Vector2(66, 83) };
+            List<Vector2> meleePoliceSizeList = new List<Vector2>() { new Vector2(49, 83), new Vector2(49, 83), new Vector2(49, 83), new Vector2(132, 111), new Vector2(66, 83) };
             List<List<Vector2>> meleePoliceAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(1, 28) }, new List<Vector2>() { new Vector2(1, 28), new Vector2(148, 28), new Vector2(298, 28) }, new List<Vector2>() { new Vector2(415, 0), new Vector2(549, 0) }, new List<Vector2>() { new Vector2(415, 0), new Vector2(549, 0) }, new List<Vector2>() { new Vector2(0, 140), new Vector2(142, 140), new Vector2(290, 139), new Vector2(446, 139) } };
             for (int i = 0; i < meleeTentaclePositionList; i++)
             {
@@ -432,6 +432,8 @@ namespace ScifiDruid.GameScreen
         public override void LoadContent()
         {
             base.LoadContent();
+            //bg
+            stage3BG = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage3Tileset/Stage3BG");
 
             //button and rock wall
             switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage3Tileset/specialProps3");
@@ -601,6 +603,8 @@ namespace ScifiDruid.GameScreen
         public override void DrawFixScreen(SpriteBatch spriteBatch)
         {
             base.DrawFixScreen(spriteBatch);
+            //bg
+            spriteBatch.Draw(stage3BG, Vector2.Zero, Color.White);
         }
 
         public override void DrawHUD(SpriteBatch spriteBatch)
@@ -614,17 +618,17 @@ namespace ScifiDruid.GameScreen
                 {
                     if (openingDialog < 5)
                     {
-                        spriteBatch.DrawString(kongfonts, "Roark the Wild Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.DrawString(kongfonts, "Roark the Wild Guardian", new Vector2(132, 525), Color.White);
                         spriteBatch.Draw(soulLionPortraitTex, new Vector2(937, 255), Color.White);
                     }
                     if (openingDialog == 5)
                     {
-                        spriteBatch.DrawString(kongfonts, "Crush the Lake Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.DrawString(kongfonts, "Crush the Lake Guardian", new Vector2(132, 525), Color.White);
                         spriteBatch.Draw(soulCrocPortraitTex, new Vector2(886, 306), Color.White);
                     }
                     if (openingDialog == 6)
                     {
-                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(132, 525), Color.White);
                         spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
                     }
                     switch (openingDialog)
@@ -658,22 +662,22 @@ namespace ScifiDruid.GameScreen
                 {
                     if (introBossDialog == 1 || introBossDialog == 3 || introBossDialog == 4  || introBossDialog == 6 || introBossDialog == 7)
                     {
-                        spriteBatch.DrawString(kongfonts, "Viroj the Mad Scientist", new Vector2(123, 520), Color.White);
+                        spriteBatch.DrawString(kongfonts, "Viroj the Mad Scientist", new Vector2(132, 525), Color.White);
                         spriteBatch.Draw(bossPortraitTex, new Vector2(820, 306), Color.White);
                     }
                     if (introBossDialog == 2)
                     {
-                        spriteBatch.DrawString(kongfonts, "Roark the Wild Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.DrawString(kongfonts, "Roark the Wild Guardian", new Vector2(132, 525), Color.White);
                         spriteBatch.Draw(soulLionPortraitTex, new Vector2(937, 255), Color.White);
                     }
                     if (introBossDialog == 5)
                     {
-                        spriteBatch.DrawString(kongfonts, "Crush the Lake Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.DrawString(kongfonts, "Crush the Lake Guardian", new Vector2(132, 525), Color.White);
                         spriteBatch.Draw(soulCrocPortraitTex, new Vector2(886, 306), Color.White);
                     }
                     if (introBossDialog == 8)
                     {
-                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(132, 525), Color.White);
                         spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
                     }
                     switch (introBossDialog)
@@ -715,22 +719,22 @@ namespace ScifiDruid.GameScreen
                 {
                     if (endDialog == 1)
                     {
-                        spriteBatch.DrawString(kongfonts, "Viroj the Mad Scientist", new Vector2(123, 520), Color.White);
+                        spriteBatch.DrawString(kongfonts, "Viroj the Mad Scientist", new Vector2(132, 525), Color.White);
                         spriteBatch.Draw(bossPortraitTex, new Vector2(820, 306), Color.White);
                     }
                     if (endDialog == 2)
                     {
-                        spriteBatch.DrawString(kongfonts, "Roark the Wild Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.DrawString(kongfonts, "Roark the Wild Guardian", new Vector2(132, 525), Color.White);
                         spriteBatch.Draw(soulLionPortraitTex, new Vector2(937, 255), Color.White);
                     }
                     if (endDialog == 3)
                     {
-                        spriteBatch.DrawString(kongfonts, "Crush the Lake Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.DrawString(kongfonts, "Crush the Lake Guardian", new Vector2(132, 525), Color.White);
                         spriteBatch.Draw(soulCrocPortraitTex, new Vector2(886, 306), Color.White);
                     }
                     if (endDialog == 4)
                     {
-                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(123, 520), Color.White);
+                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(132, 525), Color.White);
                         spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
                     }
                     switch (endDialog)

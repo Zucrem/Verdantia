@@ -25,7 +25,9 @@ namespace ScifiDruid.GameScreen
         }
         public virtual void Update(GameTime gameTime)
         {
-
+        }
+        public virtual void Update()
+        {
         }
         public virtual void Draw(SpriteBatch spriteBatch)
         {

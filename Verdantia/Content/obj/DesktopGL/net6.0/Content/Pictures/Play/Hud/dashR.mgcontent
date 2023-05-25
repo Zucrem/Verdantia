@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Hud/dashR.png</SourceFile>
-  <SourceTime>2023-05-23T23:19:22.2558462+07:00</SourceTime>
+  <SourceTime>2023-05-25T20:20:44.3877806+07:00</SourceTime>
   <DestFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/bin/DesktopGL/Content/Pictures/Play/Hud/dashR.xnb</DestFile>
-  <DestTime>2023-05-24T10:18:23.2320879+07:00</DestTime>
+  <DestTime>2023-05-25T20:21:48.4749025+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
