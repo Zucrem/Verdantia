@@ -58,12 +58,14 @@ namespace ScifiDruid.GameScreen
         private Rectangle sign3Rect;
         private Rectangle sign4Rect;
         private Rectangle sign5Rect;
+        private Rectangle sign6Rect;
 
         private bool readSign1;
         private bool readSign2;
         private bool readSign3;
         private bool readSign4;
         private bool readSign5;
+        private bool readSign6;
         //if boss event
         private Rectangle wallblock;
         private Rectangle boss_event;
@@ -97,7 +99,7 @@ namespace ScifiDruid.GameScreen
             {
                 base.Initial();
 
-                openingDialogCount = 11;
+                openingDialogCount = 12;
                 introDialogCount = 4;
                 endDialogCount = 5;
 
@@ -207,6 +209,14 @@ namespace ScifiDruid.GameScreen
 
                         Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(sign5Rect.Width), ConvertUnits.ToSimUnits(sign5Rect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(sign5Rect.X, sign5Rect.Y)));
                         body.UserData = "Sign5";
+                        body.IsSensor = true;
+                    }
+                    if (o.Name.Equals("sign6"))
+                    {
+                        sign6Rect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+
+                        Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(sign6Rect.Width), ConvertUnits.ToSimUnits(sign6Rect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(sign6Rect.X, sign6Rect.Y)));
+                        body.UserData = "Sign6";
                         body.IsSensor = true;
                     }
                 }
@@ -384,7 +394,7 @@ namespace ScifiDruid.GameScreen
         {
             base.LoadContent();
             //bg
-            //stage1BG = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage1Tileset/Stage1BG");
+            stage1BG = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage1Tileset/Stage1BG");
 
             //button and rock wall
             switch_wall_Tex = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage1Tileset/specialProps1");
@@ -411,144 +421,146 @@ namespace ScifiDruid.GameScreen
             if (play)
             {
                 //stage 1 dialog
-                if (gamestate == GameState.OPENING)
+                switch (gamestate)
                 {
-                    bird_guardian.Update(gameTime);
-                }
-                if (gamestate == GameState.INTROBOSS)
-                {
-                }
-                if (gamestate == GameState.END)
-                {
-                    croc_guardian.Update(gameTime);
-                }
+                    case GameState.OPENING:
+                        bird_guardian.Update(gameTime);
+                        break;
+                    case GameState.PLAY://all enemy
+                        foreach (RangeEnemy flamewBot in flameMechEnemies)
+                        {
+                            flamewBot.Update(gameTime);
+                            flamewBot.Action();
+                        }
+                        foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
+                        {
+                            chainsawBot.Update(gameTime);
+                            chainsawBot.Action();
+                        }
 
-                if (gamestate == GameState.PLAY)
-                {
-                    //all enemy
-                    foreach (RangeEnemy flamewBot in flameMechEnemies)
-                    {
-                        flamewBot.Update(gameTime);
-                        flamewBot.Action();
-                    }
-                    foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
-                    {
-                        chainsawBot.Update(gameTime);
-                        chainsawBot.Action();
-                    }
+                        //switch button
+                        switch_wall.Update(gameTime);
+                        //stage wall
+                        stage_wall.Update(gameTime);
 
-                    //switch button
-                    switch_wall.Update(gameTime);
-                    //stage wall
-                    stage_wall.Update(gameTime);
+                        //switch event
+                        //press switch button
+                        if (!isOpenSwitch && switch_wall.pressSwitch)
+                        {
+                            isOpenSwitch = true;
+                        }
+                        //after open switch = clear wall
+                        if (isOpenSwitch)
+                        {
+                            stage_wall.wallHitBox.Dispose();
+                        }
 
-                    //switch event
-                    //press switch button
-                    if (!isOpenSwitch && switch_wall.pressSwitch)
-                    {
-                        isOpenSwitch = true;
-                    }
-                    //after open switch = clear wall
-                    if (isOpenSwitch)
-                    {
-                        stage_wall.wallHitBox.Dispose();
-                    }
+                        //if player get into boss state
+                        if (!created_boss && player.IsContact(player.hitBox, "Boss_event"))
+                        {
+                            //create block to block player
+                            Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(wallblock.Width), ConvertUnits.ToSimUnits(wallblock.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(wallblock.X, wallblock.Y)));
+                            body.UserData = "Ground";
 
-                    //if player get into boss state
-                    if (!created_boss && player.IsContact(player.hitBox, "Boss_event"))
-                    {
-                        //create block to block player
-                        Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(wallblock.Width), ConvertUnits.ToSimUnits(wallblock.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(wallblock.X, wallblock.Y)));
-                        body.UserData = "Ground";
+                            //endRect at boss state
+                            Body endRectBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(endRect.Width), ConvertUnits.ToSimUnits(endRect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(endRect.X, endRect.Y)));
+                            endRectBody.UserData = "Ground";
 
-                        //endRect at boss state
-                        Body endRectBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(endRect.Width), ConvertUnits.ToSimUnits(endRect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(endRect.X, endRect.Y)));
-                        endRectBody.UserData = "Ground";
+                            boss_area = true;
+                            MediaPlayer.Stop();
 
-                        boss_area = true;
-                        MediaPlayer.Stop();
+                            //set player to inactive before boss
+                            player.playerStatus = PlayerStatus.IDLE;
+                            player.isAlive = false;
+                        }
 
-                        //set player to inactive before boss
-                        player.playerStatus = PlayerStatus.IDLE;
-                        player.isAlive = false;
-                    }
+                        //read sign event
+                        if (player.IsContact(player.hitBox, "Sign1"))
+                        {
+                            readSign1 = true;
+                        }
+                        else
+                        {
+                            readSign1 = false;
+                        }
+                        if (player.IsContact(player.hitBox, "Sign2"))
+                        {
+                            readSign2 = true;
+                        }
+                        else
+                        {
+                            readSign2 = false;
+                        }
+                        if (player.IsContact(player.hitBox, "Sign3"))
+                        {
+                            readSign3 = true;
+                        }
+                        else
+                        {
+                            readSign3 = false;
+                        }
+                        if (player.IsContact(player.hitBox, "Sign4"))
+                        {
+                            readSign4 = true;
+                        }
+                        else
+                        {
+                            readSign4 = false;
+                        }
+                        if (player.IsContact(player.hitBox, "Sign5"))
+                        {
+                            readSign5 = true;
+                        }
+                        else
+                        {
+                            readSign5 = false;
+                        }
+                        if (player.IsContact(player.hitBox, "Sign6"))
+                        {
+                            readSign6 = true;
+                        }
+                        else
+                        {
+                            readSign6 = false;
+                        }
+                        break;
+                    case GameState.BOSS:
+                        if (!created_boss && boss_area)
+                        {
 
-                    //read sign event
-                    if (player.IsContact(player.hitBox, "Sign1"))
-                    {
-                        readSign1 = true;
-                    }
-                    else
-                    {
-                        readSign1 = false;
-                    }
-                    if (player.IsContact(player.hitBox, "Sign2"))
-                    {
-                        readSign2 = true;
-                    }
-                    else
-                    {
-                        readSign2 = false;
-                    }
-                    if (player.IsContact(player.hitBox, "Sign3"))
-                    {
-                        readSign3 = true;
-                    }
-                    else
-                    {
-                        readSign3 = false;
-                    }
-                    if (player.IsContact(player.hitBox, "Sign4"))
-                    {
-                        readSign4 = true;
-                    }
-                    else
-                    {
-                        readSign4 = false;
-                    }
-                    if (player.IsContact(player.hitBox, "Sign5"))
-                    {
-                        readSign5 = true;
-                    }
-                    else
-                    {
-                        readSign5 = false;
-                    }
+                            //player active after this
+                            player.isAlive = true;
+                            boss.isAlive = true;
+                            boss.skillTime = 5;
+
+                            created_boss = true;
+
+                            //player Song
+                            MediaPlayer.Play(lucasTheme);
+                        }
+
+                        //check if boss death then change to END state
+                        if (boss.IsBossDead() && !bossDead)
+                        {
+                            bossDead = true;
+                            MediaPlayer.Stop();
+                            MediaPlayer.Play(stage1Theme);
+                        }
+
+                        if (boss.IsBossEnd() && bossDead)
+                        {
+                            //set player to inactive
+                            gamestate = GameState.END;
+                        }
+                        break;
+                    case GameState.END:
+                        croc_guardian.Update(gameTime);
+                        break;
                 }
                 if (gamestate == GameState.PLAY || gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS)
                 {
                     //boss
                     boss.Update(gameTime);
-                }
-                if (gamestate == GameState.BOSS)
-                {
-                    if (!created_boss && boss_area)
-                    {
-                        
-                        //player active after this
-                        player.isAlive = true;
-                        boss.isAlive = true;
-                        boss.skillTime = 5;
-
-                        created_boss = true;
-
-                        //player Song
-                        MediaPlayer.Play(lucasTheme);
-                    }
-
-                    //check if boss death then change to END state
-                    if (boss.IsBossDead() && !bossDead)
-                    {
-                        bossDead = true;
-                        MediaPlayer.Stop();
-                        MediaPlayer.Play(stage1Theme);
-                    }
-
-                    if (boss.IsBossEnd() && bossDead)
-                    {
-                        //set player to inactive
-                        gamestate = GameState.END;
-                    }
                 }
             }
         }
@@ -557,165 +569,175 @@ namespace ScifiDruid.GameScreen
         {
             base.DrawFixScreen(spriteBatch);
             //bg
-            spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
+            spriteBatch.Draw(stage1BG, Vector2.Zero, Color.White);
         }
         public override void DrawHUD(SpriteBatch spriteBatch)
         {
+            //flash when guardian merge with player
+            if (openingDialog == 5)
+            {
+                spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
+            }
             base.DrawHUD(spriteBatch);
             if (play)
             {
-                if (gamestate == GameState.PLAY)
+                switch (gamestate)
                 {
-                    //sign dialog
-                    if (readSign1 || readSign2 || readSign3 || readSign4 || readSign5)
-                    {
-                        spriteBatch.Draw(dialogBoxTex, new Rectangle(94, 508, 1092, 192), new Rectangle(0, 0, 1092, 192), Color.White);
-                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(132, 525), Color.White);
-                        spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
-                    }
-                    if (readSign1)
-                    {
-                        spriteBatch.DrawString(kongfonts, "Go ahead", new Vector2(132, 578), Color.White);
-                    }
-                    if (readSign2)
-                    {
-                        spriteBatch.DrawString(kongfonts, "Jump over the mound, Press Spacebar to jump", new Vector2(132, 578), Color.White);
-                    }
-                    if (readSign3)
-                    {
-                        spriteBatch.DrawString(kongfonts, "I forgot to say. You can shoot magical bullet to enemy", new Vector2(132, 578), Color.White);
-                        spriteBatch.DrawString(kongfonts, "Press X to shoot. But it's waste of mana, use it carefully!", new Vector2(132, 610), Color.White);
-                    }
-                    if (readSign4)
-                    {
-                        spriteBatch.DrawString(kongfonts, "Enemy ahead! shoot it before you jump over the pit", new Vector2(132, 578), Color.White);
-                        spriteBatch.DrawString(kongfonts, "Don't fall into the pit of thorns, it's dangerous", new Vector2(132, 610), Color.White);
-                    }
-                    if (readSign5)
-                    {
-                        spriteBatch.DrawString(kongfonts, "By now, you should know the basics of the game", new Vector2(132, 578), Color.White);
-                        spriteBatch.DrawString(kongfonts, "So hurry up and go help right away", new Vector2(132, 610), Color.White);
-                    }
-                }
-                //Dialog OPENING
-                if (gamestate == GameState.OPENING)
-                {
-                    //draw bird guardian portrait and name
-                    if (openingDialog < 5)
-                    {
-                        spriteBatch.Draw(birdPortraitTex, new Vector2(780, 156), Color.White);
-                    }
-                    else if (openingDialog > 5)
-                    {
-                        spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
-                    }
+                    case GameState.OPENING:
+                        //draw bird guardian portrait and name
+                        if (openingDialog < 5)
+                        {
+                            spriteBatch.Draw(birdPortraitTex, new Vector2(780, 156), Color.White);
+                        }
+                        else if (openingDialog > 5)
+                        {
+                            spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
+                        }
 
-                    spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(132, 525), Color.White);
-                    switch (openingDialog)
-                    {
-                        case 1:
-                            spriteBatch.DrawString(kongfonts, "Help me!", new Vector2(132, 578), Color.White);
-                            break;
-                        case 2:
-                            spriteBatch.DrawString(kongfonts, "A sacred tree was taken by the humans and our friends were also kidnapped", new Vector2(132, 578), Color.White);
-                            break;
-                        case 3:
-                            spriteBatch.DrawString(kongfonts, "Lets go help them and bring back the tree", new Vector2(132, 578), Color.White);
-                            break;
-                        case 4:
-                            spriteBatch.DrawString(kongfonts, "But wait!, Before you go to help them, take my power", new Vector2(132, 578), Color.White);
-                            break;
-                        case 5:
-                            spriteBatch.DrawString(kongfonts, "....................................................", new Vector2(132, 578), Color.White);
-                            break;
-                        case 6:
-                            spriteBatch.DrawString(kongfonts, "Now you got an ability to fly", new Vector2(132, 578), Color.White);
-                            spriteBatch.DrawString(kongfonts, "You can press Spacebar in the air to double jump", new Vector2(132, 610), Color.White);
-                            break;
-                        case 7:
-                            spriteBatch.DrawString(kongfonts, "And you got a power of wind", new Vector2(132, 578), Color.White);
-                            spriteBatch.DrawString(kongfonts, "You can press C to dash or dodge something except blocks", new Vector2(132, 610), Color.White);
-                            break;
-                        case 8:
-                            spriteBatch.DrawString(kongfonts, "Skill status is shown on the bar", new Vector2(132, 578), Color.White);
-                            spriteBatch.DrawString(kongfonts, "if its white thats mean you can use it.", new Vector2(132, 610), Color.White);
-                            break;
-                        case 9:
-                            spriteBatch.DrawString(kongfonts, "But if not, thats mean it's inactive or still on cooldown time", new Vector2(132, 578), Color.White);
-                            break;
-                        case 10:
-                            spriteBatch.DrawString(kongfonts, "And be careful. Humans still left there robot around here", new Vector2(132, 578), Color.White);
-                            break;
-                    }
-                }
-                //Dialog INTROBOSS
-                if (gamestate == GameState.INTROBOSS)
-                {
-                    if (introBossDialog == 1 || introBossDialog == 3)
-                    {
-                        spriteBatch.Draw(bossPortraitTex, new Vector2(874, 290), Color.White);
-                        spriteBatch.DrawString(kongfonts, "Lucas the Lumbersaw", new Vector2(132, 525), Color.White);
-                    }
+                        spriteBatch.DrawString(alagardFont, "Gale the Sky Guardian", new Vector2(162, 521), Color.White);
+                        switch (openingDialog)
+                        {
+                            case 1:
+                                spriteBatch.DrawString(alagardFont, "Help me!", new Vector2(132, 578), Color.White);
+                                break;
+                            case 2:
+                                spriteBatch.DrawString(alagardFont, "A sacred tree was taken by the humans and our friends were also kidnapped", new Vector2(132, 578), Color.White);
+                                break;
+                            case 3:
+                                spriteBatch.DrawString(alagardFont, "Lets go help them and bring back the tree", new Vector2(132, 578), Color.White);
+                                break;
+                            case 4:
+                                spriteBatch.DrawString(alagardFont, "But wait!, Before you go to help them, take my power", new Vector2(132, 578), Color.White);
+                                break;
+                            case 5:
+                                spriteBatch.DrawString(alagardFont, "....................................................", new Vector2(132, 578), Color.White);
+                                break;
+                            case 6:
+                                spriteBatch.DrawString(alagardFont, "Now you got an ability to fly", new Vector2(132, 578), Color.White);
+                                spriteBatch.DrawString(alagardFont, "You can press Spacebar in the air to double jump", new Vector2(132, 610), Color.White);
+                                break;
+                            case 7:
+                                spriteBatch.DrawString(alagardFont, "And you got a power of wind", new Vector2(132, 578), Color.White);
+                                spriteBatch.DrawString(alagardFont, "You can press C to dash or dodge something except blocks", new Vector2(132, 610), Color.White);
+                                break;
+                            case 8:
+                                spriteBatch.DrawString(alagardFont, "Skill status is shown on the bar", new Vector2(132, 578), Color.White);
+                                spriteBatch.DrawString(alagardFont, "if its white thats mean you can use it.", new Vector2(132, 610), Color.White);
+                                break;
+                            case 9:
+                                spriteBatch.DrawString(alagardFont, "But if not, thats mean it's inactive or still on cooldown time", new Vector2(132, 578), Color.White);
+                                break;
+                            case 10:
+                                spriteBatch.DrawString(alagardFont, "The blue bar is your mana. If its gone, it's mean you are tired", new Vector2(132, 578), Color.White);
+                                spriteBatch.DrawString(alagardFont, "Just take some rest to regenerate it", new Vector2(132, 610), Color.White);
+                                break;
+                            case 11:
+                                spriteBatch.DrawString(alagardFont, "And be careful. Humans still left there robot around here", new Vector2(132, 578), Color.White);
+                                break;
+                        }
+                        break;
+                    case GameState.PLAY:
+                        //sign dialog
+                        if (readSign1 || readSign2 || readSign3 || readSign4 || readSign5 || (readSign6 && !isOpenSwitch))
+                        {
+                            spriteBatch.Draw(dialogBoxTex, new Rectangle(94, 508, 1092, 192), new Rectangle(0, 0, 1092, 192), Color.White);
+                            spriteBatch.DrawString(alagardFont, "Gale the Sky Guardian", new Vector2(162, 521), Color.White);
+                            spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
+                        }
+                        if (readSign1)
+                        {
+                            spriteBatch.DrawString(alagardFont, "Go ahead", new Vector2(132, 578), Color.White);
+                        }
+                        if (readSign2)
+                        {
+                            spriteBatch.DrawString(alagardFont, "Jump over the mound, Press Spacebar to jump", new Vector2(132, 578), Color.White);
+                        }
+                        if (readSign3)
+                        {
+                            spriteBatch.DrawString(alagardFont, "I forgot to say. You can shoot magical bullet to enemy", new Vector2(132, 578), Color.White);
+                            spriteBatch.DrawString(alagardFont, "Press X to shoot. But it's waste of mana, use it carefully!", new Vector2(132, 610), Color.White);
+                        }
+                        if (readSign4)
+                        {
+                            spriteBatch.DrawString(alagardFont, "Enemy ahead! shoot it before you jump over the pit", new Vector2(132, 578), Color.White);
+                            spriteBatch.DrawString(alagardFont, "Don't fall into the pit of thorns, it's dangerous", new Vector2(132, 610), Color.White);
+                        }
+                        if (readSign5)
+                        {
+                            spriteBatch.DrawString(alagardFont, "By now, you should know the basics of the game", new Vector2(132, 578), Color.White);
+                            spriteBatch.DrawString(alagardFont, "So hurry up and go help right away", new Vector2(132, 610), Color.White);
+                        }
+                        if (readSign6 && !isOpenSwitch)
+                        {
+                            spriteBatch.DrawString(alagardFont, "Damn, the wall is blocking us, We need to find the switch and open it", new Vector2(132, 578), Color.White);
+                            spriteBatch.DrawString(alagardFont, "The switch button must be around her, Let's find it", new Vector2(132, 610), Color.White);
+                        }
+                        break;
+                    case GameState.INTROBOSS:
+                        if (introBossDialog == 1 || introBossDialog == 3)
+                        {
+                            spriteBatch.Draw(bossPortraitTex, new Vector2(874, 290), Color.White);
+                            spriteBatch.DrawString(alagardFont, "Lucas the Lumbersaw", new Vector2(167, 521), Color.White);
+                        }
 
-                    if (introBossDialog == 2)
-                    {
-                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(132, 525), Color.White);
-                        spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
-                    }
-                    switch (introBossDialog)
-                    {
-                        case 1:
-                            spriteBatch.DrawString(kongfonts, "Well well well! , Look who's here", new Vector2(132, 578), Color.White);
-                            spriteBatch.DrawString(kongfonts, "A loser bird. You bring me a new friend?", new Vector2(132, 610), Color.White);
-                            break;
-                        case 2:
-                            spriteBatch.DrawString(kongfonts, "Shut up! This is a man who captured other guardians and the tree", new Vector2(132, 578), Color.White);
-                            break;
-                        case 3:
-                            spriteBatch.DrawString(kongfonts, "Hahaha, I see. You come to help your loser guardians", new Vector2(132, 578), Color.White);
-                            spriteBatch.DrawString(kongfonts, "If you wanna help them, Come challege me. I will make it in short time", new Vector2(132, 610), Color.White);
-                            break;
-                    }
-                }
-                //Dialog END
-                if (gamestate == GameState.END)
-                {
-                    if (endDialog == 1)
-                    {
-                        spriteBatch.Draw(bossPortraitTex, new Vector2(874, 290), Color.White);
-                        spriteBatch.DrawString(kongfonts, "Lucas the Lumbersaw", new Vector2(132, 525), Color.White);
-                    }
+                        if (introBossDialog == 2)
+                        {
+                            spriteBatch.DrawString(alagardFont, "Gale the Sky Guardian", new Vector2(162, 521), Color.White);
+                            spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
+                        }
+                        switch (introBossDialog)
+                        {
+                            case 1:
+                                spriteBatch.DrawString(alagardFont, "Well well well! , Look who's here", new Vector2(132, 578), Color.White);
+                                spriteBatch.DrawString(alagardFont, "A loser bird. You bring me a new friend?", new Vector2(132, 610), Color.White);
+                                break;
+                            case 2:
+                                spriteBatch.DrawString(alagardFont, "Shut up! This is a man who captured other guardians and the tree", new Vector2(132, 578), Color.White);
+                                break;
+                            case 3:
+                                spriteBatch.DrawString(alagardFont, "Hahaha, I see. You come to help your loser guardians", new Vector2(132, 578), Color.White);
+                                spriteBatch.DrawString(alagardFont, "If you wanna help them, Come challege me. I will make it in short time", new Vector2(132, 610), Color.White);
+                                break;
+                        }
+                        break;
+                    case GameState.END:
+                        if (endDialog == 1)
+                        {
+                            spriteBatch.Draw(bossPortraitTex, new Vector2(874, 290), Color.White);
+                            spriteBatch.DrawString(alagardFont, "Lucas the Lumbersaw", new Vector2(167, 521), Color.White);
+                        }
 
-                    if (endDialog == 3)
-                    {
-                        spriteBatch.DrawString(kongfonts, "Gale the Sky Guardian", new Vector2(132, 525), Color.White);
-                        spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
-                    }
+                        if (endDialog == 3)
+                        {
+                            spriteBatch.DrawString(alagardFont, "Gale the Sky Guardian", new Vector2(162, 521), Color.White);
+                            spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
+                        }
 
-                    if (endDialog == 2 || endDialog >= 4)
-                    {
-                        spriteBatch.DrawString(kongfonts, "Crush the Lake Guardian", new Vector2(132, 525), Color.White);
-                        spriteBatch.Draw(crocPortraitTex, new Vector2(886, 306), Color.White);
-                    }
+                        if (endDialog == 2 || endDialog >= 4)
+                        {
+                            spriteBatch.DrawString(alagardFont, "Crush the Lake Guardian", new Vector2(147, 521), Color.White);
+                            spriteBatch.Draw(crocPortraitTex, new Vector2(886, 306), Color.White);
+                        }
 
-                    switch (endDialog)
-                    {
-                        case 1:
-                            spriteBatch.DrawString(kongfonts, "How is this possible! My belove machine is destroyed. Damn you loser bird", new Vector2(132, 578), Color.White);
-                            spriteBatch.DrawString(kongfonts, "And you! I will tell my boss to capture you! Bye bye sucker", new Vector2(132, 610), Color.White);
-                            break;
-                        case 2:
-                            spriteBatch.DrawString(kongfonts, "You save me! Thank you very much!", new Vector2(132, 578), Color.White);
-                            break;
-                        case 3:
-                            spriteBatch.DrawString(kongfonts, "It's good to see you're still safe.", new Vector2(132, 578), Color.White);
-                            spriteBatch.DrawString(kongfonts, "Where is Roark", new Vector2(132, 610), Color.White);
-                            break;
-                        case 4:
-                            spriteBatch.DrawString(kongfonts, "He has been sent to the city now", new Vector2(132, 578), Color.White);
-                            spriteBatch.DrawString(kongfonts, "We must help him now, Lets go", new Vector2(132, 610), Color.White);
-                            break;
-                    }
+                        switch (endDialog)
+                        {
+                            case 1:
+                                spriteBatch.DrawString(alagardFont, "How is this possible! My belove machine is destroyed. Damn you loser bird", new Vector2(132, 578), Color.White);
+                                spriteBatch.DrawString(alagardFont, "And you! I will tell my boss to capture you! Bye bye sucker", new Vector2(132, 610), Color.White);
+                                break;
+                            case 2:
+                                spriteBatch.DrawString(alagardFont, "You save me! Thank you very much!", new Vector2(132, 578), Color.White);
+                                break;
+                            case 3:
+                                spriteBatch.DrawString(alagardFont, "It's good to see you're still safe.", new Vector2(132, 578), Color.White);
+                                spriteBatch.DrawString(alagardFont, "Where is Roark", new Vector2(132, 610), Color.White);
+                                break;
+                            case 4:
+                                spriteBatch.DrawString(alagardFont, "He has been sent to the city now", new Vector2(132, 578), Color.White);
+                                spriteBatch.DrawString(alagardFont, "We must help him now, Lets go", new Vector2(132, 610), Color.White);
+                                break;
+                        }
+                        break;
                 }
             }
         }
@@ -737,48 +759,45 @@ namespace ScifiDruid.GameScreen
                         spriteBatch.Draw(blackTex, Vector2.Zero, colorStart);
                     }
                 }
-
-                if (gamestate == GameState.OPENING)
+                switch (gamestate)
                 {
-                    if (openingDialog < 6)
-                    {
-                        bird_guardian.Draw(spriteBatch);
-                    }
-                }
-
-                if (gamestate == GameState.END)
-                {
-                    if (endDialog >= 2 && endDialog < 5)
-                    {
-                        croc_guardian.Draw(spriteBatch);
-                    }
-                }
-
-                if (gamestate == GameState.PLAY)
-                {
-                    //draw enemy animation
-                    foreach (RangeEnemy flameBot in flameMechEnemies)
-                    {
-                        flameBot.Draw(spriteBatch);
-                        foreach (EnemyBullet enemybullet in flameBot.bulletList)
+                    case GameState.OPENING:
+                        if (openingDialog < 6)
                         {
-                            enemybullet.Draw(spriteBatch);
+                            bird_guardian.Draw(spriteBatch);
                         }
-                    }
-                    foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
-                    {
-                        chainsawBot.Draw(spriteBatch);
-                    }
-                    
+                        break;
+                    case GameState.PLAY:
+                        //draw enemy animation
+                        foreach (RangeEnemy flameBot in flameMechEnemies)
+                        {
+                            flameBot.Draw(spriteBatch);
+                            foreach (EnemyBullet enemybullet in flameBot.bulletList)
+                            {
+                                enemybullet.Draw(spriteBatch);
+                            }
+                        }
+                        foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
+                        {
+                            chainsawBot.Draw(spriteBatch);
+                        }
 
-                    //draw switch animation
-                    switch_wall.Draw(spriteBatch);
 
-                    //draw wall
-                    if (!isOpenSwitch)
-                    {
-                        stage_wall.Draw(spriteBatch);
-                    }
+                        //draw switch animation
+                        switch_wall.Draw(spriteBatch);
+
+                        //draw wall
+                        if (!isOpenSwitch)
+                        {
+                            stage_wall.Draw(spriteBatch);
+                        }
+                        break;
+                    case GameState.END:
+                        if (endDialog >= 2 && endDialog < 5)
+                        {
+                            croc_guardian.Draw(spriteBatch);
+                        }
+                        break;
                 }
 
                 if (gamestate == GameState.PLAY || gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS)
