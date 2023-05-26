@@ -77,3 +77,5 @@
 /.vs/Verdantia/v17/fileList.bin
 /.vs/ProjectEvaluation/verdantia.metadata.v6.1
 /.vs/ProjectEvaluation/verdantia.projects.v6.1
+/.vs
+/.gitignore
