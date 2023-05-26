@@ -26,7 +26,6 @@ namespace ScifiDruid.GameObjects
         private Random rand = new Random();
         private int randomAction;
         //attribute using for moving of boss
-        private float timeElapsed;
         private float movingTime = 5f;
 
         //boolean to do action
@@ -238,15 +237,15 @@ namespace ScifiDruid.GameObjects
 
         public override void Action()
         {
-            if (isAlive && Player.health > 0)
+            if (isAlive && player.health > 0)
             {
 
                 //timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 if (skillTime <= 0 && curBossStatus == LucasStatus.IDLE)
                 {
-                    //randomAction = rand.Next(1, 6);
-                    randomAction = 3;
+                    randomAction = rand.Next(1, 4);
+                    //randomAction = 1;
                     //randomAction = 2;
 
                     skillTime = 5;

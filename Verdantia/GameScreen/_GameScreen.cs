@@ -19,6 +19,7 @@ namespace ScifiDruid.GameScreen
         {
             content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
         }
+
         public virtual void UnloadContent()
         {
             content.Unload();
@@ -26,17 +27,16 @@ namespace ScifiDruid.GameScreen
         public virtual void Update(GameTime gameTime)
         {
         }
-        public virtual void Update()
-        {
-        }
         public virtual void Draw(SpriteBatch spriteBatch)
         {
 
         }
+
         public virtual void DrawHUD(SpriteBatch spriteBatch)
         {
 
         }
+
         public virtual void DrawFixScreen(SpriteBatch spriteBatch)
         {
 

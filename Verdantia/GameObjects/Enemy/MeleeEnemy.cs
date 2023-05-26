@@ -28,8 +28,6 @@ namespace ScifiDruid.GameObjects
         private bool isMovingLeft = true;
         private float idleTime = 0;
 
-
-
         //for animation
         protected Vector2 idleSize;
         protected Vector2 walkSize;

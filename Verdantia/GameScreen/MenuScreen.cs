@@ -176,8 +176,8 @@ namespace ScifiDruid.GameScreen
                     }
                     if (comicPage >= 16 || Keyboard.GetState().IsKeyDown(Keys.Enter))
                     {
-                        //Singleton.Instance.levelState = LevelState.FOREST;
-                        Singleton.Instance.levelState = LevelState.CITY;
+                        Singleton.Instance.levelState = LevelState.FOREST;
+                        //Singleton.Instance.levelState = LevelState.CITY;
                         //Singleton.Instance.levelState = LevelState.LAB;
                         ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
                     }

@@ -297,15 +297,15 @@ namespace ScifiDruid.GameObjects
 
         public override void Action()
         {
-            if (isAlive && Player.health > 0)
+            if (isAlive && player.health > 0)
             {
 
                 //timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 if (skillTime <= 0 && curBossStatus == JaneStatus.IDLE)
                 {
-                    //randomAction = rand.Next(1, 4);
-                    randomAction = 1;
+                    randomAction = rand.Next(1, 4);
+                    //randomAction = 1;
                     skillTime = 3;
                 }
                 else if (curBossStatus == JaneStatus.IDLE)

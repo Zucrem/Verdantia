@@ -212,7 +212,7 @@ namespace ScifiDruid.GameObjects
 
         public override void Action()
         {
-            if (isAlive && Player.health > 0)
+            if (isAlive && player.health > 0)
             {
                 if (skillTime <= 0 && curBossStatus == DoctorStatus.IDLE)
                 {
