@@ -18,7 +18,7 @@ namespace ScifiDruid.GameScreen
         private Vector2 fontSize;//ขนาด font ที่เอามา
         private Color color; //เพื่อupdate ค่าความโปร่งสี
         private SpriteFont smallfonts, mediumfonts, bigfonts;//กำหนดชื่อ font
-        private Texture2D logoTex, blackTex;//กำหนด ภาพของหน้า splashscreen
+        private Texture2D blackTex;//กำหนด ภาพของหน้า splashscreen
         private int alpha; // ค่าความโปร่งสี
         private int displayIndex; // order of index to display splash screen
         private float timer; // Elapsed time in game 
@@ -42,7 +42,6 @@ namespace ScifiDruid.GameScreen
             smallfonts = content.Load<SpriteFont>("Fonts/font20");
             bigfonts = content.Load<SpriteFont>("Fonts/font60");
             mediumfonts = content.Load<SpriteFont>("Fonts/font30");
-            logoTex = content.Load<Texture2D>("Pictures/Splash/SplashScreen/GameLogo");
             blackTex = content.Load<Texture2D>("Pictures/Splash/SplashScreen/Black");
 
             //song and sfx
@@ -132,7 +131,8 @@ namespace ScifiDruid.GameScreen
                     spriteBatch.DrawString(smallfonts, "Teletubbie's Group Present", new Vector2((Singleton.Instance.Dimensions.X - fontSize.X) / 2, 450), color);
                     break;
                 case 2:
-                    spriteBatch.Draw(logoTex, new Vector2((Singleton.Instance.Dimensions.X - logoTex.Width) / 2, 200), color);
+                    fontSize = bigfonts.MeasureString("Verdantia");
+                    spriteBatch.DrawString(bigfonts, "Verdantia", new Vector2((Singleton.Instance.Dimensions.X - fontSize.X) / 2, 220), color);
                     break;
                 case 3:
                     fontSize = mediumfonts.MeasureString("The Best 2D Platform Game Ever");

@@ -288,6 +288,7 @@ namespace ScifiDruid.GameObjects
 
                 if (idleTime < 5)
                 {
+                    curStatus = EnemyStatus.IDLE;
                     idleTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
                 else
