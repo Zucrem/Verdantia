@@ -43,7 +43,7 @@ namespace ScifiDruid.GameScreen
         protected Texture2D playerTex;
 
         //all stage texture
-        protected Texture2D stage1BG, stage2BG, stage3BG;
+        protected Texture2D stage1BG, stage2BG, stage3BG, labBG, endCreditBG;
         //all stage
         //GameObject
         protected Texture2D switch_wall_Tex;
@@ -104,7 +104,7 @@ namespace ScifiDruid.GameScreen
 
         //fonts
         //private SpriteFont Alagan
-        protected SpriteFont smallfonts, mediumfonts, bigfonts, kongfonts;//กำหนดชื่อ font
+        protected SpriteFont smallfonts, mediumfonts, bigfonts, kongfonts, alagardFont;//กำหนดชื่อ font
 
         //sound 
         protected float masterBGM = Singleton.Instance.bgMusicVolume;
@@ -169,8 +169,8 @@ namespace ScifiDruid.GameScreen
                 {
                     name = "Player Character",
                     size = new Vector2(46, 94),
-                    speed = 13,
-                    //speed = 50,
+                    //speed = 13,
+                    speed = 50,
                     jumpHigh = 10.5f,
                 };
 
@@ -297,6 +297,7 @@ namespace ScifiDruid.GameScreen
             bigfonts = content.Load<SpriteFont>("Fonts/font60");
             mediumfonts = content.Load<SpriteFont>("Fonts/font30");
             kongfonts = content.Load<SpriteFont>("Fonts/KongFont");
+            alagardFont = content.Load<SpriteFont>("Fonts/AlagardFont");
 
             //player asset and bullet
             playerTex = content.Load<Texture2D>("Pictures/Play/Characters/Player/keeperSheet");
@@ -525,7 +526,7 @@ namespace ScifiDruid.GameScreen
                             changeScreen = true;
                             if (nextScreen)
                             {
-                                ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
+                                ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.EndScreen);
                             }
                             break;
                         case GameState.LOSE:
@@ -870,12 +871,13 @@ namespace ScifiDruid.GameScreen
                 {
                     spriteBatch.Draw(dialogBoxTex, new Rectangle(94, 508, 1092, 192), new Rectangle(0, 0, 1092, 192), Color.White);
 
-                    spriteBatch.DrawString(kongfonts, "Press Spacebar", new Vector2(988, 667), Color.White);
+                    spriteBatch.DrawString(alagardFont, "Press Spacebar", new Vector2(988, 667), Color.White);
                 }
 
                 if (gamestate == GameState.PLAY || gamestate == GameState.BOSS)
                 {
                     int mana = (int)player.mana;
+                    int maxMana = (int)Player.maxMana;
                     int health = (int)player.health;
 
                     //HUD
@@ -889,7 +891,7 @@ namespace ScifiDruid.GameScreen
                         }
                     }
                     //mana Bar
-                    double manaRatio = ((double)mana / 100) * 200;//mana percent per 100 * manaTex.length
+                    double manaRatio = ((double)mana / maxMana) * 200;//mana percent per maxMana * manaTex.length
                     spriteBatch.Draw(manaBarTex, new Rectangle(1, 95, 216, 56), Color.White);
                     spriteBatch.Draw(manaTex, new Rectangle(9, 103, (int)manaRatio, 40), Color.White);
 

@@ -19,7 +19,8 @@ namespace ScifiDruid.Managers
         {
             MenuScreen,
             PlayScreen,
-            PerkScreen
+            PerkScreen,
+            EndScreen
         }
         //object gamescreen
         private _GameScreen currentScreen;
@@ -28,6 +29,8 @@ namespace ScifiDruid.Managers
         public ScreenManager()
         {
             currentScreen = new SplashScreen();
+            //currentScreen = new PerkScreen();
+            //currentScreen = new Stage2Screen();
         }
         public void LoadScreen(GameScreenName screenName)
         {
@@ -54,6 +57,9 @@ namespace ScifiDruid.Managers
                     break;
                 case GameScreenName.PerkScreen:
                     currentScreen = new PerkScreen();
+                    break;
+                case GameScreenName.EndScreen:
+                    currentScreen = new EndScreen();
                     break;
             }
             currentScreen.LoadContent();

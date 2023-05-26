@@ -117,7 +117,7 @@
   <object id="45" name="wall3" x="5888" y="256" width="64" height="256"/>
   <object id="46" name="switch4" x="6016" y="160" width="32" height="32"/>
   <object id="47" name="wall4" x="7168" y="-64" width="64" height="256"/>
-  <object id="48" name="switch6" x="8352" y="160" width="32" height="32"/>
+  <object id="48" name="switch6" x="8320" y="160" width="32" height="32"/>
   <object id="49" name="switch5" x="7968" y="160" width="32" height="32"/>
   <object id="50" name="wall5" x="8384" y="-64" width="64" height="256"/>
   <object id="51" name="wall6" x="9504" y="-64" width="64" height="256"/>
@@ -149,7 +149,6 @@
   <object id="4" name="ground_mon_2" x="1600" y="416" width="480" height="64"/>
   <object id="5" name="ground_mon_2" x="2080" y="416" width="448" height="64"/>
   <object id="6" name="ground_mon_1" x="2528" y="96" width="384" height="64"/>
-  <object id="7" name="ground_mon_1" x="2784" y="256" width="256" height="64"/>
   <object id="8" name="ground_mon_2" x="2624" y="544" width="448" height="64"/>
   <object id="9" name="ground_mon_1" x="3072" y="544" width="384" height="64"/>
   <object id="12" name="ground_mon_1" x="4864" y="512" width="288" height="64"/>
@@ -159,23 +158,15 @@
   <object id="18" name="ground_mon_1" x="7808" y="128" width="256" height="64"/>
   <object id="20" name="ground_mon_2" x="8480" y="512" width="736" height="64"/>
   <object id="22" name="ground_mon_2" x="9216" y="128" width="288" height="64"/>
-  <object id="23" name="ground_mon_1" x="9472" y="352" width="192" height="64"/>
   <object id="25" name="ground_mon_1" x="9856" y="576" width="224" height="64"/>
   <object id="66" name="ground_mon_1" x="7520" y="512" width="256" height="64"/>
-  <object id="67" name="ground_mon_1" x="9376" y="576" width="288" height="64"/>
+  <object id="67" name="ground_mon_1" x="9408" y="576" width="288" height="64"/>
  </objectgroup>
  <objectgroup id="3" name="FlyingMonster">
-  <object id="27" name="fly_mon" x="1664" y="96" width="416" height="64"/>
-  <object id="28" name="fly_mon" x="2112" y="32" width="416" height="64"/>
-  <object id="29" name="fly_mon" x="2976" y="384" width="416" height="64"/>
-  <object id="30" name="fly_mon" x="4864" y="32" width="416" height="64"/>
-  <object id="31" name="fly_mon" x="5952" y="32" width="416" height="64"/>
-  <object id="32" name="fly_mon" x="6432" y="192" width="416" height="64"/>
-  <object id="33" name="fly_mon" x="6720" y="32" width="416" height="64"/>
-  <object id="34" name="fly_mon" x="7232" y="32" width="416" height="64"/>
-  <object id="35" name="fly_mon" x="8576" y="256" width="416" height="64"/>
-  <object id="36" name="fly_mon" x="8320" y="32" width="512" height="64"/>
-  <object id="37" name="fly_mon" x="9088" y="32" width="416" height="64"/>
+  <object id="27" name="fly_mon" x="1632" y="64" width="416" height="64"/>
+  <object id="29" name="fly_mon" x="2784" y="352" width="416" height="64"/>
+  <object id="31" name="fly_mon" x="6144" y="32" width="416" height="64"/>
+  <object id="35" name="fly_mon" x="8640" y="224" width="416" height="64"/>
  </objectgroup>
  <objectgroup id="10" name="Boss">
   <object id="143" name="Boss" x="11424" y="352" width="32" height="96"/>

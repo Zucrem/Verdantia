@@ -40,8 +40,8 @@ namespace ScifiDruid.GameObjects
         //Vector
         private List<Vector2> shootSymbolRectVector = new List<Vector2>() { new Vector2(247, 2), new Vector2(275, 1), new Vector2(306, 0) };
         private List<Vector2> healSymbolRectVector = new List<Vector2>() { new Vector2(354, 0) };
-        private List<Vector2> dashSymbolRectVector = new List<Vector2>() { new Vector2(272, 367), new Vector2(272, 510), new Vector2(272, 660) };
-        private List<Vector2> birdSymbolRectVector = new List<Vector2>() { new Vector2(272, 660), new Vector2(272, 510), new Vector2(272, 367) };
+        private List<Vector2> dashSymbolRectVector = new List<Vector2>() { new Vector2(272, 660), new Vector2(272, 510), new Vector2(272, 367) };
+        private List<Vector2> birdSymbolRectVector = new List<Vector2>() { new Vector2(272, 367), new Vector2(272, 510), new Vector2(272, 660) };
         private List<Vector2> crocSymbolRectVector = new List<Vector2>() { new Vector2(28, 238), new Vector2(140, 239), new Vector2(278, 247) };
         private List<Vector2> lionSymbolRectVector = new List<Vector2>() { new Vector2(0, 284), new Vector2(0, 456), new Vector2(0, 707), new Vector2(0, 980) };
 

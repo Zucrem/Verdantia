@@ -4,6 +4,7 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Fonts/AlagardFont.spritefont</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Fonts/font20.spritefont</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Fonts/font30.spritefont</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Fonts/font60.spritefont</File>
@@ -65,6 +66,7 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/soulBirdPortrait.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/soulCrocPortrait.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Dialog/soulLionPortrait.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/EndScreen/EndCredit.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Hud/crocNotR.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Hud/crocR.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Hud/dashNotR.png</File>
@@ -123,9 +125,12 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Skills/BossSkills/JaneAmmoSheet.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/Skills/PlayerSkills/playerSkills.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/StageScreen/Stage1Tileset/specialProps1.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/StageScreen/Stage1Tileset/Stage1BG.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/StageScreen/Stage1Tileset/tileset1.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/StageScreen/Stage2Tileset/specialProps2.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/StageScreen/Stage2Tileset/Stage2BG.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/StageScreen/Stage2Tileset/tileset2.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/StageScreen/Stage3Tileset/LabBG.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/StageScreen/Stage3Tileset/specialProps3.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/StageScreen/Stage3Tileset/Stage3BG.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/StageScreen/Stage3Tileset/tileset3.png</File>
@@ -141,6 +146,11 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Button/hoverSound.wav</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

@@ -8,6 +8,7 @@ using Box2DNet.Factories;
 using Box2DNet;
 using System.Linq;
 using static ScifiDruid.Singleton;
+using System.Diagnostics;
 
 namespace ScifiDruid.GameObjects
 {
