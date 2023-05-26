@@ -96,7 +96,7 @@ namespace ScifiDruid.GameObjects
             shootAndRunSrcHeight = 94;
             //shoot up
             shootUpSrcWidth = 40;
-            shootUpSrcHeight = 110;
+            shootUpSrcHeight = 130;
             //shoot up and run
             shootUpAndRunSrcWidth = 62;
             shootUpAndRunSrcHeight = 110;
@@ -158,18 +158,18 @@ namespace ScifiDruid.GameObjects
             shootAndRunFrames = shootAndRunRectVector.Count();
 
             //shoot up vector to list
-            shootUpRectVector.Add(new Vector2(260, 0));
+            shootUpRectVector.Add(new Vector2(256, 16));
 
             shootUpFrames = shootUpRectVector.Count();
 
             //shoot up and run vector to list
-            shootUpAndRunRectVector.Add(new Vector2(404, 0));
-            shootUpAndRunRectVector.Add(new Vector2(466, 0));
-            shootUpAndRunRectVector.Add(new Vector2(528, 0));
-            shootUpAndRunRectVector.Add(new Vector2(590, 0));
-            shootUpAndRunRectVector.Add(new Vector2(652, 0));
-            shootUpAndRunRectVector.Add(new Vector2(714, 0));
-            shootUpAndRunRectVector.Add(new Vector2(776, 0));
+            shootUpAndRunRectVector.Add(new Vector2(404, 16));
+            shootUpAndRunRectVector.Add(new Vector2(466, 16));
+            shootUpAndRunRectVector.Add(new Vector2(528, 16));
+            shootUpAndRunRectVector.Add(new Vector2(590, 16));
+            shootUpAndRunRectVector.Add(new Vector2(652, 16));
+            shootUpAndRunRectVector.Add(new Vector2(714, 16));
+            shootUpAndRunRectVector.Add(new Vector2(776, 16));
 
             shootUpAndRunFrames = shootUpAndRunRectVector.Count();
 
@@ -301,61 +301,61 @@ namespace ScifiDruid.GameObjects
             switch (playerStatus)
             {
                 case PlayerStatus.IDLE:
-                    delay = 300f;
+                    delay = 200;
                     spriteVector = idleRectVector;
                     spriteSize = new Vector2(idleSrcWidth, idleSrcHeight);
                     allframes = idleFrames;
                     break;
                 case PlayerStatus.SHOOT:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = shootRectVector;
                     spriteSize = new Vector2(shootSrcWidth, shootSrcHeight);
                     allframes = shootFrames;
                     break;
                 case PlayerStatus.RUN:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = runRectVector;
                     spriteSize = new Vector2(runSrcWidth, runSrcHeight);
                     allframes = runFrames;
                     break;
                 case PlayerStatus.SHOOT_RUN:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = shootAndRunRectVector;
                     spriteSize = new Vector2(shootAndRunSrcWidth, shootAndRunSrcHeight);
                     allframes = shootAndRunFrames;
                     break;
                 case PlayerStatus.SHOOT_UP:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = shootUpRectVector;
                     spriteSize = new Vector2(shootUpSrcWidth, shootUpSrcHeight);
                     allframes = shootUpFrames;
                     break;
                 case PlayerStatus.SHOOT_UP_RUN:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = shootUpAndRunRectVector;
                     spriteSize = new Vector2(shootUpAndRunSrcWidth, shootUpAndRunSrcHeight);
                     allframes = shootUpAndRunFrames;
                     break;
                 case PlayerStatus.JUMP:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = jumpRectVector;
                     spriteSize = new Vector2(jumpSrcWidth, jumpSrcHeight);
                     allframes = jumpFrames;
                     break;
                 case PlayerStatus.SHOOT_AIR:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = shootOnAirRectVector;
                     spriteSize = new Vector2(shootOnAirSrcWidth, shootOnAirSrcHeight);
                     allframes = shootOnAirFrames;
                     break;
                 case PlayerStatus.FALLING:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = fallingRectVector;
                     spriteSize = new Vector2(fallingSrcWidth, fallingSrcHeight);
                     allframes = fallingFrames;
                     break;
                 case PlayerStatus.SKILL:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = skillRectVector;
                     spriteSize = new Vector2(skillSrcWidth, skillSrcHeight);
                     allframes = skillFrames;
@@ -367,7 +367,7 @@ namespace ScifiDruid.GameObjects
                     allframes = takeDamageFrames;
                     break;
                 case PlayerStatus.DASH:
-                    delay = 150f;
+                    delay = 100;
                     spriteVector = dashRectVector;
                     spriteSize = new Vector2(dashSrcWidth, dashSrcHeight);
                     allframes = dashFrames;

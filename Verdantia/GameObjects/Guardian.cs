@@ -43,7 +43,7 @@ namespace Verdantia.GameObjects
 
         //time
         private float elapsed;
-        private float delay = 200f;
+        private float delay = 100;
         public Guardian(Texture2D texture, Vector2 guardianSpriteSize, List<Vector2> guardianSpriteList) : base(texture)
         {
             this.texture = texture;

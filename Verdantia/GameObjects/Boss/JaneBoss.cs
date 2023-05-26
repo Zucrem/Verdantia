@@ -7,6 +7,9 @@ using Box2DNet;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using ScifiDruid.Managers;
 
 namespace ScifiDruid.GameObjects
 {
@@ -70,6 +73,7 @@ namespace ScifiDruid.GameObjects
         private BossLongShoot beam;
 
         //Action all states
+        private SoundEffect jumpSound, bombFallSound, explosionSound, pistolSound, plasmaSound;
         public enum JaneStatus
         {
             IDLE,
@@ -124,6 +128,18 @@ namespace ScifiDruid.GameObjects
             //animation dead state
             frameState = 0;
             repeat = false;
+
+            LoadContent();
+        }
+        public void LoadContent()
+        {
+            ContentManager content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
+            //sfx
+            bombFallSound = content.Load<SoundEffect>("Sounds/Boss2/bombFall");
+            explosionSound = content.Load<SoundEffect>("Sounds/Boss2/explosionJane");
+            pistolSound = content.Load<SoundEffect>("Sounds/Boss2/janePistol");
+            jumpSound = content.Load<SoundEffect>("Sounds/Boss2/jumpJane");
+            plasmaSound = content.Load<SoundEffect>("Sounds/Boss2/plasmaBeam");
         }
 
         public override void Initial(Rectangle spawnPosition, Player player , Rectangle fieldBoss)
@@ -305,7 +321,7 @@ namespace ScifiDruid.GameObjects
                 if (skillTime <= 0 && curBossStatus == JaneStatus.IDLE)
                 {
                     randomAction = rand.Next(1, 4);
-                    //randomAction = 1;
+                    //randomAction = 3;
                     skillTime = 3;
                 }
                 else if (curBossStatus == JaneStatus.IDLE)
@@ -339,6 +355,8 @@ namespace ScifiDruid.GameObjects
                 skillTime = 1;
                 bulletLists.Add(bullet);
                 bulletLists[bulletLists.Count - 1].Shoot();
+
+                pistolSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
             }
 
             if (skillTime <= 0 && bulletLists.Count == 3 && curBossStatus == JaneStatus.SHOOTGUN)
@@ -362,9 +380,11 @@ namespace ScifiDruid.GameObjects
 
                 beam = new BossLongShoot(ammoTexture, positionBeam,this,"Jane");
 
+                plasmaSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+
                 //beam = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(1200), ConvertUnits.ToSimUnits(shootPlasmaSize.Y), 1, positionBeam, 0, BodyType.Static, "SkillBoss");
                 //beam.IsSensor = true;
-                
+
             }
             else if (beam != null)
             {
@@ -401,6 +421,8 @@ namespace ScifiDruid.GameObjects
                 //dropRocket.IsSensor = false;
                 skillTime = 3;
                 rockets.Add(dropBomb);
+
+                bombFallSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
             }
             else if (skillTime > 0)
             {
@@ -430,6 +452,8 @@ namespace ScifiDruid.GameObjects
                         item.bombBody.Dispose();
 
                         item.CreateExplosive(explosivePosition);
+
+                        explosionSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
 
                     }
 
@@ -472,6 +496,8 @@ namespace ScifiDruid.GameObjects
                     curBossStatus = JaneStatus.DASHIN;
                     countTeleport++;
                     skillTime = 0.5f;
+
+                    jumpSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                 }
                 else if (curBossStatus == JaneStatus.DASHIN && countTeleport == 1)
                 {
@@ -517,6 +543,8 @@ namespace ScifiDruid.GameObjects
                     countTeleport++;
                     curBossStatus = JaneStatus.DASHIN;
                     skillTime = 0.5f;
+
+                    jumpSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                 }
                 else if (curBossStatus == JaneStatus.DASHIN && countTeleport == 2)
                 {
@@ -576,49 +604,49 @@ namespace ScifiDruid.GameObjects
             switch (curBossStatus)
             {
                 case JaneStatus.IDLE:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = idleSpriteVector;
                     spriteSize = new Vector2(idleSize.X, idleSize.Y);
                     allframes = spriteVector.Count();
                     break;
                 case JaneStatus.SHOOTGUN:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = shootGunSpriteVector;
                     spriteSize = new Vector2(shootGunSize.X, shootGunSize.Y);
                     allframes = spriteVector.Count();
                     break;
                 case JaneStatus.SHOOTPLASMA:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = shootPlasmaSpriteVector;
                     spriteSize = new Vector2(shootPlasmaSize.X, shootPlasmaSize.Y);
                     allframes = spriteVector.Count();
                     break;
                 case JaneStatus.CALLDOWNBOMB:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = callDownBombSpriteVector;
                     spriteSize = new Vector2(action2Size.X, action2Size.Y);
                     allframes = spriteVector.Count();
                     break;
                 case JaneStatus.PREPARE:
-                    delay = 300f;
+                    delay = 100;
                     spriteSize = prepareSize;
                     spriteVector = prepareSpriteVector;
                     allframes = spriteVector.Count();
                     break;
                 case JaneStatus.DASHIN:
-                    delay = 300f;
+                    delay = 100;
                     spriteSize = dashInSize;
                     spriteVector = dashInSpriteVector;
                     allframes = spriteVector.Count();
                     break;
                 case JaneStatus.DASHOUT:
-                    delay = 300f; 
+                    delay = 100; 
                     spriteSize = dashOutSize;
                     spriteVector = dashOutSpriteVector;
                     allframes = spriteVector.Count();
                     break;
                 case JaneStatus.PUNCH:
-                    delay = 300f; 
+                    delay = 100; 
                     spriteSize = punchSize;
                     spriteVector = punchSpriteVector;
                     allframes = spriteVector.Count();
@@ -658,10 +686,10 @@ namespace ScifiDruid.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (!animationDead)
-            {
+            //if (!animationDead)
+            //{
                 spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bossOrigin, 1f, charDirection, 0f);
-            }
+            //}
 
             if (action2)
             {

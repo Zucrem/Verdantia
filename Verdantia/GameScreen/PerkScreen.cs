@@ -467,7 +467,7 @@ namespace Verdantia.GameScreen
                 if (atkDM && !atkDMSkill)
                 {
                     spriteBatch.DrawString(smallfonts, "Increase", new Vector2(531, 270), Color.White);
-                    spriteBatch.DrawString(smallfonts, "Attack Damage", new Vector2(465, 310), Color.White);
+                    spriteBatch.DrawString(smallfonts, "Attack Speed", new Vector2(465, 310), Color.White);
                 }
                 if (atkNoMana && !atkNoManaSkill)
                 {

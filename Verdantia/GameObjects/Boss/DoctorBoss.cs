@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using ScifiDruid.Managers;
 
 namespace ScifiDruid.GameObjects
 {
@@ -53,6 +56,7 @@ namespace ScifiDruid.GameObjects
 
         private float warningSkillTime;
 
+        private SoundEffect laughSound, redElectricSound, laserSound;
         private enum DoctorStatus
         {
             IDLE,
@@ -94,6 +98,17 @@ namespace ScifiDruid.GameObjects
             //animation dead state
             frameState = 0;
             repeat = false;
+
+            LoadContent();
+        }
+
+        public void LoadContent()
+        {
+            ContentManager content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
+            //sfx
+            laserSound = content.Load<SoundEffect>("Sounds/Boss3/laser");
+            laughSound = content.Load<SoundEffect>("Sounds/Boss3/laughViroj");
+            redElectricSound = content.Load<SoundEffect>("Sounds/Boss3/redElectric");
         }
 
         public override void Initial(Rectangle spawnPosition, Player player, Rectangle fieldBoss)
@@ -242,7 +257,7 @@ namespace ScifiDruid.GameObjects
                 if (ballDelay <= 0)
                 {
                     ballDelay = 3f;
-                    Vector2 ballPosition = new Vector2((fieldBoss.X - fieldBoss.Width / 2) + 5, fieldBoss.Y - 10);
+                    Vector2 ballPosition = new Vector2((fieldBoss.X - fieldBoss.Width / 2) + 5, fieldBoss.Y - 30);
                     DoctorBall ball = new DoctorBall(skillBossTexture, ConvertUnits.ToSimUnits(ballPosition), this);
                     ball.CreateBall();
                     lightningBall.Add(ball);
@@ -275,6 +290,8 @@ namespace ScifiDruid.GameObjects
                 action1 = true;
                 curBossStatus = DoctorStatus.ACTION1;
                 warningSkillTime = 1;
+
+                redElectricSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
 
             }
             else if (warningSkillTime <= 0 && redLightning == null)
@@ -311,12 +328,16 @@ namespace ScifiDruid.GameObjects
                 curBossStatus = DoctorStatus.ACTION2;
                 warningSkillTime = 1;
 
+                laughSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+
             }
             else if (warningSkillTime <= 0 && laser == null)
             {
                 Vector2 laserPosition = position + new Vector2(-5, -2.2f);
                 laser = new DoctorLaser(skillBossTexture, laserPosition, this);
                 laser.CreateLaser();
+
+                laserSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
             }
             else if (laser != null)
             {
@@ -341,25 +362,25 @@ namespace ScifiDruid.GameObjects
             switch (curBossStatus)
             {
                 case DoctorStatus.IDLE:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = idleSpriteVector;
                     spriteSize = new Vector2(idleSize.X, idleSize.Y);
                     allframes = spriteVector.Count();
                     break;
                 case DoctorStatus.ACTION1:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = action1SpriteVector;
                     spriteSize = new Vector2(action1Size.X, action1Size.Y);
                     allframes = spriteVector.Count();
                     break;
                 case DoctorStatus.ACTION2:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = action2SpriteVector;
                     spriteSize = new Vector2(action2Size.X, action2Size.Y);
                     allframes = spriteVector.Count();
                     break;
                 case DoctorStatus.ACTION3:
-                    delay = 300f;
+                    delay = 100;
                     spriteSize = new Vector2(action3Size.X, action3Size.Y);
                     spriteVector = action3SpriteVector;
                     allframes = spriteVector.Count();
@@ -399,10 +420,10 @@ namespace ScifiDruid.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (!animationDead)
-            {
+            //if (!animationDead)
+            //{
                 spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bossOrigin, 1f, charDirection, 0f);
-            }
+            //}
 
             if (lightningBall.Count > 0)
             {

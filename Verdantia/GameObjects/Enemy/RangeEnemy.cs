@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using static ScifiDruid.Singleton;
 using System.Diagnostics;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using ScifiDruid.Managers;
 
 namespace ScifiDruid.GameObjects
 {
@@ -49,7 +52,10 @@ namespace ScifiDruid.GameObjects
         private EnemyStatus curStatus;
 
         private float attackTimeDelayEnemy = 2;     //time of delay //plz set enemy delay time
-        private float attackTimeEnemy;          //timer for delay          
+        private float attackTimeEnemy;          //timer for delay
+                                                //
+        //sfx
+        private SoundEffect range1DeathSound, range2DeathSound, range3DeathSound;
         private enum EnemyStatus
         {
             IDLE,
@@ -77,6 +83,15 @@ namespace ScifiDruid.GameObjects
             //animation dead state
             frameState = 0;
             repeat = false;
+            LoadContent();
+        }
+        public void LoadContent()
+        {
+            ContentManager content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
+            //sfx
+            range1DeathSound = content.Load<SoundEffect>("Sounds/Stage1/enemy1Death");
+            range2DeathSound = content.Load<SoundEffect>("Sounds/Stage2/enemy2Death");
+            range3DeathSound = content.Load<SoundEffect>("Sounds/Stage3/enemy3Death");
         }
 
         public override void Initial(Rectangle spawnPosition, Player player)
@@ -120,6 +135,19 @@ namespace ScifiDruid.GameObjects
                     enemyHitBox.Dispose();
                     bulletList.Clear();
                     curStatus = EnemyStatus.DEAD;
+
+                    if (Singleton.Instance.levelState == LevelState.FOREST)
+                    {
+                        range1DeathSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                    }
+                    if (Singleton.Instance.levelState == LevelState.CITY)
+                    {
+                        range2DeathSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                    }
+                    if (Singleton.Instance.levelState == LevelState.LAB)
+                    {
+                        range3DeathSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                    }
                 }
             }
 
@@ -366,25 +394,25 @@ namespace ScifiDruid.GameObjects
             switch (curStatus)
             {
                 case EnemyStatus.IDLE:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = idleSpriteVector;
                     spriteSize = new Vector2(idleSize.X, idleSize.Y);
                     allframes = spriteVector.Count();
                     break;
                 case EnemyStatus.WALK:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = walkSpriteVector;
                     spriteSize = new Vector2(walkSize.X, walkSize.Y);
                     allframes = spriteVector.Count();
                     break;
                 case EnemyStatus.SHOOT:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = shootSpriteVector;
                     spriteSize = new Vector2(shootSize.X, shootSize.Y);
                     allframes = spriteVector.Count();
                     break;
                 case EnemyStatus.DEAD:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = deadSpriteVector;
                     spriteSize = new Vector2(deadSize.X, deadSize.Y);
                     allframes = spriteVector.Count();

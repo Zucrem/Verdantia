@@ -149,7 +149,7 @@ namespace ScifiDruid.GameObjects
             {
                 case "Shoot":
                     symbolPosition = position + (new Vector2(0.8f * direction, -0.12f));
-                    delay = 150f;
+                    delay = 100;
                     spriteSize = shootSymbolSize;
                     spriteVector = shootSymbolRectVector;
                     symbolOrigin = new Vector2(spriteSize.X / 2, spriteSize.Y / 2);
@@ -165,7 +165,7 @@ namespace ScifiDruid.GameObjects
                     break;
                 case "Dash":
                     symbolPosition = position + (new Vector2(1.2f * direction * (-1), -0.12f));
-                    delay = 200f;
+                    delay = 100;
                     spriteSize = dashSymbolSize;
                     spriteVector = dashSymbolRectVector;
                     symbolOrigin = new Vector2(spriteSize.X / 2, spriteSize.Y / 2);
@@ -173,7 +173,7 @@ namespace ScifiDruid.GameObjects
                     break;
                 case "Bird":
                     symbolPosition = position + (new Vector2(1.2f * direction * (-1), -0.12f));
-                    delay = 200f;
+                    delay = 100f;
                     spriteSize = birdSymbolSize;
                     spriteVector = birdSymbolRectVector;
                     symbolOrigin = new Vector2(spriteSize.X / 2, spriteSize.Y / 2);
@@ -181,7 +181,7 @@ namespace ScifiDruid.GameObjects
                     break;
                 case "Croc":
                     symbolPosition = position + (new Vector2(0.8f * direction, -0.7f));
-                    delay = 300f;
+                    delay = 100;
                     spriteSize = crocSymbolSize;
                     spriteVector = crocSymbolRectVector;
                     symbolOrigin = new Vector2(spriteSize.X / 2, spriteSize.Y / 2);
@@ -189,7 +189,7 @@ namespace ScifiDruid.GameObjects
                     break;
                 case "Lion":
                     symbolPosition = position + (new Vector2(0, 0));
-                    delay = 200f;
+                    delay = 100;
                     spriteSize = lionSymbolSize;
                     spriteVector = lionSymbolRectVector;
                     symbolOrigin = new Vector2(spriteSize.X / 2, spriteSize.Y / 2);

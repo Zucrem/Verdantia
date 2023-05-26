@@ -14,6 +14,9 @@ using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework.Input;
 using static ScifiDruid.GameObjects.Player;
 using static ScifiDruid.Singleton;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using ScifiDruid.Managers;
 
 namespace ScifiDruid.GameObjects
 {
@@ -54,6 +57,8 @@ namespace ScifiDruid.GameObjects
         Vector2 electricSize = new Vector2(129, 89);
         List<Vector2> electricAnimateList = new List<Vector2>() { new Vector2(404, 229), new Vector2(559, 229) };
 
+        //sfx
+        private SoundEffect melee1DeathSound, melee2DeathSound, melee3DeathSound;
 
         private enum EnemyStatus
         {
@@ -81,6 +86,15 @@ namespace ScifiDruid.GameObjects
             deadSpriteVector = animateList[4];
 
             frames = 0;
+            LoadContent();
+        }
+        public void LoadContent()
+        {
+            ContentManager content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
+            //sfx
+            melee1DeathSound = content.Load<SoundEffect>("Sounds/Stage1/enemy1Death");
+            melee2DeathSound = content.Load<SoundEffect>("Sounds/Stage2/enemy2Death");
+            melee3DeathSound = content.Load<SoundEffect>("Sounds/Stage3/enemy3Death");
         }
 
         public override void Initial(Rectangle spawnPosition, Player player)
@@ -120,6 +134,18 @@ namespace ScifiDruid.GameObjects
                 curStatus = EnemyStatus.DEAD;
                 health = 0;
                 enemyHitBox.Dispose();
+                if (Singleton.Instance.levelState == LevelState.FOREST)
+                {
+                    melee1DeathSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                }
+                if (Singleton.Instance.levelState == LevelState.CITY)
+                {
+                    melee2DeathSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                }
+                if (Singleton.Instance.levelState == LevelState.LAB)
+                {
+                    melee3DeathSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                }
             }
 
             //if dead animation animationEnd
@@ -295,8 +321,6 @@ namespace ScifiDruid.GameObjects
 
             if (!isIdle)
             {
-
-
                 if (isMovingLeft)
                 {
                     if (Singleton.Instance.levelState == LevelState.FOREST)
@@ -337,10 +361,6 @@ namespace ScifiDruid.GameObjects
                 }
 
             }
-
-
-
-
         }
 
         private void EnemyAlertWalking()
@@ -442,13 +462,13 @@ namespace ScifiDruid.GameObjects
             switch (curStatus)
             {
                 case EnemyStatus.IDLE:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = idleSpriteVector;
                     spriteSize = new Vector2(idleSize.X, idleSize.Y);
                     allframes = spriteVector.Count();
                     break;
                 case EnemyStatus.WALK:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = walkSpriteVector;
                     spriteSize = new Vector2(walkSize.X, walkSize.Y);
                     allframes = spriteVector.Count();
@@ -460,13 +480,13 @@ namespace ScifiDruid.GameObjects
                     allframes = spriteVector.Count();
                     break;
                 case EnemyStatus.DETECT:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = detectPlayerSpriteVector;
                     spriteSize = detectPlayerSize;
                     allframes = spriteVector.Count();
                     break;
                 case EnemyStatus.DEAD:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = deadSpriteVector;
                     spriteSize = new Vector2(deadSize.X, deadSize.Y);
                     allframes = spriteVector.Count();

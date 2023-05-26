@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using ScifiDruid;
 using ScifiDruid.GameObjects;
 using ScifiDruid.GameScreen;
@@ -43,7 +44,8 @@ namespace Verdantia.GameScreen
         //change to go another screen
         protected bool nextScreen = false;
 
-
+        //Map Theme
+        private Song endTheme;
         public void Initial()
         {
         }
@@ -58,10 +60,16 @@ namespace Verdantia.GameScreen
             bigfonts = content.Load<SpriteFont>("Fonts/font60");
             mediumfonts = content.Load<SpriteFont>("Fonts/font30");
 
+            //bg music and sfx
+            endTheme = content.Load<Song>("Songs/EndScreen/goodEnd");
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(endTheme);
+
             Initial();
         }
         public override void Update(GameTime gameTime)
         {
+            MediaPlayer.Volume = Singleton.Instance.bgMusicVolume;
             //fade in
             if (!fadeFinish)
             {

@@ -17,6 +17,7 @@ using static ScifiDruid.GameObjects.Player;
 using Verdantia.GameObjects;
 using static ScifiDruid.GameObjects.DoctorBoss;
 using System.Diagnostics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace ScifiDruid.GameScreen
 {
@@ -408,7 +409,8 @@ namespace ScifiDruid.GameScreen
                 boss = new DoctorBoss(doctorBossTex, doctorAmmoTex)
                 {
                     size = new Vector2(38, 88),
-                    health = 30,
+                    //health = 30,
+                    health = 1,
                     speed = 1.2f,
                 };
                 //spawn boss
@@ -460,7 +462,7 @@ namespace ScifiDruid.GameScreen
 
                 //create player on position
                 player.SetSpawn(startRect);
-                //player.Initial(bossState);
+                //player.SetSpawn(bossState);
             }
         }
 
@@ -481,6 +483,10 @@ namespace ScifiDruid.GameScreen
             stage3Theme = content.Load<Song>("Songs/Stage3Screen/Stage3Theme");
             doctorTheme = content.Load<Song>("Songs/Stage3Screen/BossStage3Theme");
             MediaPlayer.Play(stage3Theme);
+
+            //sfx
+            //switch
+            switchSound = content.Load<SoundEffect>("Sounds/Stage3/switch3Sound");
 
             Initial();
         }
@@ -533,26 +539,32 @@ namespace ScifiDruid.GameScreen
                         //press switch button
                         if (!isOpenSwitch1 && switch_wall1.pressSwitch)
                         {
+                            switchSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                             isOpenSwitch1 = true;
                         }
                         if (!isOpenSwitch2 && switch_wall2.pressSwitch)
                         {
+                            switchSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                             isOpenSwitch2 = true;
                         }
                         if (!isOpenSwitch3 && switch_wall3.pressSwitch)
                         {
+                            switchSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                             isOpenSwitch3 = true;
                         }
                         if (!isOpenSwitch4 && switch_wall4.pressSwitch)
                         {
+                            switchSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                             isOpenSwitch4 = true;
                         }
                         if (!isOpenSwitch5 && switch_wall5.pressSwitch)
                         {
+                            switchSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                             isOpenSwitch5 = true;
                         }
                         if (!isOpenSwitch6 && switch_wall6.pressSwitch)
                         {
+                            switchSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                             isOpenSwitch6 = true;
                         }
 
@@ -643,14 +655,6 @@ namespace ScifiDruid.GameScreen
             base.DrawFixScreen(spriteBatch);
             //bg
             spriteBatch.Draw(stage3BG, Vector2.Zero, Color.White);
-            if (gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS || gamestate == GameState.INTROBOSS)
-            {
-                spriteBatch.Draw(labBG, Vector2.Zero, Color.White);
-            }
-            else
-            {
-                spriteBatch.Draw(stage3BG, Vector2.Zero, Color.White);
-            }
         }
 
         public override void DrawHUD(SpriteBatch spriteBatch)
@@ -664,7 +668,7 @@ namespace ScifiDruid.GameScreen
                     case GameState.OPENING:
                         if (openingDialog < 5)
                         {
-                            spriteBatch.DrawString(alagardFont, "Roark the Lake Guardian", new Vector2(142, 521), Color.White);
+                            spriteBatch.DrawString(alagardFont, "Roark the Wild Guardian", new Vector2(142, 521), Color.White);
                             spriteBatch.Draw(soulLionPortraitTex, new Vector2(937, 255), Color.White);
                         }
                         if (openingDialog == 5)
@@ -711,7 +715,7 @@ namespace ScifiDruid.GameScreen
                         }
                         if (introBossDialog == 2)
                         {
-                            spriteBatch.DrawString(alagardFont, "Roark the Lake Guardian", new Vector2(142, 521), Color.White);
+                            spriteBatch.DrawString(alagardFont, "Roark the Wild Guardian", new Vector2(142, 521), Color.White);
                             spriteBatch.Draw(soulLionPortraitTex, new Vector2(937, 255), Color.White);
                         }
                         if (introBossDialog == 5)
@@ -766,7 +770,7 @@ namespace ScifiDruid.GameScreen
                         }
                         if (endDialog == 2)
                         {
-                            spriteBatch.DrawString(alagardFont, "Roark the Lake Guardian", new Vector2(142, 521), Color.White);
+                            spriteBatch.DrawString(alagardFont, "Roark the Wild Guardian", new Vector2(142, 521), Color.White);
                             spriteBatch.Draw(soulLionPortraitTex, new Vector2(937, 255), Color.White);
                         }
                         if (endDialog == 3)

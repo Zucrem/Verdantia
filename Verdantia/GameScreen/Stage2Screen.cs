@@ -20,6 +20,7 @@ using static ScifiDruid.GameObjects.DoctorBoss;
 using static ScifiDruid.GameObjects.JaneBoss;
 using System.Diagnostics;
 using Box2DNet.Dynamics.Joints;
+using Microsoft.Xna.Framework.Audio;
 
 namespace ScifiDruid.GameScreen
 {
@@ -357,8 +358,8 @@ namespace ScifiDruid.GameScreen
                 //melee enemy
                 meleePoliceEnemies = new List<MeleeEnemy>();
                 meleePolicePositionList = ground2MonsterRects.Count();
-                List<Vector2> meleePoliceSizeList = new List<Vector2>() { new Vector2(55, 94), new Vector2(44, 94), new Vector2(44, 94), new Vector2(74, 109), new Vector2(99, 94) };
-                List<List<Vector2>> meleePoliceAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(107, 0), new Vector2(214, 0), new Vector2(321, 1) }, new List<Vector2>() { new Vector2(428, 2), new Vector2(0, 135), new Vector2(108, 135), new Vector2(219, 135), new Vector2(328, 135), new Vector2(423, 135) }, new List<Vector2>() { new Vector2(428, 2), new Vector2(0, 135), new Vector2(108, 135), new Vector2(219, 135), new Vector2(328, 135), new Vector2(423, 135) }, new List<Vector2>() { new Vector2(0, 270), new Vector2(97, 270), new Vector2(214, 270), new Vector2(318, 270) }, new List<Vector2>() { new Vector2(0, 406), new Vector2(100, 406), new Vector2(249, 406), new Vector2(375, 406), new Vector2(501, 406) } };
+                List<Vector2> meleePoliceSizeList = new List<Vector2>() { new Vector2(55, 94), new Vector2(44, 94), new Vector2(44, 94), new Vector2(74, 94), new Vector2(99, 94) };
+                List<List<Vector2>> meleePoliceAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(107, 0), new Vector2(214, 0), new Vector2(321, 1) }, new List<Vector2>() { new Vector2(428, 2), new Vector2(0, 135), new Vector2(108, 135), new Vector2(219, 135), new Vector2(328, 135), new Vector2(423, 135) }, new List<Vector2>() { new Vector2(428, 2), new Vector2(0, 135), new Vector2(108, 135), new Vector2(219, 135), new Vector2(328, 135), new Vector2(423, 135) }, new List<Vector2>() { new Vector2(0, 285), new Vector2(97, 285), new Vector2(214, 285), new Vector2(318, 285) }, new List<Vector2>() { new Vector2(0, 406), new Vector2(100, 406), new Vector2(249, 406), new Vector2(375, 406), new Vector2(501, 406) } };
                 for (int i = 0; i < meleePolicePositionList; i++)
                 {
                     meleePolice = new MeleeEnemy(meleePoliceTex, meleePoliceSizeList, meleePoliceAnimateList)
@@ -510,6 +511,11 @@ namespace ScifiDruid.GameScreen
             janeTheme = content.Load<Song>("Songs/Stage2Screen/BossStage2Theme");
             MediaPlayer.Play(stage2Theme);
 
+            //sfx
+            //switch
+            switchSound = content.Load<SoundEffect>("Sounds/Stage2/switch2Sound");
+
+
             Initial();
         }
         public override void UnloadContent()
@@ -596,16 +602,19 @@ namespace ScifiDruid.GameScreen
                         //press switch button
                         if (!isOpenSwitch1 && switch_wall1.pressSwitch)
                         {
+                            switchSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                             isOpenSwitch1 = true;
                         }
 
                         if (!isOpenSwitch2 && switch_wall2.pressSwitch)
                         {
+                            switchSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                             isOpenSwitch2 = true;
                         }
 
                         if (!isOpenSwitch3 && switch_wall3.pressSwitch)
                         {
+                            switchSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                             isOpenSwitch3 = true;
                         }
 
@@ -800,7 +809,7 @@ namespace ScifiDruid.GameScreen
 
                         if (endDialog == 2 || endDialog == 4 || endDialog == 6)
                         {
-                            spriteBatch.DrawString(alagardFont, "Roark the Lake Guardian", new Vector2(142, 521), Color.White);
+                            spriteBatch.DrawString(alagardFont, "Roark the Wild Guardian", new Vector2(142, 521), Color.White);
                             spriteBatch.Draw(lionPortraitTex, new Vector2(937, 255), Color.White);
                         }
                         switch (endDialog)

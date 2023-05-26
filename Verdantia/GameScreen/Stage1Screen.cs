@@ -93,6 +93,7 @@ namespace ScifiDruid.GameScreen
         //time 
         private int time;
 
+
         public override void Initial()
         {
             if (!initialized)
@@ -406,6 +407,10 @@ namespace ScifiDruid.GameScreen
             lucasTheme = content.Load<Song>("Songs/Stage1Screen/BossStage1Theme");
             MediaPlayer.Play(stage1Theme);
 
+            //sfx
+            //switch
+            switchSound = content.Load<SoundEffect>("Sounds/Stage1/switch1Sound");
+
             Initial();
         }
 
@@ -446,6 +451,7 @@ namespace ScifiDruid.GameScreen
                         //press switch button
                         if (!isOpenSwitch && switch_wall.pressSwitch)
                         {
+                            switchSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                             isOpenSwitch = true;
                         }
                         //after open switch = clear wall
@@ -453,6 +459,7 @@ namespace ScifiDruid.GameScreen
                         {
                             stage_wall.wallHitBox.Dispose();
                         }
+
 
                         //if player get into boss state
                         if (!created_boss && player.IsContact(player.hitBox, "Boss_event"))

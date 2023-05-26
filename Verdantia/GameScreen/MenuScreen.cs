@@ -142,9 +142,9 @@ namespace ScifiDruid.GameScreen
             bigfonts = content.Load<SpriteFont>("Fonts/font60");
 
             //song and sfx
-            /*MainmenuTheme = content.Load<Song>("Sounds/MainmenuTheme");
+            MainmenuTheme = content.Load<Song>("Songs/MainScreen/MenuTheme");
             MediaPlayer.IsRepeating = true;
-            MediaPlayer.Play(MainmenuTheme);*/
+            MediaPlayer.Play(MainmenuTheme);
 
             //reset Stage and Char
             Singleton.Instance.levelState = LevelState.NULL;
@@ -159,7 +159,7 @@ namespace ScifiDruid.GameScreen
         public override void Update(GameTime gameTime)
         {
             //click sound
-            //MediaPlayer.Volume = Singleton.Instance.bgMusicVolume;
+            MediaPlayer.Volume = Singleton.Instance.bgMusicVolume;
 
             //delay dialog time
             pressTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -169,6 +169,7 @@ namespace ScifiDruid.GameScreen
             switch (screen)
             {
                 case StateScreen.INTROGAME:
+                    MediaPlayer.Stop();
                     if ((Keyboard.GetState().IsKeyDown(Keys.Space) && pressTime > pressTimeDelay))
                     {
                         comicPage++;
@@ -176,13 +177,14 @@ namespace ScifiDruid.GameScreen
                     }
                     if (comicPage >= 16 || Keyboard.GetState().IsKeyDown(Keys.Enter))
                     {
-                        //Singleton.Instance.levelState = LevelState.FOREST;
-                       //Singleton.Instance.levelState = LevelState.CITY;
-                        Singleton.Instance.levelState = LevelState.LAB;
+                        Singleton.Instance.levelState = LevelState.FOREST;
+                        //Singleton.Instance.levelState = LevelState.CITY;
+                        //Singleton.Instance.levelState = LevelState.LAB;
                         ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
                     }
                     break;
                 case StateScreen.MAINSCREEN:
+                    MediaPlayer.Resume();
                     mainBG.Update(gameTime);
                     // Click start new game
                     if (newGameButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
@@ -295,6 +297,7 @@ namespace ScifiDruid.GameScreen
                     }
                     break;
                 case StateScreen.QUITSCREEN:
+                    MediaPlayer.Pause();
                     if (noButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                     {
                         screen = StateScreen.MAINSCREEN;
