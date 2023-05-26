@@ -7,6 +7,9 @@ using Box2DNet;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using ScifiDruid.Managers;
 
 namespace ScifiDruid.GameObjects
 {
@@ -58,6 +61,11 @@ namespace ScifiDruid.GameObjects
         private LucasStatus preBossStatus;
         private LucasStatus curBossStatus;
 
+        private SoundEffect chargeSound, deathSound;
+
+        //charge sfx
+        private bool chargeSoundBool = false;
+
         private enum LucasStatus
         {
             IDLE,
@@ -95,6 +103,15 @@ namespace ScifiDruid.GameObjects
             //animation dead state
             frameState = 0;
             repeat = false;
+
+            LoadContent();
+        }
+        public void LoadContent()
+        {
+            ContentManager content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
+            //sfx
+            chargeSound = content.Load<SoundEffect>("Sounds/Boss1/lucasCharge");
+            deathSound = content.Load<SoundEffect>("Sounds/Boss1/lucasDeath");
         }
 
         public override void Initial(Rectangle spawnPosition, Player player, Rectangle fieldBoss)
@@ -147,6 +164,7 @@ namespace ScifiDruid.GameObjects
                         drillBody.Dispose();
                     }
                     curBossStatus = LucasStatus.DEAD;
+                    deathSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                 }
             }
 
@@ -244,9 +262,9 @@ namespace ScifiDruid.GameObjects
 
                 if (skillTime <= 0 && curBossStatus == LucasStatus.IDLE)
                 {
-                    randomAction = rand.Next(1, 4);
+                    //randomAction = rand.Next(1, 4);
                     //randomAction = 3;
-                    //randomAction = 2;
+                    randomAction = 1;
 
                     skillTime = 5;
                 }
@@ -292,12 +310,23 @@ namespace ScifiDruid.GameObjects
 
         public void Skill1()
         {
-            action1 = true;
+            if (!action1)
+            {
+                chargeSoundBool = false;
+                action1 = true;
+                curBossStatus = LucasStatus.ACTION1;
+            }
             //clear random action number
             //do animation1
-            curBossStatus = LucasStatus.ACTION1;
             //do normal walking left and right
             timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+
+            if (!chargeSoundBool)
+            {
+                chargeSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                chargeSoundBool = true;
+            }
 
             if (timeElapsed >= movingTime)
             {

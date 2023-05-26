@@ -14,6 +14,9 @@ using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework.Input;
 using static ScifiDruid.GameObjects.Player;
 using static ScifiDruid.Singleton;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using ScifiDruid.Managers;
 
 namespace ScifiDruid.GameObjects
 {
@@ -44,6 +47,9 @@ namespace ScifiDruid.GameObjects
 
         private EnemyStatus preStatus;
         private EnemyStatus curStatus;
+
+        //sfx
+        private SoundEffect melee1DeathSound, melee2DeathSound, melee3DeathSound;
         private enum EnemyStatus
         {
             IDLE,
@@ -70,6 +76,15 @@ namespace ScifiDruid.GameObjects
             deadSpriteVector = animateList[4];
 
             frames = 0;
+            LoadContent();
+        }
+        public void LoadContent()
+        {
+            ContentManager content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
+            //sfx
+            melee1DeathSound = content.Load<SoundEffect>("Sounds/Stage1/enemy1Death");
+            melee2DeathSound = content.Load<SoundEffect>("Sounds/Stage2/enemy2Death");
+            melee3DeathSound = content.Load<SoundEffect>("Sounds/Stage3/enemy3Death");
         }
 
         public override void Initial(Rectangle spawnPosition, Player player)
@@ -105,6 +120,18 @@ namespace ScifiDruid.GameObjects
                 curStatus = EnemyStatus.DEAD;
                 health = 0;
                 enemyHitBox.Dispose();
+                if (Singleton.Instance.levelState == LevelState.FOREST)
+                {
+                    melee1DeathSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                }
+                if (Singleton.Instance.levelState == LevelState.CITY)
+                {
+                    melee2DeathSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                }
+                if (Singleton.Instance.levelState == LevelState.LAB)
+                {
+                    melee3DeathSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                }
             }
 
             //if dead animation animationEnd

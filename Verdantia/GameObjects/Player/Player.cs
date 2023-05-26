@@ -8,6 +8,9 @@ using Box2DNet.Dynamics;
 using Box2DNet.Factories;
 using Box2DNet;
 using Box2DNet.Dynamics.Contacts;
+using Microsoft.Xna.Framework.Content;
+using ScifiDruid.Managers;
+using Microsoft.Xna.Framework.Media;
 
 namespace ScifiDruid.GameObjects
 {
@@ -138,6 +141,7 @@ namespace ScifiDruid.GameObjects
         public int lionDmg;
         public int bulletDmg;
 
+        private SoundEffect crocBusterSound, roarSound, jumpSound, dashSound, healSound, atkSound, shootSound, getHitSound;
         public enum PlayerStatus
         {
             IDLE,
@@ -167,6 +171,21 @@ namespace ScifiDruid.GameObjects
             this.texture = texture;
             this.bulletTexture = bulletTexture;
             this.lionTexture = lionSKill;
+
+            LoadContent();
+        }
+        public void LoadContent()
+        {
+            ContentManager content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
+            //sfx
+            crocBusterSound = content.Load<SoundEffect>("Sounds/Player/crocBuster");
+            atkSound = content.Load<SoundEffect>("Sounds/Player/crocBuster");
+            dashSound = content.Load<SoundEffect>("Sounds/Player/dash");
+            getHitSound = content.Load<SoundEffect>("Sounds/Player/gethit");
+            healSound = content.Load<SoundEffect>("Sounds/Player/heal");
+            jumpSound = content.Load<SoundEffect>("Sounds/Player/jump");
+            roarSound = content.Load<SoundEffect>("Sounds/Player/roar");
+            shootSound = content.Load<SoundEffect>("Sounds/Player/shoot");
         }
 
         public override void Initial()
@@ -461,12 +480,14 @@ namespace ScifiDruid.GameObjects
                 {
                     playerStatus = PlayerStatus.JUMP;
                     //playerJumpSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                    jumpSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                 }
                 else
                 {
                     hitBox.LinearVelocity = new Vector2(hitBox.LinearVelocity.X, 0f);
                     playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Bird");
-                    wasJumped = true;
+                    jumpSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                    //wasJumped = true;
                 }
 
                 hitBox.ApplyLinearImpulse(new Vector2(0, -hitBox.Mass * jumpHigh));
@@ -507,6 +528,8 @@ namespace ScifiDruid.GameObjects
                 manaRegenTime = manaMaxRegenTime; //Delay before Regen Mana
                 bulletList[bulletList.Count - 1].Shoot();
                 mana -= attackMana;
+
+                shootSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
             }
             //Shoot Up
             else if (currentKeyState.IsKeyDown(Keys.X) && currentKeyState.IsKeyDown(Keys.Up) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && mana > 0)
@@ -533,6 +556,8 @@ namespace ScifiDruid.GameObjects
                 manaRegenTime = manaMaxRegenTime;
                 bulletList[bulletList.Count - 1].Shoot();
                 mana -= attackMana;
+
+                shootSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
             }
 
             if (attackAnimationTime > 0)
@@ -695,6 +720,8 @@ namespace ScifiDruid.GameObjects
                 manaRegenTime = manaMaxRegenTime;
                 hitCooldown = 0.5f;
                 dashCooldown = dashMaxCooldown;
+
+                dashSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
             }
 
             if (dashAnimationTime > 0)
@@ -722,6 +749,8 @@ namespace ScifiDruid.GameObjects
             health++;
             playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Heal");
             press = true;
+
+            healSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
         }
 
         public void LionSkill()
@@ -739,6 +768,8 @@ namespace ScifiDruid.GameObjects
                 manaRegenTime = manaMaxRegenTime;
                 mana -= 20;
                 playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Lion");
+
+                roarSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
             }
 
             //Time Active for 1 sec
@@ -782,6 +813,8 @@ namespace ScifiDruid.GameObjects
                 playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Croc");
                 manaRegenTime = manaMaxRegenTime;
                 mana -= 10;
+
+                crocBusterSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
             }
 
             if (skill2Cooldown > 0 && isCroc)
@@ -816,6 +849,8 @@ namespace ScifiDruid.GameObjects
                 if (health > 0)
                 {
                     health--;
+
+                    getHitSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                 }
 
                 switch (knockback)

@@ -156,6 +156,8 @@ namespace ScifiDruid.GameScreen
         private float pressTime;
         private float pressTimeDelay = 0.2f;
 
+        //sfx
+        protected SoundEffect switchSound;
         protected enum GameState
         {
             START, OPENING, PLAY, INTROBOSS, BOSS, END, WIN, LOSE, PAUSE, EXIT
@@ -169,8 +171,8 @@ namespace ScifiDruid.GameScreen
                 {
                     name = "Player Character",
                     size = new Vector2(46, 94),
-                    speed = 13,
-                    //speed = 50,
+                    //speed = 13,
+                    speed = 50,
                     jumpHigh = 10.5f,
                 };
 

@@ -20,6 +20,7 @@ using static ScifiDruid.GameObjects.DoctorBoss;
 using static ScifiDruid.GameObjects.JaneBoss;
 using System.Diagnostics;
 using Box2DNet.Dynamics.Joints;
+using Microsoft.Xna.Framework.Audio;
 
 namespace ScifiDruid.GameScreen
 {
@@ -510,6 +511,11 @@ namespace ScifiDruid.GameScreen
             janeTheme = content.Load<Song>("Songs/Stage2Screen/BossStage2Theme");
             MediaPlayer.Play(stage2Theme);
 
+            //sfx
+            //switch
+            switchSound = content.Load<SoundEffect>("Sounds/Stage2/switch2Sound");
+
+
             Initial();
         }
         public override void UnloadContent()
@@ -596,16 +602,19 @@ namespace ScifiDruid.GameScreen
                         //press switch button
                         if (!isOpenSwitch1 && switch_wall1.pressSwitch)
                         {
+                            switchSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                             isOpenSwitch1 = true;
                         }
 
                         if (!isOpenSwitch2 && switch_wall2.pressSwitch)
                         {
+                            switchSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                             isOpenSwitch2 = true;
                         }
 
                         if (!isOpenSwitch3 && switch_wall3.pressSwitch)
                         {
+                            switchSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                             isOpenSwitch3 = true;
                         }
 
@@ -800,7 +809,7 @@ namespace ScifiDruid.GameScreen
 
                         if (endDialog == 2 || endDialog == 4 || endDialog == 6)
                         {
-                            spriteBatch.DrawString(alagardFont, "Roark the Lake Guardian", new Vector2(142, 521), Color.White);
+                            spriteBatch.DrawString(alagardFont, "Roark the Wild Guardian", new Vector2(142, 521), Color.White);
                             spriteBatch.Draw(lionPortraitTex, new Vector2(937, 255), Color.White);
                         }
                         switch (endDialog)
