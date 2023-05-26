@@ -27,8 +27,11 @@ namespace ScifiDruid.GameScreen
 {
     class PlayScreen : _GameScreen
     {
+
+        protected bool initialized;
+
         //create class player
-        protected Player player;
+        protected static Player player;
 
         //all all texture
         protected Texture2D blackTex, whiteTex, greenTex, gameoverTex;
@@ -153,59 +156,67 @@ namespace ScifiDruid.GameScreen
         private float pressTime;
         private float pressTimeDelay = 1;
 
-        protected enum GameState 
-        { 
+        protected enum GameState
+        {
             START, OPENING, PLAY, INTROBOSS, BOSS, END, WIN, LOSE, PAUSE, EXIT
         }
 
         public virtual void Initial()
         {
-            player = new Player(playerTex, bullet, whiteTex)
+            if (!initialized)
             {
-                name = "Player Character",
-                size = new Vector2(46, 94),
-                speed = 13,
-                //speed = 50,
-                jumpHigh = 10.5f,
-            };
+                player = new Player(playerTex, bullet, whiteTex)
+                {
+                    name = "Player Character",
+                    size = new Vector2(46, 94),
+                    speed = 13,
+                    //speed = 50,
+                    jumpHigh = 10.5f,
+                };
 
-            gamestate = GameState.START;
+                player.Initial();
 
-            //create button on pause
-            continueButton = new Button(continueButtonPic, new Vector2(507, 238), new Vector2(203, 32));
-            restartButton = new Button(restartButtonPic, new Vector2(487, 318), new Vector2(239, 32));
-            exitButton = new Button(exitButtonPic, new Vector2(539, 562), new Vector2(131, 32));
+                gamestate = GameState.START;
 
-            //create button win or lose screen
-            restartLButton = new Button(restartLPic, new Vector2(1055, 326), new Vector2(190, 68));//create Button after win
-            exitLButton = new Button(backLPic, new Vector2(57, 356), new Vector2(190, 68));//create Button after win
+                //create button on pause
+                continueButton = new Button(continueButtonPic, new Vector2(507, 238), new Vector2(203, 32));
+                restartButton = new Button(restartButtonPic, new Vector2(487, 318), new Vector2(239, 32));
+                exitButton = new Button(exitButtonPic, new Vector2(539, 562), new Vector2(131, 32));
 
-            //setting button
-            arrowLeftBGButton = new Button(arrowLeftBGPic, new Vector2(584, 389), new Vector2(32, 56));
-            arrowRightBGButton = new Button(arrowRightBGPic, new Vector2(842, 389), new Vector2(32, 56));
-            arrowLeftSFXButton = new Button(arrowLeftSFXPic, new Vector2(584, 469), new Vector2(32, 56));
-            arrowRightSFXButton = new Button(arrowRightSFXPic, new Vector2(842, 469), new Vector2(32, 56));
+                //create button win or lose screen
+                restartLButton = new Button(restartLPic, new Vector2(1055, 326), new Vector2(190, 68));//create Button after win
+                exitLButton = new Button(backLPic, new Vector2(57, 356), new Vector2(190, 68));//create Button after win
 
-            //confirm exit button
-            yesConfirmButton = new Button(yesConfirmPic, new Vector2(401, 452), new Vector2(190, 68));
-            noConfirmButton = new Button(noConfirmPic, new Vector2(670, 452), new Vector2(190, 68));
+                //setting button
+                arrowLeftBGButton = new Button(arrowLeftBGPic, new Vector2(584, 389), new Vector2(32, 56));
+                arrowRightBGButton = new Button(arrowRightBGPic, new Vector2(842, 389), new Vector2(32, 56));
+                arrowLeftSFXButton = new Button(arrowLeftSFXPic, new Vector2(584, 469), new Vector2(32, 56));
+                arrowRightSFXButton = new Button(arrowRightSFXPic, new Vector2(842, 469), new Vector2(32, 56));
 
-            //camera
-            camera = new Camera();
+                //confirm exit button
+                yesConfirmButton = new Button(yesConfirmPic, new Vector2(401, 452), new Vector2(190, 68));
+                noConfirmButton = new Button(noConfirmPic, new Vector2(670, 452), new Vector2(190, 68));
 
-            if (Singleton.Instance.levelState == LevelState.FOREST)
-            {
-                Singleton.Instance.stageunlock = 1;
-            }
-            else if (Singleton.Instance.levelState == LevelState.CITY)
-            {
-                Singleton.Instance.stageunlock = 2;
-            }
-            else if (Singleton.Instance.levelState == LevelState.LAB)
-            {
-                Singleton.Instance.stageunlock = 3;
+                //camera
+                camera = new Camera();
+
+                if (Singleton.Instance.levelState == LevelState.FOREST)
+                {
+                    Singleton.Instance.stageunlock = 1;
+                }
+                else if (Singleton.Instance.levelState == LevelState.CITY)
+                {
+                    Singleton.Instance.stageunlock = 2;
+                }
+                else if (Singleton.Instance.levelState == LevelState.LAB)
+                {
+                    Singleton.Instance.stageunlock = 3;
+                }
+
+                initialized = true;
             }
         }
+
         public override void LoadContent()
         {
             base.LoadContent();
@@ -423,6 +434,13 @@ namespace ScifiDruid.GameScreen
                         if (Keyboard.GetState().IsKeyDown(Keys.Enter) || introBossDialog == introDialogCount)
                         {
                             gamestate = GameState.BOSS;
+                            foreach (var item in Singleton.Instance.world.BodyList)
+                            {
+                                if (item.UserData.Equals("Player"))
+                                {
+                                    Debug.WriteLine(item.UserData);
+                                }
+                            }
                         }
                         //change dialog
                         if (Keyboard.GetState().IsKeyDown(Keys.Space) && pressTime > pressTimeDelay)
@@ -432,6 +450,10 @@ namespace ScifiDruid.GameScreen
                         }
                         break;
                     case GameState.BOSS:
+
+                        lastScreen = camera.Follow(player.position, endmaptileX, endmaptileX);
+                        Singleton.Instance.tfMatrix = lastScreen;
+
                         break;
                     case GameState.END:
                         //change dialog
@@ -713,7 +735,7 @@ namespace ScifiDruid.GameScreen
             fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
 
             _frameCounter.Update(deltaTime);
-            
+
             base.Update(gameTime);
         }
 
@@ -764,7 +786,7 @@ namespace ScifiDruid.GameScreen
                             exitLButton.Draw(spriteBatch);
                             break;
                         case GameState.PAUSE:
-                            spriteBatch.Draw(pausePopUpPic, new Vector2(300,60), new Color(255, 255, 255, 255));
+                            spriteBatch.Draw(pausePopUpPic, new Vector2(300, 60), new Color(255, 255, 255, 255));
 
                             //BGM
                             spriteBatch.DrawString(mediumfonts, "Musics", new Vector2(400, 400), Color.White);
@@ -838,7 +860,7 @@ namespace ScifiDruid.GameScreen
                 //background
             }
         }
-        
+
         public override void DrawHUD(SpriteBatch spriteBatch)
         {
             if (play)
@@ -853,8 +875,8 @@ namespace ScifiDruid.GameScreen
 
                 if (gamestate == GameState.PLAY || gamestate == GameState.BOSS)
                 {
-                    int mana = (int)Player.mana;
-                    int health = (int)Player.health;
+                    int mana = (int)player.mana;
+                    int health = (int)player.health;
 
                     //HUD
                     //Health Bar

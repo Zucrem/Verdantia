@@ -30,8 +30,6 @@ namespace ScifiDruid.GameObjects
         private int worldLevel;
         public bool isdrone = true;
 
-
-
         //for animation
         protected Vector2 idleSize;
         protected Vector2 walkSize;
@@ -42,7 +40,6 @@ namespace ScifiDruid.GameObjects
         private List<Vector2> walkSpriteVector;
         private List<Vector2> shootSpriteVector;
         private List<Vector2> deadSpriteVector;
-
 
         private EnemyStatus preStatus;
         private EnemyStatus curStatus;
@@ -60,7 +57,6 @@ namespace ScifiDruid.GameObjects
 
         public DroneEnemy(Texture2D texture, List<Vector2> sizeList, List<List<Vector2>> animateList) : base(texture)
         {
-
             this.texture = texture;
 
             idleSize = sizeList[0];
@@ -72,8 +68,6 @@ namespace ScifiDruid.GameObjects
             walkSpriteVector = animateList[1];
             shootSpriteVector = animateList[2];
             deadSpriteVector = animateList[3];
-
-
 
             frames = 0;
 
@@ -121,6 +115,7 @@ namespace ScifiDruid.GameObjects
                     enemyHitBox.UserData = "Died";
                     isAlive = false;
                     enemyHitBox.Dispose();
+                    bulletList.Clear();
                     curStatus = EnemyStatus.DEAD;
                 }
             }
@@ -298,8 +293,6 @@ namespace ScifiDruid.GameObjects
 
             if (attackTimeEnemy > attackTimeDelayEnemy)
             {
-
-
                 EnemyBullet bullet = new EnemyBullet(this.texture, enemyHitBox.Position, this, charDirection)
                 {
                     bulletSpeed = this.bulletSpeed,
@@ -311,8 +304,6 @@ namespace ScifiDruid.GameObjects
                 bulletList.Add(bullet);
                 bulletList[bulletList.Count - 1].Shoot();
                 attackTimeEnemy = 0;
-
-
             }
         }
 

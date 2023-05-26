@@ -198,6 +198,10 @@ namespace ScifiDruid.GameObjects
         public override void Update(GameTime gameTime)
         {
             ChangeBulletAnimationStatus();
+            
+            IsContact();
+            IsOutRange();
+            
             position = bulletBody.Position;
             //if dead animation animationEnd
             if (animationDead)
@@ -284,7 +288,7 @@ namespace ScifiDruid.GameObjects
             enemyBulletStatus = BulletStatus.BULLETALIVE;
         }
 
-        public bool IsContact()
+        public void IsContact()
         {
             ContactEdge contactEdge = bulletBody.ContactList;
             while (contactEdge != null)
@@ -305,26 +309,23 @@ namespace ScifiDruid.GameObjects
                 if (contactFixture.IsTouching && (contactGround || contactEnemy))
                 {
                     bulletBody.Dispose();
-                    return true;
+                    return ;
                 }
 
                 // Check if the contact fixture is the ground
                 contactEdge = contactEdge.Next;
             }
-            return false;
         }
 
-        public bool IsOutRange()
+        public void IsOutRange()
         {
             if (position.X - bulletBody.Position.X < -bulletDistance || position.X - bulletBody.Position.X > bulletDistance)
             {
                 // The Bullet was Out of range
                 bulletBody.Dispose();
                 enemyBulletStatus = BulletStatus.BULLETEND;
-                return true;
+                return;
             }
-
-            return false;
         }
 
         public void ChangeBulletAnimationStatus()
@@ -348,7 +349,10 @@ namespace ScifiDruid.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bulletOrigin, 1f, charDirection, 0f);
+            if (!bulletBody.IsDisposed)
+            {
+                spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bulletOrigin, 1f, charDirection, 0f);
+            }
         }
     }
 }

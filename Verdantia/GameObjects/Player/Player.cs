@@ -1,25 +1,13 @@
-﻿using ScifiDruid.Managers;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualBasic.FileIO;
 using System.Diagnostics;
-using System.Xml;
-using System.Collections;
 using Box2DNet.Dynamics;
 using Box2DNet.Factories;
 using Box2DNet;
 using Box2DNet.Dynamics.Contacts;
-using System.Data;
-using System.Reflection.Metadata;
-using Box2DNet.Collision;
 
 namespace ScifiDruid.GameObjects
 {
@@ -58,23 +46,34 @@ namespace ScifiDruid.GameObjects
         private int attackTimeDelay;
         private int attackDelay;
         private int attackMaxTime;
+        public float manaRegenTime;
 
-        private float manaRegenTime;
+        private int healCount;
+
         private int dashTime;
 
         private bool isShootup;
 
+        public int health;
+        public float mana;
+
         //static for change in shop and apply to all Stage
-        public static int health;
-        public static float mana;
-        public static int money;
-        public static int maxHealth = 5;
-        public static int maxMana = 100;
+        public static int maxHealth;
+        public static int maxMana;
+        public static int manaRegenAmount;
+        public static float manaMaxRegenTime;
+
+        public static int skill2Dmg;
+        public static int skill2MaxCooldown;
+        public static int dashMaxCooldown;
+        
+        public static int attackMana;
+        public static int attackDmg;
 
         //Count cooldown of action
-        public float skill1Cooldown;
-        public float skill2Cooldown;
-        public float skill3Cooldown;
+        public float skill1Cooldown; // Skill Regen
+        public float skill2Cooldown; // skill Crocodile
+        public float skill3Cooldown; // Skill Lion
         public float dashCooldown;
 
         private float skill3Time;
@@ -84,11 +83,12 @@ namespace ScifiDruid.GameObjects
         private float attackAnimationTime;
         private float dashAnimationTime;
 
+        private float manaIdleRegen;
+        private float manaIdleRegenTime;
+
         //Cooldown time make to static for change in shop and apply to all Stage
-        public static int skill1CoolTime;
-        public static int skill2CoolTime;
-        public static int skill3CoolTime;
-        public static int dashCoolTime;
+        public static int skill1MaxCooldown;
+        public static int skill3MaxCooldown;
 
         public float hitCooldown;
 
@@ -169,23 +169,23 @@ namespace ScifiDruid.GameObjects
             this.lionTexture = lionSKill;
         }
 
-        public void Initial(Rectangle startRect)
+        public override void Initial()
         {
-
             playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position + new Vector2(0, 0), "Null");
 
             textureWidth = (int)size.X;
             textureHeight = (int)size.Y;
 
-            playerAnimation = new PlayerAnimation(this.texture);
+            playerAnimation = new PlayerAnimation(texture);
             bulletList = new List<PlayerBullet>();
             enemyContract = new List<Enemy>();
 
-            hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, ConvertUnits.ToSimUnits(new Vector2(startRect.X, startRect.Y - 1)), 0, BodyType.Dynamic, "Player");
+            hitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(textureWidth), ConvertUnits.ToSimUnits(textureHeight), 1f, Vector2.Zero, 0, BodyType.Dynamic, "Player");
             hitBox.FixedRotation = true;
             hitBox.Friction = 1.0f;
             hitBox.AngularDamping = 2.0f;
             hitBox.LinearDamping = 2.0f;
+
             //check touch ground condition
             touchGround = true;
 
@@ -197,25 +197,63 @@ namespace ScifiDruid.GameObjects
             charDirection = SpriteEffects.FlipHorizontally;
 
             attackMaxTime = 500;
-
-            if (skill1CoolTime == 0)
+            
+            if (Singleton.Instance.stageunlock == 1)
             {
-                skill1CoolTime = 5;
-            }
+                if (maxHealth == 0)
+                {
+                    maxHealth = 3;
+                }
 
-            if (skill2CoolTime == 0)
-            {
-                skill2CoolTime = 60;
-            }
+                if (maxMana == 0)
+                {
+                    maxMana = 100;
+                }
 
-            if (skill3CoolTime == 0)
-            {
-                skill3CoolTime = 10;
-            }
+                if (manaMaxRegenTime == 0)
+                {
+                    manaMaxRegenTime = 5;
+                }
 
-            if (dashCoolTime == 0)
-            {
-                dashCoolTime = 5;
+                if (manaRegenAmount == 0)
+                {
+                    manaRegenAmount = 1;
+                }
+
+                if (attackMana == 0)
+                {
+                    attackMana = 5;
+                }
+
+                if (attackDmg == 0)
+                {
+                    attackDmg = 1;
+                }
+
+                if (crocDmg == 0)
+                {
+                    crocDmg = 3;
+                }
+
+                if (skill1MaxCooldown == 0)
+                {
+                    skill1MaxCooldown = 10;
+                }
+
+                if (skill2MaxCooldown == 0)
+                {
+                    skill2MaxCooldown = 30;
+                }
+
+                if (skill3MaxCooldown == 0)
+                {
+                    skill3MaxCooldown = 30;
+                }
+
+                if (dashMaxCooldown == 0)
+                {
+                    dashMaxCooldown = 10;
+                }
             }
 
             base.Initial();
@@ -281,6 +319,31 @@ namespace ScifiDruid.GameObjects
                     }
                 }
 
+                if (playerStatus == PlayerStatus.IDLE)
+                {
+                    manaIdleRegen = 2;
+                    manaIdleRegenTime = 3;
+                }
+                else
+                {
+                    manaIdleRegen = 1;
+                    manaIdleRegenTime = 1;
+                }
+
+                //Debug.WriteLine(manaRegenTime);
+                //Debug.WriteLine(mana);
+
+                //After attack x time mana will regeneration
+                if (manaRegenTime > 0)
+                {
+                    manaRegenTime -= (float)gameTime.ElapsedGameTime.TotalSeconds * manaIdleRegenTime;
+                }
+                else if (manaRegenTime <= 0 && mana < maxMana)
+                {
+                    manaRegenTime = 0;
+                    mana += (float)gameTime.ElapsedGameTime.TotalSeconds * manaRegenAmount * manaIdleRegen;
+                }
+
                 if (bulletList.Count > 0)
                 {
                     foreach (PlayerBullet bullet in bulletList)
@@ -295,12 +358,12 @@ namespace ScifiDruid.GameObjects
                                 {
                                     if (bullet.bulletBody.UserData.Equals("Bullet"))
                                     {
-                                        enemy.takeDMG(1, "Bullet");
+                                        enemy.takeDMG(attackDmg, "Bullet");
                                         break;
                                     }
                                     else
                                     {
-                                        enemy.takeDMG(3, "Croc");
+                                        enemy.takeDMG(crocDmg, "Croc");
                                         continue;
                                     }
                                 }
@@ -325,7 +388,7 @@ namespace ScifiDruid.GameObjects
 
             //all animation
             //if step on dead block
-            if ((IsContact(hitBox, "Dead") || (hitCooldown <= 1.7 && touchGround && Player.health == 0)) && playerDead == false)
+            if ((IsContact(hitBox, "Dead") || (hitCooldown <= 1.7 && touchGround && health == 0)) && playerDead == false)
             {
                 isAlive = false;
                 playerStatus = PlayerStatus.DEAD;
@@ -345,11 +408,16 @@ namespace ScifiDruid.GameObjects
 
         }
 
+        public void SetSpawn(Rectangle startRect)
+        {
+            hitBox.Position = ConvertUnits.ToSimUnits(new Vector2(startRect.X, startRect.Y - 1));
+        }
+
         public void Action()
         {
             currentKeyState = Keyboard.GetState();
 
-            if (isAlive && Player.health > 0)
+            if (isAlive && health > 0)
             {
                 //check if player still on ground
                 if (touchGround)
@@ -425,7 +493,7 @@ namespace ScifiDruid.GameObjects
             attackDelay = (int)gameTime.TotalGameTime.TotalMilliseconds - attackTimeDelay;
 
             //Normal Shoot left or right
-            if (currentKeyState.IsKeyDown(Keys.X) && currentKeyState.IsKeyUp(Keys.Up) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && Player.mana > 0)
+            if (currentKeyState.IsKeyDown(Keys.X) && currentKeyState.IsKeyUp(Keys.Up) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && mana > 0)
             {
                 isShootup = false;
                 PlayerBullet bullet = new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0.43f * playerDirectionInt, -0.12f), this, charDirection, isShootup)
@@ -441,12 +509,12 @@ namespace ScifiDruid.GameObjects
                 Player.isAttack = true;
                 attackAnimationTime = 0.3f;//Update Animation
                 attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds; //Delay before shoot again
-                manaRegenTime = 5; //Delay before Regen Mana
+                manaRegenTime = manaMaxRegenTime; //Delay before Regen Mana
                 bulletList[bulletList.Count - 1].Shoot();
-                Player.mana -= 5;
+                mana -= attackMana;
             }
             //Shoot Up
-            else if (currentKeyState.IsKeyDown(Keys.X) && currentKeyState.IsKeyDown(Keys.Up) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && Player.mana > 0)
+            else if (currentKeyState.IsKeyDown(Keys.X) && currentKeyState.IsKeyDown(Keys.Up) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && mana > 0)
             {
                 isShootup = true;
 
@@ -466,20 +534,12 @@ namespace ScifiDruid.GameObjects
                 Player.isAttack = true;
                 attackAnimationTime = 0.3f;
                 attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
-                manaRegenTime = 5;
+                manaRegenTime = manaMaxRegenTime;
                 bulletList[bulletList.Count - 1].Shoot();
-                Player.mana -= 5;
+                mana -= attackMana;
             }
 
-            if (manaRegenTime > 0)
-            {
-                manaRegenTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
-            else if (manaRegenTime <= 0 && Player.mana < Player.maxMana)
-            {
-                manaRegenTime = 0;
-                Player.mana += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
+            
 
             if (attackAnimationTime > 0)
             {
@@ -549,10 +609,12 @@ namespace ScifiDruid.GameObjects
         {
             if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyUp(Keys.Down) && currentKeyState.IsKeyUp(Keys.Up) && !press && skill1Cooldown <= 0)
             {
-                if (Player.health < Player.maxHealth)
+                while (health < Player.maxHealth && healCount < 2)
                 {
                     RegenSkill();
+                    healCount++;
                 }
+                healCount = 0;
             }
 
             if (Singleton.Instance.stageunlock > 1)
@@ -614,7 +676,7 @@ namespace ScifiDruid.GameObjects
         }
         public void Dash()
         {
-            if (currentKeyState.IsKeyDown(Keys.C) && oldKeyState.IsKeyUp(Keys.C) && dashCooldown <= 0)
+            if (currentKeyState.IsKeyDown(Keys.C) && oldKeyState.IsKeyUp(Keys.C) && dashCooldown <= 0 && mana - 10 >= 0)
             {
                 playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Dash");
                 dashAnimationTime = 0.3f;
@@ -623,16 +685,19 @@ namespace ScifiDruid.GameObjects
                 switch (charDirection)
                 {
                     case SpriteEffects.None:
-                        hitBox.ApplyLinearImpulse(new Vector2(-hitBox.Mass * (speed - 3), 0));
+                        hitBox.ApplyLinearImpulse(new Vector2(-hitBox.Mass * (speed - 2), 0));
 
                         break;
                     case SpriteEffects.FlipHorizontally:
-                        hitBox.ApplyLinearImpulse(new Vector2(hitBox.Mass * (speed - 3), 0));
+                        hitBox.ApplyLinearImpulse(new Vector2(hitBox.Mass * (speed - 2), 0));
 
                         break;
                 }
+
+                mana -= 10;
+                manaRegenTime = manaMaxRegenTime;
                 hitCooldown = 0.5f;
-                dashCooldown = dashCoolTime;
+                dashCooldown = dashMaxCooldown;
             }
 
             if (dashAnimationTime > 0)
@@ -656,25 +721,26 @@ namespace ScifiDruid.GameObjects
 
         public void RegenSkill()
         {
-            skill1Cooldown = skill1CoolTime;
-            Player.health++;
+            skill1Cooldown = skill1MaxCooldown;
+            health++;
             playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Heal");
             press = true;
         }
 
         public void LionSkill()
         {
-            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press && skill3Cooldown <= 0 && Singleton.Instance.stageunlock > 2)
+            if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Up) && !press && skill3Cooldown <= 0 && Singleton.Instance.stageunlock > 2 && mana - 20 >= 0)
             {
                 lionBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(500), ConvertUnits.ToSimUnits(200), 0, hitBox.Position + new Vector2(0, textureHeight / 2), 0, BodyType.Static, "Lion");
                 lionBody.IgnoreCollisionWith(hitBox);
 
                 lionBody.IsSensor = true;
 
-                skill3Cooldown = 1;
+                skill3Cooldown = skill3MaxCooldown;
                 skill3Time = 1;
                 press = true;
-
+                manaRegenTime = manaMaxRegenTime;
+                mana -= 20;
                 playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Lion");
             }
 
@@ -701,7 +767,7 @@ namespace ScifiDruid.GameObjects
                     {
                         foreach (Enemy enemy in enemyContract)
                         {
-                            enemy.takeDMG(4, "Lion");
+                            enemy.takeDMG(7, "Lion");
                         }
                         //lionBody.Dispose();
                     }
@@ -714,9 +780,12 @@ namespace ScifiDruid.GameObjects
             {
                 //isAlive = false;
                 press = true;
-                skill2Cooldown = skill2CoolTime;
+                skill2Cooldown = skill2MaxCooldown;
                 isCroc = true;
                 playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Croc");
+                manaRegenTime = manaMaxRegenTime;
+                mana -= 10;
+
             }
 
             if (skill2Cooldown > 0 && isCroc)
@@ -736,10 +805,7 @@ namespace ScifiDruid.GameObjects
                     Player.isAttack = true;
                     attackAnimationTime = 0.3f;
                     attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
-                    manaRegenTime = 5;
                     bulletList[bulletList.Count - 1].Shoot();
-                    //Player.mana -= 5;
-
                     isCroc = false;
                     //return;
                 }
@@ -750,9 +816,9 @@ namespace ScifiDruid.GameObjects
         {
             if (hitCooldown <= 0)
             {
-                if (Player.health > 0)
+                if (health > 0)
                 {
-                    Player.health--;
+                    health--;
                 }
 
                 switch (knockback)
@@ -859,16 +925,18 @@ namespace ScifiDruid.GameObjects
                 bool standOnPlatformA = fixtureA.UserData != null && fixtureA.UserData.Equals("Platform");
                 bool standOnPlatformB = fixtureA.UserData != null && fixtureB.UserData.Equals("Platform");
 
-
                 // Check if the contact fixture is the ground
                 if (contactFixture.IsTouching && (fixtureACheck || fixtureBCheck || standOnPlatformA || standOnPlatformB))
                 {
                     Vector2 normal = contactFixture.Manifold.LocalNormal;
-                    if ((standOnPlatformA || standOnPlatformB) && normal.Y > 0f)
+
+                    //Debug.WriteLine(normal.Y);
+
+                    if ((standOnPlatformA || standOnPlatformB) && normal.Y < 0f)
                     {
                         return true;
                     }
-                    if (normal.Y < 0f)
+                    if (normal.Y > 0f)
                     {
                         return true;
                     }

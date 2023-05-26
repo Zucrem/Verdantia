@@ -7,6 +7,7 @@ using ScifiDruid.GameScreen;
 using ScifiDruid.Managers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
@@ -42,14 +43,18 @@ namespace Verdantia.GameScreen
         private bool manaRe = false;
         private bool maxMana = false;
 
-        private bool dashCDSkill = false;
-        private bool increaseHPSkill = false;
-        private bool atkDMSkill = false;
-        private bool atkNoManaSkill = false;
-        private bool crocCdSkill = false;
-        private bool crocDmgSkill = false;
-        private bool manaReSkill = false;
-        private bool maxManaSkill = false;
+        private int countAviliableSkill;
+
+        private static bool dashCDSkill = false;
+        private static bool increaseHPSkill = false;
+        private static bool atkDMSkill = false;
+        private static bool atkNoManaSkill = false;
+        private static bool crocCdSkill = false;
+        private static bool crocDmgSkill = false;
+        private static bool manaReSkill = false;
+        private static bool maxManaSkill = false;
+
+        private String skillName;
 
         public void Initial()
         {
@@ -68,6 +73,8 @@ namespace Verdantia.GameScreen
             noButton = new Button(noTex, new Vector2(652, 420), new Vector2(108, 48));
 
             nextButton = new Button(nextTex, new Vector2(1096, 588), new Vector2(112, 68));
+
+            countAviliableSkill = 2;
         }
         public override void LoadContent()
         {
@@ -112,6 +119,17 @@ namespace Verdantia.GameScreen
             Singleton.Instance.MousePrevious = Singleton.Instance.MouseCurrent;
             Singleton.Instance.MouseCurrent = Mouse.GetState();
 
+            if (countAviliableSkill <= 0)
+            {
+                //next map
+                if (nextButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
+                {
+                    ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
+                }
+
+                return;
+            }
+
             //all perk
             if (!confirmState)
             {
@@ -120,154 +138,143 @@ namespace Verdantia.GameScreen
                 {
                     confirmState = true;
                     dashCD = true;
+                    skillName = "DashCD";
                 }
                 if (increaseHPButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime) && !increaseHPSkill)
                 {
                     confirmState = true;
                     increaseHP = true;
+                    skillName = "IncreaseHP";
                 }
                 if (atkDMButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime) && !atkDMSkill)
                 {
                     confirmState = true;
                     atkDM = true;
+                    skillName = "AtkDM";
                 }
                 if (atkNoManaButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime) && !atkNoManaSkill)
                 {
                     confirmState = true;
                     atkNoMana = true;
+                    skillName = "AtkNoMana";
                 }
                 if (crocCdButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime) && !crocCdSkill)
                 {
                     confirmState = true;
                     crocCd = true;
+                    skillName = "CrocCd";
                 }
                 if (crocDmgButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime) && !crocDmgSkill)
                 {
                     confirmState = true;
                     crocDmg = true;
+                    skillName = "CrocDmg";
                 }
                 if (manaReButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime) && !manaReSkill)
                 {
                     confirmState = true;
                     manaRe = true;
+                    skillName = "ManaRe";
                 }
                 if (maxManaButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime) && !maxManaSkill)
                 {
                     confirmState = true;
                     maxMana = true;
-                }
+                    skillName = "MaxMana";
 
-                //next map
-                if (nextButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
-                {
-                    ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
                 }
             }
-            else if (confirmState)
+            else
             {
-                if (dashCD)
-                {
-                    dashCDButton.SetCantHover(true);
-                }
-                if (increaseHP)
-                {
-                    increaseHPButton.SetCantHover(true);
-                }
-                if (atkDM)
-                {
-                    atkDMButton.SetCantHover(true);
-                }
-                if (atkNoMana)
-                {
-                    atkNoManaButton.SetCantHover(true);
-                }
-                if (crocCd)
-                {
-                    crocCdButton.SetCantHover(true);
-                }
-                if (crocDmg)
-                {
-                    crocDmgButton.SetCantHover(true);
-                }
-                if (manaRe)
-                {
-                    manaReButton.SetCantHover(true);
-                }
-                if (maxMana)
-                {
-                    maxManaButton.SetCantHover(true);
-                }
-
                 if (yesButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                 {
-                    if (dashCD)
+                    switch (skillName)
                     {
-                        dashCDSkill = true;
-                    }
-                    if (increaseHP)
-                    {
-                        increaseHPSkill = true;
-                    }
-                    if (atkDM)
-                    {
-                        atkDMSkill = true;
-                    }
-                    if (atkNoMana)
-                    {
-                        atkNoManaSkill = true;
-                    }
-                    if (crocCd)
-                    {
-                        crocCdSkill = true;
-                    }
-                    if (crocDmg)
-                    {
-                        crocDmgSkill = true;
-                    }
-                    if (manaRe)
-                    {
-                        manaReSkill = true;
-                    }
-                    if (maxMana)
-                    {
-                        maxManaSkill = true;
+                        case "DashCD":
+                            dashCDSkill = true;
+                            Player.dashMaxCooldown = 5;
+                            countAviliableSkill--;
+                            break;
+
+                        case "IncreaseHP":
+                            increaseHPSkill = true;
+                            Player.maxHealth = 5;
+                            countAviliableSkill--;
+                            break;
+
+                        case "AtkDM":
+                            atkDMSkill = true;
+                            Player.attackDmg = 3;
+                            countAviliableSkill--;
+                            break;
+
+                        case "AtkNoMana":
+                            atkNoManaSkill = true;
+                            Player.attackMana = 0;
+                            countAviliableSkill--;
+                            break;
+
+                        case "CrocCd":
+                            crocCdSkill = true;
+                            Player.skill2MaxCooldown = 20;
+                            countAviliableSkill--;
+                            break;
+
+                        case "CrocDmg":
+                            crocDmgSkill = true;
+                            Player.skill2Dmg = 5;
+                            countAviliableSkill--;
+                            break;
+
+                        case "ManaRe":
+                            manaReSkill = true;
+                            Player.manaMaxRegenTime = 3;
+                            Player.manaRegenAmount = 3;
+                            countAviliableSkill--;
+                            break;
+
+                        case "MaxMana":
+                            maxManaSkill = true;
+                            Player.maxMana = 150;
+                            countAviliableSkill--;
+                            break;
                     }
                     confirmState = false;
                 }
                 if (noButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime) || closeButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                 {
-                    if (!dashCDSkill)
-                    {
-                        dashCD = false;
-                    }
-                    else if (!increaseHPSkill)
-                    {
-                        increaseHP = false;
-                    }
-                    else if (!atkDMSkill)
-                    {
-                        atkDMSkill = false;
-                    }
-                    else if (!atkNoManaSkill)
-                    {
-                        atkNoMana = false;
-                    }
-                    else if (!crocCdSkill)
-                    {
-                        crocCd = false;
-                    }
-                    else if (!crocDmgSkill)
-                    {
-                        crocDmg = false;
-                    }
-                    else if (!manaReSkill)
-                    {
-                        manaRe = false;
-                    }
-                    else if (!maxManaSkill)
-                    {
-                        maxMana = false;
-                    }
+                    //    if (!dashCDSkill)
+                    //    {
+                    //        dashCD = false;
+                    //    }
+                    //    else if (!increaseHPSkill)
+                    //    {
+                    //        increaseHP = false;
+                    //    }
+                    //    else if (!atkDMSkill)
+                    //    {
+                    //        atkDMSkill = false;
+                    //    }
+                    //    else if (!atkNoManaSkill)
+                    //    {
+                    //        atkNoMana = false;
+                    //    }
+                    //    else if (!crocCdSkill)
+                    //    {
+                    //        crocCd = false;
+                    //    }
+                    //    else if (!crocDmgSkill)
+                    //    {
+                    //        crocDmg = false;
+                    //    }
+                    //    else if (!manaReSkill)
+                    //    {
+                    //        manaRe = false;
+                    //    }
+                    //    else if (!maxManaSkill)
+                    //    {
+                    //        maxMana = false;
+                    //    }
 
                     confirmState = false;
                 }
@@ -284,7 +291,7 @@ namespace Verdantia.GameScreen
             {
                 spriteBatch.Draw(dashCDRTex, new Vector2(236, 436), Color.White);
             }
-            if(!dashCDSkill && !confirmState)
+            if (!dashCDSkill && !confirmState)
             {
                 dashCDButton.SetCantHover(false);
                 dashCDButton.Draw(spriteBatch);

@@ -123,431 +123,435 @@ namespace ScifiDruid.GameScreen
         private bool bossDead = false;
         public override void Initial()
         {
-            base.Initial();
-
-            openingDialogCount = 5;
-            introDialogCount = 5;
-            endDialogCount = 7;
-
-            Player.level2Unlock = true;
-
-            //map size
-            startmaptileX = 10f;
-            endmaptileX = 170f;
-
-            Player.health = Player.maxHealth;
-            Player.mana = Player.maxMana;
-
-            //create tileset for map1
-            map = new TmxMap("Content/Stage2.tmx");
-            tilesetStage2 = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage2Tileset/" + map.Tilesets[0].Name.ToString());
-
-            tileWidth = map.Tilesets[0].TileWidth;
-            tileHeight = map.Tilesets[0].TileHeight;
-            tilesetTileWidth = tilesetStage2.Width / tileWidth;
-
-            tilemapManager = new TileMapManager(map, tilesetStage2, tilesetTileWidth, tileWidth, tileHeight);
-
-            //all object lists
-            deadBlockRects = new List<Rectangle>();
-            blockRects = new List<Rectangle>();
-            playerRects = new List<Rectangle>();
-            mechanicRects = new List<Rectangle>();
-            ground1MonsterRects = new List<Rectangle>();
-            ground2MonsterRects = new List<Rectangle>();
-            flyMonsterRects = new List<Rectangle>();
-            bossRect = new Rectangle();
-
-
-            movingLRBlocks = new List<Rectangle>();
-            movingUDBlocks = new List<Rectangle>();
-            fallingBlocks = new List<Rectangle>();
-
-            //add list rectangle
-            foreach (var o in map.ObjectGroups["Blocks"].Objects)
+            if (!initialized)
             {
-                if (o.Name.Equals(""))
+                base.Initial();
+
+                openingDialogCount = 5;
+                introDialogCount = 5;
+                endDialogCount = 7;
+
+                Player.level2Unlock = true;
+
+                //map size
+                startmaptileX = 10f;
+                endmaptileX = 170f;
+
+                player.health = Player.maxHealth;
+                player.mana = Player.maxMana;
+
+                //create tileset for map1
+                map = new TmxMap("Content/Stage2.tmx");
+                tilesetStage2 = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage2Tileset/" + map.Tilesets[0].Name.ToString());
+
+                tileWidth = map.Tilesets[0].TileWidth;
+                tileHeight = map.Tilesets[0].TileHeight;
+                tilesetTileWidth = tilesetStage2.Width / tileWidth;
+
+                tilemapManager = new TileMapManager(map, tilesetStage2, tilesetTileWidth, tileWidth, tileHeight);
+
+                //all object lists
+                deadBlockRects = new List<Rectangle>();
+                blockRects = new List<Rectangle>();
+                playerRects = new List<Rectangle>();
+                mechanicRects = new List<Rectangle>();
+                ground1MonsterRects = new List<Rectangle>();
+                ground2MonsterRects = new List<Rectangle>();
+                flyMonsterRects = new List<Rectangle>();
+                bossRect = new Rectangle();
+
+                movingLRBlocks = new List<Rectangle>();
+                movingUDBlocks = new List<Rectangle>();
+                fallingBlocks = new List<Rectangle>();
+
+                //add list rectangle
+                foreach (var o in map.ObjectGroups["Blocks"].Objects)
                 {
-                    blockRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    if (o.Name.Equals(""))
+                    {
+                        blockRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    }
                 }
-            }
-            foreach (var o in map.ObjectGroups["Player"].Objects)
-            {
-                if (o.Name.Equals("startRect"))
+                foreach (var o in map.ObjectGroups["Player"].Objects)
                 {
-                    startRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    if (o.Name.Equals("startRect"))
+                    {
+                        startRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    }
+                    if (o.Name.Equals("endRect"))
+                    {
+                        endRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    }
+                    if (o.Name.Equals("bossState"))
+                    {
+                        bossState = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    }
                 }
-                if (o.Name.Equals("endRect"))
+                foreach (var o in map.ObjectGroups["SpecialBlocks"].Objects)
                 {
-                    endRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    if (o.Name.Equals("spike"))
+                    {
+                        deadBlockRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    }
                 }
-                if (o.Name.Equals("bossState"))
+                foreach (var o in map.ObjectGroups["SpecialProps"].Objects)
                 {
-                    bossState = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    if (o.Name.Equals("wall1"))
+                    {
+                        sign_wall1 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 125, (int)o.Width, (int)o.Height);
+                    }
+                    if (o.Name.Equals("switch1"))
+                    {
+                        switch_button1 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    }
+
+                    if (o.Name.Equals("wall2"))
+                    {
+                        sign_wall2 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 27, (int)o.Width, (int)o.Height);
+                    }
+                    if (o.Name.Equals("switch2"))
+                    {
+                        switch_button2 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    }
+
+                    if (o.Name.Equals("wall3"))
+                    {
+                        sign_wall3 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 27, (int)o.Width, (int)o.Height);
+                    }
+                    if (o.Name.Equals("switch3"))
+                    {
+                        switch_button3 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    }
+
+                    if (o.Name.Equals("guardian_croc"))
+                    {
+                        lionRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    }
+
                 }
-            }
-            foreach (var o in map.ObjectGroups["SpecialBlocks"].Objects)
-            {
-                if (o.Name.Equals("spike"))
+                foreach (var o in map.ObjectGroups["FallingBlocks"].Objects)
                 {
-                    deadBlockRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    if (o.Name.Equals("Fall"))
+                    {
+                        fallingBlocks.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    }
                 }
-            }
-            foreach (var o in map.ObjectGroups["SpecialProps"].Objects)
-            {
-                if (o.Name.Equals("wall1"))
+                foreach (var o in map.ObjectGroups["MovingBlocksArea"].Objects)
                 {
-                    sign_wall1 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 125, (int)o.Width, (int)o.Height);
+                    if (o.Name.Equals("LR"))
+                    {
+                        movingLRBlocks.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    }
+                    if (o.Name.Equals("UD"))
+                    {
+                        movingUDBlocks.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    }
                 }
-                if (o.Name.Equals("switch1"))
+                //boss event
+                foreach (var o in map.ObjectGroups["SpecialOccasions"].Objects)
                 {
-                    switch_button1 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    if (o.Name.Equals("wallblock"))
+                    {
+                        wallblock = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    }
+                    if (o.Name.Equals("boss_event"))
+                    {
+                        boss_event = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+
+                        Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(boss_event.Width), ConvertUnits.ToSimUnits(boss_event.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(boss_event.X, boss_event.Y)));
+                        body.UserData = "Boss_event";
+                        body.IsSensor = true;
+                    }
+                }
+                foreach (var o in map.ObjectGroups["GroundMonster"].Objects)
+                {
+                    //gun police machine position
+                    if (o.Name.Equals("ground_mon_1"))
+                    {
+                        ground1MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    }
+                    //melee police position
+                    if (o.Name.Equals("ground_mon_2"))
+                    {
+                        ground2MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    }
+                }
+                foreach (var o in map.ObjectGroups["FlyingMonster"].Objects)
+                {
+                    //drone position
+                    if (o.Name.Equals("fly_mon"))
+                    {
+                        flyMonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    }
+                }
+                foreach (var o in map.ObjectGroups["Boss"].Objects)
+                {
+                    if (o.Name.Equals("Boss"))
+                    {
+                        bossRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    }
                 }
 
-                if (o.Name.Equals("wall2"))
+                //create collision for block in the world
+                foreach (Rectangle rect in blockRects)
                 {
-                    sign_wall2 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 27, (int)o.Width, (int)o.Height);
-                }
-                if (o.Name.Equals("switch2"))
-                {
-                    switch_button2 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    Vector2 collisionPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
+                    //Singleton.Instance.world.Step(0.001f);
+
+                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, collisionPosition);
+                    body.UserData = "Ground";
+                    body.Restitution = 0.0f;
+                    body.Friction = 0.3f;
                 }
 
-                if (o.Name.Equals("wall3"))
+                //create dead block for block in the world
+                foreach (Rectangle rect in deadBlockRects)
                 {
-                    sign_wall3 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 27, (int)o.Width, (int)o.Height);
-                }
-                if (o.Name.Equals("switch3"))
-                {
-                    switch_button3 = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
-                }
+                    Vector2 deadBlockPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
+                    //Singleton.Instance.world.Step(0.001f);
 
-                if (o.Name.Equals("guardian_croc"))
-                {
-                    lionRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, deadBlockPosition);
+                    body.UserData = "Dead";
+                    body.Restitution = 0.0f;
+                    body.Friction = 0.3f;
                 }
 
-            }
-            foreach (var o in map.ObjectGroups["FallingBlocks"].Objects)
-            {
-                if (o.Name.Equals("Fall"))
+                //create player on position
+
+
+                //croc
+                Vector2 guardianSize = new Vector2(86, 76);
+                List<Vector2> guardianAnimateList = new List<Vector2>() { new Vector2(0, 0), new Vector2(0, 77), new Vector2(0, 153) };
+                lion_guardian = new Guardian(lionTex, guardianSize, guardianAnimateList);
+                lion_guardian.Initial(lionRect);
+
+                //range enemy
+                gunPoliceEnemies = new List<RangeEnemy>();
+                gunPolicePositionList = ground1MonsterRects.Count();
+                List<Vector2> gunPoliceSizeList = new List<Vector2>() { new Vector2(46, 92), new Vector2(46, 92), new Vector2(46, 92), new Vector2(99, 92) };
+                List<List<Vector2>> gunPoliceAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(119, 0), new Vector2(228, 1) }, new List<Vector2>() { new Vector2(337, 0), new Vector2(0, 111), new Vector2(119, 111), new Vector2(227, 111) }, new List<Vector2>() { new Vector2(0, 226), new Vector2(116, 226) }, new List<Vector2>() { new Vector2(0, 355), new Vector2(116, 355), new Vector2(227, 353), new Vector2(326, 352), new Vector2(435, 357) } };
+                for (int i = 0; i < gunPolicePositionList; i++)
                 {
-                    fallingBlocks.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    gunPolice = new RangeEnemy(gunPoliceTex, gunPoliceSizeList, gunPoliceAnimateList)
+                    {
+                        size = new Vector2(46, 92),
+                        health = 3,
+                        speed = 0.1f,
+                        bulletSpeed = 400,
+                        bulletSizeX = 9,
+                        bulletSizeY = 3,
+                        bulletDistance = 10,
+
+                    };
+                    gunPoliceEnemies.Add(gunPolice);
                 }
-            }
-            foreach (var o in map.ObjectGroups["MovingBlocksArea"].Objects)
-            {
-                if (o.Name.Equals("LR"))
+
+                //create enemy position
+                gunPoliceCount = 0;
+                foreach (RangeEnemy gun in gunPoliceEnemies)
                 {
-                    movingLRBlocks.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    gun.Initial(ground1MonsterRects[gunPoliceCount], player);
+                    gunPoliceCount++;
                 }
-                if (o.Name.Equals("UD"))
+
+                //melee enemy
+                meleePoliceEnemies = new List<MeleeEnemy>();
+                meleePolicePositionList = ground2MonsterRects.Count();
+                List<Vector2> meleePoliceSizeList = new List<Vector2>() { new Vector2(55, 94), new Vector2(44, 94), new Vector2(44, 94), new Vector2(74, 109), new Vector2(99, 94) };
+                List<List<Vector2>> meleePoliceAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(107, 0), new Vector2(214, 0), new Vector2(321, 1) }, new List<Vector2>() { new Vector2(428, 2), new Vector2(0, 135), new Vector2(108, 135), new Vector2(219, 135), new Vector2(328, 135), new Vector2(423, 135) }, new List<Vector2>() { new Vector2(428, 2), new Vector2(0, 135), new Vector2(108, 135), new Vector2(219, 135), new Vector2(328, 135), new Vector2(423, 135) }, new List<Vector2>() { new Vector2(0, 270), new Vector2(97, 270), new Vector2(214, 270), new Vector2(318, 270) }, new List<Vector2>() { new Vector2(0, 406), new Vector2(100, 406), new Vector2(249, 406), new Vector2(375, 406), new Vector2(501, 406) } };
+                for (int i = 0; i < meleePolicePositionList; i++)
                 {
-                    movingUDBlocks.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    meleePolice = new MeleeEnemy(meleePoliceTex, meleePoliceSizeList, meleePoliceAnimateList)
+                    {
+                        size = new Vector2(44, 94),
+                        health = 4,
+                        speed = 0.1f,
+                    };
+                    meleePoliceEnemies.Add(meleePolice);
                 }
-            }
-            //boss event
-            foreach (var o in map.ObjectGroups["SpecialOccasions"].Objects)
-            {
-                if (o.Name.Equals("wallblock"))
+
+                //create enemy position
+                meleePoliceCount = 0;
+                foreach (MeleeEnemy melee in meleePoliceEnemies)
                 {
-                    wallblock = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    melee.Initial(ground2MonsterRects[meleePoliceCount], player);
+                    meleePoliceCount++;
                 }
-                if (o.Name.Equals("boss_event"))
-                {
-                    boss_event = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
 
-                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(boss_event.Width), ConvertUnits.ToSimUnits(boss_event.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(boss_event.X, boss_event.Y)));
-                    body.UserData = "Boss_event";
-                    body.IsSensor = true;
+                //drone enemy***
+                flyingDroneEnemies = new List<DroneEnemy>();
+                flyingDronePositionList = flyMonsterRects.Count();
+                List<Vector2> flyingDroneSizeList = new List<Vector2>() { new Vector2(92, 56), new Vector2(92, 56), new Vector2(92, 56), new Vector2(92, 56) };
+                List<List<Vector2>> flyingDroneAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0) }, new List<Vector2>() { new Vector2(0, 0), new Vector2(97, 0) }, new List<Vector2>() { new Vector2(200, 0), new Vector2(303, 0), new Vector2(0, 69), new Vector2(97, 69) }, new List<Vector2>() { new Vector2(97, 69), new Vector2(97, 69), new Vector2(97, 69) } };
+                for (int i = 0; i < flyingDronePositionList; i++)
+                {
+                    flyingDrone = new DroneEnemy(droneTex, flyingDroneSizeList, flyingDroneAnimateList)
+                    {
+                        size = new Vector2(44, 94),
+                        health = 4,
+                        speed = 0.1f,
+                        bulletSpeed = 400,
+                        bulletSizeX = 3,
+                        bulletSizeY = 14,
+                        bulletDistance = 10,
+                    };
+                    flyingDroneEnemies.Add(flyingDrone);
                 }
-            }
-            foreach (var o in map.ObjectGroups["GroundMonster"].Objects)
-            {
-                //gun police machine position
-                if (o.Name.Equals("ground_mon_1"))
+
+                //create enemy position
+                flyingDroneCount = 0;
+                foreach (DroneEnemy drone in flyingDroneEnemies)
                 {
-                    ground1MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    drone.Initial(flyMonsterRects[flyingDroneCount], player);
+                    flyingDroneCount++;
                 }
-                //melee police position
-                if (o.Name.Equals("ground_mon_2"))
+
+                //create boss on position
+                boss = new JaneBoss(janeBossTex, janeAmmoTex)
                 {
-                    ground2MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
-                }
-            }
-            foreach (var o in map.ObjectGroups["FlyingMonster"].Objects)
-            {
-                //drone position
-                if (o.Name.Equals("fly_mon"))
-                {
-                    flyMonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
-                }
-            }
-            foreach (var o in map.ObjectGroups["Boss"].Objects)
-            {
-                if (o.Name.Equals("Boss"))
-                {
-                    bossRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
-                }
-            }
-
-
-            //create collision for block in the world
-            foreach (Rectangle rect in blockRects)
-            {
-                Vector2 collisionPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
-                //Singleton.Instance.world.Step(0.001f);
-
-                Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, collisionPosition);
-                body.UserData = "Ground";
-                body.Restitution = 0.0f;
-                body.Friction = 0.3f;
-            }
-
-            //create dead block for block in the world
-            foreach (Rectangle rect in deadBlockRects)
-            {
-                Vector2 deadBlockPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
-                //Singleton.Instance.world.Step(0.001f);
-
-                Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, deadBlockPosition);
-                body.UserData = "Dead";
-                body.Restitution = 0.0f;
-                body.Friction = 0.3f;
-            }
-
-            //create player on position
-
-            //player.Initial(startRect);
-            player.Initial(bossState);
-            //croc
-            Vector2 guardianSize = new Vector2(86, 76);
-            List<Vector2> guardianAnimateList = new List<Vector2>() { new Vector2(0, 0), new Vector2(0, 77), new Vector2(0, 153) };
-            lion_guardian = new Guardian(lionTex, guardianSize, guardianAnimateList);
-            lion_guardian.Initial(lionRect);
-
-
-            //range enemy
-            gunPoliceEnemies = new List<RangeEnemy>();
-            gunPolicePositionList = ground1MonsterRects.Count();
-            List<Vector2> gunPoliceSizeList = new List<Vector2>() { new Vector2(46, 92), new Vector2(46, 92), new Vector2(46, 92), new Vector2(99, 92) };
-            List<List<Vector2>> gunPoliceAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(119, 0), new Vector2(228, 1) }, new List<Vector2>() { new Vector2(337, 0), new Vector2(0, 111), new Vector2(119, 111), new Vector2(227, 111) }, new List<Vector2>() { new Vector2(0, 226), new Vector2(116, 226) }, new List<Vector2>() { new Vector2(0, 355), new Vector2(116, 355), new Vector2(227, 353), new Vector2(326, 352), new Vector2(435, 357) } };
-            for (int i = 0; i < gunPolicePositionList; i++)
-            {
-                gunPolice = new RangeEnemy(gunPoliceTex, gunPoliceSizeList, gunPoliceAnimateList)
-                {
-                    size = new Vector2(46, 92),
-                    health = 3,
-                    speed = 0.1f,
-                    bulletSpeed = 400,
-                    bulletSizeX = 9,
-                    bulletSizeY = 3,
-                    bulletDistance = 10,
-                    
+                    size = new Vector2(74, 112),
+                    health = 1,
+                    //health = 6,
+                    speed = 1.2f,
                 };
-                gunPoliceEnemies.Add(gunPolice);
-            }
 
-            //create enemy position
-            gunPoliceCount = 0;
-            foreach (RangeEnemy gun in gunPoliceEnemies)
-            {
-                gun.Initial(ground1MonsterRects[gunPoliceCount], player);
-                gunPoliceCount++;
-            }
+                //spawn boss
+                boss.Initial(bossRect, player, boss_event);
 
-            //melee enemy
-            meleePoliceEnemies = new List<MeleeEnemy>();
-            meleePolicePositionList = ground2MonsterRects.Count();
-            List<Vector2> meleePoliceSizeList = new List<Vector2>() { new Vector2(55, 94), new Vector2(44, 94), new Vector2(44, 94), new Vector2(74, 109), new Vector2(99, 94) };
-            List<List<Vector2>> meleePoliceAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0), new Vector2(107, 0), new Vector2(214, 0), new Vector2(321, 1) }, new List<Vector2>() { new Vector2(428, 2), new Vector2(0, 135), new Vector2(108, 135), new Vector2(219, 135), new Vector2(328, 135), new Vector2(423, 135) }, new List<Vector2>() { new Vector2(428, 2), new Vector2(0, 135), new Vector2(108, 135), new Vector2(219, 135), new Vector2(328, 135), new Vector2(423, 135) }, new List<Vector2>() { new Vector2(0, 270), new Vector2(97, 270), new Vector2(214, 270), new Vector2(318, 270) }, new List<Vector2>() { new Vector2(0, 406), new Vector2(100, 406), new Vector2(249, 406), new Vector2(375, 406), new Vector2(501, 406) } };
-            for (int i = 0; i < meleePolicePositionList; i++)
-            {
-                meleePolice = new MeleeEnemy(meleePoliceTex, meleePoliceSizeList, meleePoliceAnimateList)
+                //add to all enemy for
+                Singleton.Instance.enemiesInWorld.AddRange(gunPoliceEnemies);
+                Singleton.Instance.enemiesInWorld.AddRange(meleePoliceEnemies);
+                Singleton.Instance.enemiesInWorld.AddRange(flyingDroneEnemies);
+                Singleton.Instance.enemiesInWorld.Add(boss);
+
+                //switch event
+                //create switch button on position
+                switch_wall1 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) { size = new Vector2(32, 32) };
+                switch_wall1.Initial(switch_button1);
+
+                switch_wall2 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) { size = new Vector2(32, 32) };
+                switch_wall2.Initial(switch_button2);
+
+                switch_wall3 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) { size = new Vector2(32, 32) };
+                switch_wall3.Initial(switch_button3);
+
+                //create wall button on position
+                stage_wall1 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
+                stage_wall1.Initial(sign_wall1);
+
+                stage_wall2 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
+                stage_wall2.Initial(sign_wall2);
+
+                stage_wall3 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
+                stage_wall3.Initial(sign_wall3);
+
+                //panel
+                /*
+                //create up down block in map 2
+                foreach (Rectangle rect in movingUDBlocks)
                 {
-                    size = new Vector2(44, 94),
-                    health = 4,
-                    speed = 0.1f,
-                };
-                meleePoliceEnemies.Add(meleePolice);
-            }
+                    Vector2 udPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
+                    //Singleton.Instance.world.Step(0.001f);
 
-            //create enemy position
-            meleePoliceCount = 0;
-            foreach (MeleeEnemy melee in meleePoliceEnemies)
-            {
-                melee.Initial(ground2MonsterRects[meleePoliceCount], player);
-                meleePoliceCount++;
-            }
+                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(64), ConvertUnits.ToSimUnits(6), 1f, udPosition);
+                    body.UserData = "Ground";
+                    body.Restitution = 0.0f;
+                    body.Friction = 0.3f;
+                }
 
-            //drone enemy***
-            flyingDroneEnemies = new List<DroneEnemy>();
-            flyingDronePositionList = flyMonsterRects.Count();
-            List<Vector2> flyingDroneSizeList = new List<Vector2>() { new Vector2(92, 56), new Vector2(92, 56), new Vector2(92, 56), new Vector2(92, 56) };
-            List<List<Vector2>> flyingDroneAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0) }, new List<Vector2>() { new Vector2(0, 0), new Vector2(97, 0) }, new List<Vector2>() { new Vector2(200, 0), new Vector2(303, 0), new Vector2(0, 69), new Vector2(97, 69) }, new List<Vector2>() { new Vector2(97, 69), new Vector2(97, 69), new Vector2(97, 69) } };
-            for (int i = 0; i < flyingDronePositionList; i++)
-            {
-                flyingDrone = new DroneEnemy(droneTex, flyingDroneSizeList, flyingDroneAnimateList)  
+                //create left right block in map 2
+                foreach (Rectangle rect in movingLRBlocks)
                 {
-                    size = new Vector2(44, 94),
-                    health = 4,
-                    speed = 0.1f,
-                    bulletSpeed = 400,
-                    bulletSizeX = 3,
-                    bulletSizeY = 14,
-                    bulletDistance = 10,
-                };
-                flyingDroneEnemies.Add(flyingDrone);
-            }
+                    Vector2 lrPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
+                    //Singleton.Instance.world.Step(0.001f);
 
-            //create enemy position
-            flyingDroneCount = 0;
-            foreach (DroneEnemy drone in flyingDroneEnemies)
-            {
-                drone.Initial(flyMonsterRects[flyingDroneCount], player);
-                flyingDroneCount++;
-            }
+                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(64), ConvertUnits.ToSimUnits(6), 1f, lrPosition);
+                    body.UserData = "Ground";
+                    body.Restitution = 0.0f;
+                    body.Friction = 0.3f;
+                }
 
-            //create boss on position
-            boss = new JaneBoss(janeBossTex, janeAmmoTex)
-            {
-                size = new Vector2(74, 112),
-                health = 1,
-                //health = 6,
-                speed = 1.2f,
-            };
-            //spawn boss
-            boss.Initial(bossRect, player, boss_event);
-
-            //add to all enemy for
-            Singleton.Instance.enemiesInWorld.AddRange(gunPoliceEnemies);
-            Singleton.Instance.enemiesInWorld.AddRange(meleePoliceEnemies);
-            Singleton.Instance.enemiesInWorld.Add(boss);
-
-            //switch event
-            //create switch button on position
-            switch_wall1 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) { size = new Vector2(32, 32) };
-            switch_wall1.Initial(switch_button1);
-
-            switch_wall2 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) { size = new Vector2(32, 32) };
-            switch_wall2.Initial(switch_button2);
-
-            switch_wall3 = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize) { size = new Vector2(32, 32) };
-            switch_wall3.Initial(switch_button3);
-
-            //create wall button on position
-            stage_wall1 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
-            stage_wall1.Initial(sign_wall1);
-
-            stage_wall2 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
-            stage_wall2.Initial(sign_wall2);
-
-            stage_wall3 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
-            stage_wall3.Initial(sign_wall3);
-
-            //panel
-            /*
-            //create up down block in map 2
-            foreach (Rectangle rect in movingUDBlocks)
-            {
-                Vector2 udPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
-                //Singleton.Instance.world.Step(0.001f);
-
-                Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(64), ConvertUnits.ToSimUnits(6), 1f, udPosition);
-                body.UserData = "Ground";
-                body.Restitution = 0.0f;
-                body.Friction = 0.3f;
-            }
-
-            //create left right block in map 2
-            foreach (Rectangle rect in movingLRBlocks)
-            {
-                Vector2 lrPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
-                //Singleton.Instance.world.Step(0.001f);
-
-                Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(64), ConvertUnits.ToSimUnits(6), 1f, lrPosition);
-                body.UserData = "Ground";
-                body.Restitution = 0.0f;
-                body.Friction = 0.3f;
-            }
-
-            //create falling block in map 2
-            foreach (Rectangle rect in fallingBlocks)
-            {
-                //Vector2 fallingPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
-                //Singleton.Instance.world.Step(0.001f);
-
-                //Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(64), ConvertUnits.ToSimUnits(6), 1f, fallingPosition, 0, BodyType.Dynamic);
-                //body.UserData = "Ground";
-                //body.Restitution = 0.0f;
-                //body.Friction = 0.3f;
-                //body.IgnoreGravity = true;
-                //body.IsSensor = true;
-            }*/
-
-            //Left Right
-            panelLRMoveBlocks = new List<StageObject>();
-            panelLRMovePositionList = movingLRBlocks.Count();
-            for (int i = 0; i < panelLRMovePositionList; i++)
-            {
-                panelLRMove = new StageObject(switch_wall_Tex, panel_size, panel_textureSize)
+                //create falling block in map 2
+                foreach (Rectangle rect in fallingBlocks)
                 {
-                    size = new Vector2(64, 6)
-                };
-                panelLRMoveBlocks.Add(panelLRMove);
-            }
+                    //Vector2 fallingPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
+                    //Singleton.Instance.world.Step(0.001f);
 
-            //create LR position
-            panelLRMoveCount = 0;
-            foreach (StageObject lrMove in panelLRMoveBlocks)
-            {
-                lrMove.Initial(movingLRBlocks[panelLRMoveCount]);
-                lrMove.wallHitBox.UserData = "Platform";
-                panelLRMoveCount++;
-            }
+                    //Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(64), ConvertUnits.ToSimUnits(6), 1f, fallingPosition, 0, BodyType.Dynamic);
+                    //body.UserData = "Ground";
+                    //body.Restitution = 0.0f;
+                    //body.Friction = 0.3f;
+                    //body.IgnoreGravity = true;
+                    //body.IsSensor = true;
+                }*/
 
-            //Up Down
-            panelUDMoveBlocks = new List<StageObject>();
-            panelUDMovePositionList = movingUDBlocks.Count();
-            for (int i = 0; i < panelUDMovePositionList; i++)
-            {
-                panelUDMove = new StageObject(switch_wall_Tex, panel_size, panel_textureSize)
+                //Left Right
+                panelLRMoveBlocks = new List<StageObject>();
+                panelLRMovePositionList = movingLRBlocks.Count();
+                for (int i = 0; i < panelLRMovePositionList; i++)
                 {
-                    size = new Vector2(64, 6)
-                };
-                panelUDMoveBlocks.Add(panelUDMove);
-            }
+                    panelLRMove = new StageObject(switch_wall_Tex, panel_size, panel_textureSize)
+                    {
+                        size = new Vector2(64, 6)
+                    };
+                    panelLRMoveBlocks.Add(panelLRMove);
+                }
 
-            //create UD position
-            panelUDMoveCount = 0;
-            foreach (StageObject udMove in panelUDMoveBlocks)
-            {
-                udMove.Initial(movingUDBlocks[panelUDMoveCount]);
-                udMove.wallHitBox.UserData = "Platform";
-                panelUDMoveCount++;
-            }
-
-            //falling
-            panelFallMoveBlocks = new List<StageObject>();
-            panelFallMovePositionList = fallingBlocks.Count();
-            for (int i = 0; i < panelFallMovePositionList; i++)
-            {
-                panelFallMove = new StageObject(switch_wall_Tex, panel_size, panel_textureSize)
+                //create LR position
+                panelLRMoveCount = 0;
+                foreach (StageObject lrMove in panelLRMoveBlocks)
                 {
-                    size = new Vector2(64, 6)
-                };
-                panelFallMoveBlocks.Add(panelFallMove);
-            }
+                    lrMove.Initial(movingLRBlocks[panelLRMoveCount]);
+                    lrMove.wallHitBox.UserData = "Platform";
+                    panelLRMoveCount++;
+                }
 
-            //create Fall position
-            panelFallMoveCount = 0;
-            foreach (StageObject fallMove in panelFallMoveBlocks)
-            {
-                fallMove.Initial(fallingBlocks[panelFallMoveCount]);
-                fallMove.wallHitBox.IsStatic = false;
-                fallMove.wallHitBox.IgnoreGravity = true;
-                fallMove.wallHitBox.UserData = "Platform";
-                panelFallMoveCount++;
+                //Up Down
+                panelUDMoveBlocks = new List<StageObject>();
+                panelUDMovePositionList = movingUDBlocks.Count();
+                for (int i = 0; i < panelUDMovePositionList; i++)
+                {
+                    panelUDMove = new StageObject(switch_wall_Tex, panel_size, panel_textureSize)
+                    {
+                        size = new Vector2(64, 6)
+                    };
+                    panelUDMoveBlocks.Add(panelUDMove);
+                }
+
+                //create UD position
+                panelUDMoveCount = 0;
+                foreach (StageObject udMove in panelUDMoveBlocks)
+                {
+                    udMove.Initial(movingUDBlocks[panelUDMoveCount]);
+                    udMove.wallHitBox.UserData = "Platform";
+                    panelUDMoveCount++;
+                }
+
+                //falling
+                panelFallMoveBlocks = new List<StageObject>();
+                panelFallMovePositionList = fallingBlocks.Count();
+                for (int i = 0; i < panelFallMovePositionList; i++)
+                {
+                    panelFallMove = new StageObject(switch_wall_Tex, panel_size, panel_textureSize)
+                    {
+                        size = new Vector2(64, 6)
+                    };
+                    panelFallMoveBlocks.Add(panelFallMove);
+                }
+
+                //create Fall position
+                panelFallMoveCount = 0;
+                foreach (StageObject fallMove in panelFallMoveBlocks)
+                {
+                    fallMove.Initial(fallingBlocks[panelFallMoveCount]);
+                    fallMove.wallHitBox.IsStatic = false;
+                    fallMove.wallHitBox.IgnoreGravity = true;
+                    fallMove.wallHitBox.UserData = "Platform";
+                    panelFallMoveCount++;
+                }
+
+                player.SetSpawn(startRect);
+                //player.SetSpawn(bossState);
             }
         }
         public override void LoadContent()
@@ -625,13 +629,13 @@ namespace ScifiDruid.GameScreen
                     {
                         lrMove.Update(gameTime);
 
-                        float maxPositionX = Math.Clamp(lrMove.wallHitBox.Position.X, ConvertUnits.ToSimUnits(lrMove.spawnPosition.X - lrMove.spawnPosition.Width/2), ConvertUnits.ToSimUnits(lrMove.spawnPosition.X + lrMove.spawnPosition.Width / 2));
+                        float maxPositionX = Math.Clamp(lrMove.wallHitBox.Position.X, ConvertUnits.ToSimUnits(lrMove.spawnPosition.X - lrMove.spawnPosition.Width / 2), ConvertUnits.ToSimUnits(lrMove.spawnPosition.X + lrMove.spawnPosition.Width / 2));
 
                         if (lrMove.wallHitBox.Position.X <= ConvertUnits.ToSimUnits(lrMove.spawnPosition.X - lrMove.spawnPosition.Width / 2))
                         {
                             d = true;
                         }
-                        else if(lrMove.wallHitBox.Position.X >= ConvertUnits.ToSimUnits(lrMove.spawnPosition.X + lrMove.spawnPosition.Width / 2))
+                        else if (lrMove.wallHitBox.Position.X >= ConvertUnits.ToSimUnits(lrMove.spawnPosition.X + lrMove.spawnPosition.Width / 2))
                         {
                             d = false;
                         }
@@ -645,7 +649,7 @@ namespace ScifiDruid.GameScreen
                             maxPositionX -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                         }
 
-                        lrMove.wallHitBox.SetTransform(new Vector2(maxPositionX, ConvertUnits.ToSimUnits(lrMove.spawnPosition.Y)),0);
+                        lrMove.wallHitBox.SetTransform(new Vector2(maxPositionX, ConvertUnits.ToSimUnits(lrMove.spawnPosition.Y)), 0);
                         player.hitBox.ApplyForce(Vector2.Zero);
                         //lrMove.wallHitBox.Position = new Vector2(maxPositionX, ConvertUnits.ToSimUnits(lrMove.spawnPosition.Y));
                     }
@@ -658,7 +662,6 @@ namespace ScifiDruid.GameScreen
                     foreach (StageObject fallMove in panelFallMoveBlocks)
                     {
                         fallMove.Update(gameTime);
-                        //Debug.WriteLine(fallMove.wallHitBox.UserData);
 
                         float positionX = ConvertUnits.ToSimUnits(fallMove.spawnPosition.X);
                         fallMove.wallHitBox.Position = new Vector2(positionX, fallMove.wallHitBox.Position.Y);
@@ -935,7 +938,7 @@ namespace ScifiDruid.GameScreen
                         drone.Draw(spriteBatch);
                         foreach (EnemyBullet dronebullet in drone.bulletList)
                         {
-                            
+
                             dronebullet.Draw(spriteBatch);
                         }
                     }

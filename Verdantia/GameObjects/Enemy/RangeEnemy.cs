@@ -105,9 +105,6 @@ namespace ScifiDruid.GameObjects
             this.gameTime = gameTime;
             position = enemyHitBox.Position;
 
-
-
-
             if (isAlive)
             {
                 foreach (var item in bulletList)
@@ -121,10 +118,10 @@ namespace ScifiDruid.GameObjects
                     enemyHitBox.UserData = "Died";
                     isAlive = false;
                     enemyHitBox.Dispose();
+                    bulletList.Clear();
                     curStatus = EnemyStatus.DEAD;
                 }
             }
-
 
             //if step on dead block
             if (IsContact(enemyHitBox, "Dead"))

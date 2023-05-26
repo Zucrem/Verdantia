@@ -93,289 +93,291 @@ namespace ScifiDruid.GameScreen
 
         public override void Initial()
         {
-            base.Initial();
-
-            openingDialogCount = 11;
-            introDialogCount = 4;
-            endDialogCount = 5;
-
-            //map size
-            startmaptileX = 10f;
-            endmaptileX = 170f;
-
-            Player.maxHealth = 5;
-            Player.maxMana = 100;
-            Player.health = maxHealth;
-            Player.mana = maxMana;
-
-            //create tileset for map1
-            map = new TmxMap("Content/Stage1.tmx");
-            tilesetStage1 = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage1Tileset/" + map.Tilesets[0].Name.ToString());
-
-            tileWidth = map.Tilesets[0].TileWidth;
-            tileHeight = map.Tilesets[0].TileHeight;
-            tilesetTileWidth = tilesetStage1.Width / tileWidth;
-
-            tilemapManager = new TileMapManager(map, tilesetStage1, tilesetTileWidth, tileWidth, tileHeight);
-
-            //all object lists
-            deadBlockRects = new List<Rectangle>();
-            blockRects = new List<Rectangle>();
-            playerRects = new List<Rectangle>();
-            mechanicRects = new List<Rectangle>();
-            ground1MonsterRects = new List<Rectangle>();
-            ground2MonsterRects = new List<Rectangle>();
-            flyMonsterRects = new List<Rectangle>();
-            bossRect = new Rectangle();
-
-            //add list rectangle
-            foreach (var o in map.ObjectGroups["Blocks"].Objects)
+            if (!initialized)
             {
-                if (o.Name.Equals(""))
+                base.Initial();
+
+                openingDialogCount = 11;
+                introDialogCount = 4;
+                endDialogCount = 5;
+
+                //map size
+                startmaptileX = 10f;
+                endmaptileX = 170f;
+
+                player.health = maxHealth;
+                player.mana = maxMana;
+
+                //create tileset for map1
+                map = new TmxMap("Content/Stage1.tmx");
+                tilesetStage1 = content.Load<Texture2D>("Pictures/Play/StageScreen/Stage1Tileset/" + map.Tilesets[0].Name.ToString());
+
+                tileWidth = map.Tilesets[0].TileWidth;
+                tileHeight = map.Tilesets[0].TileHeight;
+                tilesetTileWidth = tilesetStage1.Width / tileWidth;
+
+                tilemapManager = new TileMapManager(map, tilesetStage1, tilesetTileWidth, tileWidth, tileHeight);
+
+                //all object lists
+                deadBlockRects = new List<Rectangle>();
+                blockRects = new List<Rectangle>();
+                playerRects = new List<Rectangle>();
+                mechanicRects = new List<Rectangle>();
+                ground1MonsterRects = new List<Rectangle>();
+                ground2MonsterRects = new List<Rectangle>();
+                flyMonsterRects = new List<Rectangle>();
+                bossRect = new Rectangle();
+
+                //add list rectangle
+                foreach (var o in map.ObjectGroups["Blocks"].Objects)
                 {
-                    blockRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    if (o.Name.Equals(""))
+                    {
+                        blockRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    }
                 }
-            }
-            foreach (var o in map.ObjectGroups["Player"].Objects)
-            {
-                if (o.Name.Equals("startRect"))
+                foreach (var o in map.ObjectGroups["Player"].Objects)
                 {
-                    startRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    if (o.Name.Equals("startRect"))
+                    {
+                        startRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    }
+                    if (o.Name.Equals("endRect"))
+                    {
+                        endRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    }
+                    if (o.Name.Equals("bossState"))
+                    {
+                        bossState = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    }
                 }
-                if (o.Name.Equals("endRect"))
+                foreach (var o in map.ObjectGroups["SpecialBlocks"].Objects)
                 {
-                    endRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    if (o.Name.Equals("spike"))
+                    {
+                        deadBlockRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    }
                 }
-                if (o.Name.Equals("bossState"))
+                foreach (var o in map.ObjectGroups["SpecialProps"].Objects)
                 {
-                    bossState = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    if (o.Name.Equals("wall"))
+                    {
+                        rock_wall = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 50, (int)o.Width, (int)o.Height);
+                    }
+                    if (o.Name.Equals("switch"))
+                    {
+                        switch_button = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    }
+
+                    if (o.Name.Equals("sign1"))
+                    {
+                        sign1Rect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+
+                        Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(sign1Rect.Width), ConvertUnits.ToSimUnits(sign1Rect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(sign1Rect.X, sign1Rect.Y)));
+                        body.UserData = "Sign1";
+                        body.IsSensor = true;
+                    }
+                    if (o.Name.Equals("sign2"))
+                    {
+                        sign2Rect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+
+                        Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(sign2Rect.Width), ConvertUnits.ToSimUnits(sign2Rect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(sign2Rect.X, sign2Rect.Y)));
+                        body.UserData = "Sign2";
+                        body.IsSensor = true;
+                    }
+                    if (o.Name.Equals("sign3"))
+                    {
+                        sign3Rect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+
+                        Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(sign3Rect.Width), ConvertUnits.ToSimUnits(sign3Rect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(sign3Rect.X, sign3Rect.Y)));
+                        body.UserData = "Sign3";
+                        body.IsSensor = true;
+                    }
+                    if (o.Name.Equals("sign4"))
+                    {
+                        sign4Rect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+
+                        Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(sign4Rect.Width), ConvertUnits.ToSimUnits(sign4Rect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(sign4Rect.X, sign4Rect.Y)));
+                        body.UserData = "Sign4";
+                        body.IsSensor = true;
+                    }
+                    if (o.Name.Equals("sign5"))
+                    {
+                        sign5Rect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+
+                        Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(sign5Rect.Width), ConvertUnits.ToSimUnits(sign5Rect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(sign5Rect.X, sign5Rect.Y)));
+                        body.UserData = "Sign5";
+                        body.IsSensor = true;
+                    }
                 }
-            }
-            foreach (var o in map.ObjectGroups["SpecialBlocks"].Objects)
-            {
-                if (o.Name.Equals("spike"))
+                foreach (var o in map.ObjectGroups["SpecialOccasions"].Objects)
                 {
-                    deadBlockRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    if (o.Name.Equals("wallblock"))
+                    {
+                        wallblock = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    }
+                    if (o.Name.Equals("boss_event"))
+                    {
+                        boss_event = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+
+                        Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(boss_event.Width), ConvertUnits.ToSimUnits(boss_event.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(boss_event.X, boss_event.Y)));
+                        body.UserData = "Boss_event";
+                        body.IsSensor = true;
+                    }
+                    if (o.Name.Equals("guardian_bird"))
+                    {
+                        birdRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    }
+                    if (o.Name.Equals("guardian_lion"))
+                    {
+                        crocRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    }
                 }
-            }
-            foreach (var o in map.ObjectGroups["SpecialProps"].Objects)
-            {
-                if (o.Name.Equals("wall"))
+                foreach (var o in map.ObjectGroups["GroundMonster"].Objects)
                 {
-                    rock_wall = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2) + 50, (int)o.Width, (int)o.Height);
+                    //flamethrower machine position
+                    if (o.Name.Equals("ground_mon_1"))
+                    {
+                        ground1MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    }
+                    //chainsaw machine position
+                    if (o.Name.Equals("ground_mon_2"))
+                    {
+                        ground2MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
+                    }
                 }
-                if (o.Name.Equals("switch"))
+                foreach (var o in map.ObjectGroups["Boss"].Objects)
                 {
-                    switch_button = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    if (o.Name.Equals("boss"))
+                    {
+                        bossRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    }
                 }
 
-                if (o.Name.Equals("sign1"))
+                //create collision for block in the world
+                foreach (Rectangle rect in blockRects)
                 {
-                    sign1Rect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    Vector2 collisionPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
+                    //Singleton.Instance.world.Step(0.001f);
 
-                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(sign1Rect.Width), ConvertUnits.ToSimUnits(sign1Rect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(sign1Rect.X, sign1Rect.Y)));
-                    body.UserData = "Sign1";
-                    body.IsSensor = true;
+                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, collisionPosition);
+                    body.UserData = "Ground";
+                    body.Restitution = 0.0f;
+                    body.Friction = 0.3f;
                 }
-                if (o.Name.Equals("sign2"))
-                {
-                    sign2Rect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
 
-                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(sign2Rect.Width), ConvertUnits.ToSimUnits(sign2Rect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(sign2Rect.X, sign2Rect.Y)));
-                    body.UserData = "Sign2";
-                    body.IsSensor = true;
+                //create dead block for block in the world
+                foreach (Rectangle rect in deadBlockRects)
+                {
+                    Vector2 deadBlockPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
+                    //Singleton.Instance.world.Step(0.001f);
+
+                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, deadBlockPosition);
+                    body.UserData = "Dead";
+                    body.Restitution = 0.0f;
+                    body.Friction = 0.3f;
                 }
-                if (o.Name.Equals("sign3"))
-                {
-                    sign3Rect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
 
-                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(sign3Rect.Width), ConvertUnits.ToSimUnits(sign3Rect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(sign3Rect.X, sign3Rect.Y)));
-                    body.UserData = "Sign3";
-                    body.IsSensor = true;
+                //create player on position
+
+
+                //bird
+                Vector2 birdSize = new Vector2(49, 55);
+                List<Vector2> birdAnimateList = new List<Vector2>() { new Vector2(10, 2), new Vector2(67, 2), new Vector2(4, 59), new Vector2(61, 59) };
+                bird_guardian = new Guardian(birdTex, birdSize, birdAnimateList);
+                bird_guardian.Initial(birdRect);
+
+                Vector2 crocSize = new Vector2(193, 37);
+                List<Vector2> crocAnimateList = new List<Vector2>() { new Vector2(4, 0) };
+                croc_guardian = new Guardian(crocTex, crocSize, crocAnimateList);
+                croc_guardian.Initial(crocRect);
+
+                //range enemy
+                flameMechEnemies = new List<RangeEnemy>();
+                flameMechPositionList = ground1MonsterRects.Count();
+                List<Vector2> flameMechSizeList = new List<Vector2>() { new Vector2(112, 86), new Vector2(112, 86), new Vector2(112, 86), new Vector2(112, 86) };
+                List<List<Vector2>> flameMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0) }, new List<Vector2>() { new Vector2(0, 0), new Vector2(112, 0) }, new List<Vector2>() { new Vector2(0, 0) }, new List<Vector2>() { new Vector2(0, 108), new Vector2(112, 108) } };
+                for (int i = 0; i < flameMechPositionList; i++)
+                {
+                    flameMech = new RangeEnemy(flameMechTex, flameMechSizeList, flameMechAnimateList)
+                    {
+                        size = new Vector2(112, 86),
+                        health = 3,
+                        speed = 0.22f,
+                        bulletSpeed = 400,
+                        bulletSizeX = 26,
+                        bulletSizeY = 30,
+                        bulletDistance = 10,
+                        isdrone = false,
+                    };
+                    flameMechEnemies.Add(flameMech);
                 }
-                if (o.Name.Equals("sign4"))
-                {
-                    sign4Rect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
 
-                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(sign4Rect.Width), ConvertUnits.ToSimUnits(sign4Rect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(sign4Rect.X, sign4Rect.Y)));
-                    body.UserData = "Sign4";
-                    body.IsSensor = true;
+                //create enemy position
+                flameMechCount = 0;
+                foreach (RangeEnemy chainsawBot in flameMechEnemies)
+                {
+                    chainsawBot.Initial(ground1MonsterRects[flameMechCount], player);
+                    flameMechCount++;
                 }
-                if (o.Name.Equals("sign5"))
-                {
-                    sign5Rect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
 
-                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(sign5Rect.Width), ConvertUnits.ToSimUnits(sign5Rect.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(sign5Rect.X, sign5Rect.Y)));
-                    body.UserData = "Sign5";
-                    body.IsSensor = true;
+                //melee enemy
+                chainsawMechEnemies = new List<MeleeEnemy>();
+                chainsawMechPositionList = ground2MonsterRects.Count();
+                List<Vector2> chainsawMechSizeList = new List<Vector2>() { new Vector2(118, 100), new Vector2(118, 100), new Vector2(136, 100), new Vector2(136, 100), new Vector2(118, 100) };
+                List<List<Vector2>> chainsawMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0) }, new List<Vector2>() { new Vector2(0, 0), new Vector2(144, 0) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 254), new Vector2(142, 254) } };
+                for (int i = 0; i < chainsawMechPositionList; i++)
+                {
+                    chainsawMech = new MeleeEnemy(chainsawMechTex, chainsawMechSizeList, chainsawMechAnimateList)
+                    {
+                        size = new Vector2(118, 100),
+                        health = 4,
+                        speed = 0.22f,
+                    };
+                    chainsawMechEnemies.Add(chainsawMech);
                 }
-            }
-            foreach (var o in map.ObjectGroups["SpecialOccasions"].Objects)
-            {
-                if (o.Name.Equals("wallblock"))
+
+                //create enemy position
+                chainsawMechCount = 0;
+                foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
                 {
-                    wallblock = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
+                    chainsawBot.Initial(ground2MonsterRects[chainsawMechCount], player);
+                    chainsawMechCount++;
                 }
-                if (o.Name.Equals("boss_event"))
+
+                //create boss on position
+                boss = new LucasBoss(lucasBossTex, whiteTex)
                 {
-                    boss_event = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
-
-                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(boss_event.Width), ConvertUnits.ToSimUnits(boss_event.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(boss_event.X, boss_event.Y)));
-                    body.UserData = "Boss_event";
-                    body.IsSensor = true;
-                }
-                if (o.Name.Equals("guardian_bird"))
-                {
-                    birdRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
-                }
-                if (o.Name.Equals("guardian_lion"))
-                {
-                    crocRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
-                }
-            }
-            foreach (var o in map.ObjectGroups["GroundMonster"].Objects)
-            {
-                //flamethrower machine position
-                if (o.Name.Equals("ground_mon_1"))
-                {
-                    ground1MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
-                }
-                //chainsaw machine position
-                if (o.Name.Equals("ground_mon_2"))
-                {
-                    ground2MonsterRects.Add(new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height));
-                }
-            }
-            foreach (var o in map.ObjectGroups["Boss"].Objects)
-            {
-                if (o.Name.Equals("boss"))
-                {
-                    bossRect = new Rectangle((int)o.X + ((int)o.Width / 2), (int)o.Y + ((int)o.Height / 2), (int)o.Width, (int)o.Height);
-                }
-            }
-
-            //create collision for block in the world
-            foreach (Rectangle rect in blockRects)
-            {
-                Vector2 collisionPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
-                //Singleton.Instance.world.Step(0.001f);
-
-                Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, collisionPosition);
-                body.UserData = "Ground";
-                body.Restitution = 0.0f;
-                body.Friction = 0.3f;
-            }
-
-            //create dead block for block in the world
-            foreach (Rectangle rect in deadBlockRects)
-            {
-                Vector2 deadBlockPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
-                //Singleton.Instance.world.Step(0.001f);
-
-                Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(rect.Width), ConvertUnits.ToSimUnits(rect.Height), 1f, deadBlockPosition);
-                body.UserData = "Dead";
-                body.Restitution = 0.0f;
-                body.Friction = 0.3f;
-            }
-
-            //create player on position
-
-            //player.Initial(startRect);
-            player.Initial(bossState);
-
-            //bird
-            Vector2 birdSize = new Vector2(49, 55);
-            List<Vector2> birdAnimateList = new List<Vector2>() { new Vector2(10, 2), new Vector2(67, 2), new Vector2(4, 59), new Vector2(61, 59) };
-            bird_guardian = new Guardian(birdTex, birdSize, birdAnimateList);
-            bird_guardian.Initial(birdRect);
-
-            Vector2 crocSize = new Vector2(193, 37);
-            List<Vector2> crocAnimateList = new List<Vector2>() { new Vector2(4, 0) };
-            croc_guardian = new Guardian(crocTex, crocSize, crocAnimateList);
-            croc_guardian.Initial(crocRect);
-
-            //range enemy
-            flameMechEnemies = new List<RangeEnemy>();
-            flameMechPositionList = ground1MonsterRects.Count();
-            List<Vector2> flameMechSizeList = new List<Vector2>() { new Vector2(112, 86), new Vector2(112, 86), new Vector2(112, 86), new Vector2(112, 86) };
-            List<List<Vector2>> flameMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0)}, new List<Vector2>() { new Vector2(0, 0), new Vector2(112, 0) }, new List<Vector2>() { new Vector2(0, 0) }, new List<Vector2>() { new Vector2(0, 108), new Vector2(112, 108) } };
-            for (int i = 0; i < flameMechPositionList; i++)
-            {
-                flameMech = new RangeEnemy(flameMechTex, flameMechSizeList, flameMechAnimateList)
-                {
-                    size = new Vector2(112, 86),
-                    health = 3,
-                    speed = 0.22f,
-                    bulletSpeed = 400,
-                    bulletSizeX = 26,
-                    bulletSizeY = 30,
-                    bulletDistance = 10,
-                    isdrone= false,
+                    size = new Vector2(196, 186),
+                    health = 6,
+                    speed = 1.2f,
                 };
-                flameMechEnemies.Add(flameMech);
-            }
+                //spawn boss
+                boss.Initial(bossRect, player, boss_event);
 
-            //create enemy position
-            flameMechCount = 0;
-            foreach (RangeEnemy chainsawBot in flameMechEnemies)
-            {
-                chainsawBot.Initial(ground1MonsterRects[flameMechCount], player);
-                flameMechCount++;
-            }
+                //add All enemy to locate enemy
+                Singleton.Instance.enemiesInWorld.AddRange(flameMechEnemies);
+                Singleton.Instance.enemiesInWorld.AddRange(chainsawMechEnemies);
+                Singleton.Instance.enemiesInWorld.Add(boss);
 
-            //melee enemy
-            chainsawMechEnemies = new List<MeleeEnemy>();
-            chainsawMechPositionList = ground2MonsterRects.Count();
-            List<Vector2> chainsawMechSizeList = new List<Vector2>() { new Vector2(118, 100), new Vector2(118, 100), new Vector2(136, 100), new Vector2(136, 100), new Vector2(118, 100) };
-            List<List<Vector2>> chainsawMechAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0) }, new List<Vector2>() { new Vector2(0, 0), new Vector2(144, 0) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 136), new Vector2(136, 136) }, new List<Vector2>() { new Vector2(0, 254), new Vector2(142, 254) } };
-            for (int i = 0; i < chainsawMechPositionList; i++)
-            {
-                chainsawMech = new MeleeEnemy(chainsawMechTex, chainsawMechSizeList, chainsawMechAnimateList)
+                //switch event
+                //create switch button on position
+                switch_wall = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize)
                 {
-                    size = new Vector2(118, 100),
-                    health = 4,
-                    speed = 0.22f,
+                    size = new Vector2(32, 32),
                 };
-                chainsawMechEnemies.Add(chainsawMech);
+                switch_wall.Initial(switch_button);
+
+                //create wall button on position
+                stage_wall = new StageObject(switch_wall_Tex, wall_size, wall_textureSize)
+                {
+                    size = new Vector2(32, 192),
+                };
+                stage_wall.Initial(rock_wall);
+
+                player.SetSpawn(startRect);
+                //player.SetSpawn(bossState);
             }
-
-            //create enemy position
-            chainsawMechCount = 0;
-            foreach (MeleeEnemy chainsawBot in chainsawMechEnemies)
-            {
-                chainsawBot.Initial(ground2MonsterRects[chainsawMechCount], player);
-                chainsawMechCount++;
-            }
-
-            //create boss on position
-            boss = new LucasBoss(lucasBossTex,whiteTex)
-            {
-                size = new Vector2(196, 186),
-                health = 6,
-                speed = 1.2f,
-            };
-            //spawn boss
-            boss.Initial(bossRect, player, boss_event);
-
-            //add All enemy to locate enemy
-            Singleton.Instance.enemiesInWorld.AddRange(flameMechEnemies);
-            Singleton.Instance.enemiesInWorld.AddRange(chainsawMechEnemies);
-            Singleton.Instance.enemiesInWorld.Add(boss);
-
-            //switch event
-            //create switch button on position
-            switch_wall = new SwitchWall(switch_wall_Tex, switch_size, switch_close_textureSize, switch_open_textureSize)
-            {
-                size = new Vector2(32, 32),
-            };
-            switch_wall.Initial(switch_button);
-
-            //create wall button on position
-            stage_wall = new StageObject(switch_wall_Tex, wall_size, wall_textureSize)
-            {
-                size = new Vector2(32, 192),
-            };
-            stage_wall.Initial(rock_wall);
         }
 
         public override void LoadContent()
@@ -397,6 +399,7 @@ namespace ScifiDruid.GameScreen
 
             Initial();
         }
+
         public override void UnloadContent()
         {
             base.UnloadContent();
@@ -521,6 +524,7 @@ namespace ScifiDruid.GameScreen
                 {
                     if (!created_boss && boss_area)
                     {
+                        
                         //player active after this
                         player.isAlive = true;
                         boss.isAlive = true;
