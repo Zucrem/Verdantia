@@ -47,7 +47,7 @@ namespace ScifiDruid.GameObjects
         private EnemyStatus preStatus;
         private EnemyStatus curStatus;
 
-        private float attackTimeDelayEnemy = 2;     //time of delay //plz set enemy delay time
+        private float attackTimeDelayEnemy = 0.8f;     //time of delay 
         private float attackTimeEnemy;          //timer for delay          
         private enum EnemyStatus
         {
@@ -139,6 +139,11 @@ namespace ScifiDruid.GameObjects
             {
                 curStatus = EnemyStatus.END;
             }
+            if (preStatus != curStatus)
+            {
+                frames = 0;
+                frameState = 0;
+            }
             ChangeAnimationStatus();
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             switch (curStatus)
@@ -220,6 +225,7 @@ namespace ScifiDruid.GameObjects
 
         private void EnemyWalking()
         {
+            curStatus = EnemyStatus.WALK;
             //fly left and right 
             if ((xspawnPosition - enemyHitBox.Position.X) > pathWalkLength && isMovingLeft)
             {
@@ -248,17 +254,25 @@ namespace ScifiDruid.GameObjects
 
         private void EnemyAlertWalking()
         {
-            Enemyshoot();  //bullet ต้องไปdraw 
+
             if (playerPosition.X - position.X > 0.4 && (xspawnPosition - enemyHitBox.Position.X) > pathWalkLength * -1)  // run(right) to player but not out of area
             {
+                curStatus = EnemyStatus.WALK;
                 charDirection = SpriteEffects.None;
                 enemyHitBox.ApplyForce(new Vector2(80 * speed, 0));
             }
             else if (playerPosition.X - position.X < -0.1 && (xspawnPosition - enemyHitBox.Position.X) < pathWalkLength) // run(left) to player but not out of area
             {
+                curStatus = EnemyStatus.WALK;
                 charDirection = SpriteEffects.FlipHorizontally;
                 enemyHitBox.ApplyForce(new Vector2(-80 * speed, 0));
             }
+            else if(playerPosition.X - position.X >= -0.1 && playerPosition.X - position.X <= 0.4)
+            {
+                curStatus = EnemyStatus.SHOOT;
+                Enemyshoot();               
+            }
+            
         }
 
         public override void ChangeAnimationStatus()

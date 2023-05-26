@@ -271,6 +271,7 @@ namespace ScifiDruid.GameObjects
 
             if (!isIdle)
             {
+                curStatus = EnemyStatus.WALK;
 
                 if (isMovingLeft)
                 {
@@ -302,6 +303,7 @@ namespace ScifiDruid.GameObjects
 
                 if (idleTime < 5)
                 {
+                    curStatus = EnemyStatus.IDLE;
                     idleTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
                 else
