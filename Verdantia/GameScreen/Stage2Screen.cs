@@ -26,7 +26,7 @@ namespace ScifiDruid.GameScreen
     class Stage2Screen : PlayScreen
     {
 
-        bool d;
+        private bool switchDirection;
 
         //create guardian tex
         private Guardian lion_guardian;
@@ -529,8 +529,8 @@ namespace ScifiDruid.GameScreen
                     panelFallMoveCount++;
                 }
 
-                player.SetSpawn(startRect);
-                //player.SetSpawn(bossState);
+                //player.SetSpawn(startRect);
+                player.SetSpawn(bossState);
             }
         }
         public override void LoadContent()
@@ -600,14 +600,14 @@ namespace ScifiDruid.GameScreen
 
                             if (lrMove.wallHitBox.Position.X <= ConvertUnits.ToSimUnits(lrMove.spawnPosition.X - lrMove.spawnPosition.Width / 2))
                             {
-                                d = true;
+                                switchDirection = true;
                             }
                             else if (lrMove.wallHitBox.Position.X >= ConvertUnits.ToSimUnits(lrMove.spawnPosition.X + lrMove.spawnPosition.Width / 2))
                             {
-                                d = false;
+                                switchDirection = false;
                             }
 
-                            if (d)
+                            if (switchDirection)
                             {
                                 maxPositionX += (float)gameTime.ElapsedGameTime.TotalSeconds;
                             }

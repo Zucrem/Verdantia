@@ -272,7 +272,7 @@ namespace Verdantia.GameScreen
 
                         case "AtkDM":
                             atkDMSkill = true;
-                            Player.attackDmg = 3;
+                            Player.attackDmg = 2;
                             countAviliableSkill--;
                             break;
 
@@ -290,7 +290,7 @@ namespace Verdantia.GameScreen
 
                         case "CrocDmg":
                             crocDmgSkill = true;
-                            Player.skill2Dmg = 5;
+                            Player.crocDmg = 5;
                             countAviliableSkill--;
                             break;
 
