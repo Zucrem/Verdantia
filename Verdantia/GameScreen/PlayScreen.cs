@@ -434,13 +434,6 @@ namespace ScifiDruid.GameScreen
                         if (Keyboard.GetState().IsKeyDown(Keys.Enter) || introBossDialog == introDialogCount)
                         {
                             gamestate = GameState.BOSS;
-                            foreach (var item in Singleton.Instance.world.BodyList)
-                            {
-                                if (item.UserData.Equals("Player"))
-                                {
-                                    Debug.WriteLine(item.UserData);
-                                }
-                            }
                         }
                         //change dialog
                         if (Keyboard.GetState().IsKeyDown(Keys.Space) && pressTime > pressTimeDelay)

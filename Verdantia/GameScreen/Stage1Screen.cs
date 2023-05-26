@@ -375,8 +375,8 @@ namespace ScifiDruid.GameScreen
                 };
                 stage_wall.Initial(rock_wall);
 
-                player.SetSpawn(startRect);
-                //player.SetSpawn(bossState);
+                //player.SetSpawn(startRect);
+                player.SetSpawn(bossState);
             }
         }
 

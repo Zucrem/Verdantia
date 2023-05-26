@@ -63,7 +63,7 @@ namespace ScifiDruid.GameObjects
         public static int manaRegenAmount;
         public static float manaMaxRegenTime;
 
-        public static int skill2Dmg;
+        public static int crocDmg;
         public static int skill2MaxCooldown;
         public static int dashMaxCooldown;
         
@@ -136,7 +136,6 @@ namespace ScifiDruid.GameObjects
 
         public int lionDmg;
         public int bulletDmg;
-        public int crocDmg;
 
         public enum PlayerStatus
         {
@@ -232,7 +231,7 @@ namespace ScifiDruid.GameObjects
 
                 if (crocDmg == 0)
                 {
-                    crocDmg = 3;
+                    crocDmg = 4;
                 }
 
                 if (skill1MaxCooldown == 0)
@@ -282,7 +281,6 @@ namespace ScifiDruid.GameObjects
                 {
                     GotHit(knockbackStatus);
                 }
-
                 else if (hitCooldown > 0)
                 {
                     hitCooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -296,16 +294,6 @@ namespace ScifiDruid.GameObjects
                 else
                 {
                     hitBox.GravityScale = 1;
-                }
-
-                if ((IsContact(hitBox, "Enemy") || IsContact(hitBox, "SkillBoss")) && playerStatus != PlayerStatus.DASH)
-                {
-                    GotHit(knockbackStatus);
-                }
-
-                else if (hitCooldown > 0)
-                {
-                    hitCooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
 
                 if (hitCooldown <= 0)
@@ -344,6 +332,8 @@ namespace ScifiDruid.GameObjects
                     mana += (float)gameTime.ElapsedGameTime.TotalSeconds * manaRegenAmount * manaIdleRegen;
                 }
 
+                //Debug.WriteLine(bulletList.Count);
+
                 if (bulletList.Count > 0)
                 {
                     foreach (PlayerBullet bullet in bulletList)
@@ -351,7 +341,7 @@ namespace ScifiDruid.GameObjects
                         //Do damge to every enemy that contact with lionBody
                         if (bullet.bulletBody != null && IsContact(bullet.bulletBody, "Enemy"))
                         {
-                            bullet.bulletStatus = PlayerBullet.BulletStatus.BULLETEND;
+                            bullet.bulletStatus = PlayerBullet.BulletStatus.BULLETDEAD;
                             if (enemyContract.Count > 0)
                             {
                                 foreach (Enemy enemy in enemyContract)
@@ -361,13 +351,12 @@ namespace ScifiDruid.GameObjects
                                         enemy.takeDMG(attackDmg, "Bullet");
                                         break;
                                     }
-                                    else
+                                    else if (bullet.bulletBody.UserData.Equals("Croc"))
                                     {
                                         enemy.takeDMG(crocDmg, "Croc");
                                         continue;
                                     }
                                 }
-                                enemyContract.Clear();
                             }
                         }
                     }
@@ -528,6 +517,7 @@ namespace ScifiDruid.GameObjects
                 };
                 bullet.CreateBullet(false, "Bullet");
                 bulletList.Add(bullet);
+                playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Shoot");
 
                 //bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0, -1f), this, charDirection, isShootup));
 
@@ -538,8 +528,6 @@ namespace ScifiDruid.GameObjects
                 bulletList[bulletList.Count - 1].Shoot();
                 mana -= attackMana;
             }
-
-            
 
             if (attackAnimationTime > 0)
             {
@@ -600,6 +588,7 @@ namespace ScifiDruid.GameObjects
                     if (bullet.bulletStatus == PlayerBullet.BulletStatus.BULLETEND)
                     {
                         bulletList.Remove(bullet);
+                        enemyContract.Clear();
                         break;
                     }
                 }
@@ -785,7 +774,6 @@ namespace ScifiDruid.GameObjects
                 playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Croc");
                 manaRegenTime = manaMaxRegenTime;
                 mana -= 10;
-
             }
 
             if (skill2Cooldown > 0 && isCroc)
@@ -806,6 +794,7 @@ namespace ScifiDruid.GameObjects
                     attackAnimationTime = 0.3f;
                     attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
                     bulletList[bulletList.Count - 1].Shoot();
+                    //Debug.WriteLine(bulletList[bulletList.Count - 1].bulletStatus);
                     isCroc = false;
                     //return;
                 }
@@ -824,13 +813,13 @@ namespace ScifiDruid.GameObjects
                 switch (knockback)
                 {
                     case KnockbackStatus.RIGHT:
-                        hitBox.ApplyLinearImpulse(new Vector2(hitBox.Mass * (speed - 6), -hitBox.Mass * jumpHigh));
+                        hitBox.ApplyLinearImpulse(new Vector2(hitBox.Mass * (speed - 10), -hitBox.Mass * (jumpHigh - 6)));
                         break;
                     case KnockbackStatus.LEFT:
-                        hitBox.ApplyLinearImpulse(new Vector2(-hitBox.Mass * (speed - 6), -hitBox.Mass * jumpHigh));
+                        hitBox.ApplyLinearImpulse(new Vector2(-hitBox.Mass * (speed - 10), -hitBox.Mass * (jumpHigh - 6)));
                         break;
                 }
-                hitCooldown = 1f;
+                hitCooldown = 1.3f;
 
             }
             else
