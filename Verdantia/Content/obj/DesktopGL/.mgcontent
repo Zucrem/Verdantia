@@ -136,16 +136,82 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Play/StageScreen/Stage3Tileset/tileset3.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Splash/SplashScreen/Black.png</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Pictures/Splash/SplashScreen/GameLogo.png</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Songs/EndScreen/goodEnd.mp3</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Songs/MainScreen/MenuTheme.mp3</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Songs/Stage1Screen/BossStage1Theme.mp3</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Songs/Stage1Screen/Stage1Theme.mp3</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Songs/Stage2Screen/BossStage2Theme.mp3</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Songs/Stage2Screen/Stage2Theme.mp3</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Songs/Stage3Screen/BossStage3Theme.mp3</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Songs/Stage3Screen/Stage3Theme.mp3</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Boss1/lucasCharge.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Boss1/lucasDeath.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Boss2/bombFall.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Boss2/explosionJane.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Boss2/janePistol.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Boss2/jumpJane.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Boss2/plasmaBeam.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Boss3/laser.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Boss3/laughViroj.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Boss3/redElectric.wav</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Button/clicksound.wav</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Button/hoverSound.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Ending/badEnd.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Player/atk.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Player/crocBuster.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Player/dash.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Player/gethit.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Player/heal.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Player/jump.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Player/roar.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Player/shoot.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Stage1/enemy1Death.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Stage1/meleeEnemy1Charge.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Stage1/rangeEnemy1Fire.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Stage1/switch1Sound.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Stage2/drone2Fire.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Stage2/enemy2Death.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Stage2/meleeHitEnemy2.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Stage2/rangeEnemy2Fire.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Stage2/switch2Sound.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Stage3/enemy3Death.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Stage3/enemy3Shoot.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Stage3/switch3Sound.wav</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

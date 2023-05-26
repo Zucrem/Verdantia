@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using ScifiDruid.Managers;
 
 namespace ScifiDruid.GameObjects
 {
@@ -53,6 +56,7 @@ namespace ScifiDruid.GameObjects
 
         private float warningSkillTime;
 
+        private SoundEffect laughSound, redElectricSound, laserSound;
         private enum DoctorStatus
         {
             IDLE,
@@ -94,6 +98,17 @@ namespace ScifiDruid.GameObjects
             //animation dead state
             frameState = 0;
             repeat = false;
+
+            LoadContent();
+        }
+
+        public void LoadContent()
+        {
+            ContentManager content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
+            //sfx
+            laserSound = content.Load<SoundEffect>("Sounds/Boss3/laser");
+            laughSound = content.Load<SoundEffect>("Sounds/Boss3/laughViroj");
+            redElectricSound = content.Load<SoundEffect>("Sounds/Boss3/redElectric");
         }
 
         public override void Initial(Rectangle spawnPosition, Player player, Rectangle fieldBoss)
@@ -276,6 +291,8 @@ namespace ScifiDruid.GameObjects
                 curBossStatus = DoctorStatus.ACTION1;
                 warningSkillTime = 1;
 
+                redElectricSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+
             }
             else if (warningSkillTime <= 0 && redLightning == null)
             {
@@ -311,12 +328,16 @@ namespace ScifiDruid.GameObjects
                 curBossStatus = DoctorStatus.ACTION2;
                 warningSkillTime = 1;
 
+                laughSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+
             }
             else if (warningSkillTime <= 0 && laser == null)
             {
                 Vector2 laserPosition = position + new Vector2(-5, -2.2f);
                 laser = new DoctorLaser(skillBossTexture, laserPosition, this);
                 laser.CreateLaser();
+
+                laserSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
             }
             else if (laser != null)
             {

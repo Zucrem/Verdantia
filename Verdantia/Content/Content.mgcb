@@ -1581,6 +1581,18 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Splash/SplashScreen/GameLogo.png
 
+#begin Songs/EndScreen/goodEnd.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Songs/EndScreen/goodEnd.mp3
+
+#begin Songs/MainScreen/MenuTheme.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Songs/MainScreen/MenuTheme.mp3
+
 #begin Songs/Stage1Screen/BossStage1Theme.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
@@ -1617,6 +1629,66 @@
 /processorParam:Quality=Best
 /build:Songs/Stage3Screen/Stage3Theme.mp3
 
+#begin Sounds/Boss1/lucasCharge.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Boss1/lucasCharge.wav
+
+#begin Sounds/Boss1/lucasDeath.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Boss1/lucasDeath.wav
+
+#begin Sounds/Boss2/bombFall.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Boss2/bombFall.wav
+
+#begin Sounds/Boss2/explosionJane.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Boss2/explosionJane.wav
+
+#begin Sounds/Boss2/janePistol.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Boss2/janePistol.wav
+
+#begin Sounds/Boss2/jumpJane.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Boss2/jumpJane.wav
+
+#begin Sounds/Boss2/plasmaBeam.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Boss2/plasmaBeam.wav
+
+#begin Sounds/Boss3/laser.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Boss3/laser.wav
+
+#begin Sounds/Boss3/laughViroj.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Boss3/laughViroj.wav
+
+#begin Sounds/Boss3/redElectric.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Boss3/redElectric.wav
+
 #begin Sounds/Button/clicksound.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -1628,6 +1700,132 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/Button/hoverSound.wav
+
+#begin Sounds/Ending/badEnd.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Ending/badEnd.wav
+
+#begin Sounds/Player/atk.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Player/atk.wav
+
+#begin Sounds/Player/crocBuster.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Player/crocBuster.wav
+
+#begin Sounds/Player/dash.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Player/dash.wav
+
+#begin Sounds/Player/gethit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Player/gethit.wav
+
+#begin Sounds/Player/heal.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Player/heal.wav
+
+#begin Sounds/Player/jump.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Player/jump.wav
+
+#begin Sounds/Player/roar.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Player/roar.wav
+
+#begin Sounds/Player/shoot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Player/shoot.wav
+
+#begin Sounds/Stage1/enemy1Death.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Stage1/enemy1Death.wav
+
+#begin Sounds/Stage1/meleeEnemy1Charge.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Stage1/meleeEnemy1Charge.wav
+
+#begin Sounds/Stage1/rangeEnemy1Fire.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Stage1/rangeEnemy1Fire.wav
+
+#begin Sounds/Stage1/switch1Sound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Stage1/switch1Sound.wav
+
+#begin Sounds/Stage2/drone2Fire.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Stage2/drone2Fire.wav
+
+#begin Sounds/Stage2/enemy2Death.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Stage2/enemy2Death.wav
+
+#begin Sounds/Stage2/meleeHitEnemy2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Stage2/meleeHitEnemy2.wav
+
+#begin Sounds/Stage2/rangeEnemy2Fire.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Stage2/rangeEnemy2Fire.wav
+
+#begin Sounds/Stage2/switch2Sound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Stage2/switch2Sound.wav
+
+#begin Sounds/Stage3/enemy3Death.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Stage3/enemy3Death.wav
+
+#begin Sounds/Stage3/enemy3Shoot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Stage3/enemy3Shoot.wav
+
+#begin Sounds/Stage3/switch3Sound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Stage3/switch3Sound.wav
 
 #begin Stage1.tmx
 /copy:Stage1.tmx
