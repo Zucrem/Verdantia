@@ -16,6 +16,13 @@
 #begin Fonts/alagard.ttf
 /copy:Fonts/alagard.ttf
 
+#begin Fonts/AlagardFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/AlagardFont.spritefont
+
 #begin Fonts/font20.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -734,6 +741,18 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/Dialog/soulLionPortrait.png
 
+#begin Pictures/Play/EndScreen/EndCredit.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/EndScreen/EndCredit.png
+
 #begin Pictures/Play/Hud/crocNotR.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1430,6 +1449,18 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/StageScreen/Stage1Tileset/specialProps1.png
 
+#begin Pictures/Play/StageScreen/Stage1Tileset/Stage1BG.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/StageScreen/Stage1Tileset/Stage1BG.png
+
 #begin Pictures/Play/StageScreen/Stage1Tileset/tileset1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1454,6 +1485,18 @@
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/StageScreen/Stage2Tileset/specialProps2.png
 
+#begin Pictures/Play/StageScreen/Stage2Tileset/Stage2BG.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/StageScreen/Stage2Tileset/Stage2BG.png
+
 #begin Pictures/Play/StageScreen/Stage2Tileset/tileset2.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1465,6 +1508,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Pictures/Play/StageScreen/Stage2Tileset/tileset2.png
+
+#begin Pictures/Play/StageScreen/Stage3Tileset/LabBG.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pictures/Play/StageScreen/Stage3Tileset/LabBG.png
 
 #begin Pictures/Play/StageScreen/Stage3Tileset/specialProps3.png
 /importer:TextureImporter
