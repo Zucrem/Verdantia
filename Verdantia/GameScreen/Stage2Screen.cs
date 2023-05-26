@@ -489,8 +489,8 @@ namespace ScifiDruid.GameScreen
                     panelFallMoveCount++;
                 }
 
-                player.SetSpawn(startRect);
-                //player.SetSpawn(bossState);
+                //player.SetSpawn(startRect);
+                player.SetSpawn(bossState);
             }
         }
         public override void LoadContent()

@@ -392,13 +392,13 @@ namespace ScifiDruid.GameObjects
             switch (curStatus)
             {
                 case EnemyStatus.IDLE:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = idleSpriteVector;
                     spriteSize = new Vector2(idleSize.X, idleSize.Y);
                     allframes = spriteVector.Count();
                     break;
                 case EnemyStatus.WALK:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = walkSpriteVector;
                     spriteSize = new Vector2(walkSize.X, walkSize.Y);
                     allframes = spriteVector.Count();
@@ -410,13 +410,13 @@ namespace ScifiDruid.GameObjects
                     allframes = spriteVector.Count();
                     break;
                 case EnemyStatus.DETECT:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = detectPlayerSpriteVector;
                     spriteSize = detectPlayerSize;
                     allframes = spriteVector.Count();
                     break;
                 case EnemyStatus.DEAD:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = deadSpriteVector;
                     spriteSize = new Vector2(deadSize.X, deadSize.Y);
                     allframes = spriteVector.Count();

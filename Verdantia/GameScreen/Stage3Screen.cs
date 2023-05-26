@@ -427,8 +427,8 @@ namespace ScifiDruid.GameScreen
                 stage_wall6.Initial(sign_wall6);
 
                 //create player on position
-                player.SetSpawn(startRect);
-                //player.Initial(bossState);
+                //player.SetSpawn(startRect);
+                player.SetSpawn(bossState);
             }
         }
 

@@ -47,7 +47,7 @@ namespace ScifiDruid.GameObjects
         private Vector2 action2_2Size;
         private Vector2 action3Size;
         private Vector2 deadSize;
-        
+
         private List<Vector2> idleSpriteVector;
         private List<Vector2> action1SpriteVector;
         private List<Vector2> action2_1SpriteVector;
@@ -78,14 +78,14 @@ namespace ScifiDruid.GameObjects
             action1Size = new Vector2(228, 185);
             action2_1Size = new Vector2(220, 184);
             action2_2Size = new Vector2(220, 184);
-            action3Size = new Vector2(197, 186); 
+            action3Size = new Vector2(197, 186);
             deadSize = new Vector2(187, 188);
 
             idleSpriteVector = new List<Vector2>() { new Vector2(16, 0), new Vector2(264, 0) };
 
             action1SpriteVector = new List<Vector2>() { new Vector2(0, 215), new Vector2(230, 221) };
             action2_1SpriteVector = new List<Vector2>() { new Vector2(230, 438) };
-            action2_2SpriteVector = new List<Vector2>(){ new Vector2(0, 898), new Vector2(230, 904) };
+            action2_2SpriteVector = new List<Vector2>() { new Vector2(0, 898), new Vector2(230, 904) };
             action3SpriteVector = new List<Vector2>() { new Vector2(16, 436) };
 
             deadSpriteVector = new List<Vector2>() { new Vector2(503, 0), new Vector2(737, 0), new Vector2(975, 0), new Vector2(1215, 0) };
@@ -133,7 +133,7 @@ namespace ScifiDruid.GameObjects
 
             if (isAlive)
             {
-                CheckPlayerPosition(gameTime,1);
+                CheckPlayerPosition(gameTime, 1);
 
                 //takeDMG(1, "Bullet");
 
@@ -345,10 +345,10 @@ namespace ScifiDruid.GameObjects
                 switch (bossSkilDirection)
                 {
                     case SpriteEffects.None:
-                        drillBody.ApplyLinearImpulse(new Vector2(3 * speed, 0));
+                        drillBody.ApplyLinearImpulse(new Vector2(5 * speed, 0));
                         break;
                     case SpriteEffects.FlipHorizontally:
-                        drillBody.ApplyLinearImpulse(new Vector2(-3 * speed, 0));
+                        drillBody.ApplyLinearImpulse(new Vector2(-5 * speed, 0));
                         break;
                 }
             }
@@ -362,11 +362,11 @@ namespace ScifiDruid.GameObjects
                     switch (bossSkilDirection)
                     {
                         case SpriteEffects.None:
-                            enemyHitBox.ApplyForce(new Vector2(80 * speed, 0));
+                            enemyHitBox.ApplyForce(new Vector2(120 * speed, 0));
                             //drillBody.IsStatic = true;
                             break;
                         case SpriteEffects.FlipHorizontally:
-                            enemyHitBox.ApplyForce(new Vector2(-80 * speed, 0));
+                            enemyHitBox.ApplyForce(new Vector2(-120 * speed, 0));
                             //drillBody.IsStatic = true;
                             break;
                     }
@@ -409,10 +409,10 @@ namespace ScifiDruid.GameObjects
                 switch (bossSkilDirection)
                 {
                     case SpriteEffects.None:
-                        drillBody.ApplyLinearImpulse(new Vector2(3f * speed, 0));
+                        drillBody.ApplyLinearImpulse(new Vector2(5f * speed, 0));
                         break;
                     case SpriteEffects.FlipHorizontally:
-                        drillBody.ApplyLinearImpulse(new Vector2(-3f * speed, 0));
+                        drillBody.ApplyLinearImpulse(new Vector2(-5f * speed, 0));
                         break;
                 }
             }
@@ -420,7 +420,6 @@ namespace ScifiDruid.GameObjects
             {
                 if (IsContact(drillBody, "Ground"))
                 {
-                    Debug.WriteLine(countBounce);
                     if (countBounce > 3)
                     {
                         switch (bossSkilDirection)
@@ -437,10 +436,10 @@ namespace ScifiDruid.GameObjects
                     switch (bossSkilDirection)
                     {
                         case SpriteEffects.None:
-                            drillBody.ApplyLinearImpulse(new Vector2(-1.8f * speed, 0));
+                            drillBody.ApplyLinearImpulse(new Vector2(-3.1f * speed, 0));
                             break;
                         case SpriteEffects.FlipHorizontally:
-                            drillBody.ApplyLinearImpulse(new Vector2(1.8f * speed, 0));
+                            drillBody.ApplyLinearImpulse(new Vector2(3.1f * speed, 0));
                             break;
                     }
                     countBounce++;
@@ -463,31 +462,31 @@ namespace ScifiDruid.GameObjects
             switch (curBossStatus)
             {
                 case LucasStatus.IDLE:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = idleSpriteVector;
                     spriteSize = new Vector2(idleSize.X, idleSize.Y);
                     allframes = spriteVector.Count();
                     break;
                 case LucasStatus.ACTION1:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = action1SpriteVector;
                     spriteSize = new Vector2(action1Size.X, action1Size.Y);
                     allframes = spriteVector.Count();
                     break;
                 case LucasStatus.ACTION2_1:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = action2_1SpriteVector;
                     spriteSize = new Vector2(action2_1Size.X, action2_1Size.Y);
                     allframes = spriteVector.Count();
                     break;
                 case LucasStatus.ACTION2_2:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = action2_2SpriteVector;
                     spriteSize = new Vector2(action2_2Size.X, action2_2Size.Y);
                     allframes = spriteVector.Count();
                     break;
                 case LucasStatus.ACTION3:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = action3SpriteVector;
                     spriteSize = new Vector2(action3Size.X, action3Size.Y);
                     allframes = spriteVector.Count();
@@ -519,6 +518,10 @@ namespace ScifiDruid.GameObjects
                         spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(drillBody.Position), new Rectangle(152, 1248, 56, 56), Color.White, 0, new Vector2(56 / 2, 56 / 2), 1, bossSkilDirection, 0f);
                     }
                 }
+            }
+            else
+            {
+                spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bossOrigin, 1f, charDirection, 0f);
             }
         }
         public bool IsBossDead()

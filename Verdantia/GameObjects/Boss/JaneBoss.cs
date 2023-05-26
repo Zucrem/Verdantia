@@ -576,49 +576,49 @@ namespace ScifiDruid.GameObjects
             switch (curBossStatus)
             {
                 case JaneStatus.IDLE:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = idleSpriteVector;
                     spriteSize = new Vector2(idleSize.X, idleSize.Y);
                     allframes = spriteVector.Count();
                     break;
                 case JaneStatus.SHOOTGUN:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = shootGunSpriteVector;
                     spriteSize = new Vector2(shootGunSize.X, shootGunSize.Y);
                     allframes = spriteVector.Count();
                     break;
                 case JaneStatus.SHOOTPLASMA:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = shootPlasmaSpriteVector;
                     spriteSize = new Vector2(shootPlasmaSize.X, shootPlasmaSize.Y);
                     allframes = spriteVector.Count();
                     break;
                 case JaneStatus.CALLDOWNBOMB:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = callDownBombSpriteVector;
                     spriteSize = new Vector2(action2Size.X, action2Size.Y);
                     allframes = spriteVector.Count();
                     break;
                 case JaneStatus.PREPARE:
-                    delay = 300f;
+                    delay = 100;
                     spriteSize = prepareSize;
                     spriteVector = prepareSpriteVector;
                     allframes = spriteVector.Count();
                     break;
                 case JaneStatus.DASHIN:
-                    delay = 300f;
+                    delay = 100;
                     spriteSize = dashInSize;
                     spriteVector = dashInSpriteVector;
                     allframes = spriteVector.Count();
                     break;
                 case JaneStatus.DASHOUT:
-                    delay = 300f; 
+                    delay = 100; 
                     spriteSize = dashOutSize;
                     spriteVector = dashOutSpriteVector;
                     allframes = spriteVector.Count();
                     break;
                 case JaneStatus.PUNCH:
-                    delay = 300f; 
+                    delay = 100; 
                     spriteSize = punchSize;
                     spriteVector = punchSpriteVector;
                     allframes = spriteVector.Count();
@@ -658,10 +658,10 @@ namespace ScifiDruid.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (!animationDead)
-            {
+            //if (!animationDead)
+            //{
                 spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bossOrigin, 1f, charDirection, 0f);
-            }
+            //}
 
             if (action2)
             {

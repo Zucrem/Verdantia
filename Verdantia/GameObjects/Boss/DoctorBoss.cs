@@ -341,25 +341,25 @@ namespace ScifiDruid.GameObjects
             switch (curBossStatus)
             {
                 case DoctorStatus.IDLE:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = idleSpriteVector;
                     spriteSize = new Vector2(idleSize.X, idleSize.Y);
                     allframes = spriteVector.Count();
                     break;
                 case DoctorStatus.ACTION1:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = action1SpriteVector;
                     spriteSize = new Vector2(action1Size.X, action1Size.Y);
                     allframes = spriteVector.Count();
                     break;
                 case DoctorStatus.ACTION2:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = action2SpriteVector;
                     spriteSize = new Vector2(action2Size.X, action2Size.Y);
                     allframes = spriteVector.Count();
                     break;
                 case DoctorStatus.ACTION3:
-                    delay = 300f;
+                    delay = 100;
                     spriteSize = new Vector2(action3Size.X, action3Size.Y);
                     spriteVector = action3SpriteVector;
                     allframes = spriteVector.Count();
@@ -399,10 +399,10 @@ namespace ScifiDruid.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (!animationDead)
-            {
+            //if (!animationDead)
+            //{
                 spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, bossOrigin, 1f, charDirection, 0f);
-            }
+            //}
 
             if (lightningBall.Count > 0)
             {

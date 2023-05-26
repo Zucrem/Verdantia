@@ -358,7 +358,7 @@ namespace ScifiDruid.GameScreen
                 boss = new LucasBoss(lucasBossTex, whiteTex)
                 {
                     size = new Vector2(196, 186),
-                    health = 20,
+                    health = 1,
                     speed = 1.2f,
                 };
                 //spawn boss
@@ -384,8 +384,8 @@ namespace ScifiDruid.GameScreen
                 };
                 stage_wall.Initial(rock_wall);
 
-                player.SetSpawn(startRect);
-                //player.SetSpawn(bossState);
+                //player.SetSpawn(startRect);
+                player.SetSpawn(bossState);
             }
         }
 

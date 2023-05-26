@@ -301,61 +301,61 @@ namespace ScifiDruid.GameObjects
             switch (playerStatus)
             {
                 case PlayerStatus.IDLE:
-                    delay = 300f;
+                    delay = 200;
                     spriteVector = idleRectVector;
                     spriteSize = new Vector2(idleSrcWidth, idleSrcHeight);
                     allframes = idleFrames;
                     break;
                 case PlayerStatus.SHOOT:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = shootRectVector;
                     spriteSize = new Vector2(shootSrcWidth, shootSrcHeight);
                     allframes = shootFrames;
                     break;
                 case PlayerStatus.RUN:
-                    delay = 200f;
+                    delay = 100;
                     spriteVector = runRectVector;
                     spriteSize = new Vector2(runSrcWidth, runSrcHeight);
                     allframes = runFrames;
                     break;
                 case PlayerStatus.SHOOT_RUN:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = shootAndRunRectVector;
                     spriteSize = new Vector2(shootAndRunSrcWidth, shootAndRunSrcHeight);
                     allframes = shootAndRunFrames;
                     break;
                 case PlayerStatus.SHOOT_UP:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = shootUpRectVector;
                     spriteSize = new Vector2(shootUpSrcWidth, shootUpSrcHeight);
                     allframes = shootUpFrames;
                     break;
                 case PlayerStatus.SHOOT_UP_RUN:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = shootUpAndRunRectVector;
                     spriteSize = new Vector2(shootUpAndRunSrcWidth, shootUpAndRunSrcHeight);
                     allframes = shootUpAndRunFrames;
                     break;
                 case PlayerStatus.JUMP:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = jumpRectVector;
                     spriteSize = new Vector2(jumpSrcWidth, jumpSrcHeight);
                     allframes = jumpFrames;
                     break;
                 case PlayerStatus.SHOOT_AIR:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = shootOnAirRectVector;
                     spriteSize = new Vector2(shootOnAirSrcWidth, shootOnAirSrcHeight);
                     allframes = shootOnAirFrames;
                     break;
                 case PlayerStatus.FALLING:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = fallingRectVector;
                     spriteSize = new Vector2(fallingSrcWidth, fallingSrcHeight);
                     allframes = fallingFrames;
                     break;
                 case PlayerStatus.SKILL:
-                    delay = 300f;
+                    delay = 100;
                     spriteVector = skillRectVector;
                     spriteSize = new Vector2(skillSrcWidth, skillSrcHeight);
                     allframes = skillFrames;
@@ -367,7 +367,7 @@ namespace ScifiDruid.GameObjects
                     allframes = takeDamageFrames;
                     break;
                 case PlayerStatus.DASH:
-                    delay = 150f;
+                    delay = 100;
                     spriteVector = dashRectVector;
                     spriteSize = new Vector2(dashSrcWidth, dashSrcHeight);
                     allframes = dashFrames;
