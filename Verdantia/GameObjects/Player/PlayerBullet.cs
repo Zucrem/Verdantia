@@ -101,6 +101,8 @@ namespace ScifiDruid.GameObjects
 
                 bulletAliveRectVector = new List<Vector2>() { new Vector2(0, 107), new Vector2(78, 107), new Vector2(160, 106) };
                 bulletDeadRectVector = new List<Vector2>() { new Vector2(240, 107), new Vector2(306, 106), new Vector2(364, 107) };
+
+                //Debug.WriteLine("SS");
             }
 
             bulletAliveSize = new Vector2(bulletSizeX, bulletSizeY);
@@ -144,23 +146,26 @@ namespace ScifiDruid.GameObjects
                         break;
                 }
             }
+            //Debug.WriteLine("DD");
             bulletStatus = BulletStatus.BULLETALIVE;
         }
 
         public override void Update(GameTime gameTime)
         {
             //if dead animation animationEnd
+            ChangeBulletAnimationStatus();
+
             if (animationDead)
             {
                 bulletStatus = BulletStatus.BULLETEND;
-            }
+                return;
+            } 
 
             if (preStatus != bulletStatus)
             {
                 frames = 0;
             }
-
-            ChangeBulletAnimationStatus();
+            
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             if (elapsed >= delay)
             {
@@ -228,7 +233,7 @@ namespace ScifiDruid.GameObjects
         public bool IsOutRange()
         {
 
-            if (position.X - bulletBody.Position.X < -bulletDistance || position.X - bulletBody.Position.X > bulletDistance)
+            if (position.X - bulletBody.Position.X < -bulletDistance || position.X - bulletBody.Position.X > bulletDistance || position.Y - bulletBody.Position.Y > bulletDistance)
             {
                 // The Bullet was Out of range
                 bulletBody.Dispose();
@@ -254,6 +259,7 @@ namespace ScifiDruid.GameObjects
                     spriteVector = bulletDeadRectVector;
                     spriteSize = bulletDeadSize;
                     allframes = bulletDeadCount;
+                    bulletBody.LinearVelocity = Vector2.Zero;
                     break;
             }
         }

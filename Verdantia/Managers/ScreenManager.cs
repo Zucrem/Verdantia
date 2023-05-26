@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using static ScifiDruid.Singleton;
+using Verdantia.GameScreen;
 
 namespace ScifiDruid.Managers
 {
@@ -17,7 +18,9 @@ namespace ScifiDruid.Managers
         public enum GameScreenName
         {
             MenuScreen,
-            PlayScreen
+            PlayScreen,
+            PerkScreen,
+            EndScreen
         }
         //object gamescreen
         private _GameScreen currentScreen;
@@ -49,6 +52,12 @@ namespace ScifiDruid.Managers
                             currentScreen = new Stage3Screen();
                             break;
                     }
+                    break;
+                case GameScreenName.PerkScreen:
+                    currentScreen = new PerkScreen();
+                    break;
+                case GameScreenName.EndScreen:
+                    currentScreen = new EndScreen();
                     break;
             }
             currentScreen.LoadContent();

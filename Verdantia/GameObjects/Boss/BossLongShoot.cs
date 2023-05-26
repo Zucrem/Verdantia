@@ -80,6 +80,7 @@ namespace ScifiDruid.GameObjects
                 case "Jane":
                     longShotSize = janeLongShootSize;
                     spriteVector = janeLongShootAnimateList;
+                    delay = 100f;
                     break;
                 case "Doctor":
                     longShotSize = doctorLongShootSize;
@@ -140,7 +141,10 @@ namespace ScifiDruid.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, longShotOrigin, 1f, charDirection, 0f);
+            if (!animationDead)
+            {
+                spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, longShotOrigin, 1f, charDirection, 0f);
+            }
         }
     }
 }

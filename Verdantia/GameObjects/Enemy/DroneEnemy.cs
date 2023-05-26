@@ -30,8 +30,6 @@ namespace ScifiDruid.GameObjects
         private int worldLevel;
         public bool isdrone = true;
 
-
-
         //for animation
         protected Vector2 idleSize;
         protected Vector2 walkSize;
@@ -43,11 +41,10 @@ namespace ScifiDruid.GameObjects
         private List<Vector2> shootSpriteVector;
         private List<Vector2> deadSpriteVector;
 
-
         private EnemyStatus preStatus;
         private EnemyStatus curStatus;
 
-        private float attackTimeDelayEnemy = 2;     //time of delay //plz set enemy delay time
+        private float attackTimeDelayEnemy = 0.8f;     //time of delay 
         private float attackTimeEnemy;          //timer for delay          
         private enum EnemyStatus
         {
@@ -72,8 +69,6 @@ namespace ScifiDruid.GameObjects
             shootSpriteVector = animateList[2];
             deadSpriteVector = animateList[3];
 
-            enemyHitBox.IgnoreGravity = true;
-
             frames = 0;
 
             //animation dead state
@@ -86,7 +81,7 @@ namespace ScifiDruid.GameObjects
             base.Initial(spawnPosition, player);
             curStatus = EnemyStatus.WALK;
             preStatus = EnemyStatus.WALK;
-
+            enemyHitBox.IgnoreGravity = true;
             switch (Singleton.Instance.levelState)
             {
                 case LevelState.FOREST:
@@ -106,8 +101,13 @@ namespace ScifiDruid.GameObjects
             this.gameTime = gameTime;
             position = enemyHitBox.Position;
 
+
             if (isAlive)
             {
+                foreach (var item in bulletList)
+                {
+                    item.Update(gameTime);
+                }
                 CheckPlayerPosition(gameTime, 1);
 
                 if (health <= 0)
@@ -115,6 +115,7 @@ namespace ScifiDruid.GameObjects
                     enemyHitBox.UserData = "Died";
                     isAlive = false;
                     enemyHitBox.Dispose();
+                    bulletList.Clear();
                     curStatus = EnemyStatus.DEAD;
                 }
             }
@@ -132,6 +133,11 @@ namespace ScifiDruid.GameObjects
             if (animationDead)
             {
                 curStatus = EnemyStatus.END;
+            }
+            if (preStatus != curStatus)
+            {
+                frames = 0;
+                frameState = 0;
             }
             ChangeAnimationStatus();
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -214,6 +220,7 @@ namespace ScifiDruid.GameObjects
 
         private void EnemyWalking()
         {
+            curStatus = EnemyStatus.WALK;
             //fly left and right 
             if ((xspawnPosition - enemyHitBox.Position.X) > pathWalkLength && isMovingLeft)
             {
@@ -242,7 +249,25 @@ namespace ScifiDruid.GameObjects
 
         private void EnemyAlertWalking()
         {
-            //go to over player head
+
+            if (playerPosition.X - position.X > 0.4 && (xspawnPosition - enemyHitBox.Position.X) > pathWalkLength * -1)  // run(right) to player but not out of area
+            {
+                curStatus = EnemyStatus.WALK;
+                charDirection = SpriteEffects.None;
+                enemyHitBox.ApplyForce(new Vector2(80 * speed, 0));
+            }
+            else if (playerPosition.X - position.X < -0.1 && (xspawnPosition - enemyHitBox.Position.X) < pathWalkLength) // run(left) to player but not out of area
+            {
+                curStatus = EnemyStatus.WALK;
+                charDirection = SpriteEffects.FlipHorizontally;
+                enemyHitBox.ApplyForce(new Vector2(-80 * speed, 0));
+            }
+            else if(playerPosition.X - position.X >= -0.1 && playerPosition.X - position.X <= 0.4)
+            {
+                curStatus = EnemyStatus.SHOOT;
+                Enemyshoot();               
+            }
+            
         }
 
         public override void ChangeAnimationStatus()
@@ -276,14 +301,12 @@ namespace ScifiDruid.GameObjects
             }
         }
 
-        public void shoot()  //ยิงลงไง
+        public void Enemyshoot()  
         {
             attackTimeEnemy += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (attackTimeEnemy > attackTimeDelayEnemy)
             {
-
-
                 EnemyBullet bullet = new EnemyBullet(this.texture, enemyHitBox.Position, this, charDirection)
                 {
                     bulletSpeed = this.bulletSpeed,
@@ -295,8 +318,6 @@ namespace ScifiDruid.GameObjects
                 bulletList.Add(bullet);
                 bulletList[bulletList.Count - 1].Shoot();
                 attackTimeEnemy = 0;
-
-
             }
         }
 

@@ -16,9 +16,6 @@ namespace ScifiDruid.GameObjects
 
         protected Texture2D texture; //enemy Texture (Animaiton)
 
-        protected Player player;
-        protected Vector2 playerPosition;
-
         protected GameTime gameTime;
 
         //wallOrigin
@@ -28,6 +25,8 @@ namespace ScifiDruid.GameObjects
 
         private Vector2 spriteSize;
         private Vector2 spriteVector;
+
+        public Rectangle spawnPosition;
 
         public Body wallHitBox;
 
@@ -44,14 +43,14 @@ namespace ScifiDruid.GameObjects
 
         public void Initial(Rectangle spawnPosition)
         {
-
-            textureHeight = (int)size.Y;
-            textureWidth = (int)size.X;
+            this.spawnPosition = spawnPosition;
+            textureHeight = (int)spriteSize.Y;
+            textureWidth = (int)spriteSize.X;
 
             wallOrigin = new Vector2(textureWidth / 2, textureHeight / 2);
 
             //create wall hitbox
-            wallHitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(spawnPosition.Width), ConvertUnits.ToSimUnits(spawnPosition.Height), 1f, ConvertUnits.ToSimUnits(new Vector2(spawnPosition.X, spawnPosition.Y)));
+            wallHitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(size.X), ConvertUnits.ToSimUnits(size.Y), 1f, ConvertUnits.ToSimUnits(new Vector2(spawnPosition.X, spawnPosition.Y)));
             wallHitBox.UserData = "Ground";
             wallHitBox.Restitution = 0.0f;
             wallHitBox.Friction = 0.3f;

@@ -28,8 +28,6 @@ namespace ScifiDruid.GameObjects
         private bool isMovingLeft = true;
         private float idleTime = 0;
 
-
-
         //for animation
         protected Vector2 idleSize;
         protected Vector2 walkSize;
@@ -290,6 +288,7 @@ namespace ScifiDruid.GameObjects
 
                 if (idleTime < 5)
                 {
+                    curStatus = EnemyStatus.IDLE;
                     idleTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
                 else

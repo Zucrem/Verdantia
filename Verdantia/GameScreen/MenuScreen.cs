@@ -22,10 +22,11 @@ namespace ScifiDruid.GameScreen
         private Color _Color = new Color(250, 250, 250, 0);
 
         //all picture
-        private Texture2D bgTex, blackTex, settingbgTex,introTex;//background
-        private Texture2D logoTex, newGameTex, continueTex, settingTex, exitTex;//mainmenu pic
+        private Texture2D bgTex, blackTex, settingbgTex;//background
+        private Texture2D newGameTex, continueTex, settingTex, exitTex;//mainmenu pic
         private Texture2D arrowLbgTex, arrowRbgTex, arrowLsfxTex, arrowRsfxTex, backSettingTex, selectStageTex, muteTex, medTex, highTex;//setting pic
         private Texture2D confirmQuitPopUpTex, yesText, noText;//exit confirmed pic
+        private Texture2D comicBG1, comicBG2, p1Tex, p2Tex, p3Tex, p4Tex, p5Tex, p6_1Tex, p6_2Tex, p7Tex, p8Tex, p9Tex, p10Tex, p11Tex, p12Tex;//intro game
 
         //all button
         private Button newGameButton, continueButton, settingButton, exitButton;//mainmenu button
@@ -42,6 +43,9 @@ namespace ScifiDruid.GameScreen
         //check if go next screen or fade finish
         private bool fadeFinish = false;
         private StateScreen screen = StateScreen.MAINSCREEN;
+
+        //comic
+        private int comicPage = 1;
         private enum StateScreen
         {
             MAINSCREEN,
@@ -49,9 +53,6 @@ namespace ScifiDruid.GameScreen
             QUITSCREEN,
             INTROGAME
         }
-
-        //check if press arrow at howtoplay screen
-        private int howToPlaySlide = 1;
 
         //timer and alpha for fade out screen
         private float _timer = 0.0f;
@@ -63,6 +64,10 @@ namespace ScifiDruid.GameScreen
         private float masterSFX = Singleton.Instance.soundMasterVolume;
 
         private MenuScreenBG mainBG;
+
+        //delay when press to change dialog GameState
+        private float pressTime;
+        private float pressTimeDelay = 0.2f;
         public void Initial()
         {
             //bg
@@ -90,11 +95,25 @@ namespace ScifiDruid.GameScreen
             base.LoadContent();
             // Texture2D รูปต่างๆ
             //allbackground
-            logoTex = content.Load<Texture2D>("Pictures/Main/MainMenu/GameLogo");
             bgTex = content.Load<Texture2D>("Pictures/Main/MainMenu/MainMenuBG");
             blackTex = content.Load<Texture2D>("Pictures/Main/MainMenu/Black");
             settingbgTex = content.Load<Texture2D>("Pictures/Main/Setting/MainSettingScreen");
-            introTex = content.Load<Texture2D>("Pictures/Main/MainMenu/INTROGAME");
+            //comic Page at INTROGAME
+            comicBG1 = content.Load<Texture2D>("Pictures/Main/INTROGAME/comicBG1");
+            comicBG2 = content.Load<Texture2D>("Pictures/Main/INTROGAME/comicBG2");
+            p1Tex = content.Load<Texture2D>("Pictures/Main/INTROGAME/p1");
+            p2Tex = content.Load<Texture2D>("Pictures/Main/INTROGAME/p2");
+            p3Tex = content.Load<Texture2D>("Pictures/Main/INTROGAME/p3");
+            p4Tex = content.Load<Texture2D>("Pictures/Main/INTROGAME/p4");
+            p5Tex = content.Load<Texture2D>("Pictures/Main/INTROGAME/p5");
+            p6_1Tex = content.Load<Texture2D>("Pictures/Main/INTROGAME/p6.1");
+            p6_2Tex = content.Load<Texture2D>("Pictures/Main/INTROGAME/p6.2");
+            p7Tex = content.Load<Texture2D>("Pictures/Main/INTROGAME/p7");
+            p8Tex = content.Load<Texture2D>("Pictures/Main/INTROGAME/p8");
+            p9Tex = content.Load<Texture2D>("Pictures/Main/INTROGAME/p9");
+            p10Tex = content.Load<Texture2D>("Pictures/Main/INTROGAME/p10");
+            p11Tex = content.Load<Texture2D>("Pictures/Main/INTROGAME/p11");
+            p12Tex = content.Load<Texture2D>("Pictures/Main/INTROGAME/p12");
 
             //all pic for button
             //mainscreen pic
@@ -142,15 +161,23 @@ namespace ScifiDruid.GameScreen
             //click sound
             //MediaPlayer.Volume = Singleton.Instance.bgMusicVolume;
 
+            //delay dialog time
+            pressTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
             Singleton.Instance.MousePrevious = Singleton.Instance.MouseCurrent;
             Singleton.Instance.MouseCurrent = Mouse.GetState();
             switch (screen)
             {
                 case StateScreen.INTROGAME:
-                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                    if ((Keyboard.GetState().IsKeyDown(Keys.Space) && pressTime > pressTimeDelay))
                     {
-                        //Singleton.Instance.levelState = LevelState.FOREST;
-                        Singleton.Instance.levelState = LevelState.CITY;
+                        comicPage++;
+                        pressTime = 0;
+                    }
+                    if (comicPage >= 16 || Keyboard.GetState().IsKeyDown(Keys.Enter))
+                    {
+                        Singleton.Instance.levelState = LevelState.FOREST;
+                        //Singleton.Instance.levelState = LevelState.CITY;
                         //Singleton.Instance.levelState = LevelState.LAB;
                         ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
                     }
@@ -160,7 +187,6 @@ namespace ScifiDruid.GameScreen
                     // Click start new game
                     if (newGameButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                     {
-                        //ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
                         Singleton.Instance.stageunlock = 1;
 
                         screen = StateScreen.INTROGAME;
@@ -347,9 +373,72 @@ namespace ScifiDruid.GameScreen
             switch (screen)
             {
                 case StateScreen.INTROGAME:
-                    spriteBatch.Draw(blackTex, Vector2.Zero, Color.White);
-                    spriteBatch.Draw(introTex, new Vector2(179, 76), Color.White);
-                    spriteBatch.DrawString(mediumfonts, "Press Spacebar", new Vector2(878, 667), Color.White);
+                    //draw
+                    if (comicPage >= 0 && comicPage < 9)
+                    {
+                        spriteBatch.Draw(comicBG1, Vector2.Zero, Color.White);
+                        spriteBatch.DrawString(mediumfonts, "Press Spacebar", new Vector2(870, 677), Color.White);
+
+                        if (comicPage > 1)
+                        {
+                            spriteBatch.Draw(p1Tex, new Vector2(72, 60), Color.White);
+                        }
+                        if (comicPage > 2)
+                        {
+                            spriteBatch.Draw(p2Tex, new Vector2(500, 60), Color.White);
+                        }
+                        if (comicPage > 3)
+                        {
+                            spriteBatch.Draw(p3Tex, new Vector2(804, 60), Color.White);
+                        }
+                        if (comicPage > 4)
+                        {
+                            spriteBatch.Draw(p4Tex, new Vector2(148, 268), Color.White);
+                        }
+                        if (comicPage > 5)
+                        {
+                            spriteBatch.Draw(p5Tex, new Vector2(128, 260), Color.White);
+                        }
+                        if (comicPage == 7)
+                        {
+                            spriteBatch.Draw(p6_1Tex, new Vector2(696, 404), Color.White);
+                        }
+                        if (comicPage > 7)
+                        {
+                            spriteBatch.Draw(p6_2Tex, new Vector2(668, 300), Color.White);
+                        }
+                    }
+                    else if (comicPage > 8 && comicPage <= 15)
+                    {
+                        spriteBatch.Draw(comicBG2, Vector2.Zero, Color.White);
+                        spriteBatch.DrawString(mediumfonts, "Press Spacebar", new Vector2(38, 547), Color.White);
+
+                        if (comicPage > 9)
+                        {
+                            spriteBatch.Draw(p7Tex, new Vector2(72, 68), Color.White);
+                        }
+                        if (comicPage > 10)
+                        {
+                            spriteBatch.Draw(p8Tex, new Vector2(112, 76), Color.White);
+                        }
+                        if (comicPage > 11)
+                        {
+                            spriteBatch.Draw(p9Tex, new Vector2(576, 76), Color.White);
+                        }
+                        if (comicPage > 12)
+                        {
+                            spriteBatch.Draw(p10Tex, new Vector2(1064, 72), Color.White);
+                        }
+                        if (comicPage > 13)
+                        {
+                            spriteBatch.Draw(p11Tex, new Vector2(444, 440), Color.White);
+                        }
+                        if (comicPage > 14)
+                        {
+                            spriteBatch.Draw(p12Tex, new Vector2(552, 444), Color.White);
+                        }
+                    }
+
                     break;
                 case StateScreen.MAINSCREEN:
                     //bg

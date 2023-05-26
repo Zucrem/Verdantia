@@ -27,19 +27,23 @@ namespace ScifiDruid.GameScreen
 {
     class PlayScreen : _GameScreen
     {
+
+        protected bool initialized;
+
         //create class player
-        protected Player player;
+        protected static Player player;
 
         //all all texture
-        protected Texture2D blackTex, whiteTex, greenTex;
+        protected Texture2D blackTex, whiteTex, greenTex, gameoverTex;
         protected Texture2D arrowLeftBGPic, arrowRightBGPic, arrowLeftSFXPic, arrowRightSFXPic;//sound setting pic
         protected Texture2D pausePopUpPic, continueButtonPic, restartButtonPic, exitButtonPic, muteTex, medTex, highTex;//for pause setting hovering
-        protected Texture2D restartWLPic, nextButtonPic, backWLPic, DefeatSignPic, VictorySignPic;//win or lose
+        protected Texture2D restartLPic, backLPic;//win or lose
         protected Texture2D confirmExitPopUpPic, noConfirmPic, yesConfirmPic;//for confirm
 
         protected Texture2D playerTex;
 
         //all stage texture
+        protected Texture2D stage1BG, stage2BG, stage3BG, labBG, endCreditBG;
         //all stage
         //GameObject
         protected Texture2D switch_wall_Tex;
@@ -72,7 +76,7 @@ namespace ScifiDruid.GameScreen
         //button for confirm exit
         protected Button noConfirmButton, yesConfirmButton;
         //button for win lose
-        protected Button nextButton, restartWLButton, exitWLButton;
+        protected Button restartLButton, exitLButton;
 
         //color for fade in and out
         protected Color colorStart;
@@ -100,8 +104,7 @@ namespace ScifiDruid.GameScreen
 
         //fonts
         //private SpriteFont Alagan
-        protected SpriteFont smallfonts, mediumfonts, bigfonts, kongfonts;//กำหนดชื่อ font
-        protected Vector2 fontSize;//ขนาด font จาก SpriteFont
+        protected SpriteFont smallfonts, mediumfonts, bigfonts, kongfonts, alagardFont;//กำหนดชื่อ font
 
         //sound 
         protected float masterBGM = Singleton.Instance.bgMusicVolume;
@@ -149,51 +152,71 @@ namespace ScifiDruid.GameScreen
         protected int introDialogCount;
         protected int endDialogCount;
 
-
         //delay when press to change dialog GameState
         private float pressTime;
-        private float pressTimeDelay = 1;
-        protected enum GameState 
-        { 
+        private float pressTimeDelay = 0.2f;
+
+        protected enum GameState
+        {
             START, OPENING, PLAY, INTROBOSS, BOSS, END, WIN, LOSE, PAUSE, EXIT
         }
 
         public virtual void Initial()
         {
-            player = new Player(playerTex, bullet, whiteTex)
+            if (!initialized)
             {
-                name = "Player Character",
-                size = new Vector2(46, 94),
-                speed = 13,
-                //speed = 50,
-                jumpHigh = 10.5f,
-            };
+                player = new Player(playerTex, bullet, whiteTex)
+                {
+                    name = "Player Character",
+                    size = new Vector2(46, 94),
+                    speed = 13,
+                    //speed = 50,
+                    jumpHigh = 10.5f,
+                };
 
-            gamestate = GameState.START;
+                player.Initial();
 
-            //create button on pause
-            continueButton = new Button(continueButtonPic, new Vector2(507, 238), new Vector2(203, 32));
-            restartButton = new Button(restartButtonPic, new Vector2(487, 318), new Vector2(239, 32));
-            exitButton = new Button(exitButtonPic, new Vector2(539, 562), new Vector2(131, 32));
+                gamestate = GameState.START;
 
-            //create button win or lose screen
-            nextButton = new Button(nextButtonPic, new Vector2(540, 430), new Vector2(200, 60));//create Button after win
-            restartWLButton = new Button(restartWLPic, new Vector2(540, 510), new Vector2(200, 60));//create Button after win
-            exitWLButton = new Button(backWLPic, new Vector2(540, 591), new Vector2(200, 60));//create Button after win
+                //create button on pause
+                continueButton = new Button(continueButtonPic, new Vector2(507, 238), new Vector2(203, 32));
+                restartButton = new Button(restartButtonPic, new Vector2(487, 318), new Vector2(239, 32));
+                exitButton = new Button(exitButtonPic, new Vector2(539, 562), new Vector2(131, 32));
 
-            //setting button
-            arrowLeftBGButton = new Button(arrowLeftBGPic, new Vector2(584, 389), new Vector2(32, 56));
-            arrowRightBGButton = new Button(arrowRightBGPic, new Vector2(842, 389), new Vector2(32, 56));
-            arrowLeftSFXButton = new Button(arrowLeftSFXPic, new Vector2(584, 469), new Vector2(32, 56));
-            arrowRightSFXButton = new Button(arrowRightSFXPic, new Vector2(842, 469), new Vector2(32, 56));
+                //create button win or lose screen
+                restartLButton = new Button(restartLPic, new Vector2(1055, 326), new Vector2(190, 68));//create Button after win
+                exitLButton = new Button(backLPic, new Vector2(57, 356), new Vector2(190, 68));//create Button after win
 
-            //confirm exit button
-            yesConfirmButton = new Button(yesConfirmPic, new Vector2(401, 452), new Vector2(190, 68));
-            noConfirmButton = new Button(noConfirmPic, new Vector2(670, 452), new Vector2(190, 68));
+                //setting button
+                arrowLeftBGButton = new Button(arrowLeftBGPic, new Vector2(584, 389), new Vector2(32, 56));
+                arrowRightBGButton = new Button(arrowRightBGPic, new Vector2(842, 389), new Vector2(32, 56));
+                arrowLeftSFXButton = new Button(arrowLeftSFXPic, new Vector2(584, 469), new Vector2(32, 56));
+                arrowRightSFXButton = new Button(arrowRightSFXPic, new Vector2(842, 469), new Vector2(32, 56));
 
-            //camera
-            camera = new Camera();
+                //confirm exit button
+                yesConfirmButton = new Button(yesConfirmPic, new Vector2(401, 452), new Vector2(190, 68));
+                noConfirmButton = new Button(noConfirmPic, new Vector2(670, 452), new Vector2(190, 68));
+
+                //camera
+                camera = new Camera();
+
+                if (Singleton.Instance.levelState == LevelState.FOREST)
+                {
+                    Singleton.Instance.stageunlock = 1;
+                }
+                else if (Singleton.Instance.levelState == LevelState.CITY)
+                {
+                    Singleton.Instance.stageunlock = 2;
+                }
+                else if (Singleton.Instance.levelState == LevelState.LAB)
+                {
+                    Singleton.Instance.stageunlock = 3;
+                }
+
+                initialized = true;
+            }
         }
+
         public override void LoadContent()
         {
             base.LoadContent();
@@ -239,11 +262,9 @@ namespace ScifiDruid.GameScreen
             highTex = content.Load<Texture2D>("Pictures/Play/PlayScreen/Pause/FULL");
 
             //add button when win or lose
-            nextButtonPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/WinLose/Next");
-            restartWLPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/WinLose/Restart");
-            backWLPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/WinLose/Mainmenu");
-            DefeatSignPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/WinLose/DefeatSign");
-            VictorySignPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/WinLose/VictorySign");
+            restartLPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/WinLose/Continue");
+            backLPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/WinLose/Exit");
+            gameoverTex = content.Load<Texture2D>("Pictures/Play/PlayScreen/WinLose/Gameover");
 
             //confirmExit pic
             confirmExitPopUpPic = content.Load<Texture2D>("Pictures/Play/PlayScreen/ConfirmExit/ConfirmExitPopUp");
@@ -276,6 +297,7 @@ namespace ScifiDruid.GameScreen
             bigfonts = content.Load<SpriteFont>("Fonts/font60");
             mediumfonts = content.Load<SpriteFont>("Fonts/font30");
             kongfonts = content.Load<SpriteFont>("Fonts/KongFont");
+            alagardFont = content.Load<SpriteFont>("Fonts/AlagardFont");
 
             //player asset and bullet
             playerTex = content.Load<Texture2D>("Pictures/Play/Characters/Player/keeperSheet");
@@ -379,7 +401,7 @@ namespace ScifiDruid.GameScreen
                             openingDialog++;
                             pressTime = 0;
                         }
-                        if (Keyboard.GetState().IsKeyDown(Keys.Enter) || openingDialog == openingDialogCount)
+                        if (Keyboard.GetState().IsKeyDown(Keys.Enter) || openingDialog == openingDialogCount && pressTime > pressTimeDelay)
                         {
                             gamestate = GameState.PLAY;
                         }
@@ -410,7 +432,7 @@ namespace ScifiDruid.GameScreen
                         }
                         break;
                     case GameState.INTROBOSS:
-                        if (Keyboard.GetState().IsKeyDown(Keys.Enter) || introBossDialog == introDialogCount)
+                        if (Keyboard.GetState().IsKeyDown(Keys.Enter) || introBossDialog == introDialogCount && pressTime > pressTimeDelay)
                         {
                             gamestate = GameState.BOSS;
                         }
@@ -422,6 +444,10 @@ namespace ScifiDruid.GameScreen
                         }
                         break;
                     case GameState.BOSS:
+
+                        lastScreen = camera.Follow(player.position, endmaptileX, endmaptileX);
+                        Singleton.Instance.tfMatrix = lastScreen;
+
                         break;
                     case GameState.END:
                         //change dialog
@@ -481,51 +507,26 @@ namespace ScifiDruid.GameScreen
                             //Next Screen
                             if (nextScreen)
                             {
-                                ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
+                                ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PerkScreen);
                             }
+                            
                             break;
                         case GameState.WIN:
                             MediaPlayer.Stop();
-                            //Next
-                            if (nextButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
-                            {
-                                //unlock another stage
-                                //Singleton.Instance.stageunlock++;
-                                if (Singleton.Instance.levelState == LevelState.FOREST)
-                                {
-                                    Singleton.Instance.levelState = LevelState.CITY;
-                                }
-                                else if (Singleton.Instance.levelState == LevelState.CITY)
-                                {
-                                    Singleton.Instance.levelState = LevelState.LAB;
-                                }
-                                ResetWorld();
-                                changeScreen = true;
-                            }
-                            //Restart
-                            if (restartWLButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
-                            {
-                                ResetWorld();
-                                changeScreen = true;
-                            }
-                            //Exit
-                            if (exitWLButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
-                            {
-                                confirmExit = true;
-                                Singleton.Instance.levelState = LevelState.NULL;
-                            }
 
-
-                            //Restart Screen
+                            ResetWorld();
+                            Singleton.Instance.levelState = LevelState.NULL;
+                            changeScreen = true;
                             if (nextScreen)
                             {
-                                ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
+                                ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.EndScreen);
                             }
+                            
                             break;
                         case GameState.LOSE:
                             MediaPlayer.Stop();
                             //Restart
-                            if (restartWLButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
+                            if (restartLButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
                                 if (!worldReset)
                                 {
@@ -535,7 +536,7 @@ namespace ScifiDruid.GameScreen
                                 changeScreen = true;
                             }
                             //Exit
-                            if (exitWLButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
+                            if (exitLButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime))
                             {
                                 ResetWorld();
                                 confirmExit = true;
@@ -729,7 +730,7 @@ namespace ScifiDruid.GameScreen
             fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
 
             _frameCounter.Update(deltaTime);
-            
+
             base.Update(gameTime);
         }
 
@@ -773,26 +774,14 @@ namespace ScifiDruid.GameScreen
                     switch (gamestate)
                     {
                         case GameState.WIN:
-                            spriteBatch.Draw(VictorySignPic, new Vector2(190, 82), new Color(255, 255, 255, 255));
-                            //draw only for Stage1 and Stage2
-                            if (Singleton.Instance.levelState == LevelState.LAB)
-                            {
-                                nextButton.Draw(spriteBatch);
-                            }
-                            restartWLButton.SetPosition(new Vector2(540, 510));
-                            exitWLButton.SetPosition(new Vector2(540, 591));
-                            restartWLButton.Draw(spriteBatch);
-                            exitWLButton.Draw(spriteBatch);
                             break;
                         case GameState.LOSE:
-                            restartWLButton.SetPosition(new Vector2(540, 430));
-                            exitWLButton.SetPosition(new Vector2(540, 510));
-                            spriteBatch.Draw(DefeatSignPic, new Vector2(190, 82), new Color(255, 255, 255, 255));
-                            restartWLButton.Draw(spriteBatch);
-                            exitWLButton.Draw(spriteBatch);
+                            spriteBatch.Draw(gameoverTex, Vector2.Zero, Color.White);
+                            restartLButton.Draw(spriteBatch);
+                            exitLButton.Draw(spriteBatch);
                             break;
                         case GameState.PAUSE:
-                            spriteBatch.Draw(pausePopUpPic, new Vector2(300,60), new Color(255, 255, 255, 255));
+                            spriteBatch.Draw(pausePopUpPic, new Vector2(300, 60), new Color(255, 255, 255, 255));
 
                             //BGM
                             spriteBatch.DrawString(mediumfonts, "Musics", new Vector2(400, 400), Color.White);
@@ -864,11 +853,9 @@ namespace ScifiDruid.GameScreen
             if (play)
             {
                 //background
-                //spriteBatch.Draw(blackTex, Vector2.Zero, Color.White);
-                spriteBatch.Draw(whiteTex, Vector2.Zero, Color.White);
             }
         }
-        
+
         public override void DrawHUD(SpriteBatch spriteBatch)
         {
             if (play)
@@ -878,13 +865,14 @@ namespace ScifiDruid.GameScreen
                 {
                     spriteBatch.Draw(dialogBoxTex, new Rectangle(94, 508, 1092, 192), new Rectangle(0, 0, 1092, 192), Color.White);
 
-                    spriteBatch.DrawString(kongfonts, "Press Spacebar", new Vector2(988, 667), Color.White);
+                    spriteBatch.DrawString(alagardFont, "Press Spacebar", new Vector2(988, 667), Color.White);
                 }
 
                 if (gamestate == GameState.PLAY || gamestate == GameState.BOSS)
                 {
-                    int mana = (int)Player.mana;
-                    int health = (int)Player.health;
+                    int mana = (int)player.mana;
+                    int maxMana = (int)Player.maxMana;
+                    int health = (int)player.health;
 
                     //HUD
                     //Health Bar
@@ -893,11 +881,11 @@ namespace ScifiDruid.GameScreen
                     {
                         for (int i = 0; i < health; i++)
                         {
-                            spriteBatch.Draw(healthTex, new Rectangle((i * 36) + 73, 43, 32, 28), Color.White);
+                            spriteBatch.Draw(healthTex, new Rectangle((i * 50) + 83, 43, 32, 28), Color.White);
                         }
                     }
                     //mana Bar
-                    double manaRatio = ((double)mana / 100) * 200;//mana percent per 100 * manaTex.length
+                    double manaRatio = ((double)mana / maxMana) * 200;//mana percent per maxMana * manaTex.length
                     spriteBatch.Draw(manaBarTex, new Rectangle(1, 95, 216, 56), Color.White);
                     spriteBatch.Draw(manaTex, new Rectangle(9, 103, (int)manaRatio, 40), Color.White);
 

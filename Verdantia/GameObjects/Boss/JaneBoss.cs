@@ -22,7 +22,6 @@ namespace ScifiDruid.GameObjects
         private Random rand = new Random();
         private int randomAction;
         //attribute using for moving of boss
-        private float movingTime = 3.4f;
 
         //boss size
         private Vector2 idleSize;
@@ -58,7 +57,6 @@ namespace ScifiDruid.GameObjects
 
         private List<JaneBomb> rockets;
         private List<JaneBullet> bulletLists;
-        private Body beam;
 
         public JaneStatus preBossStatus;
         public JaneStatus curBossStatus;
@@ -68,6 +66,8 @@ namespace ScifiDruid.GameObjects
         private Rectangle fieldBoss;
 
         private Vector2 firstPosition;
+
+        private BossLongShoot beam;
 
         //Action all states
         public enum JaneStatus
@@ -190,6 +190,11 @@ namespace ScifiDruid.GameObjects
                 frameState = 0;
             }
 
+            if (beam != null)
+            {
+                beam.Update(gameTime);
+            }
+
             ChangeAnimationStatus();
             elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             switch (curBossStatus)
@@ -292,15 +297,15 @@ namespace ScifiDruid.GameObjects
 
         public override void Action()
         {
-            if (isAlive && Player.health > 0)
+            if (isAlive && player.health > 0)
             {
 
                 //timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 if (skillTime <= 0 && curBossStatus == JaneStatus.IDLE)
                 {
-                    //randomAction = rand.Next(1, 4);
-                    randomAction = 2;
+                    randomAction = rand.Next(1, 4);
+                    //randomAction = 1;
                     skillTime = 3;
                 }
                 else if (curBossStatus == JaneStatus.IDLE)
@@ -330,7 +335,7 @@ namespace ScifiDruid.GameObjects
             {
                 action1 = true;
                 curBossStatus = JaneStatus.SHOOTGUN;
-                JaneBullet bullet = new JaneBullet(ammoTexture, enemyHitBox.Position, this, charDirection);
+                JaneBullet bullet = new JaneBullet(ammoTexture, enemyHitBox.Position + new Vector2(0,-0.2f), this, charDirection);
                 skillTime = 1;
                 bulletLists.Add(bullet);
                 bulletLists[bulletLists.Count - 1].Shoot();
@@ -348,30 +353,35 @@ namespace ScifiDruid.GameObjects
                 switch (charDirection)
                 {
                     case SpriteEffects.None:
-                        positionBeam = enemyHitBox.Position + new Vector2(10, -0.5f);
+                        positionBeam = enemyHitBox.Position + new Vector2(10, -0.3f);
                         break;
                     case SpriteEffects.FlipHorizontally:
-                        positionBeam = enemyHitBox.Position + new Vector2(-10, -0.5f);
+                        positionBeam = enemyHitBox.Position + new Vector2(-10, -0.3f);
                         break;
                 }
 
-                beam = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(1200), ConvertUnits.ToSimUnits(shootPlasmaSize.Y), 1, positionBeam, 0, BodyType.Static, "SkillBoss");
-                beam.IsSensor = true;
-                skillTime = 0.3f;
+                beam = new BossLongShoot(ammoTexture, positionBeam,this,"Jane");
+
+                //beam = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(1200), ConvertUnits.ToSimUnits(shootPlasmaSize.Y), 1, positionBeam, 0, BodyType.Static, "SkillBoss");
+                //beam.IsSensor = true;
+                
             }
-            else if (skillTime <= 0 && beam != null)
+            else if (beam != null)
             {
-                foreach (var item in bulletLists)
+                if (beam.bossLongShotStatus == BossLongShoot.LongShotStatus.LONGSHOTEND)
                 {
-                    item.bulletBody.Dispose();
+                    foreach (var item in bulletLists)
+                    {
+                        item.bulletBody.Dispose();
+                    }
+                    bulletLists.Clear();
+                    beam.longShotBody.Dispose();
+                    beam = null;
+                    curBossStatus = JaneStatus.IDLE;
+                    action1 = false;
+                    randomAction = 0;
+                    skillTime = 3;
                 }
-                bulletLists.Clear();
-                beam.Dispose();
-                beam = null;
-                curBossStatus = JaneStatus.IDLE;
-                action1 = false;
-                randomAction = 0;
-                skillTime = 3;
             }
 
             if (skillTime > 0)
@@ -386,7 +396,7 @@ namespace ScifiDruid.GameObjects
             {
                 action2 = true;
                 curBossStatus = JaneStatus.CALLDOWNBOMB;
-                JaneBomb dropBomb = new JaneBomb(ammoTexture, playerPosition + new Vector2(0, -10), this, prepareSize);
+                JaneBomb dropBomb = new JaneBomb(ammoTexture, playerPosition + new Vector2(0, -10), this);
                 //Body dropRocket = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(prepareSize.X), ConvertUnits.ToSimUnits(prepareSize.Y), 1, , 0, BodyType.Dynamic, "SkillBoss");
                 //dropRocket.IsSensor = false;
                 skillTime = 3;
@@ -416,17 +426,21 @@ namespace ScifiDruid.GameObjects
                     if (IsContact(item.bombBody, "Ground"))
                     {
                         item.bossBombStatus = JaneBomb.BombStatus.BOMBDEAD;
-                        item.bombBody.IsStatic = true;
+                        Vector2 explosivePosition = item.bombBody.Position - ConvertUnits.ToSimUnits(new Vector2(20,75));
+                        item.bombBody.Dispose();
+
+                        item.CreateExplosive(explosivePosition);
+
                     }
 
-                    if (IsContact(item.bombBody, "Player"))
-                    {
-                        item.bombBody.IsSensor = true;
-                    }
+                    //if (IsContact(item.bombBody, "Player"))
+                    //{
+                    //    item.bombBody.IsSensor = true;
+                    //}
 
                     if (item.bossBombStatus == JaneBomb.BombStatus.BOMBEND)
                     {
-                        item.bombBody.Dispose();
+                        item.explosiveBody.Dispose();
                     }
                 }
             }
@@ -667,7 +681,7 @@ namespace ScifiDruid.GameObjects
 
                 if (beam != null)
                 {
-                    spriteBatch.Draw(ammoTexture, ConvertUnits.ToDisplayUnits(beam.Position), new Rectangle(0, 0, (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(1200)), (int)ConvertUnits.ToDisplayUnits(ConvertUnits.ToSimUnits(shootPlasmaSize.Y))), Color.White, 0, new Vector2(1200 / 2, shootPlasmaSize.Y / 2), 1f, SpriteEffects.None, 0f);
+                    beam.Draw(spriteBatch);
                 }
             }
         }
