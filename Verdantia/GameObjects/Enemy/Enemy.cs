@@ -207,7 +207,7 @@ namespace ScifiDruid.GameObjects
                 }
                 else { isPlayerinArea = false; }
 
-                if(playerPosition.X - position.X < 10 && playerPosition.X - position.X > -10 && playerPosition.Y - position.Y < 10 && playerPosition.Y - position.Y > -10)
+                if(playerPosition.X - position.X < 8 && playerPosition.X - position.X > -8 && playerPosition.Y - position.Y < 8 && playerPosition.Y - position.Y > -1)
                 {
                     isPlayerinDroneArea = true;
                 } else

@@ -44,6 +44,17 @@ namespace ScifiDruid.GameObjects
 
         private EnemyStatus preStatus;
         private EnemyStatus curStatus;
+
+        public Body electricBody;
+        public Rectangle skillRec;
+        public float electricTime;
+        public int electricFrame;
+       
+        //tentacle electric skill
+        Vector2 electricSize = new Vector2(129, 89);
+        List<Vector2> electricAnimateList = new List<Vector2>() { new Vector2(404, 229), new Vector2(559, 229) };
+
+
         private enum EnemyStatus
         {
             IDLE,
@@ -87,6 +98,10 @@ namespace ScifiDruid.GameObjects
             if (isAlive)
             {
                 CheckPlayerPosition(gameTime, 1);
+                if(electricBody!= null)
+                {
+                    electricBody.Position= enemyHitBox.Position - ConvertUnits.ToSimUnits(new Vector2(0, textureHeight / 2));
+                }
 
                 if (health <= 0)
                 {
@@ -194,7 +209,25 @@ namespace ScifiDruid.GameObjects
                     }
                     break;
             }
+            if(electricBody!= null)
+            {
+                if(electricTime>=delay)
+                {
+                    if (electricFrame < electricAnimateList.Count-1)
+                    {
+                        electricFrame++;
+                    }
+                    else if(electricFrame >= electricAnimateList.Count - 1)
+                    {
+                        electricFrame = 0;
+
+                    }
+                    electricTime = 0;
+                }
+                electricTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            }
             sourceRect = new Rectangle((int)spriteVector[frames].X, (int)spriteVector[frames].Y, (int)spriteSize.X, (int)spriteSize.Y);
+            skillRec = new Rectangle((int)electricAnimateList[electricFrame].X, (int)electricAnimateList[electricFrame].Y, (int)electricSize.X,(int)electricSize.Y);
             preStatus = curStatus;
         }
 
@@ -214,6 +247,12 @@ namespace ScifiDruid.GameObjects
         private void EnemyWalking()
         {
             //do normal walking left and right
+            if(Singleton.Instance.levelState == LevelState.LAB&&electricBody!=null)
+            {
+                electricBody.Dispose();
+                electricBody = null;
+            }
+
             if (IsContact(enemyHitBox, "Enemy"))
             {
                 foreach (var item in bodyList)
@@ -337,20 +376,26 @@ namespace ScifiDruid.GameObjects
                 enemyHitBox.ApplyForce(new Vector2(-120 * speed, 0));
                 return;
             }
-           /* if (Singleton.Instance.levelState == LevelState.LAB)
+            if (Singleton.Instance.levelState == LevelState.LAB)
             {
                 curStatus = EnemyStatus.DETECT;
+                electricBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(129), ConvertUnits.ToSimUnits(89), 0, enemyHitBox.Position - ConvertUnits.ToSimUnits(new Vector2(0, textureHeight / 2)), 0, BodyType.Static, "Enemy");
+                electricBody.IgnoreCollisionWith(enemyHitBox);
+                electricBody.IsSensor= true;
+                
+
             }
             else
             {
                 curStatus = EnemyStatus.RUN;
-            }*/
+            }
 
 
             if (playerPosition.X - position.X > 1 && (xspawnPosition - enemyHitBox.Position.X) > pathWalkLength * -1)  // run(right) to player but not out of area
             {
                 if (Singleton.Instance.levelState == LevelState.FOREST)
                 {
+                    //curStatus = EnemyStatus.RUN;
                     charDirection = SpriteEffects.FlipHorizontally;
                 }
                 else
@@ -366,6 +411,7 @@ namespace ScifiDruid.GameObjects
 
                 if (Singleton.Instance.levelState == LevelState.FOREST)
                 {
+                    //curStatus = EnemyStatus.RUN;
                     charDirection = SpriteEffects.None;
                 }
                 else
@@ -383,6 +429,10 @@ namespace ScifiDruid.GameObjects
             if (!animationDead)
             {
                 spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(position), sourceRect, Color.White, 0, enemyOrigin, 1f, charDirection, 0f);
+                if(electricBody!= null) { 
+                spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(electricBody.Position), skillRec, Color.White, 0, new Vector2(electricSize.X/2,electricSize.Y/2), 1f, charDirection, 0f);
+                }
+                
             }
 
         }
@@ -423,6 +473,8 @@ namespace ScifiDruid.GameObjects
                     break;
             }
         }
+
+
 
     }
 }

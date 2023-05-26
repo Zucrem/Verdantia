@@ -53,6 +53,11 @@ namespace ScifiDruid.GameScreen
         private int shieldDogPositionList;
         private int shieldDogCount;
 
+        private DroneEnemy eyeball;
+        private List<DroneEnemy> eyeballEnemies;
+        private int eyeballPositionList;
+        private int eyeballCount;
+
         private MeleeEnemy meleeTentacle;
         private List<MeleeEnemy> meleeTentacleEnemies;
         private int meleeTentaclePositionList;
@@ -330,7 +335,7 @@ namespace ScifiDruid.GameScreen
                     {
                         size = new Vector2(128, 94),
                         health = 3,
-                        speed = 0.1f,
+                        speed = 0.22f,
                         bulletSpeed = 400,
                         bulletSizeX = 4,
                         bulletSizeY = 6,
@@ -346,6 +351,33 @@ namespace ScifiDruid.GameScreen
                 {
                     gun.Initial(ground1MonsterRects[shieldDogCount], player);
                     shieldDogCount++;
+                }
+
+                //eye ball drone enemy
+                eyeballEnemies = new List<DroneEnemy>();
+                eyeballPositionList = flyMonsterRects.Count();
+                List<Vector2> eyeBallSizeList = new List<Vector2>() { new Vector2(52, 55), new Vector2(52, 55), new Vector2(61, 68), new Vector2(61, 62) };
+                List<List<Vector2>> eyeBallAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(2, 13) }, new List<Vector2>() { new Vector2(2, 13), new Vector2(69, 13) }, new List<Vector2>() { new Vector2(142, 0), new Vector2(221, 6), new Vector2(295, 4) }, new List<Vector2>() { new Vector2(0, 87), new Vector2(93, 90), new Vector2(169, 85), new Vector2(243, 101), new Vector2(315, 111) } };
+                for(int i = 0;i < eyeballPositionList; i++)
+                {
+                    eyeball = new DroneEnemy(eyeBallTex, eyeBallSizeList, eyeBallAnimateList)
+                    {
+                        size = new Vector2(52, 55),
+                        health = 4,
+                        speed = 0.1f,
+                        bulletSpeed = 400,
+                        bulletSizeX = 16,
+                        bulletSizeY = 8,
+                        bulletDistance = 10,
+                    };
+                    eyeballEnemies.Add(eyeball);
+                }
+                //create eyeball position
+                eyeballCount= 0;
+                foreach (DroneEnemy drone in eyeballEnemies)
+                {
+                    drone.Initial(flyMonsterRects[eyeballCount], player);
+                    eyeballCount++;
                 }
 
                 //melee enemy
@@ -475,6 +507,11 @@ namespace ScifiDruid.GameScreen
                         {
                             tentacle.Update(gameTime);
                             tentacle.Action();
+                        }
+                        foreach (DroneEnemy drone in eyeballEnemies)
+                        {
+                            drone.Update(gameTime);
+                            drone.Action();
                         }
 
                         //switch button
@@ -794,6 +831,15 @@ namespace ScifiDruid.GameScreen
                     foreach (MeleeEnemy tentacle in meleeTentacleEnemies)
                     {
                         tentacle.Draw(spriteBatch);
+                    }
+                    foreach (DroneEnemy drone in eyeballEnemies)
+                    {
+                        drone.Draw(spriteBatch);
+                        foreach (EnemyBullet dronebullet in drone.bulletList)
+                        {
+
+                            dronebullet.Draw(spriteBatch);
+                        }
                     }
 
                     ////draw switch animation
