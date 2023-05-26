@@ -350,9 +350,10 @@ namespace ScifiDruid.GameObjects
             //got to that direction of player
             //stop when player go out of detect area
             Enemyshoot();
-
+            
             if (playerPosition.X - position.X > 2 && (xspawnPosition - enemyHitBox.Position.X) > pathWalkLength * -1)//(xspawnPosition - enemyHitBox.Position.X) > pathWalkLength*-1
             {
+                curStatus = EnemyStatus.WALK;
                 if (Singleton.Instance.levelState == LevelState.FOREST)
                 {
                     charDirection = SpriteEffects.FlipHorizontally;
@@ -365,6 +366,7 @@ namespace ScifiDruid.GameObjects
             }
             else if (playerPosition.X - position.X < -2 && (xspawnPosition - enemyHitBox.Position.X) < pathWalkLength)//(xspawnPosition - enemyHitBox.Position.X) < pathWalkLength
             {
+                curStatus = EnemyStatus.WALK;
                 if (Singleton.Instance.levelState == LevelState.FOREST)
                 {
                     charDirection = SpriteEffects.None;
@@ -374,6 +376,10 @@ namespace ScifiDruid.GameObjects
                     charDirection = SpriteEffects.FlipHorizontally;
                 }
                 enemyHitBox.ApplyForce(new Vector2(-100 * speed, 0));
+            }
+            else
+            {
+                curStatus = EnemyStatus.IDLE;
             }
 
 
