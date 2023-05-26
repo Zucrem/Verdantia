@@ -125,9 +125,6 @@ namespace ScifiDruid.GameScreen
                 startmaptileX = 10f;
                 endmaptileX = 170f;
 
-                //create player on position
-                player.SetSpawn(startRect);
-                //player.Initial(bossState);
 
                 player.health = maxHealth;
                 player.mana = maxMana;
@@ -429,6 +426,10 @@ namespace ScifiDruid.GameScreen
 
                 stage_wall6 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 192) };
                 stage_wall6.Initial(sign_wall6);
+
+                //create player on position
+                player.SetSpawn(startRect);
+                //player.Initial(bossState);
             }
         }
 
