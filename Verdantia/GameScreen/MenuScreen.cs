@@ -67,7 +67,7 @@ namespace ScifiDruid.GameScreen
 
         //delay when press to change dialog GameState
         private float pressTime;
-        private float pressTimeDelay = 1;
+        private float pressTimeDelay = 0.2f;
         public void Initial()
         {
             //bg
@@ -176,9 +176,9 @@ namespace ScifiDruid.GameScreen
                     }
                     if (comicPage >= 16 || Keyboard.GetState().IsKeyDown(Keys.Enter))
                     {
-                        //Singleton.Instance.levelState = LevelState.FOREST;
+                        Singleton.Instance.levelState = LevelState.FOREST;
                         //Singleton.Instance.levelState = LevelState.CITY;
-                        Singleton.Instance.levelState = LevelState.LAB;
+                        //Singleton.Instance.levelState = LevelState.LAB;
                         ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PlayScreen);
                     }
                     break;
