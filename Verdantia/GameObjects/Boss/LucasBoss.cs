@@ -245,7 +245,7 @@ namespace ScifiDruid.GameObjects
                 if (skillTime <= 0 && curBossStatus == LucasStatus.IDLE)
                 {
                     randomAction = rand.Next(1, 4);
-                    //randomAction = 1;
+                    //randomAction = 3;
                     //randomAction = 2;
 
                     skillTime = 5;
@@ -253,15 +253,6 @@ namespace ScifiDruid.GameObjects
                 else if (curBossStatus == LucasStatus.IDLE)
                 {
                     skillTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                }
-
-                if (randomAction < 4 && randomAction > 0)
-                {
-                    //if (position.X - )
-                }
-                else
-                {
-                    //Walk();
                 }
 
                 //do action 1
@@ -277,7 +268,6 @@ namespace ScifiDruid.GameObjects
                         Skill3();
                         break;
                 }
-
             }
         }
 
@@ -430,6 +420,7 @@ namespace ScifiDruid.GameObjects
             {
                 if (IsContact(drillBody, "Ground"))
                 {
+                    Debug.WriteLine(countBounce);
                     if (countBounce > 3)
                     {
                         switch (bossSkilDirection)
@@ -461,9 +452,11 @@ namespace ScifiDruid.GameObjects
                     curBossStatus = LucasStatus.IDLE;
                     randomAction = 0;
                     action3 = false;
+                    countBounce = 0;
                 }
             }
         }
+
 
         public override void ChangeAnimationStatus()
         {

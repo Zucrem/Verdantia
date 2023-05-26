@@ -13,6 +13,8 @@ namespace ScifiDruid.GameObjects
 {
     public class Player : _GameObject
     {
+        Vector2 preCollisionLinearVelocity;
+
         private Texture2D texture;
         private Texture2D bulletTexture;
         private Texture2D regenTexture;
@@ -45,7 +47,6 @@ namespace ScifiDruid.GameObjects
 
         private int attackTimeDelay;
         private int attackDelay;
-        private int attackMaxTime;
         public float manaRegenTime;
 
         private int healCount;
@@ -66,9 +67,9 @@ namespace ScifiDruid.GameObjects
         public static int crocDmg;
         public static int skill2MaxCooldown;
         public static int dashMaxCooldown;
-        
+
+        public static int attackMaxTime;
         public static int attackMana;
-        public static int attackDmg;
 
         //Count cooldown of action
         public float skill1Cooldown; // Skill Regen
@@ -195,7 +196,7 @@ namespace ScifiDruid.GameObjects
 
             charDirection = SpriteEffects.FlipHorizontally;
 
-            attackMaxTime = 500;
+            
             
             if (Singleton.Instance.stageunlock == 1)
             {
@@ -216,7 +217,7 @@ namespace ScifiDruid.GameObjects
 
                 if (manaRegenAmount == 0)
                 {
-                    manaRegenAmount = 1;
+                    manaRegenAmount = 0;
                 }
 
                 if (attackMana == 0)
@@ -224,9 +225,9 @@ namespace ScifiDruid.GameObjects
                     attackMana = 5;
                 }
 
-                if (attackDmg == 0)
+                if (attackMaxTime == 0)
                 {
-                    attackDmg = 1;
+                    attackMaxTime = 1000;
                 }
 
                 if (crocDmg == 0)
@@ -309,7 +310,7 @@ namespace ScifiDruid.GameObjects
 
                 if (playerStatus == PlayerStatus.IDLE)
                 {
-                    manaIdleRegen = 2;
+                    manaIdleRegen = 3;
                     manaIdleRegenTime = 3;
                 }
                 else
@@ -329,7 +330,7 @@ namespace ScifiDruid.GameObjects
                 else if (manaRegenTime <= 0 && mana < maxMana)
                 {
                     manaRegenTime = 0;
-                    mana += (float)gameTime.ElapsedGameTime.TotalSeconds * manaRegenAmount * manaIdleRegen;
+                    mana += (float)gameTime.ElapsedGameTime.TotalSeconds * (manaRegenAmount + manaIdleRegen);
                 }
 
                 //Debug.WriteLine(bulletList.Count);
@@ -348,7 +349,7 @@ namespace ScifiDruid.GameObjects
                                 {
                                     if (bullet.bulletBody.UserData.Equals("Bullet"))
                                     {
-                                        enemy.takeDMG(attackDmg, "Bullet");
+                                        enemy.takeDMG(1, "Bullet");
                                         break;
                                     }
                                     else if (bullet.bulletBody.UserData.Equals("Croc"))
@@ -449,6 +450,7 @@ namespace ScifiDruid.GameObjects
                 }
             }
         }
+        
         private void Jump()
         {
             if (currentKeyState.IsKeyDown(Keys.Space) && oldKeyState.IsKeyUp(Keys.Space) && !wasJumped)
@@ -464,18 +466,22 @@ namespace ScifiDruid.GameObjects
                 {
                     hitBox.LinearVelocity = new Vector2(hitBox.LinearVelocity.X, 0f);
                     playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Bird");
-                    //wasJumped = true;
+                    wasJumped = true;
                 }
 
                 hitBox.ApplyLinearImpulse(new Vector2(0, -hitBox.Mass * jumpHigh));
             }
 
+            //Debug.WriteLine(hitBox.LinearVelocity);
+
             if (wasJumped && touchGround)
             {
+                //hitBox.LinearVelocity = preCollisionLinearVelocity;
                 wasJumped = false;
             }
 
         }
+       
         public void Attack()
         {
             //Attack animation
@@ -517,7 +523,7 @@ namespace ScifiDruid.GameObjects
                 };
                 bullet.CreateBullet(false, "Bullet");
                 bulletList.Add(bullet);
-                playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Shoot");
+                //playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Shoot");
 
                 //bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0, -1f), this, charDirection, isShootup));
 
@@ -594,6 +600,7 @@ namespace ScifiDruid.GameObjects
                 }
             }
         }
+        
         public void Skill()
         {
             if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyUp(Keys.Down) && currentKeyState.IsKeyUp(Keys.Up) && !press && skill1Cooldown <= 0)
@@ -663,6 +670,7 @@ namespace ScifiDruid.GameObjects
                 playerStatus = PlayerStatus.JUMP;
             }
         }
+       
         public void Dash()
         {
             if (currentKeyState.IsKeyDown(Keys.C) && oldKeyState.IsKeyUp(Keys.C) && dashCooldown <= 0 && mana - 10 >= 0)
@@ -780,7 +788,7 @@ namespace ScifiDruid.GameObjects
             {
                 if (playerSkillAnimation.curStatus == PlayerSkillAnimation.SymbolStatus.SYMBOLEND && skill2Cooldown > 0)
                 {
-                    PlayerBullet bullet = new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0.43f * playerDirectionInt, -0.12f), this, charDirection, isShootup)
+                    PlayerBullet bullet = new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0.43f * playerDirectionInt, -0.12f), this, charDirection, false)
                     {
                         bulletSpeed = 600,
                         bulletSizeX = 52,

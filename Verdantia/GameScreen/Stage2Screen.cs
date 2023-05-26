@@ -410,8 +410,8 @@ namespace ScifiDruid.GameScreen
                 boss = new JaneBoss(janeBossTex, janeAmmoTex)
                 {
                     size = new Vector2(74, 112),
-                    health = 1,
-                    //health = 6,
+                    //health = 1,
+                    health = 25,
                     speed = 1.2f,
                 };
 
@@ -436,54 +436,14 @@ namespace ScifiDruid.GameScreen
                 switch_wall3.Initial(switch_button3);
 
                 //create wall button on position
-                stage_wall1 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
+                stage_wall1 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 1000) };
                 stage_wall1.Initial(sign_wall1);
 
-                stage_wall2 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
+                stage_wall2 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 500) };
                 stage_wall2.Initial(sign_wall2);
 
-                stage_wall3 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 182) };
+                stage_wall3 = new StageObject(switch_wall_Tex, wall_size, wall_textureSize) { size = new Vector2(64, 500) };
                 stage_wall3.Initial(sign_wall3);
-
-                //panel
-                /*
-                //create up down block in map 2
-                foreach (Rectangle rect in movingUDBlocks)
-                {
-                    Vector2 udPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
-                    //Singleton.Instance.world.Step(0.001f);
-
-                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(64), ConvertUnits.ToSimUnits(6), 1f, udPosition);
-                    body.UserData = "Ground";
-                    body.Restitution = 0.0f;
-                    body.Friction = 0.3f;
-                }
-
-                //create left right block in map 2
-                foreach (Rectangle rect in movingLRBlocks)
-                {
-                    Vector2 lrPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
-                    //Singleton.Instance.world.Step(0.001f);
-
-                    Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(64), ConvertUnits.ToSimUnits(6), 1f, lrPosition);
-                    body.UserData = "Ground";
-                    body.Restitution = 0.0f;
-                    body.Friction = 0.3f;
-                }
-
-                //create falling block in map 2
-                foreach (Rectangle rect in fallingBlocks)
-                {
-                    //Vector2 fallingPosition = ConvertUnits.ToSimUnits(new Vector2(rect.X, rect.Y));
-                    //Singleton.Instance.world.Step(0.001f);
-
-                    //Body body = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(64), ConvertUnits.ToSimUnits(6), 1f, fallingPosition, 0, BodyType.Dynamic);
-                    //body.UserData = "Ground";
-                    //body.Restitution = 0.0f;
-                    //body.Friction = 0.3f;
-                    //body.IgnoreGravity = true;
-                    //body.IsSensor = true;
-                }*/
 
                 //Left Right
                 panelLRMoveBlocks = new List<StageObject>();
@@ -529,8 +489,8 @@ namespace ScifiDruid.GameScreen
                     panelFallMoveCount++;
                 }
 
-                //player.SetSpawn(startRect);
-                player.SetSpawn(bossState);
+                player.SetSpawn(startRect);
+                //player.SetSpawn(bossState);
             }
         }
         public override void LoadContent()

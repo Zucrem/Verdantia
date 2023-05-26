@@ -154,7 +154,7 @@ namespace ScifiDruid.GameScreen
 
         //delay when press to change dialog GameState
         private float pressTime;
-        private float pressTimeDelay = 1;
+        private float pressTimeDelay = 0.2f;
 
         protected enum GameState
         {
@@ -169,8 +169,8 @@ namespace ScifiDruid.GameScreen
                 {
                     name = "Player Character",
                     size = new Vector2(46, 94),
-                    //speed = 13,
-                    speed = 50,
+                    speed = 13,
+                    //speed = 50,
                     jumpHigh = 10.5f,
                 };
 
@@ -401,7 +401,7 @@ namespace ScifiDruid.GameScreen
                             openingDialog++;
                             pressTime = 0;
                         }
-                        if (Keyboard.GetState().IsKeyDown(Keys.Enter) || openingDialog == openingDialogCount)
+                        if (Keyboard.GetState().IsKeyDown(Keys.Enter) || openingDialog == openingDialogCount && pressTime > pressTimeDelay)
                         {
                             gamestate = GameState.PLAY;
                         }
@@ -432,7 +432,7 @@ namespace ScifiDruid.GameScreen
                         }
                         break;
                     case GameState.INTROBOSS:
-                        if (Keyboard.GetState().IsKeyDown(Keys.Enter) || introBossDialog == introDialogCount)
+                        if (Keyboard.GetState().IsKeyDown(Keys.Enter) || introBossDialog == introDialogCount && pressTime > pressTimeDelay)
                         {
                             gamestate = GameState.BOSS;
                         }
@@ -509,10 +509,10 @@ namespace ScifiDruid.GameScreen
                             {
                                 ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.PerkScreen);
                             }
+                            
                             break;
                         case GameState.WIN:
                             MediaPlayer.Stop();
-
 
                             ResetWorld();
                             Singleton.Instance.levelState = LevelState.NULL;
@@ -521,6 +521,7 @@ namespace ScifiDruid.GameScreen
                             {
                                 ScreenManager.Instance.LoadScreen(ScreenManager.GameScreenName.EndScreen);
                             }
+                            
                             break;
                         case GameState.LOSE:
                             MediaPlayer.Stop();

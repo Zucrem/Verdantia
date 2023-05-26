@@ -44,27 +44,13 @@ namespace ScifiDruid.GameObjects
         public void Initial(Rectangle spawnPosition)
         {
             this.spawnPosition = spawnPosition;
-            textureHeight = (int)size.Y;
-            textureWidth = (int)size.X;
+            textureHeight = (int)spriteSize.Y;
+            textureWidth = (int)spriteSize.X;
 
             wallOrigin = new Vector2(textureWidth / 2, textureHeight / 2);
 
             //create wall hitbox
             wallHitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(size.X), ConvertUnits.ToSimUnits(size.Y), 1f, ConvertUnits.ToSimUnits(new Vector2(spawnPosition.X, spawnPosition.Y)));
-            wallHitBox.UserData = "Ground";
-            wallHitBox.Restitution = 0.0f;
-            wallHitBox.Friction = 0.3f;
-        }
-        public void WallInitial(Rectangle spawnPosition)
-        {
-            this.spawnPosition = spawnPosition;
-            textureHeight = (int)size.Y;
-            textureWidth = (int)size.X;
-
-            wallOrigin = new Vector2(textureWidth / 2, textureHeight / 2);
-
-            //create wall hitbox
-            wallHitBox = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(spawnPosition.X), ConvertUnits.ToSimUnits(spawnPosition.Y), 1f, ConvertUnits.ToSimUnits(new Vector2(spawnPosition.X, spawnPosition.Y)));
             wallHitBox.UserData = "Ground";
             wallHitBox.Restitution = 0.0f;
             wallHitBox.Friction = 0.3f;

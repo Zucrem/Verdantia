@@ -290,7 +290,6 @@ namespace ScifiDruid.GameScreen
 
                 //create player on position
 
-
                 //bird
                 Vector2 birdSize = new Vector2(49, 55);
                 List<Vector2> birdAnimateList = new List<Vector2>() { new Vector2(10, 2), new Vector2(67, 2), new Vector2(4, 59), new Vector2(61, 59) };
@@ -359,7 +358,7 @@ namespace ScifiDruid.GameScreen
                 boss = new LucasBoss(lucasBossTex, whiteTex)
                 {
                     size = new Vector2(196, 186),
-                    health = 6,
+                    health = 20,
                     speed = 1.2f,
                 };
                 //spawn boss
@@ -381,12 +380,12 @@ namespace ScifiDruid.GameScreen
                 //create wall button on position
                 stage_wall = new StageObject(switch_wall_Tex, wall_size, wall_textureSize)
                 {
-                    size = new Vector2(32, 192),
+                    size = new Vector2(32, 350),
                 };
                 stage_wall.Initial(rock_wall);
 
-                //player.SetSpawn(startRect);
-                player.SetSpawn(bossState);
+                player.SetSpawn(startRect);
+                //player.SetSpawn(bossState);
             }
         }
 
@@ -527,7 +526,6 @@ namespace ScifiDruid.GameScreen
                     case GameState.BOSS:
                         if (!created_boss && boss_area)
                         {
-
                             //player active after this
                             player.isAlive = true;
                             boss.isAlive = true;
@@ -800,7 +798,7 @@ namespace ScifiDruid.GameScreen
                         break;
                 }
 
-                if (gamestate == GameState.PLAY || gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS)
+                if (gamestate == GameState.PLAY || gamestate == GameState.INTROBOSS || gamestate == GameState.BOSS || gamestate == GameState.END)
                 {
                     //draw boss animation
                     boss.Draw(spriteBatch);
