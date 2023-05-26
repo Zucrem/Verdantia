@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TiledSharp")]
-[assembly: AssemblyProduct("TiledSharp")]
+[assembly: AssemblyTitle("Verdantia")]
+[assembly: AssemblyProduct("Verdantia")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyCompany("Marshall Ward")]
 [assembly: AssemblyCopyright("Copyright © 2012, 2022 Marshall Ward")]

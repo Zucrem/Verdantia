@@ -262,10 +262,7 @@ namespace ScifiDruid.GameObjects
 
                 if (skillTime <= 0 && curBossStatus == LucasStatus.IDLE)
                 {
-                    //randomAction = rand.Next(1, 4);
-                    //randomAction = 3;
-                    randomAction = 1;
-
+                    randomAction = rand.Next(1, 4);
                     skillTime = 5;
                 }
                 else if (curBossStatus == LucasStatus.IDLE)

@@ -123,6 +123,23 @@ namespace ScifiDruid.GameObjects
                     isAlive = false;
                     enemyHitBox.Dispose();
                     curStatus = EnemyStatus.DEAD;
+                    if (electricBody != null)
+                    {
+                        electricBody.Dispose();
+                    }
+                    if (Singleton.Instance.levelState == LevelState.FOREST)
+                    {
+                        melee1DeathSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                    }
+                    if (Singleton.Instance.levelState == LevelState.CITY)
+                    {
+                        melee2DeathSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                    }
+                    if (Singleton.Instance.levelState == LevelState.LAB)
+                    {
+                        melee3DeathSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
+                    }
+
                 }
             }
 
@@ -133,7 +150,10 @@ namespace ScifiDruid.GameObjects
                 enemyHitBox.Dispose();
                 curStatus = EnemyStatus.DEAD;
                 health = 0;
-                enemyHitBox.Dispose();
+                if (electricBody != null)
+                {
+                    electricBody.Dispose();
+                }
                 if (Singleton.Instance.levelState == LevelState.FOREST)
                 {
                     melee1DeathSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
@@ -399,11 +419,12 @@ namespace ScifiDruid.GameObjects
             if (Singleton.Instance.levelState == LevelState.LAB)
             {
                 curStatus = EnemyStatus.DETECT;
-                electricBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(129), ConvertUnits.ToSimUnits(89), 0, enemyHitBox.Position - ConvertUnits.ToSimUnits(new Vector2(0, textureHeight / 2)), 0, BodyType.Static, "Enemy");
-                electricBody.IgnoreCollisionWith(enemyHitBox);
-                electricBody.IsSensor= true;
-                
-
+                if (electricBody == null)
+                {
+                    electricBody = BodyFactory.CreateRectangle(Singleton.Instance.world, ConvertUnits.ToSimUnits(129), ConvertUnits.ToSimUnits(89), 0, enemyHitBox.Position - ConvertUnits.ToSimUnits(new Vector2(0, textureHeight / 2)), 0, BodyType.Static, "EnemyBullet");
+                    electricBody.IgnoreCollisionWith(enemyHitBox);
+                    electricBody.IsSensor = true;
+                }
             }
             else
             {

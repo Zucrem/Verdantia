@@ -411,7 +411,6 @@ namespace ScifiDruid.GameScreen
                 boss = new JaneBoss(janeBossTex, janeAmmoTex)
                 {
                     size = new Vector2(74, 112),
-                    //health = 1,
                     health = 25,
                     speed = 1.2f,
                 };

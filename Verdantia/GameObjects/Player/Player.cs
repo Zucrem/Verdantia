@@ -320,7 +320,7 @@ namespace ScifiDruid.GameObjects
                 {
                     foreach (Body item in Singleton.Instance.world.BodyList)
                     {
-                        if (item.UserData.Equals("Enemy") || item.UserData.Equals("SkillBoss"))
+                        if (item.UserData.Equals("Enemy") || item.UserData.Equals("SkillBoss") || item.UserData.Equals("EnemyBullet"))
                         {
                             hitBox.RestoreCollisionWith(item);
                         }
@@ -338,9 +338,6 @@ namespace ScifiDruid.GameObjects
                     manaIdleRegenTime = 1;
                 }
 
-                //Debug.WriteLine(manaRegenTime);
-                //Debug.WriteLine(mana);
-
                 //After attack x time mana will regeneration
                 if (manaRegenTime > 0)
                 {
@@ -351,8 +348,6 @@ namespace ScifiDruid.GameObjects
                     manaRegenTime = 0;
                     mana += (float)gameTime.ElapsedGameTime.TotalSeconds * (manaRegenAmount + manaIdleRegen);
                 }
-
-                //Debug.WriteLine(bulletList.Count);
 
                 if (bulletList.Count > 0)
                 {
@@ -401,7 +396,6 @@ namespace ScifiDruid.GameObjects
             {
                 isAlive = false;
                 playerStatus = PlayerStatus.DEAD;
-                //playerDeadSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                 playerDead = true;
             }
 
@@ -479,7 +473,6 @@ namespace ScifiDruid.GameObjects
                 if (touchGround)
                 {
                     playerStatus = PlayerStatus.JUMP;
-                    //playerJumpSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                     jumpSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                 }
                 else
@@ -487,17 +480,14 @@ namespace ScifiDruid.GameObjects
                     hitBox.LinearVelocity = new Vector2(hitBox.LinearVelocity.X, 0f);
                     playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Bird");
                     jumpSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
-                    //wasJumped = true;
+                    wasJumped = true;
                 }
 
                 hitBox.ApplyLinearImpulse(new Vector2(0, -hitBox.Mass * jumpHigh));
             }
 
-            //Debug.WriteLine(hitBox.LinearVelocity);
-
             if (wasJumped && touchGround)
             {
-                //hitBox.LinearVelocity = preCollisionLinearVelocity;
                 wasJumped = false;
             }
 
@@ -509,7 +499,7 @@ namespace ScifiDruid.GameObjects
             attackDelay = (int)gameTime.TotalGameTime.TotalMilliseconds - attackTimeDelay;
 
             //Normal Shoot left or right
-            if (currentKeyState.IsKeyDown(Keys.X) && currentKeyState.IsKeyUp(Keys.Up) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && mana > 0)
+            if (currentKeyState.IsKeyDown(Keys.X) && currentKeyState.IsKeyUp(Keys.Up) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && mana - attackMana > 0)
             {
                 isShootup = false;
                 PlayerBullet bullet = new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0.43f * playerDirectionInt, -0.12f), this, charDirection, isShootup)
@@ -532,7 +522,7 @@ namespace ScifiDruid.GameObjects
                 shootSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
             }
             //Shoot Up
-            else if (currentKeyState.IsKeyDown(Keys.X) && currentKeyState.IsKeyDown(Keys.Up) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && mana > 0)
+            else if (currentKeyState.IsKeyDown(Keys.X) && currentKeyState.IsKeyDown(Keys.Up) && oldKeyState.IsKeyUp(Keys.X) && attackDelay > attackMaxTime && mana - attackMana > 0)
             {
                 isShootup = true;
 
@@ -546,10 +536,6 @@ namespace ScifiDruid.GameObjects
                 };
                 bullet.CreateBullet(false, "Bullet");
                 bulletList.Add(bullet);
-                //playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Shoot");
-
-                //bulletList.Add(new PlayerBullet(bulletTexture, hitBox.Position + new Vector2(0, -1f), this, charDirection, isShootup));
-
                 Player.isAttack = true;
                 attackAnimationTime = 0.3f;
                 attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
@@ -797,7 +783,6 @@ namespace ScifiDruid.GameObjects
                         {
                             enemy.takeDMG(7, "Lion");
                         }
-                        //lionBody.Dispose();
                     }
                 }
         }
@@ -806,7 +791,6 @@ namespace ScifiDruid.GameObjects
         {
             if (currentKeyState.IsKeyDown(Keys.Z) && currentKeyState.IsKeyDown(Keys.Down) && !press && skill2Cooldown <= 0 && Singleton.Instance.stageunlock > 1)
             {
-                //isAlive = false;
                 press = true;
                 skill2Cooldown = skill2MaxCooldown;
                 isCroc = true;
@@ -835,9 +819,7 @@ namespace ScifiDruid.GameObjects
                     attackAnimationTime = 0.3f;
                     attackTimeDelay = (int)gameTime.TotalGameTime.TotalMilliseconds;
                     bulletList[bulletList.Count - 1].Shoot();
-                    //Debug.WriteLine(bulletList[bulletList.Count - 1].bulletStatus);
                     isCroc = false;
-                    //return;
                 }
             }
         }
@@ -869,7 +851,7 @@ namespace ScifiDruid.GameObjects
             {
                 foreach (Body item in Singleton.Instance.world.BodyList)
                 {
-                    if (item.UserData.Equals("Enemy") || item.UserData.Equals("SkillBoss"))
+                    if (item.UserData.Equals("Enemy") || item.UserData.Equals("SkillBoss") || item.UserData.Equals("EnemyBullet"))
                     {
                         enemyContract.Clear();
                         hitBox.IgnoreCollisionWith(item);
@@ -961,9 +943,6 @@ namespace ScifiDruid.GameObjects
                 if (contactFixture.IsTouching && (fixtureACheck || fixtureBCheck || standOnPlatformA || standOnPlatformB))
                 {
                     Vector2 normal = contactFixture.Manifold.LocalNormal;
-
-                    //Debug.WriteLine(normal.Y);
-
                     if ((standOnPlatformA || standOnPlatformB) && normal.Y < 0f)
                     {
                         return true;

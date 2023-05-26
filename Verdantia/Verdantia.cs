@@ -23,25 +23,14 @@ namespace ScifiDruid
                 PreferredBackBufferHeight = (int)Singleton.Instance.Dimensions.Y
             };
             Content.RootDirectory = "Content";
-
-            //Singleton.Instance.CenterScreen = new Vector2(_graphics.PreferredBackBufferWidth / 2f, _graphics.PreferredBackBufferHeight / 2f);
-
-            //_graphics.SynchronizeWithVerticalRetrace = false;
-            //IsFixedTimeStep = false;
             IsMouseVisible = true;
             _graphics.IsFullScreen = false;
-            //Window.AllowUserResizing = true;
-            //Window.IsBorderless = false;// make window borderless
-
             _graphics.ApplyChanges();
         }
 
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            //IsFixedTimeStep = true;
-            //double temp = (1000d / (double)144) * 10000d;
-            //TargetElapsedTime = new TimeSpan((long)temp);
             Singleton.Instance.CenterScreen = new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2f, _graphics.GraphicsDevice.Viewport.Height / 2f);
 
             Singleton.Instance.tfMatrix = Matrix.CreateTranslation(Vector3.Zero);

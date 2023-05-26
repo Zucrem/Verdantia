@@ -321,7 +321,6 @@ namespace ScifiDruid.GameObjects
                 if (skillTime <= 0 && curBossStatus == JaneStatus.IDLE)
                 {
                     randomAction = rand.Next(1, 4);
-                    //randomAction = 3;
                     skillTime = 3;
                 }
                 else if (curBossStatus == JaneStatus.IDLE)

@@ -409,8 +409,7 @@ namespace ScifiDruid.GameScreen
                 boss = new DoctorBoss(doctorBossTex, doctorAmmoTex)
                 {
                     size = new Vector2(38, 88),
-                    //health = 30,
-                    health = 1,
+                    health = 30,
                     speed = 1.2f,
                 };
                 //spawn boss
@@ -419,6 +418,7 @@ namespace ScifiDruid.GameScreen
                 //add to all enemy for
                 Singleton.Instance.enemiesInWorld.AddRange(shieldDogEnemies);
                 Singleton.Instance.enemiesInWorld.AddRange(meleeTentacleEnemies);
+                Singleton.Instance.enemiesInWorld.AddRange(eyeballEnemies);
                 Singleton.Instance.enemiesInWorld.Add(boss);
 
                 //switch event

@@ -232,7 +232,6 @@ namespace ScifiDruid.GameObjects
                 if (skillTime <= 0 && curBossStatus == DoctorStatus.IDLE)
                 {
                     randomAction = rand.Next(1, 4);
-                    //randomAction = 2;
                     skillTime = 5;
                 }
                 else if (curBossStatus == DoctorStatus.IDLE)
