@@ -96,7 +96,7 @@ namespace ScifiDruid.GameObjects
             shootAndRunSrcHeight = 94;
             //shoot up
             shootUpSrcWidth = 40;
-            shootUpSrcHeight = 110;
+            shootUpSrcHeight = 130;
             //shoot up and run
             shootUpAndRunSrcWidth = 62;
             shootUpAndRunSrcHeight = 110;
@@ -158,18 +158,18 @@ namespace ScifiDruid.GameObjects
             shootAndRunFrames = shootAndRunRectVector.Count();
 
             //shoot up vector to list
-            shootUpRectVector.Add(new Vector2(260, 0));
+            shootUpRectVector.Add(new Vector2(256, 16));
 
             shootUpFrames = shootUpRectVector.Count();
 
             //shoot up and run vector to list
-            shootUpAndRunRectVector.Add(new Vector2(404, 0));
-            shootUpAndRunRectVector.Add(new Vector2(466, 0));
-            shootUpAndRunRectVector.Add(new Vector2(528, 0));
-            shootUpAndRunRectVector.Add(new Vector2(590, 0));
-            shootUpAndRunRectVector.Add(new Vector2(652, 0));
-            shootUpAndRunRectVector.Add(new Vector2(714, 0));
-            shootUpAndRunRectVector.Add(new Vector2(776, 0));
+            shootUpAndRunRectVector.Add(new Vector2(404, 16));
+            shootUpAndRunRectVector.Add(new Vector2(466, 16));
+            shootUpAndRunRectVector.Add(new Vector2(528, 16));
+            shootUpAndRunRectVector.Add(new Vector2(590, 16));
+            shootUpAndRunRectVector.Add(new Vector2(652, 16));
+            shootUpAndRunRectVector.Add(new Vector2(714, 16));
+            shootUpAndRunRectVector.Add(new Vector2(776, 16));
 
             shootUpAndRunFrames = shootUpAndRunRectVector.Count();
 

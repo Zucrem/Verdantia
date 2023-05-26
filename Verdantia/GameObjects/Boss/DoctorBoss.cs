@@ -242,7 +242,7 @@ namespace ScifiDruid.GameObjects
                 if (ballDelay <= 0)
                 {
                     ballDelay = 3f;
-                    Vector2 ballPosition = new Vector2((fieldBoss.X - fieldBoss.Width / 2) + 5, fieldBoss.Y - 10);
+                    Vector2 ballPosition = new Vector2((fieldBoss.X - fieldBoss.Width / 2) + 5, fieldBoss.Y - 30);
                     DoctorBall ball = new DoctorBall(skillBossTexture, ConvertUnits.ToSimUnits(ballPosition), this);
                     ball.CreateBall();
                     lightningBall.Add(ball);

@@ -256,8 +256,6 @@ namespace ScifiDruid.GameObjects
 
             if (!isIdle)
             {
-
-
                 if (isMovingLeft)
                 {
                     if (Singleton.Instance.levelState == LevelState.FOREST)
@@ -298,10 +296,6 @@ namespace ScifiDruid.GameObjects
                 }
 
             }
-
-
-
-
         }
 
         private void EnemyAlertWalking()
