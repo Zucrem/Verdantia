@@ -29,8 +29,6 @@ namespace ScifiDruid.Managers
         public ScreenManager()
         {
             currentScreen = new SplashScreen();
-            //currentScreen = new PerkScreen();
-            //currentScreen = new Stage2Screen();
         }
         public void LoadScreen(GameScreenName screenName)
         {
