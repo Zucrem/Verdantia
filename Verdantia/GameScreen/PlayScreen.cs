@@ -880,7 +880,7 @@ namespace ScifiDruid.GameScreen
                     {
                         for (int i = 0; i < health; i++)
                         {
-                            spriteBatch.Draw(healthTex, new Rectangle((i * 36) + 73, 43, 32, 28), Color.White);
+                            spriteBatch.Draw(healthTex, new Rectangle((i * 50) + 83, 43, 32, 28), Color.White);
                         }
                     }
                     //mana Bar

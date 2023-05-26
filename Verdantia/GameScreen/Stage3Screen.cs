@@ -351,8 +351,8 @@ namespace ScifiDruid.GameScreen
                 //melee enemy
                 meleeTentacleEnemies = new List<MeleeEnemy>();
                 meleeTentaclePositionList = ground2MonsterRects.Count();
-                List<Vector2> meleePoliceSizeList = new List<Vector2>() { new Vector2(49, 83), new Vector2(49, 83), new Vector2(49, 83), new Vector2(132, 111), new Vector2(66, 83) };
-                List<List<Vector2>> meleePoliceAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(1, 28) }, new List<Vector2>() { new Vector2(1, 28), new Vector2(148, 28), new Vector2(298, 28) }, new List<Vector2>() { new Vector2(415, 0), new Vector2(549, 0) }, new List<Vector2>() { new Vector2(415, 0), new Vector2(549, 0) }, new List<Vector2>() { new Vector2(0, 140), new Vector2(142, 140), new Vector2(290, 139), new Vector2(446, 139) } };
+                List<Vector2> meleePoliceSizeList = new List<Vector2>() { new Vector2(49, 83), new Vector2(49, 83), new Vector2(49, 83), new Vector2(49, 83), new Vector2(66, 83) };
+                List<List<Vector2>> meleePoliceAnimateList = new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0, 0) }, new List<Vector2>() { new Vector2(0, 0), new Vector2(147, 0), new Vector2(297, 0) }, new List<Vector2>() { new Vector2(0, 0), new Vector2(147, 0), new Vector2(297, 0) }, new List<Vector2>() { new Vector2(446, 0), new Vector2(607, 0) }, new List<Vector2>() { new Vector2(0, 112), new Vector2(142, 112), new Vector2(286, 111), new Vector2(446, 111) } };
                 for (int i = 0; i < meleeTentaclePositionList; i++)
                 {
                     meleeTentacle = new MeleeEnemy(tentacleTex, meleePoliceSizeList, meleePoliceAnimateList)
