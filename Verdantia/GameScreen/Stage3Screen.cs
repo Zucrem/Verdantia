@@ -409,7 +409,7 @@ namespace ScifiDruid.GameScreen
                 boss = new DoctorBoss(doctorBossTex, doctorAmmoTex)
                 {
                     size = new Vector2(38, 88),
-                    health = 30,
+                    health = 10,
                     speed = 1.2f,
                 };
                 //spawn boss

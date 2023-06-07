@@ -154,7 +154,7 @@ namespace ScifiDruid.GameScreen
 
         //delay when press to change dialog GameState
         private float pressTime;
-        private float pressTimeDelay = 0.2f;
+        private float pressTimeDelay = 0.4f;
 
         //sfx
         protected SoundEffect switchSound;
@@ -402,8 +402,9 @@ namespace ScifiDruid.GameScreen
                         {
                             openingDialog++;
                             pressTime = 0;
+                            Debug.WriteLine(openingDialog);
                         }
-                        if (Keyboard.GetState().IsKeyDown(Keys.Enter) || openingDialog == openingDialogCount && pressTime > pressTimeDelay)
+                        if (Keyboard.GetState().IsKeyDown(Keys.Enter) || openingDialog >= openingDialogCount && pressTime > pressTimeDelay)
                         {
                             gamestate = GameState.PLAY;
                         }
@@ -434,7 +435,7 @@ namespace ScifiDruid.GameScreen
                         }
                         break;
                     case GameState.INTROBOSS:
-                        if (Keyboard.GetState().IsKeyDown(Keys.Enter) || introBossDialog == introDialogCount && pressTime > pressTimeDelay)
+                        if (Keyboard.GetState().IsKeyDown(Keys.Enter) || introBossDialog >= introDialogCount && pressTime > pressTimeDelay)
                         {
                             gamestate = GameState.BOSS;
                         }
@@ -459,7 +460,7 @@ namespace ScifiDruid.GameScreen
                             pressTime = 0;
                         }
                         //if skip the story dialog
-                        if (Keyboard.GetState().IsKeyDown(Keys.Enter) || endDialog == endDialogCount)
+                        if (Keyboard.GetState().IsKeyDown(Keys.Enter) || endDialog >= endDialogCount)
                         {
                             if (Singleton.Instance.levelState == LevelState.LAB)
                             {
@@ -863,14 +864,35 @@ namespace ScifiDruid.GameScreen
             if (play)
             {
                 //draw dialog box, spacebar text and skip text
-                if (gamestate == GameState.OPENING || gamestate == GameState.INTROBOSS || gamestate == GameState.END)
+                switch (gamestate)
                 {
-                    spriteBatch.Draw(dialogBoxTex, new Rectangle(94, 508, 1092, 192), new Rectangle(0, 0, 1092, 192), Color.White);
+                    case GameState.OPENING:
+                        if (openingDialog < openingDialogCount)
+                        {
+                            spriteBatch.Draw(dialogBoxTex, new Rectangle(94, 508, 1092, 192), new Rectangle(0, 0, 1092, 192), Color.White);
 
-                    spriteBatch.DrawString(alagardFont, "Press Spacebar", new Vector2(988, 667), Color.White);
+                            spriteBatch.DrawString(alagardFont, "Press Spacebar", new Vector2(988, 667), Color.White);
+                        }
+                        break;
+                    case GameState.INTROBOSS:
+                        if (introBossDialog < introDialogCount)
+                        {
+                            spriteBatch.Draw(dialogBoxTex, new Rectangle(94, 508, 1092, 192), new Rectangle(0, 0, 1092, 192), Color.White);
+
+                            spriteBatch.DrawString(alagardFont, "Press Spacebar", new Vector2(988, 667), Color.White);
+                        }
+                        break;
+                    case GameState.END:
+                        if (endDialog < endDialogCount)
+                        {
+                            spriteBatch.Draw(dialogBoxTex, new Rectangle(94, 508, 1092, 192), new Rectangle(0, 0, 1092, 192), Color.White);
+
+                            spriteBatch.DrawString(alagardFont, "Press Spacebar", new Vector2(988, 667), Color.White);
+                        }
+                        break;
                 }
 
-                if (gamestate == GameState.PLAY || gamestate == GameState.BOSS)
+                if (gamestate == GameState.PLAY || gamestate == GameState.BOSS || openingDialog == openingDialogCount || introBossDialog == introDialogCount || endDialog == endDialogCount)
                 {
                     int mana = (int)player.mana;
                     int maxMana = (int)Player.maxMana;

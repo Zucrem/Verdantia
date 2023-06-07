@@ -411,7 +411,7 @@ namespace ScifiDruid.GameScreen
                 boss = new JaneBoss(janeBossTex, janeAmmoTex)
                 {
                     size = new Vector2(74, 112),
-                    health = 25,
+                    health = 10,
                     speed = 1.2f,
                 };
 
@@ -720,8 +720,11 @@ namespace ScifiDruid.GameScreen
                 switch (gamestate)
                 {
                     case GameState.OPENING:
-                        spriteBatch.DrawString(alagardFont, "Crush the Lake Guardian", new Vector2(147, 521), Color.White);
-                        spriteBatch.Draw(soulCrocPortraitTex, new Vector2(886, 306), Color.White);
+                        if (openingDialog < openingDialogCount)
+                        {
+                            spriteBatch.DrawString(alagardFont, "Crush the Lake Guardian", new Vector2(147, 521), Color.White);
+                            spriteBatch.Draw(soulCrocPortraitTex, new Vector2(886, 306), Color.White);
+                        }
                         switch (openingDialog)
                         {
                             case 1:

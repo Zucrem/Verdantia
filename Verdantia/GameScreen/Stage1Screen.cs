@@ -359,7 +359,7 @@ namespace ScifiDruid.GameScreen
                 boss = new LucasBoss(lucasBossTex, whiteTex)
                 {
                     size = new Vector2(196, 186),
-                    health = 20,
+                    health = 10,
                     speed = 1.2f,
                 };
                 //spawn boss
@@ -593,13 +593,14 @@ namespace ScifiDruid.GameScreen
                         if (openingDialog < 5)
                         {
                             spriteBatch.Draw(birdPortraitTex, new Vector2(780, 156), Color.White);
+                            spriteBatch.DrawString(alagardFont, "Gale the Sky Guardian", new Vector2(162, 521), Color.White);
                         }
-                        else if (openingDialog > 5)
+                        else if (openingDialog > 5 && openingDialog < openingDialogCount)
                         {
                             spriteBatch.Draw(soulBirdPortraitTex, new Vector2(780, 156), Color.White);
+                            spriteBatch.DrawString(alagardFont, "Gale the Sky Guardian", new Vector2(162, 521), Color.White);
                         }
 
-                        spriteBatch.DrawString(alagardFont, "Gale the Sky Guardian", new Vector2(162, 521), Color.White);
                         switch (openingDialog)
                         {
                             case 1:

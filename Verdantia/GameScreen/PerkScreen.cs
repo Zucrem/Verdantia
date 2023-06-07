@@ -200,7 +200,7 @@ namespace Verdantia.GameScreen
             }
 
             //all perk
-            if (!confirmState)
+            if (!confirmState && countAviliableSkill > 0)
             {
                 //all perk
                 if (dashCDButton.IsClicked(Singleton.Instance.MouseCurrent, gameTime) && !dashCDSkill)
@@ -350,6 +350,7 @@ namespace Verdantia.GameScreen
 
             base.Update(gameTime);
         }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             //bg

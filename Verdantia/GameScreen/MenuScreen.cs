@@ -67,7 +67,7 @@ namespace ScifiDruid.GameScreen
 
         //delay when press to change dialog GameState
         private float pressTime;
-        private float pressTimeDelay = 0.2f;
+        private float pressTimeDelay = 0.4f;
         public void Initial()
         {
             //bg
