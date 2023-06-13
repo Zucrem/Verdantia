@@ -30,6 +30,7 @@ namespace ScifiDruid.GameObjects
 
         public Body wallHitBox;
 
+        public bool isFall = false;
         //all sprite position in spritesheet
         protected Rectangle sourceRect;
 

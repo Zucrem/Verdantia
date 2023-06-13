@@ -359,7 +359,7 @@ namespace ScifiDruid.GameScreen
                 boss = new LucasBoss(lucasBossTex, whiteTex)
                 {
                     size = new Vector2(196, 186),
-                    health = 10,
+                    health = 15,
                     speed = 1.2f,
                 };
                 //spawn boss

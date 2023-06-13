@@ -26,6 +26,7 @@ namespace ScifiDruid.GameScreen
 {
     class Stage2Screen : PlayScreen
     {
+        private float fallTimeDelay = 0;
 
         private bool switchDirection;
 
@@ -411,7 +412,7 @@ namespace ScifiDruid.GameScreen
                 boss = new JaneBoss(janeBossTex, janeAmmoTex)
                 {
                     size = new Vector2(74, 112),
-                    health = 10,
+                    health = 20,
                     speed = 1.2f,
                 };
 
@@ -589,6 +590,23 @@ namespace ScifiDruid.GameScreen
                         foreach (StageObject fallMove in panelFallMoveBlocks)
                         {
                             fallMove.Update(gameTime);
+
+                            if (fallMove.wallHitBox.LinearVelocity.Y > 0 && !fallMove.isFall)
+                            {
+                                fallMove.isFall = true;
+                                fallMove.wallHitBox.IsStatic = true;
+                                fallTimeDelay = 2;
+                            }
+
+                            if (fallMove.isFall && fallTimeDelay > 0)
+                            {
+                                fallTimeDelay -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                            }
+                            else
+                            {
+                                fallMove.wallHitBox.IsStatic = false;
+                                fallMove.wallHitBox.IgnoreGravity = false;
+                            }
 
                             float positionX = ConvertUnits.ToSimUnits(fallMove.spawnPosition.X);
                             fallMove.wallHitBox.Position = new Vector2(positionX, fallMove.wallHitBox.Position.Y);
