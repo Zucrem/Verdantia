@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Boss2/plasmaBeam.wav</SourceFile>
-  <SourceTime>2023-05-20T03:15:38.7120959+07:00</SourceTime>
+  <SourceTime>2023-06-16T11:45:11.9799292+07:00</SourceTime>
   <DestFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/bin/DesktopGL/Content/Sounds/Boss2/plasmaBeam.xnb</DestFile>
-  <DestTime>2023-05-26T20:59:49.5582687+07:00</DestTime>
+  <DestTime>2023-06-16T11:45:55.688758+07:00</DestTime>
   <Importer>WavImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>
