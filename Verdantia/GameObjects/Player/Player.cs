@@ -480,7 +480,7 @@ namespace ScifiDruid.GameObjects
                     hitBox.LinearVelocity = new Vector2(hitBox.LinearVelocity.X, 0f);
                     playerSkillAnimation = new PlayerSkillAnimation(bulletTexture, position, "Bird");
                     jumpSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
-                    //wasJumped = true;
+                    wasJumped = true;
                 }
 
                 hitBox.ApplyLinearImpulse(new Vector2(0, -hitBox.Mass * jumpHigh));
