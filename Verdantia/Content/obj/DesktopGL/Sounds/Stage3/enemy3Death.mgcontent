@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Stage3/enemy3Death.wav</SourceFile>
-  <SourceTime>2022-05-16T19:37:05.640968+07:00</SourceTime>
+  <SourceTime>2023-06-16T11:45:12.1198291+07:00</SourceTime>
   <DestFile>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/bin/DesktopGL/Sounds/Stage3/enemy3Death.xnb</DestFile>
-  <DestTime>2023-05-26T22:57:36.9221619+07:00</DestTime>
+  <DestTime>2023-06-16T15:00:50.7615931+07:00</DestTime>
   <Importer>WavImporter</Importer>
   <ImporterTime>2022-07-26T18:44:56+07:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>

@@ -158,6 +158,7 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Button/hoverSound.wav</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Ending/badEnd.wav</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Player/atk.wav</File>
+    <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Player/badEnd.wav</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Player/crocBuster.wav</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Player/dash.wav</File>
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Player/gethit.wav</File>
@@ -179,6 +180,7 @@
     <File>C:/Users/acer/Desktop/javaprojection/GameFinal/Verdantia/Content/Sounds/Stage3/switch3Sound.wav</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

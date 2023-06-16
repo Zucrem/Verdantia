@@ -1713,6 +1713,12 @@
 /processorParam:Quality=Best
 /build:Sounds/Player/atk.wav
 
+#begin Sounds/Player/badEnd.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Player/badEnd.wav
+
 #begin Sounds/Player/crocBuster.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

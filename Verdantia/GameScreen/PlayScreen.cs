@@ -157,7 +157,7 @@ namespace ScifiDruid.GameScreen
         private float pressTimeDelay = 0.4f;
 
         //sfx
-        protected SoundEffect switchSound;
+        protected SoundEffect switchSound, deadSound;
         protected enum GameState
         {
             START, OPENING, PLAY, INTROBOSS, BOSS, END, WIN, LOSE, PAUSE, EXIT
@@ -327,6 +327,9 @@ namespace ScifiDruid.GameScreen
             doctorBossTex = content.Load<Texture2D>("Pictures/Play/Characters/Boss/DrSheet");
             doctorAmmoTex = content.Load<Texture2D>("Pictures/Play/Skills/BossSkills/DrAmmoSheet");
 
+            //sfx when dead
+            deadSound = content.Load<SoundEffect>("Sounds/Player/badEnd");
+
             //song and sfx
             MediaPlayer.IsRepeating = true;
         }
@@ -489,6 +492,7 @@ namespace ScifiDruid.GameScreen
                 {
                     play = false;
                     gamestate = GameState.LOSE;
+                    deadSound.Play(volume: Singleton.Instance.soundMasterVolume, 0, 0);
                 }
             }
             else
