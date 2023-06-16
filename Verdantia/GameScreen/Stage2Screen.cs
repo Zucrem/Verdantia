@@ -595,7 +595,7 @@ namespace ScifiDruid.GameScreen
                             {
                                 fallMove.isFall = true;
                                 fallMove.wallHitBox.IsStatic = true;
-                                fallTimeDelay = 2;
+                                fallTimeDelay = 1;
                             }
 
                             if (fallMove.isFall && fallTimeDelay > 0)
